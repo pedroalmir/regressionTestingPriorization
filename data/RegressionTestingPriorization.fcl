@@ -1,0 +1,59 @@
+//Block definition (there may be more than one block per file)
+FUNCTION_BLOCK tipper
+
+// Define input variables
+
+VAR_INPUT
+	Importancia : REAL;
+	Acoplamento : REAL;
+END_VAR
+
+VAR_OUTPUT
+	CriticidadeClasse : REAL;
+END_VAR
+
+FUZZIFY Importancia
+	TERM Baixo := trian 0 0 3;
+	TERM Medio := trian 2 5 8;
+	TERM Alto := trian 7 10 10;
+END_FUZZIFY
+
+FUZZIFY Acoplamento
+	TERM Baixo := trian 0 0 3;
+	TERM Medio := trian 2 5 8;
+	TERM Alto := trian 7 10 10;
+END_FUZZIFY
+
+DEFUZZIFY CriticidadeClasse
+	TERM MuitoBaixo := trian 0 0 2;
+	TERM Baixo := trian 0.5 2.5 4.5;
+	TERM Medio := trian 3 5 7;
+	TERM Alto := trian 5.5 7.5 9.5;
+	TERM MuitoAlto := trian 8 10 10;
+	
+	METHOD : COA;
+	DEFAULT := 0;
+END_DEFUZZIFY
+
+RULEBLOCK BaseDeRegras
+    // Use 'min' for 'and' (also implicit use 'max')
+    // for 'or' to fulfill DeMorgan's Law)
+    AND : MIN;
+    // Use 'min' activation method
+    ACT : MIN;
+    // Use 'max' accumulation method
+    ACCU : MAX;
+
+	RULE 1  : IF Acoplamento IS Baixo AND Importancia IS Baixo THEN CriticidadeClasse IS MuitoBaixo;
+	RULE 2  : IF Acoplamento IS Baixo AND Importancia IS Medio THEN CriticidadeClasse IS Baixo;
+	RULE 3  : IF Acoplamento IS Baixo AND Importancia IS Alto THEN CriticidadeClasse IS Medio;
+	RULE 4  : IF Acoplamento IS Medio AND Importancia IS Baixo THEN CriticidadeClasse IS Baixo;
+	RULE 5  : IF Acoplamento IS Medio AND Importancia IS Medio THEN CriticidadeClasse IS Medio;
+	RULE 6  : IF Acoplamento IS Medio AND Importancia IS Alto THEN CriticidadeClasse IS Alto;
+	RULE 7  : IF Acoplamento IS Alto  AND Importancia IS Baixo  THEN CriticidadeClasse IS Medio;
+	RULE 8  : IF Acoplamento IS Alto  AND Importancia IS Medio  THEN CriticidadeClasse IS Alto;
+	RULE 9  : IF Acoplamento IS Alto  AND Importancia IS Alto  THEN CriticidadeClasse IS MuitoAlto;
+
+END_RULEBLOCK
+
+END_FUNCTION_BLOCK
