@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+
+<jheat-mapping>
+	<flow 
+	name="recursarGlosa"
+	class="br.com.infowaypi.ecare.services.recurso.RecursarGlosa" 
+	display-name="Recursar Glosa" section="">
+	
+		<description>Recurso de glosa</description>
+	
+		<step-method display-name="Buscar Guias" name="buscarGuias" buttons-position="bottom">
+			<step-param name="autorizacao" type="java.lang.String" display-name="Autorização" required="true" />
+			<session-param name="usuario" />
+			<step-return display-name="Guia" name="guia" 
+			scope="session" type="br.com.infowaypi.ecarebc.atendimentos.GuiaCompleta" />
+		</step-method>
+				
+		<step-method display-name="Recursar Glosa" name="recursarGlosa"> 					
+		    <update-param display-name="" name="guia" type="br.com.infowaypi.ecarebc.atendimentos.GuiaCompleta" >
+						
+				<update-collection display-name="Guia" name="layerRecursoGuia"
+				type="br.com.infowaypi.ecare.services.recurso.ItemRecursoLayer"
+				field-name="layerRecursoGuia">
+					<update-insert>
+						<update-property name="item.autorizacao" display-name="Autorização" editable="false" type="java.lang.String"/>
+						<update-property name="item.segurado.pessoaFisica.nome" display-name="Beneficiário" editable="false" type="java.lang.String"/>
+						<update-property name="item.valorTotal" display-name="Valor" editable="false" type="java.lang.String" />
+						<update-property name="item.situacao.dataSituacao" display-name="Data" input-type="date" type="java.util.Date" editable="false"/>
+						<update-property name="item.motivoGlosa.descricao" display-name="Motivo da Glosa" input-type="string" type="java.lang.String" editable="false"/>
+						<update-property name="recursarGuia" display-name="Recursar Glosa" field-name="recursar" input-type="boolean" type="java.lang.Boolean"/>					
+						<update-property name="justificativaGuia" display-name="Justificativa de Recurso" field-name="justificativa" input-type="text" type="java.lang.String"/>
+					</update-insert>
+				</update-collection>
+						
+				<update-collection display-name="Gasoterapias" name="layersRecursoItensGasoterapia" 
+				type="br.com.infowaypi.ecare.services.recurso.ItemRecursoLayer" 
+				field-name="layersRecursoItensGasoterapia">
+					<update-insert>
+						<update-property name="item.gasoterapia.codigoDescricao" field-name="item.gasoterapia.codigoDescricao" display-name="Gasoterapia" type="java.lang.String" editable="false"/>
+						<update-property name="item.valor.valor" display-name="Valor Unitário (1h)" input-type="money" editable="false" type="java.math.BigDecimal"/>				    
+						<update-property name="itemApresentadoPeloPrestador.quantidadeFormatada" display-name="Horas Apresentadas" type="java.lang.String" editable="false" size="10" />
+						<update-property name="item.quantidadeFormatada" display-name="Horas Auditadas" type="java.lang.String" editable="false" size="10" />
+						<update-property name="itemApresentadoPeloPrestador.valorTotal" display-name="Valor Total Apresentado" input-type="money" editable="false" type="java.math.BigDecimal"/>
+						<update-property name="item.valorTotal" display-name="Valor Total Auditado" input-type="money" editable="false" type="java.math.BigDecimal"/>
+						<update-property name="diferencaValorTotalGasoterapia" display-name="Valor Glosado" input-type="money" editable="false" type="java.math.BigDecimal"/>
+						<update-property name="item.situacao.descricao" display-name="Situação" input-type="text" editable="false" type="java.lang.String"/>
+						<update-property name="motivoGlosaGasoterapia" display-name="Motivo de Glosa / Justificativa" input-type="text" field-name="motivoGlosa" editable="false"/>
+						<update-property name="recursarGasoterapia" display-name="Recursar Glosa" field-name="recursar" input-type="boolean" type="java.lang.Boolean"/>
+						<update-property name="justificativaGasoterapia" display-name="Justificativa de Recurso" field-name="justificativa" input-type="text" />
+					</update-insert>
+				</update-collection>
+	
+				<update-collection display-name="Taxas" name="layersRecursoItensTaxa" 
+				type="br.com.infowaypi.ecare.services.recurso.ItemRecursoLayer"
+				field-name="layersRecursoItensTaxa">
+					<update-insert>
+						<update-property name="item.taxa.codigoDescricao" field-name="item.taxa.codigoDescricao" display-name="Taxa" type="java.lang.String" editable="false"/>
+			        	<update-property name="itemApresentadoPeloPrestador.valor.quantidade" display-name="Quantidade Apresentada" editable="false" type="java.lang.Integer" size="10"/>
+			        	<update-property name="item.valor.quantidade" display-name="Quantidade Auditada" editable="false" type="java.lang.Integer" size="10"/>
+				    	<update-property name="itemApresentadoPeloPrestador.valorTotal" display-name="Valor Apresentado" input-type="money" editable="false" type="java.math.BigDecimal"/>
+				    	<update-property name="item.valorTotal" display-name="Valor Auditado" input-type="money" editable="false" type="java.math.BigDecimal"/>
+				    	<update-property name="diferencaValorTotalTaxa" display-name="Valor Glosado" input-type="money" editable="false" type="java.math.BigDecimal"/>
+						<update-property name="item.situacao.descricao" display-name="Situação" input-type="text" editable="false" type="java.lang.String"/>
+						<update-property name="motivoGlosa" display-name="Motivo de Glosa / Justificativa" input-type="text" field-name="motivoGlosa" editable="false"/>
+						<update-property name="recursarTaxa" display-name="Recursar Glosa" field-name="recursar" input-type="boolean" type="java.lang.Boolean"/>
+						<update-property name="justificativaTaxa" display-name="Justificativa de Recurso" field-name="justificativa" input-type="text" />
+					</update-insert>
+				</update-collection>
+				
+				<update-collection display-name="Diárias" name="layersRecursoItensDiaria" 
+				type="br.com.infowaypi.ecare.services.recurso.ItemRecursoLayer"
+				field-name="layersRecursoItensDiaria">
+					<update-insert>
+						<update-property name="item.diaria.codigoDescricao" field-name="item.diaria.codigoDescricao" display-name="Diária" type="java.lang.String" editable="false"/>
+			        	<update-property name="itemApresentadoPeloPrestador.valor.quantidade" display-name="Quantidade Apresentada" editable="false" type="java.lang.Integer" size="10"/>
+			        	<update-property name="item.valor.quantidade" display-name="Quantidade Auditada" editable="false" type="java.lang.Integer" size="10"/>
+				    	<update-property name="itemApresentadoPeloPrestador.valorTotal" display-name="Valor Apresentado" input-type="money" editable="false" type="java.math.BigDecimal"/>
+				    	<update-property name="item.valorTotal" display-name="Valor Auditado" input-type="money" editable="false" type="java.math.BigDecimal"/>
+				    	<update-property name="diferencaValorTotalDiaria" display-name="Valor Glosado" input-type="money" editable="false" type="java.math.BigDecimal"/>
+						<update-property name="item.situacao.descricao" display-name="Situação" input-type="text" editable="false" type="java.lang.String"/>
+						<update-property name="motivoGlosaDiaria" display-name="Motivo de Glosa / Justificativa" input-type="text" field-name="motivoGlosa" editable="false"/>
+						<update-property name="recursarDiaria" display-name="Recursar Glosa" field-name="recursar" input-type="boolean" type="java.lang.Boolean"/>
+						<update-property name="justificativaDiaria" display-name="Justificativa de Recurso" field-name="justificativa" input-type="text" />
+					</update-insert>
+				</update-collection>
+	
+				<update-collection display-name="Pacotes" name="layersRecursoItensPacote" 
+				type="br.com.infowaypi.ecare.services.recurso.ItemRecursoLayer"
+				field-name="layersRecursoItensPacote">
+					<update-insert>
+						<update-property name="item.pacote.codigoDescricao" field-name="item.pacote.codigoDescricao" display-name="Pacote" type="java.lang.String" editable="false"/>
+			        	<update-property name="itemApresentadoPeloPrestador.porcentagem" type="java.math.BigDecimal"  display-name="Porcentagem (%) Apresentada" editable="false"/>
+			        	<update-property name="item.porcentagem" type="java.math.BigDecimal"  display-name="Porcentagem (%) Auditada" editable="false"/>
+				    	<update-property name="itemApresentadoPeloPrestador.valorTotal" display-name="Valor Apresentado" input-type="money" editable="false" type="java.math.BigDecimal"/>
+				    	<update-property name="item.valorTotal" display-name="Valor Auditado" input-type="money" editable="false" type="java.math.BigDecimal"/>
+				    	<update-property name="diferencaValorTotalPacote" display-name="Valor Glosado" input-type="money" editable="false" type="java.math.BigDecimal"/>
+						<update-property name="item.situacao.descricao" display-name="Situação" input-type="text" editable="false" type="java.lang.String"/>
+						<update-property name="motivoGlosaPacote" display-name="Motivo de Glosa / Justificativa" input-type="text" field-name="motivoGlosa" editable="false"/>
+						<update-property name="recursarPacote" display-name="Recursar Glosa" field-name="recursar" input-type="boolean" type="java.lang.Boolean"/>
+						<update-property name="justificativaPacote" display-name="Justificativa de Recurso" field-name="justificativa" input-type="text" />
+					</update-insert>
+				</update-collection>
+	
+				<update-collection display-name="Procedimentos Cirurgicos" name="layersRecursoProcedimentoCirurgico" 
+				type="br.com.infowaypi.ecare.services.recurso.ItemRecursoLayer"
+				field-name="layersRecursoProcedimentoCirurgico">
+					<update-insert>
+						<update-property name="item.procedimentoDaTabelaCBHPM.codigoEDescricao" display-name="Procedimento" input-type="string" editable="false"/>
+				        <update-property name="itemApresentadoPeloPrestador.porcentagem" display-name="Porcentagem (%) Apresentada" editable="false" type="java.math.BigDecimal" />
+				        <update-property name="item.porcentagem" display-name="Porcentagem (%) Auditada" editable="false" type="java.math.BigDecimal" />
+				        <update-property name="itemApresentadoPeloPrestador.valorTotal" display-name="Valor Apresentado" input-type="money" editable="false" type="java.math.BigDecimal"/>
+				        <update-property name="item.valorTotal" display-name="Valor Auditado" input-type="money" editable="false" type="java.math.BigDecimal"/>
+				        <update-property name="diferencaValorTotalProcedimento" display-name="Valor Glosado" input-type="money" editable="false" type="java.math.BigDecimal"/>
+						<update-property name="item.situacao.descricao" display-name="Situação" input-type="text" editable="false" type="java.lang.String"/>
+				        <update-property name="motivoGlosaProcCirurgico" field-name="motivoGlosa" display-name="Motivo da Glosa" editable="false" type="java.lang.String" />
+						<update-property name="recursarProcCirurgico" display-name="Recursar Glosa" field-name="recursar" input-type="boolean" type="java.lang.Boolean"/>
+						<update-property name="justificativaProcCirurgico" display-name="Justificativa de Recurso" field-name="justificativa" input-type="text" />
+					</update-insert>
+				</update-collection>
+	
+				<update-collection display-name="Procedimentos de Exame" name="layersRecursoProcedimentosExame" 
+				type="br.com.infowaypi.ecare.services.recurso.ItemRecursoLayer"
+				field-name="layersRecursoProcedimentosExame">
+					<update-insert>
+						<update-property name="item.procedimentoDaTabelaCBHPM.codigoEDescricao" display-name="Procedimento" input-type="string" editable="false"/>
+						<update-property name="itemApresentadoPeloPrestador.bilateral" display-name="Bilateral Apresentado" input-type="boolean" editable="false" type="java.lang.Boolean"/>
+						<update-property name="item.bilateral" display-name="Bilateral Auditado" input-type="boolean" editable="false" type="java.lang.Boolean"/>  			        
+		 			    <update-property name="itemApresentadoPeloPrestador.quantidade" display-name="Quantidade Apresentada" input-type="int" editable="false" type="java.lang.Integer"/>
+		 			    <update-property name="item.quantidade" display-name="Quantidade Auditada" input-type="int" editable="false" type="java.lang.Integer"/>
+		 			    <update-property name="item.valorAtualDoProcedimento" display-name="Valor Unitário" input-type="bigdecimal" editable="false" type="java.math.BigDecimal"/>
+		 			    <update-property name="itemApresentadoPeloPrestador.valorTotal" display-name="Valor Total Apresentado" input-type="money" editable="false" type="java.math.BigDecimal"/>
+		 			    <update-property name="item.valorTotal" display-name="Valor Total Auditado" input-type="money" editable="false" type="java.math.BigDecimal"/>
+		 			    <update-property name="diferencaValorTotalProcedimento" display-name="Valor Glosado" input-type="money" editable="false" type="java.math.BigDecimal"/>
+						<update-property name="item.situacao.descricao" display-name="Situação" input-type="text" editable="false" type="java.lang.String"/>
+		    			<update-property name="motivoGlosaProcExame" field-name="motivoGlosa" display-name="Motivo da Glosa" editable="false" type="java.lang.String" />
+						<update-property name="recursarProcExame" display-name="Recursar Glosa" field-name="recursar" input-type="boolean" type="java.lang.Boolean"/>
+						<update-property name="justificativaProcExame" display-name="Justificativa de Recurso" field-name="justificativa" input-type="text" />
+					</update-insert>
+			    </update-collection>
+	
+				<update-collection display-name="Outros Procedimentos" name="layersRecursoProcedimentosOutros" 
+				type="br.com.infowaypi.ecare.services.recurso.ItemRecursoLayer"
+				field-name="layersRecursoProcedimentosOutros">
+					<update-insert>
+						<update-property name="item.procedimentoDaTabelaCBHPM.codigoEDescricao" display-name="Procedimento" input-type="string" editable="false"/>
+			  			<update-property name="itemApresentadoPeloPrestador.profissionalResponsavel.pessoaFisica.nome" display-name="Profissional Responsável Apresentado" editable="false"/>
+			  			<update-property name="item.profissionalResponsavel.pessoaFisica.nome" display-name="Profissional Responsável Auditado" editable="false"/>
+			  			<update-property name="itemApresentadoPeloPrestador.quantidade" display-name="Quantidade Apresentada" editable="false" type="java.lang.Integer"/>
+			  			<update-property name="item.quantidade" display-name="Quantidade Auditada" editable="false" type="java.lang.Integer"/>
+		 			    <update-property name="itemApresentadoPeloPrestador.valorTotal" display-name="Valor Total Apresentado" input-type="money" editable="false" type="java.math.BigDecimal"/>
+		 			    <update-property name="item.valorTotal" display-name="Valor Total Auditado" input-type="money" editable="false" type="java.math.BigDecimal"/>
+		 			    <update-property name="diferencaValorTotalProcedimento" display-name="Valor Glosado" input-type="money" editable="false" type="java.math.BigDecimal"/>
+		 			    <update-property name="item.situacao.descricao" display-name="Situação" input-type="text" editable="false" type="java.lang.String"/>
+		        		<update-property name="motivoGlosaProcOutros" field-name="motivoGlosa" display-name="Motivo da Glosa" editable="false" type="java.lang.String" />
+						<update-property name="recursarProcOutros" display-name="Recursar Glosa" field-name="recursar" input-type="boolean" type="java.lang.Boolean"/>
+						<update-property name="justificativaProcOutros" display-name="Justificativa de Recurso" field-name="justificativa" input-type="text" />
+					</update-insert>
+				</update-collection>
+			</update-param>
+			<session-param name="usuario" />
+			<html>
+				<![CDATA[
+	 					<infoway:GuiaRecursoGlosa guia="${guia.guiaRecursoGlosa}" isFlowRecursar="true" />
+					]]>
+			</html>
+		
+
+			<step-return name="guiaRecurso" type="br.com.infowaypi.ecare.services.recurso.GuiaRecursoGlosa" 
+		         display-name="" scope="session"/>	
+		</step-method>
+
+		<step-method display-name="Conferir Dados" name="salvarGuia" committed="true">
+			<session-param name="guiaRecurso" operation="none"/>
+			<html>
+				<![CDATA[
+					<infoway:GuiaRecursoGlosa guia="${guiaRecurso}" isFlowRecursar="true" />
+					]]>
+			</html>
+		</step-method>
+		
+		<step-method display-name="Finalizar" name="finalizar">
+			<session-param name="guiaRecurso" />
+			<html>
+				<![CDATA[  <infoway:mensagemSucessoMarcacoes mensagem="Guia recursada com sucesso!" autorizacao="${guiaRecurso.autorizacao}"/> ]]>
+			</html>
+			
+			<html>
+				<![CDATA[
+					<infoway:GuiaRecursoGlosa guia="${guiaRecurso}" isFlowRecursar="true" />
+					]]>
+			</html>
+			
+		</step-method>
+		
+	</flow>
+</jheat-mapping>

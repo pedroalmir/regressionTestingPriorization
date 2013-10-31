@@ -1,23 +1,22 @@
 package com.pedroalmir.testPriorization.flow.ant;
 
+import com.pedroalmir.testPriorization.model.TestCase;
+
 
 
 
 
 public class Vertex {
-	int vertexId;   // N�mero que identifica o v�rtice
-//	List<Ant> ants = new ArrayList<Ant>();
-//// Adiciona fomiga ao v�rtice
-//public void addAntVertex(Ant ant){
-//	this.ants.add(ant);
-//}
+	int vertexId;
 	double criticidade, tempo, pheromone;
+	private TestCase testCase;
 	
-	public Vertex(int vertexId, double criticidade, double tempo, double pheromone) {
+	public Vertex(int vertexId, double criticidade, double tempo, double pheromone, TestCase testCase) {
 		this.vertexId = vertexId;
 		this.criticidade = criticidade;
 		this.tempo = tempo;
 		this.pheromone = pheromone;
+		this.testCase = testCase;
 	}
 	
 	public int getVertexId() {
@@ -41,6 +40,20 @@ public class Vertex {
 	public double getPheromone() {
 		// TODO Auto-generated method stub
 		return pheromone;
+	}
+
+	/**
+	 * @return the testCase
+	 */
+	public TestCase getTestCase() {
+		return testCase;
+	}
+
+	/**
+	 * @param testCase the testCase to set
+	 */
+	public void setTestCase(TestCase testCase) {
+		this.testCase = testCase;
 	}
 
 

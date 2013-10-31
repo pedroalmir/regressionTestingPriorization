@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+	
+	<class-mapping 
+	  name="TetoPrestadorFaturamento" 
+	  class="br.com.infowaypi.ecarebc.financeiro.faturamento.TetoPrestadorFaturamento"  
+	  display-name="Teto para Faturamento" 
+		id-name="idTetoPrestadorFaturamento" 
+		link-for-detail="" 
+		type="readonly"  section="cadastros">
+		
+		<description>Tetos para Faturamento</description>
+		
+		<many-to-one options="listing,search"
+			class="br.com.infowaypi.ecarebc.associados.Prestador" 
+			name="prestador" display-name="Prestador" autocomplete="true">
+			<display-property name="pessoaJuridica.fantasia"/>
+		</many-to-one>
+		
+		<property name="teto" type="money" real-class="java.math.BigDecimal" not-null="true">
+			<display name="Teto" options="listing" size="20"/>
+	    </property>
+
+	</class-mapping>
+
+</jheat-mapping>

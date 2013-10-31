@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<flow name="MarcarExameAuditor" 
+		class="br.com.infowaypi.ecare.services.exame.MarcacaoExameAuditor"
+		display-name="Exames Eletivos" section="marcacao">
+		
+		<description>Marcação de Exames</description>
+		
+		<step-method name="buscarSegurado" display-name="Buscar Beneficiário" title="Buscar Beneficiário" buttons-position="bottom">
+			<step-param name="cpfDoTitular" size="24" mask="999.999.999-99" input-type="string" type="java.lang.String" display-name="CPF do Titular"/>
+			<step-param name="numeroDoCartao" size="24" mask="99.9999999999.99.9-9" input-type="string" type="java.lang.String" display-name="Número do cartão do beneficiário"/>
+
+			<step-return name="seguradosEncontrados" type="br.com.infowaypi.ecare.segurados.ResumoSegurados" 
+		         display-name="" scope="session"/>
+		</step-method>
+
+		<step-method name="criarGuiaLancamento" display-name="Informar Dados" title="Informar Dados">
+			<select-param
+					name="segurados"
+					type="br.com.infowaypi.ecare.segurados.Segurado"
+					display-name="Selecione o Beneficiário"
+					session-property-ref="seguradosEncontrados" required="true">
+				<radio-group default-checked="none">
+					<display-property name="numeroDoCartao" display-name="Número do Cartão"/>
+					<display-property name="pessoaFisica.nome" display-name="Nome"/>
+					<display-property name="tipoDeSegurado" display-name="Tipo"/>
+				</radio-group>
+			</select-param>
+			
+			<select-param
+				name="profissionaisCRM"
+				display-name="Médico(Conselho)"
+				type="br.com.infowaypi.ecarebc.associados.Profissional" display-label-head="false" required="false">
+				<autocomplete mask-detail="Os 3 números iniciais" style-class="autocomplete" minimum-characters="3" force-selection="true">
+					<search-property name="crm" display-name="Médico(Conselho)" search-type="likerigth"/>
+					<name-property name="crmNome" display-name="Médico(Conselho)"/>
+				</autocomplete>				
+			</select-param>	
+			
+			<html>
+				<![CDATA[
+					ou
+				]]>
+			</html>
+			
+			<select-param
+				name="profissionaisNOME"
+				display-name="Médico(Nome)"
+				type="br.com.infowaypi.ecarebc.associados.Profissional" display-label-head="false" required="false">
+				<autocomplete mask-detail="As 7 letras iniciais" style-class="autocomplete" minimum-characters="7" force-selection="true">
+					<search-property name="crmNome" display-name="Médico(Nome)" search-type="likerigth"/>
+					<name-property name="crmNome" display-name="Médico(Nome)"/>
+				</autocomplete>				
+			</select-param>	
+
+			<collection-param  
+				name="procedimentos"
+				display-name="" 
+				type="br.com.infowaypi.ecarebc.procedimentos.Procedimento">	
+				
+			    <insert>
+				    <display-property name="procedimentoDaTabelaCBHPM.codigo" display-name="Código"/>
+  			        <display-property name="procedimentoDaTabelaCBHPM.descricao" display-name="Descrição"/>
+  			        <display-property name="bilateral" display-name="Bilateral" type="boolean"/>
+  			        <display-property name="procedimentoDaTabelaCBHPM.nivel" display-name="Nível"/>
+  			        <display-property name="quantidade" display-name="Quantidade" type="int"/>
+  			        <display-property name="valorAtualDoProcedimento" display-name="Valor Unitário" type="money"/>
+  			        <display-property name="valorTotal" display-name="Valor Total" type="money"/>
+			    </insert>
+
+			</collection-param>
+
+			<session-param name="usuario"/>
+
+			<step-return name="guia" type="br.com.infowaypi.ecarebc.atendimentos.GuiaExame" 
+		         display-name="" scope="session"/>
+
+		</step-method>
+		
+        <step-method name="salvarGuia" display-name="Conferir Dados" committed="true" title="Conferir Dados">
+			
+			<html>
+				<![CDATA[
+					<infoway:criticasObservacoesGuia guia="${guia}"/>
+				
+					<c:if test="${guia.liberadaForaDoLimite == 1 || guia.liberadaForaDoLimite == 2}">
+						<infoway:mensagemAlerta mensagem="${guia.mensagemLimite}"/>
+					</c:if> 
+				]]>
+			</html>
+			
+			<session-param name="guia"/>
+				
+			<html>
+				<![CDATA[
+					<infoway:GuiaApresentacao guiaApresentacao="${guia}"/>
+				]]>
+			</html>
+			
+		</step-method>
+		
+		<step-method name="finalizar" display-name="Imprimir Comprovante de Confirmação" title="Imprimir Comprovante">
+			<html>
+				<![CDATA[ 
+					<infoway:criticasObservacoesGuia guia="${guia}"/>
+					<infoway:mensagemSucessoMarcacoes mensagem="Exame(s) autorizado(s) com sucesso!" autorizacao="${guia.autorizacao}"/> 
+				]]>
+			</html>
+		
+			<html>
+			<![CDATA[ 
+				<span class="not-for-print">
+					<button type="button" name="imprimir" class="actionButton" onclick="window.print();">Imprimir</button>
+				</span>
+			]]>
+			</html>
+			
+			<session-param name="guia"/>
+				<html>
+				<![CDATA[
+					<infoway:GuiaApresentacao guiaApresentacao="${guia}"/>
+					]]>
+				</html>
+			<html>
+				<![CDATA[ <infoway:imprimirGuiaExame titulo="GUIA DE AUTORIZAÇÃO DE EXAMES"/> 
+					<span class="not-for-print">
+						<button type="button" name="imprimir" class="actionButton" onclick="window.print();">Imprimir</button>
+					</span>
+				]]>
+			</html>
+			
+		</step-method>
+	</flow>	
+</jheat-mapping>

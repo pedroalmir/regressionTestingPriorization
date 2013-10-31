@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+
+<!-- Verificar matricula por contrato -->
+<jheat-mapping>
+
+	<flow name="imprimirCarteira" class="br.com.infowaypi.ecare.flows.MarcacaoService" display-name="Imprimir Carteira" section="cadastros">
+
+		<description>Impressão de carteiras para os beneficiários</description>
+
+		<step-method name="buscarSegurado" display-name="Identificar Beneficiário" title="Identificar Beneficiário" buttons-position="bottom">
+			<step-param name="matricula" size="8" type="java.lang.String" display-name="Matrícula" mask="000000"/>
+			<step-return name="segurado" type="br.com.infowaypi.ecare.segurados.Segurado" display-name="Beneficiário" scope="session"/>
+		</step-method>
+
+		<step-method name="finalizar" display-name="Imprimir Carteira" title="Imprimir Carteira">
+			<html>
+				<![CDATA[
+					<%@ include file="/view/jsp/includes/BotaoImprimir.jsp" %>				
+				]]>
+			</html>
+			<session-param name="segurado" display-name="Beneficiário" style-class="not-for-print">
+				<display-property name="pessoaFisica.nome" display-name="Nome"/>
+				<display-property name="controle" display-name="Controle"/>
+				<display-property name="grauDeDependencia" display-name="Grau de Dependência"/>
+				<display-property name="pessoaFisica.dataNascimento" display-name="Nascimento" type="date"/>
+				<display-property name="titular.pessoaFisica.nome" display-name="Titular"/>
+			</session-param>
+			<html>
+				<![CDATA[
+					<%@ include file="/view/jsp/includes/BotaoImprimir.jsp" %>				
+					<%@ include file="/view/jsp/includes/impressaoDoCadastro/impressaoDeCarteira.jsp" %>
+				]]>
+			</html>
+		</step-method>
+		
+	</flow>
+	
+</jheat-mapping>

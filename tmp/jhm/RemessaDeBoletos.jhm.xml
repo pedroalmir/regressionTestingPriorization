@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+	
+	<class-mapping class="br.com.infowaypi.ecare.financeiro.boletos.RemessaDeBoletos" name="RemessaDeBoletos" display-name="Remessa de Boletos" 
+		id-name="idRemessaDeBoletos" link-for-detail="competencia" type="simple" section="cadastrosCobranca" >
+		
+		<description>Remessa de Boletos dos Segurados</description>
+		
+		<property name="idRemessaDeBoletos" type="int" >
+			<display name="Identificador" options="listing,detail-only" />
+		</property>
+
+		<property name="competencia" type="month-year" not-null="false">
+			<display name="Competência" mask="99/9999" size="7" options="listing,detail-only" />
+		</property>
+		
+		<property name="dataGeracao" type="timestamp" >
+			<display name="Data de Geração" options="listing,detail-only"/>
+		</property>
+		
+		<property name="conteudoArquivo" type="file" name-file="nomeArquivo" not-null="false">
+			<display name="Impressão" options="detail-only"/>
+		</property>
+		
+		<collection
+			class="br.com.infowaypi.ecarebc.financeiro.conta.Conta" 
+			name="contas" display-name="Boletos" 
+	    	options="" master-detail="false"/>    
+	    	
+	    <properties-order>
+	    	<property-order name="competencia" mode="desc"/>
+	    	<property-order name="dataGeracao" mode="desc"/>
+	    </properties-order>
+	    
+	    <role name="cobranca" insert="false" update="false" exec="false" read="true"/>
+	    	    
+	</class-mapping>
+
+</jheat-mapping>

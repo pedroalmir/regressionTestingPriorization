@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<report 
+		name="relatorioDeCancelamentos" 
+		method-name="gerarRelatorio"  
+		class="br.com.infowaypi.ecare.services.RelatorioCancelamentosService"
+		display-name="Cancelamentos" section="consultasCentralDeRelacionamento,relatorioCentral,relatoriosAuditor,relatoriosGerenciaAdesao" response-by-ajax="true">
+			
+		<description>Relatório de Cancelamentos dos Beneficiários</description>
+		
+		<html>
+			<![CDATA[ <infoway:mensagemInformacao mensagem="Relatório que informa a quantidade de cancelamento dos Beneficiários no determinado período"/> ]]>
+		</html>
+
+		<report-param name="dataInicial" type="java.lang.String" display-name="Data inicial" input-type="date"/>
+		<report-param name="dataFinal" type="java.lang.String" display-name="Data final" input-type="date"/>
+		
+		<report-return name="resumo" type="br.com.infowaypi.ecare.segurados.ResumoSegurados" 
+		         display-name="Resultado Encontrado">
+		         
+			<html>
+				<![CDATA[ <infoway:tableSeparator titulo="Informações Gerais" colspan="2"/> ]]>
+			</html>	
+			<display-property name="seguradosCancelados" align="left" display-name="Quantidade Total de Cancelamentos"/>	
+			<display-property name="numeroTodalDeSeguradosCanceladosNoPeriodo" align="left" display-name="Quantidade de Cancelamentos no Período Informado"/>
+			<display-property name="porcentagemDeSeguradosCancelados" display-name="Porcentagem Cancelamentos no Período Informado" type="percentage"/>	
+			<html>
+				<![CDATA[ <infoway:tableSeparator titulo="Informações sobre Titulares" colspan="2"/> ]]>
+			</html>
+			<display-property name="titularesCancelados" display-name="Quantidade de Cancelamentos de Titulares"/>	
+			<display-property name="numeroTodalDeTitularesCanceladosNoPeriodo" display-name="Quantidade de Cancelamentos de Titulares no Período informado"/>	
+			<display-property name="porcentagemDeTitularesCancelados" display-name="Porcentagem Cancelamentos de Titulares no Período Informado" type="percentage"/>
+			<html>
+				<![CDATA[ <infoway:tableSeparator titulo="Informações sobre Pensionistas" colspan="2"/> ]]>
+			</html>	
+			<display-property name="pensionistasCancelados" display-name="Quantidade de Cancelamentos de Pensionistas"/>	
+			<display-property name="numeroTodalDePensionistasCanceladosNoPeriodo" display-name="Quantidade de Cancelamentos de Pensionistas no Período informado"/>	
+			<display-property name="porcentagemDePensionistasCancelados" display-name="Porcentagem Cancelamentos de Pensionistas no Período Informado" type="percentage"/>
+			<html>
+				<![CDATA[ <infoway:tableSeparator titulo="Informações sobre Dependentes Diretos" colspan="2"/> ]]>
+			</html>
+		    <display-property name="dependentesCancelados" display-name="Quantidade de Cancelamentos de Dependentes"/>  
+			<display-property name="numeroTodalDeDependentesCanceladosNoPeriodo" display-name="Quantidade de Cancelamentos de Dependentes no Período informado"/>			    
+			<display-property name="porcentagemDeDependentesCancelados" display-name="Porcentagem Cancelamento de Dependentes no Período Informado" type="percentage"/>	
+		    <html>   
+		        <![CDATA[ <infoway:tableSeparator titulo="Informações sobre Dependentes Suplementar" colspan="2"/> ]]>
+			</html>
+		    <display-property name="dependentesSuplementaresCancelados" display-name="Quantidade de Cancelamentos de Dependentes"/>  
+			<display-property name="numeroTodalDeDependentesSuplementaresCanceladosNoPeriodo" display-name="Quantidade de Cancelamentos de Dependentes no Período informado"/>			    
+			<display-property name="porcentagemDeDependentesSuplementaresCancelados" display-name="Porcentagem Cancelamento de Dependentes no Período Informado" type="percentage"/>	
+		       
+		</report-return>
+
+	</report>
+	
+</jheat-mapping>

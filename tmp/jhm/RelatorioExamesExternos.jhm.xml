@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<report
+		name="relatorioExamesExternos"
+		method-name="executarBusca"
+		class="services.RelatorioExamesExternos"
+		display-name="Quantitativo de Exames Externos" section="relatoriosCadernoSR" response-by-ajax="true">
+				
+		<report-param name="competencia" type="java.lang.String" display-name="Competência" mask="99/9999" input-type="month-year"/>
+		
+		<report-return name="resumoExamesExternos" type="resumos.ResumoExamesExternos" 
+			 display-name="Resultado relatório">
+		
+			<html>
+				<![CDATA[ <infoway:tableSeparator titulo="Exames Externos" colspan="2"/> ]]>
+			</html>	
+			<display-property name="qtdTotalExamesExternos" type="int" display-name="Quantidade"/>
+			<display-property name="valorTotalExamesExternos" type="bigdecimal" display-name="Valor"/>
+			
+			<html>
+				<![CDATA[ <infoway:tableSeparator titulo="Exames Externos gerados de Internações Clínicas" colspan="2"/> ]]>
+			</html>	
+			<display-property name="qtdExamesExternosDeInternacoesClinicas" type="int" display-name="Quantidade"/>
+			<display-property name="valorExamesExternosDeInternacoesClinicas" type="bigdecimal" display-name="Valor"/>
+			
+			<html>
+				<![CDATA[ <infoway:tableSeparator titulo="Exames Externos gerados de Internações Cirúrgicas" colspan="2"/> ]]>
+			</html>
+			<display-property name="qtdExamesExternosDeInternacoesCirurgicas" type="int" display-name="Quantidade"/>
+			<display-property name="valorExamesExternosDeInternacoesCirurgicas" type="bigdecimal" display-name="Valor"/>
+			
+			<collection-display display-name="Informações de Exames Externos" name="itensExame" order="desc" default-sort="2">
+				<display-property name="prestador" display-name="Prestador Origem"/>
+				<display-property name="qtdExamesPrestador" display-name="Quantidade" type="int"/>
+				<display-property name="valorExamesPrestador" display-name="Valor" type="bigdecimal"/>
+			</collection-display>
+			 	
+		</report-return>
+		
+	</report>
+	
+</jheat-mapping>

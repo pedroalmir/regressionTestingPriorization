@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<report
+		name="relatorioGuiasAptasParaPagamento"
+		method-name="gerarRelatorio"
+		class="br.com.infowaypi.ecare.services.RelatorioGuiasAptasParaPagamento"
+		display-name="Relatório do andamento da Auditoria" 
+		section="relatoriosAuditor" 
+		response-by-ajax="false">
+		
+		<description>Relatório do andamento da Auditoria</description>
+		
+		<html>
+			<![CDATA[
+				<infoway:mensagemAlerta mensagem="Caro usuário, ao informar a data de recebimento o campo competência será ignorado pela busca. "/> 
+			]]>
+		</html>
+		
+		<report-param name="competencia" required="false" type="java.lang.String" display-name="Competência" mask="99/9999" input-type="month-year"/>
+		
+		<report-param name="dataRecebimento" display-name="Data de Recebimento" type="java.util.Date" input-type="date" required="false" />
+		
+		<select-param
+			name="prestador"
+			display-name="Prestador"
+			type="br.com.infowaypi.ecarebc.associados.Prestador"
+			required="false">
+			<autocomplete style-class="autocomplete" minimum-characters="3" force-selection="true">
+				<search-property name="pessoaJuridica.fantasia" display-name="Prestador"/>
+				<name-property name="pessoaJuridica.fantasia" display-name="Prestador"/>
+			</autocomplete>	
+		</select-param>
+		
+		<select-param 
+			name="tipoGuia"
+			display-name="Escolha o Tipo de Guia"
+			type="br.com.infowaypi.ecare.enums.TipoGuiaEnum">
+			<enum-combo class="br.com.infowaypi.ecare.enums.TipoGuiaEnum" display="getDescricao"/>
+		</select-param>
+		
+		<select-param 
+			name="situacaoGuia"
+			display-name="Escolha a Situação"
+			type="br.com.infowaypi.ecare.enums.SituacaoGuiaEnum">
+			<enum-combo class="br.com.infowaypi.ecare.enums.SituacaoGuiaEnum" display="getDescricao">
+				<remove-entry key-value="CONFIRMADO"/>
+			</enum-combo>
+		</select-param>
+		
+		<report-return name="resumo" type="br.com.infowaypi.ecarebc.atendimentos.ResumoGuiasAptasParaPagamento"
+			display-name="">
+		 	
+			<html>
+				<![CDATA[
+					<c:if test="${!resumo.todosPrestadores}">
+					<infoway:tableSeparator titulo="Prestador" colspan="2"/>
+				]]>
+			</html>
+			
+			<display-property name="prestador.pessoaJuridica.fantasia" align="left" display-name="Prestador"/>
+			<display-property name="prestador.pessoaJuridica.cnpj" display-name="CPF/CNPJ"/>
+			<display-property name="competencia" type="string" align="left" display-name="Competência Base"/>
+			
+			<html>
+				<![CDATA[
+					<%@ include file="/view/jsp/includes/RelatorioGuiasAptasParaPagamentoTotalizacao.jsp"%>
+					<%@ include file="/view/jsp/includes/RelatorioGuiasAptasParaPagamento.jsp"%>
+					</c:if>
+				
+					<c:if test="${resumo.todosPrestadores}">
+					<%@ include file="/view/jsp/includes/RelatorioGuiasAptasParaPagamentoTodosPrestadores.jsp"%>
+					</c:if>
+				]]>
+			</html>
+			
+		</report-return>
+	</report>
+</jheat-mapping>

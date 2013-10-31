@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+	<class-mapping class="br.com.infowaypi.ecarebc.procedimentos.CapituloCBHPM" name="CapituloCBHPM" display-name="Capítulo" 
+		id-name="idClassificacaoCBHPM" link-for-detail="descricao" type="simple" section="cadastros, cadastrosAuditor, cadastrosRedeCredenciada">
+		
+		<description>Capítulos referentes ao cadastro do Tabela Saúde Recife</description>
+		
+		<property name="codigo" type="string">
+			<display name="Código" options="listing,search" size="5" 
+				maxlength="1" mask-detail="Código do capítulo, apenas um caractere" />
+		</property>
+		
+		<property name="descricao" type="string">
+			<display name="Descricao" options="listing,search"/>
+		</property>
+
+		<properties-order>
+			<property-order name="codigo"/>
+		</properties-order>
+		
+		<role name="gerenciaRedeCredenciada" update="true" insert="true" exec="true" read="true"/>
+		
+		<validate-method name="validate"/>
+		
+		
+	</class-mapping>
+</jheat-mapping>

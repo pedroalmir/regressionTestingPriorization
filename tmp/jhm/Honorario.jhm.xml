@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+	
+	<class-mapping class="br.com.infowaypi.ecarebc.atendimentos.honorario.Honorario" name="Honorario" display-name="Honorario" 
+		id-name="idHonorario" link-for-detail="autorizacao" type="readonly" section="" roles="root,auditor,atendente,prestador,prestadorCompleto,prestadorConsulta,prestadorExame,prestadorConsultaExame,prestadorInternacaoUrgencia,prestadorOdonto,centralDeServico,gestor,financeiro">
+	    
+		<many-to-one options="listing"
+			class="br.com.infowaypi.ecarebc.associados.Profissional" 
+			name="profissional" display-name="Profissional" autocomplete="true" mask-detail="As 7 letras iniciais" minimum-characters="7">
+			<display-property name="pessoaFisica.nome"/>
+		</many-to-one>
+	
+		<many-to-one options="listing"
+			class="br.com.infowaypi.ecarebc.procedimentos.ProcedimentoCirurgico" 
+			name="procedimento" display-name="Procedimento" autocomplete="true">
+			<display-property name="procedimentoDaTabelaCBHPM.codigoEDescricao"/>
+			<display-property name="valorAtualDoProcedimento"/>
+		</many-to-one>
+	    
+	    <select-property name="porcentagem" display-name="Porcentagem"
+			options="listing" null-option="true">
+			<entry display-name="50%" key-value="PORCENTAGEM_50" />
+			<entry display-name="70%" key-value="PORCENTAGEM_70" />
+			<entry display-name="100%" key-value="PORCENTAGEM_100" />
+		</select-property>
+	    
+	     <property name="incluiVideo" type="boolean">
+	    	<display name="Inclui Vídeo" options="listing,detail-only"/>
+	    </property>
+	    
+	     <property name="horarioEspecial" type="boolean">
+	    	<display name="Horário Especial" options="listing,detail-only"/>
+	    </property>  
+
+		<property name="grauDeParticipacaoFormatado" type="string" not-null="true">
+			<display name="Grau de Particição" options="listing,search,detail-only" 
+				align="center" size="20"/>
+	    </property>
+	    
+	    <property name="situacao.descricao" >
+			<display name="Situação" options="listing" />
+	    </property>
+	    
+		<property name="valorTotal" type="money" not-null="true">
+			<display name="Valor Total" options="listing,detail-only" />
+	    </property>
+
+	</class-mapping>    
+	
+</jheat-mapping>

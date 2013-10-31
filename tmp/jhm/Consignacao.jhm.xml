@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+	
+	<class-mapping class="br.com.infowaypi.ecarebc.financeiro.consignacao.Consignacao" 
+		name="Consignacao" display-name="Consignações" 
+		id-name="idFluxoFinanceiro" link-for-detail="competenciaFormatada" type="readonly" section="cadastros" roles="centralDeServico">
+		
+	    <property name="competenciaFormatada" type="string" not-null="true">
+			<display name="Competência" options="listing"/>
+		</property>		
+
+		<property name="descricaoStatus" type="string" calculated="true">
+			<display name="Situação" options="listing"/>
+		</property>
+
+		<many-to-one options=""
+			class="br.com.infowaypi.ecare.segurados.Titular" 
+			name="titular" display-name="Titular" autocomplete="true">
+			<display-property name="pessoaFisica.nome"/>
+		</many-to-one>
+
+		<many-to-one options="detail-only"
+			class="br.com.infowaypi.msr.financeiro.Banco" 
+			name="banco" display-name="Banco">
+			<display-property name="descricao"/>
+		</many-to-one>
+
+	    <property name="matriculaNoEstado" type="string" not-null="true">
+			<display name="Matrícula" options="listing" size="20"/>
+		</property>		
+
+	    <property name="agencia" type="string" not-null="true">
+			<display name="Agência" options="" size="20"/>
+		</property>		
+
+	    <property name="contaCorrente" type="string" not-null="true">
+			<display name="Conta" options="" size="20"/>
+		</property>		
+
+	    <property name="operacao" type="string" not-null="true">
+			<display name="Operação" options="" size="20"/>
+		</property>		
+
+	    <property name="dataDoCredito" type="date" not-null="true">
+			<display name="Dt. Crédito" options=""/>
+		</property>		
+		
+		<property name="valorPrevidencia" type="money" not-null="true">
+			<display name="Previdência" options=""/>
+	    </property> 
+
+		<property name="valorFinanciamento" not-null="true" type="money">
+			<display name="Financiamento" options="listing"/>
+	    </property>  
+	    
+		<property name="valorCoparticipacao" not-null="true" type="money">
+			<display name="Co-participação" options="listing"/>
+	    </property>
+	    
+	    <property name="valorParcelamento" not-null="true" type="money">
+			<display name="Parcelamento" options="listing"/>
+	    </property>
+	    
+		<property name="valorRetornoCoparticipacao" not-null="true" type="money">
+			<display name="Retorno Co-participação" options="listing"/>
+	    </property>
+	
+		<!-- Metodo para descricao do Tipo de Retorno -->
+	 
+		<collection 
+			class="br.com.infowaypi.ecarebc.atendimentos.GuiaSimples" 
+			name="guias" display-name="Guias" 
+	    	master-detail="false"/>
+
+	</class-mapping>    
+	
+</jheat-mapping>

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<class-mapping class="br.com.infowaypi.ecare.arquivos.ArquivoDownload" name="ArquivoDownload" 
+		display-name="Arquivos para Download" id-name="idArquivoDownload" 
+		link-for-detail="descricao" section="cadastros" global-link="true" type="simple" 
+		roles="root">
+		
+		<description>Arquivos para Download</description>
+			
+		<property name="ordemArquivo" type="int" not-null="true">
+			<display name="Ordem" options="listing" />
+		</property>	
+		
+		<property name="descricaoArquivo" type="string">
+			<display name="Descricao" options="listing,search" />
+		</property>
+		
+		<property name="dataUpload" type="date">
+			<display name="Data Upload" options="listing, detail-only" />
+		</property>
+			
+		<property name="arquivo" type="file" not-null="false" type-file="pdf" name-file="descricaoArquivo" >
+			<display name="Arquivo" options="listing" mask-detail="arquivo.pdf"/>
+			
+			<access-restriction name="editarArquivoDownload" type="edit">
+				<session-restriction name="usuario" property="login" operation="empty"/>
+			</access-restriction>
+
+			<access-restriction name="inserirArquivoDownload" type="insert">
+				<session-restriction name="usuario" property="login" operation="notempty"/>
+			</access-restriction>
+
+		</property>
+		
+		<property name="disponivelSomenteParaDiretoriaAuditorERoot" type="boolean">
+			<display name="Disponivel somente para diretoria, auditor e root?" options="listing"/>
+		</property>
+		
+		<property name="situacao.descricao" type="string" not-null="true">
+			<display name="Situação" options="listing, detail-only"/>
+		</property>
+
+		<collection class="br.com.infowaypi.msr.situations.Situacao"
+			name="situacoes"
+			display-name="Histórico de Situações"
+			master-detail="false"/>
+		
+		<properties-order>
+			<property-order name="ordemArquivo"/>
+		</properties-order>
+		
+	    <validate-method name="validate">
+			<session-param name="usuario"/>
+		</validate-method>
+	    
+	    <methods>
+	    	<method display-name="Inativar" name="inativar" validate="false">
+	    		<step-param name="motivo" display-name="Motivo" size="100"/>
+	    		<session-param name="usuario"/>
+				<messages>
+                    <question>Deseja realmante inativar este download?</question>
+                    <success>Situação alterada com sucesso. Download Inativo.</success>
+                    <error>Ocorreu um erro ao alterar a situação do Download. Tente novamente.</error>
+				</messages>		
+	    	</method>
+	    	<method display-name="Reativar" name="reativar" validate="false">
+	    		<step-param name="motivo" display-name="Motivo" size="100"/>
+	    		<session-param name="usuario"/>
+				<messages>
+                    <question>Deseja realmante reativar este download?</question>
+                    <success>Situação alterada com sucesso. Download Ativo.</success>
+                    <error>Ocorreu um erro ao alterar a situação do Download. Tente novamente.</error>
+				</messages>		
+	    	</method>
+	    </methods>
+	    
+	</class-mapping>
+</jheat-mapping>

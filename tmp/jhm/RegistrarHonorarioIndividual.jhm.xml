@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE jheat-mapping PUBLIC
+    "-//JHeat/JHeat DTD 1.0//BR"
+    "http://www.infoway-pi.com.br/jheat.dtd">
+
+<jheat-mapping>
+	<flow name="registraHonorarioIndividual" display-name="Registrar Honorário Individual"
+		class="br.com.infowaypi.ecare.services.honorarios.RegistrarHonorarioIndividual"
+		section="honorario" roles="prestador, prestadorCompleto, prestadorConsExmIntUrg, prestadorConsIntUrg, 
+			prestadorInternacaoExameUrgencia, prestadorInternacaoUrgencia, prestadorOdonto">
+
+		<description>Registra um honorário individual.</description>
+		
+		<!-- INFORMAR NÚMERO DA AUTORIZAÇÃO -->
+		<step-method display-name="Informar Número de Autorização" name="buscarGuia" buttons-position="bottom">
+
+			<step-param name="autorizacao" required="true" input-type="string" size="12" type="java.lang.String" display-name="Autorização"/>	
+			<session-param name="prestador" operation="reload"/>
+		
+			<step-return display-name="" name="guiaOrigem" type="br.com.infowaypi.ecarebc.atendimentos.honorario.GeradorGuiaHonorarioInterface" scope="session"/>
+		</step-method>
+
+		<step-method display-name="Informar Profissional" name="selecionarProfissional" buttons-position="bottom">
+			<session-param name="guiaOrigem"/>
+			<select-param name="profissional" required="true" display-name="Profissional" 
+				type="br.com.infowaypi.ecarebc.associados.Profissional" display-label-head="false">
+				<autocomplete mask-detail="As(Os) 3 letras/números iniciais" style-class="autocomplete" minimum-characters="3" force-selection="true">
+					<search-property name="crmNome" display-name="Médico(CRM ou Nome)" search-type="likefull"/>
+					<name-property name="crmNome" display-name="Médico(CRM ou Nome)"/>
+				</autocomplete>
+			</select-param>
+		
+			<step-return display-name="" name="profissional" type="br.com.infowaypi.ecarebc.associados.Profissional" scope="session"/>
+		</step-method>
+		
+		<step-method display-name="Informar Honorários" name="informarHonorarios" buttons-position="both">			
+			<session-param name="profissional" operation="reload"/>
+			<select-param name="grauDeParticipacao" display-name="Grau de Participação" 
+				type="java.lang.Integer" required="true">
+				<enum-combo class="br.com.infowaypi.ecarebc.enums.GrauDeParticipacaoEnum" 
+					display="getDescricao"  value="getCodigo" name="getDescricao">
+					<remove-entry key-value="ANESTESISTA"/>
+					<remove-entry key-value="AUXILIAR_ANESTESISTA"/>
+				</enum-combo>
+				<access-restriction name="naoMostraGrauparticipacao" type="edit">
+					<session-restriction name="guiaOrigem" property="possuiProcdimentosQueAindaGeramHonorarios" operation="equals" value="true" type="boolean"/>
+				</access-restriction>
+			</select-param>
+
+			<html><![CDATA[<c:if test="${empty prestador.acordosPacoteHonorarioAtivos}">
+				<div style="display:none">	
+				</c:if>
+			]]></html>
+			<collection-param  
+				name="pacotesSolicitacao"
+				display-name="Pacotes de Honorário"
+				type="br.com.infowaypi.ecarebc.atendimentos.acordos.itensAcordos.ItemPacoteHonorario">
+			    <insert>
+				    <display-property name="pacote.descricao" display-name="Descrição"/>
+  			        <display-property name="valorAcordo" display-name="Valor do Acordo" type="money"/>
+  			        <display-property name="porcentagem" display-name="Porcentagem" type="percentage"/>
+			    </insert>
+			</collection-param>	
+			<html><![CDATA[<c:if test="${empty prestador.acordosPacoteHonorarioAtivos}"> </div></c:if>]]></html>
+
+			<update-param display-name="" name="guiaOrigem" operation="reload"
+				type="br.com.infowaypi.ecarebc.atendimentos.honorario.GeradorGuiaHonorarioInterface">
+				<update-collection display-name="Procedimentos Cirúrgicos" name="procedimentosQueAindaPodemGerarHonorarios" 
+					type="br.com.infowaypi.ecarebc.procedimentos.ProcedimentoCirurgico">
+					<update-insert>
+						<update-property name="procedimentoDaTabelaCBHPM.codigo" display-name="Código" editable="false"/>
+						<update-property name="procedimentoDaTabelaCBHPM.descricao" display-name="Procedimento" editable="false"/>
+						<update-property name="profissionalResponsavel.pessoaFisica.nome" display-name="Profissional Responsável" editable="false"/>  			        
+	  			        <update-property name="quantidade" display-name="Quantidade" input-type="int" editable="false"/>
+						<update-property name="valorVirtualDoProcedimento" display-name="Valor" input-type="bigdecimal" editable="false" />
+						<update-select-property name="porcentagemProxy" display-name="Porcentagem" type="java.math.BigDecimal">
+							<constants-group class="br.com.infowaypi.ecarebc.procedimentos.ProcedimentoCirurgico">
+								<entry display-name="100%" key-value="PORCENTAGEM_100" />
+								<entry display-name="70%" key-value="PORCENTAGEM_70" />
+								<entry display-name="50%" key-value="PORCENTAGEM_50" />
+							</constants-group>
+						</update-select-property>
+						<update-property name="dataRealizacao" input-type="date" type="java.util.Date" display-name="Data de Realização"  editable="true" mask="99/99/9999" width-percentage="4">
+						</update-property>
+						<update-property name="adicionarHonorario" display-name="Adicionar Honorario" input-type="boolean" type="java.lang.Boolean"/>
+					</update-insert>
+				</update-collection>
+			</update-param>
+			
+			<collection-param name="procedimentosHonorario" display-name="Procedimentos Clínicos" 
+					type="br.com.infowaypi.ecarebc.procedimentos.ProcedimentoHonorario">
+        		    <insert>
+					    <display-property name="procedimentoDaTabelaCBHPM.codigo" display-name="Código"/>
+	  			        <display-property name="procedimentoDaTabelaCBHPM.descricao" display-name="Descrição" />
+	  			        <display-property name="bilateral" display-name="Bilateral" type="boolean" />
+	  			        <display-property name="quantidade" display-name="Quantidade" type="int" />
+	  			        <display-property name="valorAtualDoProcedimento" display-name="Valor Unitário" type="bigdecimal" />
+	  			        <display-property name="valorTotal" display-name="Valor Total" type="bigdecimal" />
+				    </insert>
+			</collection-param>
+			
+			<session-param name="prestador" operation="reload"/>
+			<session-param name="usuario"/>
+			
+			<html>
+				<![CDATA[
+					<infoway:GuiaApresentacao guiaApresentacao="${guiaOrigem}"/>
+				]]>
+			</html>
+			<step-return name="guia" display-name="" type="br.com.infowaypi.ecarebc.atendimentos.honorario.GuiaHonorarioMedico"  scope="session"/>
+		</step-method>
+		
+		<!-- CONFERIR DADOS -->
+		<step-method display-name="Conferir Dados" name="conferirDados" committed="true" buttons-position="both">
+			<session-param name="guia" operation="none"/>
+			<html>
+				<![CDATA[
+					<infoway:GuiaApresentacao guiaApresentacao="${guia}"/>
+				]]>
+			</html>
+			<step-return name="guia" display-name="" type="br.com.infowaypi.ecarebc.atendimentos.honorario.GuiaHonorarioMedico"/>
+		</step-method>
+		
+		<!-- FINALIZAR -->
+		<step-method display-name="Finalizar" name="finalizar">
+			<html>
+				<![CDATA[ 
+					<span class="not-for-print">
+						<button type="button" name="imprimir" class="actionButton" onclick="window.print();">Imprimir</button>
+					</span>
+				
+					<infoway:mensagemSucessoMarcacoes2_1 mensagem="Guia de honorário gerada com sucesso." 
+						autorizacaoHonorario="${guia.autorizacao}" autorizacaoOrigem="${guiaOrigem.autorizacao}"/>
+					
+					<infoway:GuiaApresentacao guiaApresentacao="${guia}"/>
+					
+					<infoway:imprimirGuiaHonorarioMedico guia="${guia}"/>
+				
+					<span class="not-for-print">
+						<button type="button" name="imprimir" class="actionButton" onclick="window.print();">Imprimir</button>
+					</span>
+				]]>
+			</html>
+		</step-method>
+		
+	</flow>
+</jheat-mapping>

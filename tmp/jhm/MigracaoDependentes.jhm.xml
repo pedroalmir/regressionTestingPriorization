@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<flow
+		name="migracaoDependentes" 
+		class="br.com.infowaypi.ecare.services.cadastros.MigrarDependentes"
+		display-name="Migração de Dependentes" section="cadastrosCentral">
+		
+		<description>Migração de dependentes</description>
+
+		<step-method name="buscarDependente" display-name="Buscar Beneficiário" title="Buscar Beneficiário" buttons-position="bottom">
+			<step-param name="cpfDoTitular" size="24" mask="999.999.999-99" input-type="string" type="java.lang.String" display-name="CPF do Beneficiário"/>
+			<step-param name="numeroDoCartao" size="24" mask="99.9999999999.99.9-9" input-type="string" type="java.lang.String" display-name="Número do cartão do beneficiário"/>
+			
+			<step-return name="dependente" type="br.com.infowaypi.ecare.segurados.Dependente" 
+		         display-name="Beneficiário Encontrado" scope="session"/>
+		    <output-validator display-name="Validação Dependente" name="validaDependente" class="br.com.infowaypi.ecare.services.cadastros.ValidatorDependenteCancelado">
+		    	<method-validator name="validate"/>
+		    </output-validator>
+		</step-method>
+		
+		<step-method name="selecionarTipo" display-name="Selecionar Tipo" title="Selecionar Tipo" buttons-position="bottom">
+		
+			<html>
+				<![CDATA[ 
+				<fieldset>
+					<legend>Mudar Para</legend>
+				</fieldset> ]]>
+			</html>
+			
+			<select-param display-name="Tipo de beneficiário" name="tipoBeneficiario" type="java.lang.Integer" display-label-head="false">
+				<constants-group name="Tipo de Beneficiário" class="br.com.infowaypi.ecare.services.cadastros.MigrarDependentes">
+					<entry display-name="Dependente Suplementar" key-value="TIPO_DEPENDENTE_SUPLEMENTAR"/>
+					<!-- entry display-name="Pensionista" key-value="TIPO_PENSIONISTA"/-->
+				</constants-group>
+			</select-param>
+			
+			<step-param name="cpf" size="24" mask="999.999.999-99" input-type="string" type="java.lang.String" display-name="CPF do Beneficiário"/>
+			
+			<!-- html>
+				<![CDATA[ 
+				<fieldset>
+					<legend>Dados da matrícula</legend>
+				</fieldset> ]]>
+			</html>
+			
+			<select-param name="empresa" type="br.com.infowaypi.ecare.segurados.Empresa" display-name="Empresa" display-label-head="false" >
+				<combo display-property="descricao" display-name="Empresa"/>
+			</select-param>
+			
+			<step-param name="codigo" display-name="Matrícula"/>
+			
+			<select-param name="tipoPagamento" type="java.lang.Integer" display-name="Tipo de Pagamento" display-label-head="false">
+				<constants-group name="Tipo de Pagamento" class="br.com.infowaypi.ecare.constantes.Constantes">
+					<entry display-name="Folha" key-value="FOLHA"/>
+					<entry display-name="Boleto" key-value="BOLETO"/>
+				</constants-group>
+			</select-param>
+			
+			<step-param name="salario" input-type="money" type="java.math.BigDecimal" display-name="Salário"/-->
+			
+			<html>
+				<![CDATA[ 
+				<fieldset>
+					<legend>Dados do Beneficiário</legend>
+				</fieldset> ]]>
+			</html>
+			
+			<session-param name="dependente" operation="none">
+				<display-property name="pessoaFisica.nome" display-name="Nome"/>
+				<display-property name="numeroDoCartao" display-name="Número do cartão"/>
+				<display-property name="pessoaFisica.cpf" display-name="CPF"/>
+				<display-property name="pessoaFisica.descricaoDoSexo" display-name="Sexo"/>
+				<display-property name="pessoaFisica.dataNascimento" display-name="Data de nascimento" type="date"/>
+				<display-property name="pessoaFisica.idade" display-name="Idade" type="int"/>
+				<display-property name="grauDeDependencia" display-name="Grau de dependência" type="string"/>
+			</session-param>
+			
+			<session-param name="usuario" />
+			
+			<input-validator display-name="Validação CPF" name="validaCPF" class="br.com.infowaypi.ecare.services.cadastros.ValidatorCPFMigracao">
+				<method-validator name="validate">
+					<session-param display-name="Dependente" name="dependente"/>
+					<param display-name="CPF" name="cpf"/>
+					<param display-name="Tipo de beneficiário" name="tipoBeneficiario"/>
+				</method-validator>
+			</input-validator>	
+			
+			<step-return name="resumo" type="br.com.infowaypi.ecare.services.cadastros.ResumoMigracaoDependentes" 
+		         display-name="Resumo" scope="session"/>
+		</step-method>
+		
+		<step-method name="conferirDados" display-name="Conferir Dados" title="Conferir Dados" buttons-position="bottom">
+			<html>
+				<![CDATA[ 
+				<fieldset>
+					<legend>Conferir Dados</legend>
+				</fieldset> ]]>
+			</html>
+			
+			<session-param name="resumo" operation="none">
+				<display-property name="dependente.pessoaFisica.nome" display-name="Nome"/>
+				<display-property name="dependente.numeroDoCartao" display-name="Número do cartão"/>
+				<display-property name="dependente.pessoaFisica.cpf" display-name="CPF"/>
+				<display-property name="dependente.pessoaFisica.descricaoDoSexo" display-name="Sexo"/>
+				<display-property name="dependente.pessoaFisica.dataNascimento" display-name="Data de nascimento" type="date"/>
+				<display-property name="dependente.pessoaFisica.idade" display-name="Idade" type="int"/>
+			</session-param>
+			
+			<session-param name="usuario"/>
+			
+			<step-return name="dependente" type="br.com.infowaypi.ecare.segurados.Dependente" 
+		         display-name="dependente" scope="session"/>	
+		</step-method>
+		
+		<step-method name="finalizar" display-name="Concluído" title="Concluído">
+			<html>
+				<![CDATA[ <infoway:mensagemSucesso mensagem="Operação concluída com sucesso!!"/> ]]>
+			</html>
+		</step-method>
+	</flow>
+</jheat-mapping>		
+		
+			

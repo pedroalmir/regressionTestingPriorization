@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+	
+	<class-mapping class="br.com.infowaypi.ecarebc.procedimentos.Porte" name="Porte" display-name="Porte" 
+		id-name="idPorte" link-for-detail="descricao" type="simple" section="cadastros, cadastrosAuditor">
+
+		<property name="descricao" not-null="true" type="string">
+			<display name="Descricao" options="listing,search"/>
+	    </property>  
+		
+		<property name="valorPorte" not-null="false" type="money">
+			<display name="Valor Porte" options=""/>
+		</property> 
+		
+		<property name="valorTaxaSala" not-null="false" type="money">
+			<display name="Valor Sala" options="read-only"/>
+	    </property>
+		
+		<collection 
+			class="br.com.infowaypi.ecarebc.procedimentos.TabelaCBHPM" 
+			name="tabelaCBHPM" display-name="Tabela CBHPM" 
+	    	options="" master-detail="false"/>
+		
+		<!-- cadastros -->
+		<role name="root" insert="true" exec="true" update="true" read="true" write="true"/>
+		<role name="atendente" insert="false" exec="false" update="false" read="true" write="false"/>
+		
+		<!-- cadastrosAuditor -->
+		<role name="auditor" insert="false" exec="false" update="false" read="true" write="false"/>
+		<role name="regulador" insert="false" exec="false" update="false" read="true" write="false"/>
+		<role name="faturista" insert="false" exec="false" update="false" read="true" write="false"/>
+		<role name="auditorOdonto" insert="false" exec="false" update="false" read="true" write="false"/>
+		<role name="diretoriaMedica" insert="false" exec="false" update="false" read="true" write="false"/>
+		
+		<validate-method name="validate"/>
+		
+	</class-mapping>    
+	
+</jheat-mapping>

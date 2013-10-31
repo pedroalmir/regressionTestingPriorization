@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+	
+	<class-mapping class="br.com.infowaypi.ecare.atendimentos.acordos.itensAcordos.ItemDiariaAuditoria" name="ItemDiaria" display-name="Itens Diaria" 
+		id-name="idItemDiaria" link-for-detail="diaria.descricao" type="readonly" section="">
+
+		<many-to-one name="diaria" class="br.com.infowaypi.ecarebc.atendimentos.Diaria"
+	    		display-name="Acomodação" autocomplete="false" options="listing" not-null="true"> 
+	    	<display-property name="codigoDescricao"/>
+	    </many-to-one>
+	    
+	    <select-property name="valor.quantidade" display-name="Permanência (dias)" options="">
+			<entry display-name="1" key-value="H24"/>
+			<entry display-name="2" key-value="H48"/>
+			<entry display-name="3" key-value="H72"/>
+			<entry display-name="4" key-value="H96"/>
+			<entry display-name="5" key-value="H120"/>
+		</select-property>
+		
+		<property name="justificativaNaoAutorizacao" type="text" not-null="true">
+			<display options="" name="Motivo da Inserção"/>
+		</property>
+	    
+	    <property name="valor.valor" type="money" not-null="true">
+	     	<display options="detail-only" name="Valor Unitário (24hs)"/>
+	    </property>
+	    
+	    <property name="dataInicial" not-null="false">
+	    	<display options="detail-only" name="Data Inicial"/>
+	    </property>
+
+		<property name="dataFinal" calculated="true">
+	    	<display options="detail-only" name="Data Final"/>
+	    </property>
+
+		<validate-method name="validate"/>
+		
+	</class-mapping>    
+	
+</jheat-mapping>

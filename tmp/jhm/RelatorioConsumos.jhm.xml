@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<report
+		name="relatorioConsumos"
+		method-name="buscarConsumos"
+		class="br.com.infowaypi.ecarebc.consumo.RelatorioConsumos"
+		display-name="Consumo Financeiro" section="relatoriosAuditor" response-by-ajax="true">
+		
+		<description>Relatório de consumos financeiros por competência</description>
+		
+		<report-param name="competencia" type="java.lang.String" display-name="Competência" mask="99/9999" input-type="month-year"/>
+
+		<select-param
+			name="prestadores"
+			display-name="Escolha o Prestador"
+			type="br.com.infowaypi.ecarebc.associados.Prestador">
+			<autocomplete style-class="autocomplete" minimum-characters="3" force-selection="true">
+				<search-property name="pessoaJuridica.fantasia" display-name="Prestador"/>
+				<name-property name="pessoaJuridica.fantasia" display-name="Prestador"/>
+			</autocomplete>	
+		</select-param>	
+
+		<report-return name="resumo" type="br.com.infowaypi.ecarebc.consumo.ResumoConsumos" 
+			 display-name="Resultado Encontrado">
+			 
+			<html>
+				<![CDATA[ <infoway:tableSeparator titulo="Informações Gerais" colspan="2"/> ]]>
+			</html>			
+			<display-property name="numeroTotalDePrestadoresComConsumo" display-name="Prestadores"/>				
+			<display-property name="numeroGeral" display-name="Qt. de Guias"/>
+			<display-property name="consumoGeral" display-name="Consumo Total" type="money"/>
+
+			<html>
+				<![CDATA[ <infoway:tableSeparator titulo="Informações sobre Consultas" colspan="2"/> ]]>
+			</html>			
+			<display-property name="numeroGeralDeConsultas" display-name="Guias de Consulta"/>
+			<display-property name="porcentagemConsultas" display-name="Porcentagem" type="percentage"/>			
+			<display-property name="consumoGeralDeConsultas" display-name="Consumo Consultas" type="money"/>
+			
+			<html>
+				<![CDATA[ <infoway:tableSeparator titulo="Informações sobre Exames" colspan="2"/> ]]>
+			</html>			
+			<display-property name="numeroGeralDeExames" display-name="Guias de Exame"/>
+			<display-property name="porcentagemExames" display-name="Porcentagem" type="percentage"/>
+			<display-property name="consumoGeralDeExames" display-name="Consumo Exames" type="money"/>
+			
+			<display-property name="numeroGeralDeProcedimentos" display-name="Quant. Exames"/>
+			<display-property name="mediaNumeroProcedimentosPorGuia" display-name="Exames por Guia"/>
+
+			<html>
+				<![CDATA[ <infoway:tableSeparator titulo="Informações sobre Urgências" colspan="2"/> ]]>
+			</html>			
+			<display-property name="numeroGeralDeUrgencias" display-name="Guias de Urgência"/>
+			<!-- display-property name="porcentagemExames" display-name="Porcentagem" type="percentage"/-->
+			<display-property name="consumoGeralDeUrgencias" display-name="Consumo Urgências" type="money"/>
+			<html>
+				<![CDATA[ <infoway:tableSeparator titulo="Informações sobre Internações" colspan="2"/> ]]>
+			</html>			
+			<display-property name="numeroGeralDeInternacoes" display-name="Guias de Internação"/>
+			<!--display-property name="porcentagemExames" display-name="Porcentagem" type="percentage"/-->
+			<display-property name="consumoGeralDeInternacoes" display-name="Consumo Internações" type="money"/>
+						
+			<html>
+				<![CDATA[ <infoway:tableSeparator titulo="Prestadores com consumo para a competência" colspan="2"/> ]]>
+			</html>			
+			<collection-display name="consumos" display-name="Consumos Encontrados">
+				<display-property name="descricao" display-name="Prestador"/>
+				
+				<display-property name="numeroConsultasConfirmadas" display-name="Consultas"/>
+				<display-property name="somatorioConsultasConfirmadas" display-name="(R$)" type="money"/>	
+
+				<display-property name="numeroExamesConfirmados" display-name="Guias de Exame"/>
+				<display-property name="somatorioExamesConfirmados" display-name="(R$)" type="money"/>
+
+				<display-property name="numeroProcedimentosExamesConfirmados" display-name="Qt. Exames"/>	
+				<display-property name="mediaNumeroProcedimentosPorGuiaExame" display-name="Média Proc."/>					
+
+				<display-property name="numeroUrgencias" display-name="Guias de Urgência"/>
+				<display-property name="somatorioUrgencias" display-name="(R$)" type="money"/>
+
+				<display-property name="numeroInternacoes" display-name="Guias de Internação"/>
+				<display-property name="somatorioInternacoes" display-name="(R$)" type="money"/>
+
+				<display-property name="numeroGeral" display-name="Guias"/>	
+				<display-property name="consumoGeral" display-name="(R$)" type="money"/>	
+			</collection-display>			
+			
+		</report-return>
+		
+	</report>
+	
+</jheat-mapping>

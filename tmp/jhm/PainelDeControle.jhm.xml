@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+	
+	<class-mapping class="br.com.infowaypi.ecarebc.painelDeControle.PainelDeControle" name="PainelDeControle" 
+		display-name="Painel De Controle" id-name="idPainelDeControle" link-for-detail="idPainelDeControle" 
+        type="simple" section="cadastros" roles="root">
+
+		<description>Painel De Controle</description>
+
+		<property name="multaPorAtrasoDeEntregaDeLote" type="percentage" not-null="true" real-class="java.math.BigDecimal">
+			<display name="Multa por Atraso de Entrega de Lote" options="listing"/>
+	    </property>
+	    
+		<property name="prazoDeEntregaDeLoteSemMulta" not-null="true" type="int">
+			<display name="Prazo De Entrega De Lote Sem Multa" options="listing"/>
+	    </property>
+	    
+		<property name="prazoFinalParaEntregaDeLote" not-null="true" type="int">
+			<display name="Prazo Máximo Para Entrega De Lote" options="listing"/>
+	    </property>
+	    
+	    <property name="dataVigenciaPrazoFinalEntregaDeLote" not-null="true" type="date">
+			<display name="Data Vigência do Prazo Final para entrega de lote" options="listing"/>
+	    </property>
+	    
+	    <property name="carenciaDLPs" not-null="true" type="int">
+			<display name="Carência de DLPs" options="listing"/>
+	    </property>
+  
+	    <property name="quantidadeMaximaDeSalarios" not-null="true" type="int">
+			<display name="Quantidade de Salários Mínimos" options="listing"/>
+	    </property>
+	   
+		<property name="valorSalarioMinimoVigente" type="bigdecimal" not-null="true" real-class="java.math.BigDecimal">
+			<display name="Valor do Salário Mínimo Vigente" options="listing"/>
+	    </property>
+
+		<property name="aliquotaDeFinanciamento" type="percentage" not-null="true" real-class="java.math.BigDecimal">
+			<display name="Aliquota de Financiamento sobre o salário" options="listing"/>
+	    </property>
+
+		<property name="tempoLimiteRecursoGlosa" type="int" not-null="true" real-class="java.lang.Integer">
+			<display options="listing" name="Tempo limite para entrada com Recurso de Glosa"/>
+		</property>
+	    
+	    <property name="procedimentoValoradoPeloPorte" type="boolean" real-class="java.math.BigDecimal">
+			<display name="Procedimentos valorados pelo porte?" options="listing"/>
+	    </property>
+	    
+	    <property name="procedimentoDobrado" type="boolean" real-class="java.math.BigDecimal">
+			<display name="Procedimentos dobrados por tipo de acomodação" options="listing"/>
+	    </property>
+	    
+	    <many-to-many name="tiposDeAcomodacaoDobradas" display-name="Tipos de Acomodação para dobrar valor" 
+	    class="br.com.infowaypi.ecarebc.procedimentos.Procedimento" >
+        	<autocomplete style-class="autocomplete" minimum-characters="3" force-selection="true">
+        		<search-property display-name="Descrição" name="descricao"/>
+        		<name-property display-name="Descrição" name="descricao"/>
+       		</autocomplete>
+        </many-to-many>	 
+
+		<property name="periodicidadeTratamentoOdonto" not-null="true" type="int">
+			<display name="Periodicidade de Tratamentos Odonto" options="listing"/>
+	    </property>
+	    
+   		<property name="quantidadeTratementoOdonto" not-null="true" type="int">
+			<display name="Quantidade de Tratamentos Odonto" options="listing"/>
+	    </property>
+	    
+		<!-- configurações das mensagens SMS -->
+		
+		<property name="smsIntervaloVerificacaoEmMinutos" not-null="true" type="int">
+			<display name="Intervalo de verificação / SMS Regulador" options="listing"/>
+	    </property>
+	    
+	    <property name="smsNumeroEmHorarioNaoComercial" not-null="true" type="string">
+			<display name="Número de telefone para horário não comercial / SMS Regulador" options="listing"/>
+	    </property>
+	    
+	      <property name="emailRegulador" not-null="true" type="string">
+			<display name="E-mail regulador" options="listing"/>
+	    </property>
+		
+		<many-to-one name="smsHorarios" class="br.com.infowaypi.ecare.scheduller.sms.IntervaloDeTempo"
+	    		display-name="Horário comercial" autocomplete="false" options="listing" not-null="true"> 
+	    	<display-property name="inicioDoIntervalo"/>
+	    	<display-property name="finalDoIntervalo"/>
+	    	<display-property name="tipoDeMensagem"/>
+	    </many-to-one>
+	    
+	    <validate-method name="validate"/>
+	   
+	</class-mapping>		
+</jheat-mapping>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+	
+	<class-mapping class="br.com.infowaypi.ecarebc.procedimentos.CID" name="CidSR" display-name="CID" 
+		id-name="idCid" link-for-detail="descricaoDaDoenca" type="simple" section="cadastros, cadastrosAuditor">
+	
+		<description>CID cadastrados no sistema</description>
+		
+		<property name="codigo" type="string" not-null="true" search-type="likerigth">
+			<display name="Código" options="listing,search"/>
+	    </property>
+	    	
+		<property name="descricaoDaDoenca" type="string" not-null="true" search-type="likefull">
+			<display name="Descrição" options="listing,search"/>
+	    </property>
+	    
+	    <property name="liberadoParaUrgencia" type="boolean" not-null="false">
+			<display name="Liberado para urgência" options="listing"/>
+	    </property>
+	    
+	    <collection 
+			class="br.com.infowaypi.ecarebc.atendimentos.GuiaCompleta" 
+			name="guias" display-name="Guias de Internação" 
+	    	master-detail="false"/>
+
+		<many-to-many 
+	    	name="procedimentosTabelaCBHPM" 
+	    	display-name="Procedimentos Associados" 
+	    	class="br.com.infowaypi.ecarebc.procedimentos.TabelaCBHPM">
+    		<autocomplete style-class="autocomplete" minimum-characters="3" force-selection="true">
+				<search-property name="descricao" display-name="Nome"/>
+				<name-property name="descricao" display-name="Nome"/>
+			</autocomplete>	
+		</many-to-many>
+		
+		<!-- cadastros -->
+		<role name="root" insert="true" exec="true" update="true" read="true" write="true"/>
+		<role name="atendente" insert="false" exec="false" update="false" read="true" write="false"/>
+		
+		<!-- cadastrosAuditor -->
+		<role name="auditor" insert="false" exec="false" update="false" read="true" write="false"/>
+		<role name="regulador" insert="false" exec="false" update="false" read="true" write="false"/>
+		<role name="faturista" insert="false" exec="false" update="false" read="true" write="false"/>
+		<role name="auditorOdonto" insert="false" exec="false" update="false" read="true" write="false"/>
+		<role name="diretoriaMedica" insert="false" exec="false" update="false" read="true" write="false"/>
+		
+		<validate-method name="validate" />	
+	</class-mapping>
+
+</jheat-mapping>

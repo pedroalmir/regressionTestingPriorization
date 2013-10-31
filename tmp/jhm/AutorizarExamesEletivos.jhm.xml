@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+
+<jheat-mapping>
+<flow 
+	name="autorizarExamesAmbulatoriais" 
+	class="br.com.infowaypi.ecare.services.auditor.AutorizarExamesEletivosService"
+	display-name="Autorizar Exames Eletivos" section="autorizacoesRegulador,marcacao">
+		
+	<description>Autorizar Exames Eletivos</description>
+	
+	<step-method name="buscarGuias" display-name="Buscar Guias" buttons-position="bottom">
+			<step-param name="autorizacao" type="java.lang.String" display-name="Autorização"/>
+			<step-param name="dataInicial" type="java.lang.String" display-name="Data inicial" input-type="date"/>
+			<step-param name="dataFinal" type="java.lang.String" display-name="Data final" input-type="date"/>
+			
+			<input-validator display-name="Validação de data inicial e final" name="validateDatas" class="br.com.infowaypi.ecare.validacao.services.DataInicialFinalValidator">
+				<method-validator name="validarDatas">
+					<param name="dataInicial" display-name="Data Inicial"/>
+					<param name="dataFinal" display-name="Data Final"/>
+				</method-validator>
+			</input-validator>
+			
+			<step-return name="resumo" type="br.com.infowaypi.ecarebc.atendimentos.ResumoGuias" 
+		         display-name="Resumo" scope="session"/>
+	</step-method>
+
+	<step-method name="selecionarGuia" display-name="Selecionar Guia">
+		<!-- 
+		ESSE PASSO POSSUI JSP SUBSTITUIDO NO BUILD
+		 -->
+		
+		<select-param
+			name="guias"
+			type="br.com.infowaypi.ecarebc.atendimentos.GuiaExame"
+			display-name="Selecione a Guia"
+			session-property-ref="resumo" operation="reload">
+			<radio-group default-sort="5">
+				<display-property name="autorizacao" display-name="Autorização"/>
+				<display-property name="tipo" display-name="Tipo de Guia"/>			
+				<display-property name="segurado.pessoaFisica.nome" display-name="Beneficiário"/>
+				<display-property name="situacao.descricao" display-name="Situação"/>
+				<display-property name="situacao.dataSituacao" display-name="Data" type="date"/>				
+				<display-property name="valorTotal" display-name="Valor total" type="money"/>								
+			</radio-group>
+		</select-param>	
+		
+		<session-param name="usuario"/>
+				
+		<step-return name="guia" type="br.com.infowaypi.ecarebc.atendimentos.GuiaExame" 
+		     display-name="GuiaSelecionada" scope="session"/>
+	</step-method>
+	
+	 <step-method name="autorizarProcedimentos" display-name="Autorizar Procedimentos" title="Autorizar Procedimentos">
+	 
+	 	<html>
+			<![CDATA[
+				<infoway:criticasObservacoesGuia guia="${guia}"/>
+				
+				<c:if test="${guia.liberadaForaDoLimite == 1 || guia.liberadaForaDoLimite == 2}">
+					<infoway:mensagemAlerta mensagem="${guia.mensagemLimite}"/>
+				</c:if> 
+			]]>
+		</html>
+	 	
+	 	<update-param name="guia" display-name="" type="br.com.infowaypi.ecarebc.atendimentos.GuiaExame" operation="none" >
+	 	
+		 	<html>
+		 		<![CDATA[
+					<fieldset>
+						<legend>Permissões Adicionais</legend>
+					</fieldset>
+				]]>
+			</html>
+			
+        	<update-collection 
+					name="procedimentosSolicitados" 
+					field-name="procedimentosSolicitados"
+					display-name="Autorizar Procedimentos"
+					type="br.com.infowaypi.ecarebc.procedimentos.Procedimento">
+
+				    <update-insert>
+				    	<update-property name="procedimentoDaTabelaCBHPM.codigo" display-name="Código" input-type="string" editable="false"/>
+	  			        <update-property name="procedimentoDaTabelaCBHPM.descricao" display-name="Descrição" editable="false" />
+	  			  		<update-select-property name="actionRegulacao" display-name="Ação" type="java.lang.Integer" >
+							<constants-group input-type="check" class="br.com.infowaypi.ecarebc.constantes.Constantes">
+								<entry key-value="AUTORIZAR" display-name="Autorizar"/>
+								<entry key-value="NAO_AUTORIZAR" display-name="Não autorizar"/>
+								<entry key-value="DEIXAR_PENDENTE" display-name="Deixar pendente"/>
+							</constants-group>
+	  			  		</update-select-property>
+	  			  		<update-property name="motivo" display-name="Motivo" input-type="text" editable="true"/>
+				    </update-insert>
+        	</update-collection>
+	
+		</update-param>
+		<session-param name="usuario"/>
+		<html>
+			<![CDATA[
+				<infoway:scriptDisplay />
+				<infoway:GuiaApresentacao guiaApresentacao="${guia}"/>
+			]]>
+		</html>
+			
+		<step-return name="guia" type="br.com.infowaypi.ecarebc.atendimentos.GuiaExame" 
+	         display-name="GuiaSelecionada" scope="session"/>
+		         
+	</step-method>
+	
+	
+	<step-method name="conferirDados" display-name="Conferir Dados" committed="true">
+			<session-param name="guia" operation="none"/>
+			
+			<html>
+				<![CDATA[
+					<infoway:criticasObservacoesGuia guia="${guia}"/>
+					<infoway:GuiaApresentacao guiaApresentacao="${guia}"/>
+				]]>
+			</html>	
+	
+			<step-return name="guia" type="br.com.infowaypi.ecarebc.atendimentos.GuiaExame" 
+		         display-name="GuiaSelecionada" scope="session"/>
+	</step-method>
+	
+	<step-method name="finalizar" display-name="Finalizar">
+			<session-param name="guia" operation="none"/>
+			
+			<html>
+				<![CDATA[  
+				<infoway:criticasObservacoesGuia guia="${guia}"/>
+				
+				<c:choose>
+					<c:when test="${guia.autorizada}">
+						<infoway:mensagemSucessoMarcacoes mensagem="Autorização realizada com sucesso!" autorizacao="${guia.autorizacao}"/>
+					</c:when>
+					<c:otherwise>
+						<infoway:mensagemSucessoMarcacoes mensagem="Exame não autorizado" autorizacao="${guia.autorizacao}"/>
+					</c:otherwise>
+				</c:choose>
+				
+				<span class="not-for-print">
+					<button type="button" name="imprimir" class="actionButton" onclick="window.print();">Imprimir</button>
+				</span>
+				
+				<infoway:GuiaApresentacao guiaApresentacao="${guia}"/>
+				
+				<infoway:imprimirGuiaExame titulo="AUTORIZAÇÃO DE EXAME ELETIVO"/>
+				
+				]]>
+			</html>
+			
+	</step-method>
+	
+</flow>
+</jheat-mapping>	

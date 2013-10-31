@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<report
+		name="relatorioDeLotesPrestador" 
+		method-name="gerarRelatorio"
+		class="br.com.infowaypi.ecare.services.RelatorioDeLotes"
+		display-name="Relatório de Lotes" section="relatoriosPrestador" response-by-ajax="false">
+		
+		<description>Relatório de Despesas por Faixa etária</description>
+		
+		<report-param name="competencia" display-name="Competência" type="java.util.Date" input-type="month-year" required="true"/>
+		<session-param name="prestador"/>
+		
+		<report-return name="resumo" display-name="Resultado Encontrado" type="br.com.infowaypi.ecarebc.atendimentos.ResumoLotes">
+		
+			<html>
+				<![CDATA[
+					<%@ include file="/view/jsp/includes/RelatorioLotes.jsp" %>
+				]]>
+			</html>
+		</report-return>
+		
+	</report>
+</jheat-mapping>

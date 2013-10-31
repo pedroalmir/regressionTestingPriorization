@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<flow 
+		name="FlowCadastrarEvento" 
+		class="br.com.infowaypi.ecare.programaPrevencao.fluxos.FlowCadastrarEvento"
+		display-name="Cadastrar Evento" section="pps">
+		
+		<description>Cadastrar Evento/Associar Beneficiários</description>
+		
+		<step-method name="informarPrograma" display-name="Informar o Programa" title="Informar Programa">
+			<select-param
+				name="programas"
+				display-name="Selecione o Programa"
+				type="br.com.infowaypi.ecare.programaPrevencao.ProgramaDePrevencao" required="true">
+	
+				<autocomplete style-class="autocomplete" minimum-characters="3" force-selection="true">
+					<search-property name="codigoENome" display-name="Nome do programa"/>
+					<name-property name="codigoENome" display-name="Nome do programa"/>
+				</autocomplete>
+				
+				<restrictions>
+					<restriction property-value="Cadastrado" property-name="situacao.descricao" type="equals" />
+				</restrictions>
+			</select-param>
+
+			<session-param name="usuario"/>
+			<step-return name="resumo" type="br.com.infowaypi.ecare.programaPrevencao.ResumoPrograma" display-name="" scope="session" />
+
+		</step-method>
+		
+        <step-method name="associarBeneficiario" display-name="Criar Evento"  title="Criar Evento" >
+			<select-param name="tipo" display-name="Tipo de Evento" null-option="true" null-description="" type="java.lang.Integer">
+				<enum-combo class="br.com.infowaypi.ecare.enums.TipoEventoEnum" display="descricao" 
+							input-type="combo" name="valor" value="valor" />
+			</select-param>
+
+	        <update-param name="resumo" display-name="" type="br.com.infowaypi.ecare.programaPrevencao.ResumoPrograma" operation="none">
+
+				<update-property name="evento.titulo" size="60" display-name="Título do Evento"
+					input-type="string" type="java.lang.String" />
+
+				<update-property name="evento.descricao" size="60" display-name="Descrição do Evento"
+					input-type="string" type="java.lang.String" />
+					
+				<update-property name="evento.data" size="12" display-name="Data do Evento" input-type="date"
+					type="java.util.Date" />
+		 	   
+	       		<update-collection 
+						name="beneficiariosTransient" 
+						display-name="Inserir/Excluir Beneficiários"
+						include-method="addSegurado"
+						exclude-method="removeSegurado"
+						type="br.com.infowaypi.ecare.programaPrevencao.SeguradoDoEvento">
+					    <update-insert>
+					    	<update-property name="nome" 			display-name="Nome do beneficiário"	input-type="string"	editable="false"/>
+					    	<update-property name="numeroDoCartao" 	display-name="Número do cartão"  	input-type="string"	editable="false" next-field-inline="false"/>
+					    	<update-property name="cpf" 			display-name="CPF" 										editable="false"/>
+					    </update-insert>
+	        	</update-collection>
+	 		</update-param>     
+ 		  
+			<step-return name="resumo" type="br.com.infowaypi.ecare.programaPrevencao.ResumoPrograma" 
+		         display-name="" scope="session"/>
+  		</step-method>      
+		
+		<step-method name="salvar" display-name="Visualizar"  committed="true" title="Visualizar">
+			<session-param name="resumo" operation="none">
+				<display-property name="tipoEvento"			display-name="Tipo de Evento" />
+				<display-property name="evento.titulo"		display-name="Título do Evento" />
+				<display-property name="evento.descricao"	display-name="Descrição do Evento" />
+				<display-property name="evento.data"		display-name="Data do Evento" type="date" />
+	                                                                          	
+				<collection-display display-name="Segurados Associados" name="beneficiariosTransient">
+					<display-property name="nome" 			display-name="Nome do beneficiário" />
+					<display-property name="numeroDoCartao" display-name="Número do cartão" />
+					<display-property name="cpf" 			display-name="CPF do segurado" />
+				</collection-display>
+			</session-param>  
+			  
+			<step-return name="resumo" type="br.com.infowaypi.ecare.programaPrevencao.ResumoPrograma" display-name="" scope="session" />
+		</step-method>
+		
+		<step-method name="finalizar" display-name="Concluido"  title="Concluido">
+		
+			<html>
+				<![CDATA[ <infoway:mensagemSucesso mensagem="Operação efetuada com sucesso."/> ]]>
+			</html>
+		 	   
+			<session-param name="resumo" operation="none">
+				<display-property name="evento.idEvento"	display-name="Identificador do Evento" />
+				<display-property name="tipoEvento" 		display-name="Tipo de Evento" />
+				<display-property name="evento.titulo" 		display-name="Título do Evento" />
+				<display-property name="evento.descricao"	display-name="Descrição do Evento" />
+				<display-property name="evento.data"		display-name="Data do Evento" type="date" />
+	                                                                          	
+				<collection-display display-name="Segurados Associados" name="beneficiariosTransient">
+					<display-property name="nome" 			display-name="Nome do beneficiário" />
+					<display-property name="numeroDoCartao" display-name="Número do cartão" />
+					<display-property name="cpf" 			display-name="CPF do segurado" />
+				</collection-display>
+			</session-param>  
+		</step-method>
+		
+	</flow>	
+</jheat-mapping>

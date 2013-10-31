@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+	
+	<class-mapping class="br.com.infowaypi.ecarebc.odonto.Denticao" name="Denticao" display-name="Dentições" 
+		id-name="idDenticao" link-for-detail="tipo" type="simple" section="cadastros">
+		
+		<description>Tipos de Dentição</description>
+		
+		<property name="descricao" type="string" not-null="true">
+			<display name="Descrição" options="search,detail-only"/>
+	    </property>
+	    
+	    <select-property display-name="Tipo" options="listing" name="tipo">
+	    	<entry display-name="Decíduo" key-value="TIPO_DECIDUO"/>
+	    	<entry display-name="Permanente" key-value="TIPO_PERMANENTE"/>
+	    </select-property>
+	    
+	    <many-to-one options="listing"
+			class="br.com.infowaypi.ecarebc.odonto.Arcada" 
+			name="arcadaInferior" display-name="Arcada Inferior" autocomplete="false">
+			<display-property name="descricao"/>
+		</many-to-one>
+		
+		<many-to-one options="listing"
+			class="br.com.infowaypi.ecarebc.odonto.Arcada" 
+			name="arcadaSuperior" display-name="Arcada Superior" autocomplete="false">
+			<display-property name="descricao"/>
+		</many-to-one>
+	    
+		<!-- cadastros -->
+		<role name="root" insert="true" exec="true" update="true" read="true" write="true"/>
+		<role name="atendente" insert="false" exec="false" update="false" read="true" write="false"/>
+	    
+		<validate-method name="validate"/>
+
+	</class-mapping>
+
+</jheat-mapping>

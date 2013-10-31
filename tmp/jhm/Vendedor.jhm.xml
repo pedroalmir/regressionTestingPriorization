@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+	
+	<class-mapping class="br.com.infowaypi.ecare.associados.Vendedor" name="Vendedor"
+		display-name="Vendedores" id-name="idVendedor" link-for-detail="pessoaFisica.nome" type="readonly" section="cadastros">
+		
+		<description>Cadastro de Consultores</description>		
+		
+		<property name="pessoaFisica.nome" type="string" not-null="true">
+			<display name="Nome" options="listing,search"/>
+	    </property>  
+
+		<property name="pessoaFisica.apelido" type="string" not-null="false">
+			<display name="Apelido" options=""/>
+	    </property> 
+		
+		<property name="pessoaFisica.identidade" type="string" not-null="true">
+			<display name="Identidade" options="" mask="9999999999999" maxlength="13" size="20"/>
+	    </property>  
+	
+		<property name="pessoaFisica.cpf" type="string" not-null="true">
+			<display name="CPF" options="" mask="99999999999" maxlength="11" size="20"/>
+	    </property>  
+	    
+		<!--property name="pessoaFisica.tituloEleitoral" type="string" not-null="false">
+			<display name="Título Eleitoral" options="" size="20"/>
+	    </property-->  
+	    
+		<property name="pessoaFisica.dataNascimento" type="date" not-null="false">
+			<display name="Nascimento" options="" mask="99/99/9999" maxlength="10" size="20"/>
+	    </property>  
+	    
+	    <select-property name="pessoaFisica.sexo" display-name="Sexo" options="">
+			<entry display-name="Masculino" key-value="SEXO_MASCULINO"/>
+			<entry display-name="Feminino" key-value="SEXO_FEMININO"/>
+		</select-property>
+	    
+		<!--property name="pessoaFisica.nomeDoPai" type="string" not-null="false">
+			<display name="Nome do pai" options=""/>
+	    </property-->  
+		
+		<property name="pessoaFisica.nomeDaMae" type="string" not-null="false">
+			<display name="Nome da mãe" options=""/>
+	    </property>  
+		
+		
+		<!--property name="pessoaFisica.nomeConjuge" type="string" not-null="false">
+			<display name="Nome do conjuge" options=""/>
+	    </property-->  
+		
+		<property name="pessoaFisica.telefoneResidencial" type="string" not-null="false">
+			<display name="Tel. Residencial" options="listing" size="20"/>
+	    </property>  
+
+		<property name="pessoaFisica.celular" type="string" not-null="false">
+			<display name="Celular" options="listing" size="20"/>
+	    </property>  
+
+		<property name="pessoaFisica.email" type="string" not-null="false">
+			<display name="Email" options=""/>
+	    </property>  
+
+		<property name="pessoaFisica.endereco.bairro" type="string" not-null="false">
+			<display name="Bairro" options=""/>
+	    </property>  
+
+		<property name="pessoaFisica.endereco.numero" type="string" not-null="false">
+			<display name="Número" options="" size="20"/>
+	    </property>  
+
+		<property name="pessoaFisica.endereco.logradouro" type="string" not-null="false">
+			<display name="Logradouro" options=""/>
+	    </property>  
+
+		<property name="pessoaFisica.endereco.complemento" type="string" not-null="false">
+			<display name="Complemento" options=""/>
+	    </property>  
+
+		<property name="pessoaFisica.endereco.cep" type="string" not-null="false">
+			<display name="CEP" options="" mask="99.999-999" maxlength="10" size="20"/>
+	    </property>  
+
+		<property name="pessoaFisica.endereco.pontoDeReferencia" type="string" not-null="false">
+			<display name="Pt. de Referência" options=""/>
+	    </property>  
+		
+		<many-to-one class="br.com.infowaypi.msr.address.Municipio" 
+			name="pessoaFisica.endereco.municipio" 
+			not-null="true"
+			autocomplete="true"
+	    	display-name="Município" options="listing">
+			<display-property name="descricao"/>
+		</many-to-one>		
+		
+		<many-to-one class="br.com.infowaypi.msr.financeiro.Banco" name="banco" not-null="false"
+	    	display-name="Banco" options="">
+			<display-property name="descricao"/>
+		</many-to-one>	
+		
+		<property name="agencia" type="string" not-null="false">
+			<display name="Agência" options="" size="20"/>
+	    </property> 
+		
+		<property name="contaCorrente" type="string" not-null="false">
+			<display name="Conta Corrente" options="" size="20"/>
+	    </property> 
+		
+		<property name="matricula" type="string" not-null="false">
+			<display name="Matricula" options="" size="20"/>
+	    </property>
+		
+		<!--property name="cargo" type="string" not-null="false">
+			<display name="Cargo" options="" size="25"/>
+	    </property-->
+		
+		<!--property name="dataInclusao" type="date" not-null="false">
+			<display name="Data de Inclusão" options="" mask="99/99/9999" maxlength="10" size="20"/>
+	    </property-->
+		
+		<property name="dataAdmissao" type="date" not-null="false">
+			<display name="Data de Admissão" options="" mask="99/99/9999" maxlength="10" size="20"/>
+	    </property>  
+		
+		<!--property name="foneTrabalho" type="string" not-null="false">
+			<display name="Tel. do Trabalho" options="" size="20"/>
+	    </property-->
+		
+		<!--property name="ramalFoneTrabalho" type="string" not-null="false">
+			<display name="Ramal" options="" size="10"/>
+	    </property-->		
+		
+		<validate-method name="validate"/>
+		
+	</class-mapping>	
+
+</jheat-mapping>

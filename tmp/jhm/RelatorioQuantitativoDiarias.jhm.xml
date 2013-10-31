@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<report
+		name="relatorioQuantitativoDiarias"
+		method-name="executarBusca"
+		class="services.RelatorioQuantitativoDiarias"
+		display-name="Quantitativo de Diárias" section="relatoriosCadernoSR" response-by-ajax="true">
+				
+		<report-param name="competencia" type="java.lang.String" display-name="Competência" mask="99/9999" input-type="month-year"/>
+		
+		<report-return name="resumoDiarias" type="resumos.ResumoDiarias" 
+			 display-name="Resultado relatório">
+		
+			<html>
+				<![CDATA[ <infoway:tableSeparator titulo="Informações sobre Diárias" colspan="2"/> ]]>
+			</html>	
+			<display-property name="qtdTotalDiarias" display-name="Quantidade" type="int"/>
+			<display-property name="valorTotalDiarias" display-name="Valor" type="bigdecimal"/>
+			
+			<html>
+				<![CDATA[ <infoway:tableSeparator titulo="Diárias por tipo" colspan="2"/> ]]>
+			</html>
+			<collection-display display-name="Informações de Diárias" name="resumosRelatorio" order="desc" default-sort="2">
+				<display-property name="descricao" display-name="Descrição"/>
+				<display-property name="quantidade" display-name="Quantidade" type="int"/>
+				<display-property name="valor" display-name="Valor" type="bigdecimal"/>
+			</collection-display>
+			 	
+		</report-return>
+		
+	</report>
+	
+</jheat-mapping>

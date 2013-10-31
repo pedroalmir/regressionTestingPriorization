@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+
+<jheat-mapping>
+<flow 
+	name="inserirCampoMedicoAuditor" 
+	class="br.com.infowaypi.ecare.services.auditor.InserirRegistroTecnicoDaAuditoriaService"
+	display-name="Campo Médico Auditor" section="auditor" roles="auditor">
+		
+	<description>Campo Medico Auditor</description>
+	
+	<step-method name="buscarGuias" display-name="Buscar Guias" buttons-position="bottom">
+			<step-param name="autorizacao" type="java.lang.String" display-name="Autorização"/>
+			<step-param name="dataInicial" type="java.lang.String" display-name="Data inicial" input-type="date"/>
+			<step-param name="dataFinal" type="java.lang.String" display-name="Data final" input-type="date"/>
+			<select-param
+				name="prestador"
+				display-name="Escolha o Prestador"
+				type="br.com.infowaypi.ecarebc.associados.Prestador">
+				<autocomplete style-class="autocomplete" minimum-characters="3" force-selection="true">
+					<search-property name="pessoaJuridica.fantasia" display-name="Prestador"/>
+					<name-property name="pessoaJuridica.fantasia" display-name="Prestador"/>
+				</autocomplete>	
+			</select-param>
+			<step-return name="resumo" type="br.com.infowaypi.ecarebc.atendimentos.ResumoGuias" 
+		         display-name="Resumo" scope="session"/>
+	</step-method>
+	
+	<step-method name="selecionarGuia" display-name="Selecionar Guia">
+		<select-param
+			name="guias"
+			type="br.com.infowaypi.ecarebc.atendimentos.GuiaInternacao"
+			display-name="Selecione a Guia"
+			session-property-ref="resumo" operation="reload">
+			<radio-group>
+				<display-property name="autorizacao" display-name="Autorização"/>				
+				<display-property name="segurado.pessoaFisica.nome" display-name="Beneficiário"/>
+				<display-property name="dataAtendimento" display-name="Dt. Atendimento" type="date"/>
+				<display-property name="situacao.descricao" display-name="Situação"/>
+				<display-property name="situacao.dataSituacao" display-name="Data" type="date"/>				
+				<display-property name="valorTotal" display-name="Valor total" type="money"/>								
+			</radio-group>
+		</select-param>	
+		<session-param name="usuario"/>
+		<step-return name="guia" type="br.com.infowaypi.ecarebc.atendimentos.GuiaInternacao" display-name="GuiaSelecionada" scope="session"/>
+	</step-method>
+	
+	<step-method display-name="Inserir Dados Técnicos" name="gravarRegistrosTecnicos" buttons-position="bottom">
+		<session-param name="usuario"/>
+		<collection-param
+			name="registrosTecnicosDaAuditoria"
+			type="br.com.infowaypi.ecarebc.atendimentos.RegistroTecnicoDaAuditoria"
+			display-name="Inserir Dados Técnicos"  >
+			<insert>
+				<display-property name="titulo" display-name="Título"/>
+				<display-property name="texto" display-name="Nova observação"/>
+			</insert>
+		</collection-param>
+		
+		<update-param name="guia" type="br.com.infowaypi.ecarebc.atendimentos.GuiaInternacao" display-name="" operation="none">
+			<update-collection
+				name="registrosTecnicosDaAuditoriaDoUsuarioDoFluxo"
+				type="br.com.infowaypi.ecarebc.atendimentos.RegistroTecnicoDaAuditoria"
+				display-name="Alterar Dados Técnicos">
+				<update-insert>
+					<update-property name="titulo" display-name="Título"/>
+					<update-property name="texto" display-name="Nova observação"/> <!-- aki n fik o campo texto -->
+					<update-property name="usuario.login" display-name="Usuario" editable="false"/>
+				</update-insert>
+			</update-collection>
+		</update-param>
+			
+		<html>
+			<![CDATA[
+				<infoway:GuiaApresentacao guiaApresentacao="${guia}"/>
+			]]>
+		</html>		
+		
+		<step-return name="guia" type="br.com.infowaypi.ecarebc.atendimentos.GuiaInternacao" display-name="" scope="session"/>
+	</step-method>
+	
+	<step-method name="salvarGuia" display-name="Conferir Dados" title="Conferir Dados" committed="true" buttons-position="both">
+		<session-param name="guia" operation="none"/>
+			
+		<html>
+			<![CDATA[
+				<infoway:GuiaApresentacao guiaApresentacao="${guia}"/>
+			]]>
+		</html>
+		
+	</step-method>
+	
+	<step-method name="finalizar" display-name="Finalizar" title="Finalizar" buttons-position="both">
+		<html>
+			<![CDATA[  <infoway:mensagemSucessoMarcacoes mensagem="Operação realizada com sucesso!" autorizacao="${guia.autorizacao}"/> ]]>
+		</html>
+
+		<session-param name="guia" operation="none"/>
+			
+		<html>
+			<![CDATA[
+				<infoway:GuiaApresentacao guiaApresentacao="${guia}"/>
+			]]>
+		</html>
+		
+	</step-method>
+	
+</flow>
+</jheat-mapping>

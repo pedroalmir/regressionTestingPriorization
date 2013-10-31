@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<report
+		name="relatorioGuiaRecursoGlosa"
+		method-name="gerarRelatorio"
+		class="br.com.infowaypi.ecare.services.recurso.relatorio.RelatorioGuiaRecursoGlosa"
+		display-name="Relatório das guias aptas para recurso de glosa" 
+		section="recursoGlosa" 
+		response-by-ajax="false">
+		
+		<description>Relatório das guias aptas para recurso de glosa</description>
+		
+		<report-param name="competencia" required="true" type="java.lang.String" display-name="Competência" mask="99/9999" input-type="month-year"/>
+		
+		<session-param name="prestador"/>
+		
+		<report-return name="resumo" type="br.com.infowaypi.ecare.services.recurso.relatorio.ResumoRecursoGlosa"
+			display-name="">
+		 	
+			<html>
+				<![CDATA[
+  					<%@ include file="/view/jsp/includes/RelatorioGuiaRecursoGlosa.jsp"%>
+				]]>
+			</html>
+			
+		</report-return>
+	</report>
+</jheat-mapping>

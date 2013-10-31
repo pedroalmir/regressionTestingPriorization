@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+<flow 
+	name="autorizarTratamentoODAuditor" 
+	class="br.com.infowaypi.ecare.services.odonto.ConfirmacaoTratamentoOdonto"
+	display-name="Autorizar Tratamento Odontológico" section="marcacaoOdonto"> 
+			
+	<description>Autorização de tratamentos odontológicos</description>		
+	
+	<step-method name="buscarGuias" display-name="Buscar Guias">
+		<step-param name="autorizacao" type="java.lang.String" display-name="Autorização"/>
+		<step-param name="dataInicial" type="java.lang.String" display-name="Data inicial" input-type="date"/>
+		<step-param name="dataFinal" type="java.lang.String" display-name="Data final" input-type="date"/>
+		 
+		<select-param
+			name="prestador"
+			display-name="Escolha o Prestador"
+			type="br.com.infowaypi.ecarebc.associados.Prestador">
+			<autocomplete style-class="autocomplete" minimum-characters="3" force-selection="true">
+				<search-property name="pessoaJuridica.fantasia" display-name="Prestador"/>
+				<name-property name="pessoaJuridica.fantasia" display-name="Prestador"/>
+			</autocomplete>
+			<restrictions>
+					<restriction property-value="Ativo(a)" property-name="situacao.descricao" type="equals" />
+			</restrictions>	
+		</select-param>
+		
+		<step-return name="resumoGuias" type="br.com.infowaypi.ecarebc.atendimentos.ResumoGuias" 
+	         display-name="Resumo" scope="session"/>
+	</step-method>
+	
+	<step-method name="selecionarGuia" display-name="Selecionar Guia" title="Selecionar Guia">
+		<!-- ESSE PASSO POSSUI JSP SUBSTITUIDO NO BUILD -->
+		<select-param
+			name="guiasTratamentoOdontoPeloAuditor"
+			type="br.com.infowaypi.ecarebc.atendimentos.GuiaExameOdonto"
+			display-name="Selecione o Tratamento"
+			session-property-ref="resumoGuias" operation="none">
+			<radio-group>
+				<display-property name="autorizacao" display-name="Autorização" />
+				<display-property name="segurado.pessoaFisica.nome" display-name="Beneficiário" />
+				<display-property name="tipo" display-name="Tipo" />
+				<display-property name="prestador.pessoaJuridica.fantasia" display-name="Prestador"/>
+				<display-property name="situacao.descricao" display-name="Situação" />
+				<display-property name="situacao.dataSituacao" display-name="Data da Situação" type="date" />
+				<display-property name="valorTotal" display-name="Valor total" type="money" />
+			</radio-group>
+		</select-param>
+		<step-return name="guiaAntiga" type="br.com.infowaypi.ecarebc.atendimentos.GuiaExameOdonto" 
+			display-name="" scope="session"/>
+	</step-method>
+	
+	<step-method name="selecionarProcedimentosAutorizados" display-name="Autorizar Tratamentos" title="Autorizar Tratamentos">
+		<session-param name="prestador" operation="reload"/>
+			
+		<collection-param
+			name="observacoes"
+			type="br.com.infowaypi.ecarebc.atendimentos.Observacao"
+			display-name="Observações" >
+			<insert>
+				<display-property name="texto" display-name="Nova observação"/>
+			</insert>
+		</collection-param>
+		
+		<update-param name="guiaAntiga" display-name="" type="br.com.infowaypi.ecarebc.atendimentos.GuiaExameOdonto" operation="none">
+			
+			<update-collection display-name="Autorização de Procedimentos" name="procedimentosSolicitadosOuPendentes" 
+				type="br.com.infowaypi.ecarebc.procedimentos.ProcedimentoOdonto">
+				<update-insert>
+					<update-property display-name="Código" name="procedimentoDaTabelaCBHPM.codigo" editable="false" input-type="string"/>
+					<update-property display-name="Descrição" name="procedimentoDaTabelaCBHPM.descricao" editable="false" input-type="string"/>
+					<update-property name="procedimentoDaTabelaCBHPM.tipoEstrutura" display-name="Aplicação" editable="false" input-type="string"/>
+					<update-property display-name="Estrutura(s)" name="descricaoEstruturas" editable="false" input-type="string"/>
+					<update-property name="descricaoPericia" display-name="Perícia" editable="false" input-type="string"/>
+					<update-property display-name="Valor Bruto" name="valorTotal" editable="false" input-type="bigdecimal"/>
+					<update-property-boolean display-name="Autorizar" name="autorizado" field-name="autorizado" false-description="Não" true-description="Sim" type="java.lang.Boolean"/>
+					<update-property-boolean display-name="Perícia" name="realizarPericiaAutorizacao" field-name="realizarPericia" false-description="Final" true-description="Inicial" type="java.lang.Boolean"/>
+				</update-insert>
+				
+			</update-collection>
+			
+			<update-collection display-name="Observações" name="observacoes" type="br.com.infowaypi.ecarebc.atendimentos.Observacao">
+				<update-insert>
+					<update-property display-name="Data" name="dataDeCriacao" editable="false" input-type="date"/>
+					<update-property display-name="Observação" name="texto" editable="false"/>
+					<update-property name="usuario.nome" display-name="Usuário" editable="false"/>
+				</update-insert>
+				
+				<access-restriction name="insereObservacoes" type="edit">
+					    <session-restriction name="guiaAntiga" property="observacoes" operation="notempty" type="boolean" value="true"/>
+				</access-restriction>
+			</update-collection>
+			
+			<!-- if[ATUALIZAR_ODONTOGRAMA_NA_CONFIRMACAO_DE_CONSULTA]
+			
+			</update-param>
+
+			<update-param display-name="" 
+				name="guiaAntiga" property="segurado.odontogramaCompleto"
+				type="br.com.infowaypi.ecarebc.atendimentos.GuiaExameOdonto"
+				operation="none" property-type="br.com.infowaypi.ecarebc.odonto.Odontograma">
+
+				<update-collection display-name="Estruturas Odontológica" name="estruturas"
+					type="br.com.infowaypi.ecarebc.odonto.EstruturaOdonto">
+
+					<update-insert>
+						<update-property name="dente.numero" display-name="Dente" editable="false" />
+						<update-select-property name="indiceCPODEnum" display-name="Indice" 
+							type="br.com.infowaypi.ecarebc.odonto.enums.IndiceCPODEnum">
+							<enum-combo class="br.com.infowaypi.ecarebc.odonto.enums.IndiceCPODEnum" display="getDescricao">
+								<remove-entry key-value="DEFAULT" />
+							</enum-combo>
+						</update-select-property>
+					</update-insert>
+
+				</update-collection>
+
+			</update-param>
+
+			<html><![CDATA[
+					<%@ include file="/view/jsp/includes/OdontogramaLegal.jsp" %>
+			]]></html>
+			
+			<update-param name="guiaAntiga" display-name="" type="br.com.infowaypi.ecarebc.atendimentos.GuiaExameOdonto" operation="none">
+			
+			end[ATUALIZAR_ODONTOGRAMA_NA_CONFIRMACAO_DE_CONSULTA] -->
+			
+			<html>
+				<![CDATA[
+					<infoway:tableSeparator titulo="Informações do Prestador" colspan="2"/>
+				]]>
+			</html>
+			
+			<update-property name="prestador.pessoaJuridica.fantasia" display-name="Prestador" editable="false" input-type="string"/>
+			<update-property name="prestador.pessoaJuridica.telefone" display-name="Telefone" editable="false" input-type="string"/>
+			<update-property name="prestador.pessoaJuridica.endereco" display-name="Endereço" editable="false" input-type="string"/>
+			<update-property name="prestador.pessoaJuridica.endereco.municipio" display-name="Município" editable="false" input-type="string"/>
+			
+			<html>
+				<![CDATA[ <infoway:tableSeparator titulo="Informações do Segurado" colspan="2"/> ]]>
+			</html>
+			
+			<update-property name="segurado.pessoaFisica.nome" display-name="Segurado" editable="false" input-type="string"/>
+			<update-property name="segurado.pessoaFisica.idade" display-name="Idade" editable="false" input-type="string"/>
+			<update-property name="segurado.pessoaFisica.descricaoDoSexo" display-name="Sexo" editable="false" input-type="string"/>
+			
+			<html>
+			<![CDATA[
+					<infoway:Odontograma odontograma="${guiaAntiga.segurado.odontograma}"/>
+				]]>
+			</html>
+		</update-param>	
+		
+		<session-param name="usuario"/>
+		
+		<step-return name="guiaAntiga" type="br.com.infowaypi.ecarebc.atendimentos.GuiaExameOdonto" display-name="" scope="session"/>
+			
+	</step-method>
+
+	<step-method name="autorizarTratamentoOdonto" display-name="Conferir Dados" title="Conferir Dados" committed="true">
+		<session-param name="guiaAntiga"/>
+			
+		<html>
+			<![CDATA[
+				<infoway:GuiaApresentacao guiaApresentacao="${guiaAntiga}"/>
+			]]>
+		</html>
+		
+		<session-param name="usuario" operation="none"/>
+	</step-method>
+	
+	<step-method name="finalizar" display-name="Finalizar" title="Finalizar">
+			
+		<html>
+			<![CDATA[ <infoway:mensagemSucessoMarcacoes mensagem="Tratamento(s) Odontológico(s) Autorizado(s) com sucesso!" autorizacao="${guiaAntiga.autorizacao}"/> ]]>
+		</html>
+		
+		<html>
+			<![CDATA[
+				<infoway:GuiaApresentacao guiaApresentacao="${guiaAntiga}"/>
+			]]>
+		</html>
+		
+	</step-method>
+	
+	</flow>	
+</jheat-mapping>

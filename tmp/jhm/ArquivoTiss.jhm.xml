@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<class-mapping class="br.com.infowaypi.ecarebc.portalTiss.ArquivoTiss" name="ArquivoTiss" 
+		display-name="Arquivos Tiss" id-name="idArquivoBase" 
+		link-for-detail="tituloArquivo" section="" global-link="true" type="simple">
+		
+		<description>Arquivos TISS</description>
+		
+		<property name="tituloArquivo" type="string">
+			<display name="Titulo" options="listing,search" />
+		</property>
+		
+		<property name="dataCriacao" type="date">
+			<display name="Data Entrega" options="search,listing, detail-only" />
+		</property>
+			
+		<property name="arquivo" type="file" not-null="false" type-file="xml" name-file="tituloArquivo" >
+			<display name="Arquivo" options="listing" mask-detail="arquivo.xml"/>
+		</property>
+		
+		<properties-order>
+			<property-order name="dataCriacao"/>
+		</properties-order>
+		
+	</class-mapping>
+</jheat-mapping>

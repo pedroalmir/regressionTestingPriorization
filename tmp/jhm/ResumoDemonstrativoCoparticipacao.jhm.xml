@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+	<class-mapping name="resumoCoparticipacoes" display-name="" 
+		class="br.com.infowaypi.ecare.relatorio.portalBeneficiario.extratoCoparticipacao.ResumoDemonstrativoCoparticipacao" 
+		id-name="">
+		
+		<property name="file" type="file" />
+		<property name="fileName" type="string" />
+	
+	</class-mapping>
+</jheat-mapping>

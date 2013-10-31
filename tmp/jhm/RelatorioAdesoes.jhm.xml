@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<report 
+		name="relatorioDeNovasAdesoes" 
+		method-name="gerarRelatorio"  
+		class="br.com.infowaypi.ecare.services.RelatorioAdesoesService"
+		display-name="Adesões" section="consultasCentralDeRelacionamento,relatorioCentral,relatoriosAuditor,relatoriosGerenciaAdesao" response-by-ajax="true">
+			
+		<description>Relatório de Adesões dos Beneficiários</description>
+		
+		<html>
+			<![CDATA[ <infoway:mensagemInformacao mensagem="Relatório que informa a quantidade de adesões dos Beneficiários no determinado período"/> ]]>
+		</html>
+
+		<report-param name="dataInicial" type="java.lang.String" display-name="Data inicial" input-type="date"/>
+		<report-param name="dataFinal" type="java.lang.String" display-name="Data final" input-type="date"/>
+		
+		<report-return name="resumo" type="br.com.infowaypi.ecare.segurados.ResumoSegurados" 
+		         display-name="Resultado Encontrado">
+		         
+			<html>
+				<![CDATA[ <infoway:tableSeparator titulo="Informações Gerais" colspan="2"/> ]]>
+			</html>	
+			<display-property name="numeroTotalDeAdesoes" align="left" display-name="Quantidade Total de Adesões"/>	
+			<display-property name="numeroTotalDeAdesoesNoPeriodo" align="left" display-name="Quantidade de Adesões no Período Informado"/>
+			<display-property name="porcentagemTotalDeAdesoes" display-name="Porcentagem Adesões no Período Informado" type="percentage"/>	
+			
+			<html>
+				<![CDATA[ <infoway:tableSeparator titulo="Informações sobre Titulares" colspan="2"/> ]]>
+			</html>
+			<display-property name="numeroTotalDeAdesoesDeTitulares" display-name="Quantidade de Adesões de Titulares"/>	
+			<display-property name="numeroTotalDeAdesoesNoPeriodoTitulares" display-name="Quantidade de Adesões de Titulares no Período informado"/>	
+			<display-property name="porcentagemTotalDeAdesoesTitulares" display-name="Porcentagem Adesões de Titulares no Período Informado" type="percentage"/>	
+			
+			<html>
+				<![CDATA[ <infoway:tableSeparator titulo="Informações sobre Pensionistas" colspan="2"/> ]]>
+			</html>
+			<display-property name="numeroTotalDeAdesoesDePensionistas" display-name="Quantidade de Adesões de Pensionistas"/>	
+			<display-property name="numeroTotalDeAdesoesNoPeriodoPensionistas" display-name="Quantidade de Adesões de Pensionistas no Período informado"/>	
+			<display-property name="porcentagemTotalDeAdesoesPensionistas" display-name="Porcentagem Adesões de Pensionistas no Período Informado" type="percentage"/>	
+			
+			<html>
+				<![CDATA[ <infoway:tableSeparator titulo="Informações sobre Dependentes Diretos" colspan="2"/> ]]>
+			</html>
+		    <display-property name="numeroTotalDeAdesoesDeDependentes" display-name="Quantidade de Adesões de Dependentes"/>  
+			<display-property name="numeroTotalDeAdesoesNoPeriodoDependentes" display-name="Quantidade de Adesões de Dependentes no Período informado"/>			    
+			<display-property name="porcentagemTotalDeAdesoesDependentes" display-name="Porcentagem Adesões de Dependentes no Período Informado" type="percentage"/>	
+		    
+		    <html>	
+		    	<![CDATA[ <infoway:tableSeparator titulo="Informações sobre Dependentes Suplementares" colspan="2"/> ]]>
+			</html>
+		    <display-property name="numeroTotalDeAdesoesDeDependentesSuplementares" display-name="Quantidade de Adesões de Dependentes"/>  
+			<display-property name="numeroTotalDeAdesoesNoPeriodoDependentesSuplementares" display-name="Quantidade de Adesões de Dependentes no Período informado"/>			    
+			<display-property name="porcentagemTotalDeAdesoesDependentesSuplementares" display-name="Porcentagem Adesões de Dependentes no Período Informado" type="percentage"/>	
+		              
+		</report-return>
+
+	</report>
+	
+</jheat-mapping>

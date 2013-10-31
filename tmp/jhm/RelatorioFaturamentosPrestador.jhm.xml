@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<report
+		name="relatorioFaturamentoPrestador"
+		method-name="gerarRelatorio"
+		class="br.com.infowaypi.ecare.services.RelatorioFaturamento"
+		display-name="Faturamentos Detalhados" section="relatoriosPrestador,relatorioAnestesista" response-by-ajax="false">
+		
+		<description>Relatório Faturamentos do Prestador por Competência</description>
+		
+		<report-param name="competencia" required="true" type="java.lang.String" display-name="Competência" mask="99/9999" input-type="month-year"/>
+		
+		<select-param name="tipoFaturamento" display-name="" type="java.lang.Integer">
+			<constants-group class="br.com.infowaypi.ecarebc.constantes.Constantes" name="Tipo Faturamento">
+				<entry display-name="Nenhum" key-value="TIPO_FATURAMENTO_NENHUM"/>
+				<entry display-name="Faturamento Normal" key-value="TIPO_FATURAMENTO_NORMAL"/>
+				<entry display-name="Faturamento Capitação" key-value="TIPO_FATURAMENTO_CAPITACAO"/>
+				<entry display-name="Faturamento Passivo" key-value="TIPO_FATURAMENTO_PASSIVO"/>
+			</constants-group>
+		</select-param>
+		
+		<session-param name="prestador" />
+		<session-param name="usuario" />
+		
+		<report-return name="resumo" type="br.com.infowaypi.ecare.resumos.ResumoFaturamentosSR"
+			display-name="Resumo de Faturamentos">
+		 
+			<html>
+				<![CDATA[ <infoway:tableSeparator titulo="Resumo Geral" colspan="2"/> ]]>
+			</html>
+			<display-property name="faturamento.prestador.pessoaJuridica.fantasia" align="left" display-name="Prestador"/>
+			<display-property name="faturamento.prestador.pessoaJuridica.cnpj" display-name="CPF/CNPJ"/>
+			<display-property name="faturamento.descricaoCategoria" display-name="Categoria"/>
+			<display-property name="faturamento.descricaoStatus" display-name="Situação"/>
+			<display-property name="faturamento.numeroEmpenho" display-name="Número do empenho"/>
+			<display-property name="faturamento.dataPagamento" display-name="Data de pagamento" type="date"/>
+			<display-property name="competencia" type="month-year" align="left" display-name="Competência Base"/>
+			<display-property name="valorConsultas" display-name="Consultas" align="right" type="money" />
+			<display-property name="valorExames" display-name="Exames" align="right" type="money" />
+			<display-property name="valorConsultasOdonto" display-name="Cons. Odonto" align="right" type="money" />
+			<display-property name="valorExamesOdonto" display-name="Ex. Odonto" align="right" type="money" />
+			<display-property name="valorAtendimentosUrgencia" display-name="Atend. Urgências" align="right" type="money" />
+			<display-property name="valorInternacoes" display-name="Internações" align="right" type="money" />
+			<display-property name="valorGuiasHonorario" display-name="Guias de Honorário" align="right" type="money" />
+			<display-property name="valorRecursosDeferidos" display-name="Recursos Deferidos" align="right" type="money" />
+			<display-property name="valorGuiasAcompanhamentoAnestesico" display-name="Guias de Acompanhamento Anestésico" align="right" type="money" />
+			<display-property name="valorBrutoSemAlteracoes" display-name="Valor Bruto" type="money"/>
+			<display-property name="valorSaldoAlteracoes" display-name="Saldo de Alterações" type="money"/>
+			<display-property name="valorBruto" display-name="Valor Pago" align="right" type="money" />
+			
+			<html>
+				<![CDATA[ <infoway:tableSeparator titulo="Resumo Alterações" colspan="2"/> ]]>
+			</html>
+			<collection-display display-name="Resumo Alterações" name="faturamento.alteracoesFaturamentoAtivos">
+				<display-property name="motivo" type="string" display-name="Motivo"/>
+				<display-property name="valorIncremento" type="money" display-name="Valor Incremento"/>
+				<display-property name="valorDecremento" type="money" display-name="Valor Decremento"/>
+			</collection-display>
+
+			<html>
+			<![CDATA[
+				<%@ include file="/view/jsp/includes/RelatorioFaturamentosDetalheHonorarios.jsp" %>
+				<%@ include file="/view/jsp/includes/RelatorioFaturamentosDetalheRecursosDeferidos.jsp" %>
+				<%@ include file="/view/jsp/includes/RelatorioFaturamentosGuiasDoPrestador.jsp" %>
+				]]>
+			</html>
+		
+		</report-return>
+		
+	</report>
+	
+</jheat-mapping>

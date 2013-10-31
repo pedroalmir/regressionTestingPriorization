@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+<flow
+	name="ReimprimirGuiasPrestadorAnestesista" 
+	class="br.com.infowaypi.ecare.services.ReimpressaoDeGuiasService"
+	display-name="Visualizar/Imprimir Guia" section="relatorioAnestesista">
+		
+	<description>Visualização/Impressão da 2ª Via de Guias</description>
+		
+	<step-method name="buscarGuia" display-name="Informar Número de Autorização" title="Informar Número de Autorização" buttons-position="bottom">
+		<step-param name="autorizacao" input-type="string" size="12" type="java.lang.String" display-name="Autorização" />
+		<session-param name="prestador" operation="none"/>
+		<step-return name="guia" type="br.com.infowaypi.ecarebc.atendimentos.GuiaSimples" display-name="Guia de Internacao Eletiva" scope="session" />		
+	</step-method>
+	
+	<step-method name="finalizar" display-name="Imprimir Comprovante de Confirmação" title="Imprimir Comprovante">
+			
+		<session-param name="guia" operation="none"/>
+		
+		<html>
+			<![CDATA[ 
+				<span class="not-for-print">
+					<button type="button" name="imprimir" class="actionButton" onclick="window.print();">Imprimir</button>
+				</span>
+				<infoway:GuiaApresentacao guiaApresentacao="${guia}"/>
+			]]>
+		</html>
+		
+		<html>
+			<![CDATA[
+					<c:choose> 
+					  <c:when test="${guia.guiaImpressaoNova}"> 
+					    <c:choose>
+					    	<c:when test="${guia.honorarioMedico}" >
+						  		<infoway:imprimirGuiaHonorarioMedico guia="${guia}"/>
+						  	</c:when>
+						  	<c:when test="${guia.exame}" >
+						  		<infoway:imprimirGuiaExame titulo="REIMPRESSAO DE GUIA"/>
+						  	</c:when>
+						  	<c:when test="${guia.acompanhamentoAnestesico}" >
+						  		<infoway:imprimirGuiaAcompanhamentoAnestesico guia="${guia}"/>
+						  	</c:when>
+						  	<c:otherwise> 
+							    <infoway:imprimirGuiaInternacao titulo="REIMPRESSAO DE GUIA"/> 
+							</c:otherwise> 
+						</c:choose> 
+					  </c:when> 
+					  <c:otherwise> 
+					    <infoway:imprimirGuiaExameEGAAConfirmacaoExame guiaCompleta="${guia}" guiaAcompanhamentoAnestesico="${guia.guiaAcompanhamentoAnestesicoDeExame}" titulo="REIMPRESSAO DE GUIA"/> 
+					  </c:otherwise> 
+					</c:choose> 
+					<span class="not-for-print">
+						<button type="button" name="imprimir" class="actionButton" onclick="window.print();">Imprimir</button>
+					</span>
+			]]>
+			</html>
+		
+	</step-method>
+</flow>	
+</jheat-mapping>

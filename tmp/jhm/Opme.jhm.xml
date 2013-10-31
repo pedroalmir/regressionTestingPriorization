@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+	
+	<class-mapping class="br.com.infowaypi.ecarebc.opme.Opme" name="Opme" display-name="Órtese/Prótese/Material Especial" 
+		id-name="idOpme" link-for-detail="descricao" type="simple" section="cadastros, cadastrosRedeCredenciada, cadastrosAuditor">
+		
+		<description>Cadastro de Órteses, Próteses ou Materiais Especiais</description>
+		
+		<property name="codigo" type="string" not-null="true">
+			<display name="Código" options="listing,search"/>
+	    </property>
+	    
+		<property name="descricao" type="string" not-null="true">
+			<display name="Descrição" options="listing,search"/>
+	    </property>
+	    
+		<property name="situacao.descricao" type="string" not-null="false" calculated="true" >
+			<display name="Situação" options="listing, detail-only" />
+	    </property>
+
+		<methods>
+			<method name="ativar" display-name="Ativar">
+				<step-param name="motivo" type="java.lang.String" display-name="Motivo"/>
+				<access-restriction name="roleRestriction" type="edit">
+					<session-restriction name="roleResriction" property="usuario.role" value="root" operation="notequals"/>
+				</access-restriction>
+				<messages>
+                    <question>Deseja reativar este OPME?</question>
+                    <success>Situação alterada com sucesso. OPME Reativado.</success>
+                    <error>Ocorreu um erro ao alterar a situação do OPME. Tente novamente.</error>
+				</messages>				
+			</method>
+			<method name="desativar" display-name="Desativar">
+				<step-param name="motivo" type="java.lang.String" display-name="Motivo"/>
+				<access-restriction name="roleRestriction" type="edit">
+					<session-restriction name="roleResriction" property="usuario.role" value="root" operation="notequals"/>
+				</access-restriction>
+				<messages>
+                    <question>Deseja desativar este OPME?</question>
+                    <success>Situação alterada com sucesso. OPME Inativo.</success>
+                    <error>Ocorreu um erro ao alterar a situação do OPME. Tente novamente.</error>
+				</messages>				
+			</method>
+		</methods>
+
+	    <validate-method name="validate">
+	    	<session-param name="usuario"/>
+	    </validate-method>
+	    
+	</class-mapping>
+
+</jheat-mapping>

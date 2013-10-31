@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+	<report
+		name="relatorioCobranca"
+		method-name="buscarCobrancas"
+		class="br.com.infowaypi.ecare.relatorio.financeiro.RelatorioCobrancaService"
+		display-name="Relatorio de Cobranças" section="relatorioCobranca" response-by-ajax="false"
+		roles="root">
+
+		<description> Relatório de Cobranças(Boletos) </description>
+
+		<report-param name="dataInicial" required="true" scope="user" type="java.util.Date" display-name="Data inicial" input-type="date"/>
+		<report-param name="dataFinal" required="true" type="java.util.Date" display-name="Data final" input-type="date"/>
+		
+		<report-param name="numeroDoCartao" size="24" mask="99.9999999999.99.9-9" input-type="string" type="java.lang.String" display-name="Número do cartão do beneficiário"/>
+		
+		<select-param display-name="Tipo da Situacao" name="tipoDeSituacao" type="java.lang.String">
+			<constants-group name="Tipo da situacao" class="br.com.infowaypi.ecare.relatorio.financeiro.ResumoCobranca">
+				<entry display-name="Todos" key-value="TODOS_BOLETOS"/>
+				<entry display-name="Aberto" key-value="BOLETOS_SITUACAO_ABERTO"/>
+				<entry display-name="Pago" key-value="BOLETOS_SITUACAO_PAGO"/>
+				<entry display-name="Cancelado" key-value="BOLETOS_SITUACAO_CANCELADO"/>
+			</constants-group>
+		</select-param>
+		
+		<select-param display-name="Tipo de Data" name="tipoDeData" type="java.lang.Integer">
+			<constants-group name="Tipo de Data" class="br.com.infowaypi.ecare.relatorio.financeiro.ResumoCobranca">
+				<entry display-name="Vencimento" key-value="DATA_DE_VENCIMENTO"/>
+				<entry display-name="Pagamento" key-value="DATA_DE_PAGAMENTO"/>
+			</constants-group>
+		</select-param>
+		
+		<report-return name="resumo" type="br.com.infowaypi.ecare.relatorio.financeiro.ResumoCobranca" display-name="Resultado Encontrado">
+			<html>
+			<![CDATA[
+				<%@ include file="/view/jsp/includes/RelatorioCobrancas.jsp" %>
+				]]>
+			</html>	
+			
+			<collection-display display-name="Listagem das Cobrancas" name="todosOsBoletos" page-size="50" >
+				<display-property name="titular.pessoaFisica.nome" display-name="Titular" />
+				<display-property name="situacao.descricao" display-name="Situação" />
+				<display-property name="dataVencimento" display-name="Vencimento" type="date"/>
+				<display-property name="dataPagamento" display-name="Pagamento" type="date" />
+				<display-property name="competencia" display-name="Competência" type="date"/>
+				<display-property name="valorCobrado" display-name="Valor Cobrado" type="money" />
+				<display-property name="valorPago" display-name="Valor Pago" type="money" />
+			</collection-display>
+		</report-return>
+	</report>	
+	
+</jheat-mapping>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+	<class-mapping class="br.com.infowaypi.ecarebc.procedimentos.ProcedimentoAnamnese" name="ProcedimentoAnamnese" display-name="ProcedimentoAnamnese"
+	id-name="idProcedimento" link-for-detail="guia.autorizacao" type="readonly" depends="guia">
+	
+		<many-to-one options="listing,detail-only"
+			class="br.com.infowaypi.ecarebc.atendimentos.GuiaSimples" 
+			name="guia" display-name="Guia" >
+			<display-property name="autorizacao"/>
+		</many-to-one>
+
+		<many-to-one options="listing,search"
+			class="br.com.infowaypi.ecarebc.procedimentos.TabelaCBHPM"
+  			name="procedimentoDaTabelaCBHPM" display-name="Procedimento" autocomplete="true">
+			<display-property name="codigoEDescricao"/>
+
+		    <restrictions>
+				<restriction property-name="situacao.descricao" property-value="Ativo(a)"/>
+		    	<restriction property-name="tipo" type="notequals" property-value="2"/>
+		    	<restriction property-name="grupo" type="notequals" property-value="1"/>
+		    	<!-- Procedimentos Anestesicos. -->
+		    	<restriction property-name="codigo" type="notequals" property-value="90000001"/>
+		    	<restriction property-name="codigo" type="notequals" property-value="90000002"/>
+		    	<restriction property-name="codigo" type="notequals" property-value="90000003"/>
+		    	<restriction property-name="codigo" type="notequals" property-value="90000004"/>
+			</restrictions>
+		</many-to-one>
+
+		<property name="autorizadoString" type="string">
+			<display options="listing,detail-only" name="Autorizado"/>
+		</property>
+		
+		<property name="motivoRegulacao" type="string">
+			<display name="Motivo" options="listing,detail-only"/>
+	    </property>
+	
+		<property name="dataRealizacao" type="date">
+			<display options="listing,detail-only" mask="dd/MM/yyyy" name="Data de Realização"/>
+		</property>
+	
+	</class-mapping>
+
+</jheat-mapping>

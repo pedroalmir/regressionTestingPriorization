@@ -1,0 +1,423 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE jheat-mapping PUBLIC
+    "-//JHeat/JHeat DTD 1.0//BR"
+    "http://www.infoway-pi.com.br/jheat.dtd">
+
+<jheat-mapping>
+	<flow name="flowPainelDeControle" display-name="Painel De Controle"
+		class="br.com.infowaypi.ecare.utils.FlowPainelDeControle" section="cadastros"
+		roles="root">
+
+		<description>Painel de Controle</description>
+
+		<step-method display-name="Visualizar" name="carregarPainel"
+			buttons-position="bottom">
+			<html>
+				<![CDATA[ <infoway:mensagemAlerta mensagem="Para alterar as configurações do painel de controle clique em avançar."/> ]]>
+			</html>
+
+			<session-param name="painelDeControle"
+				type="br.com.infowaypi.ecarebc.painelDeControle.PainelDeControle">
+
+				<html>
+		      	<![CDATA[ <fieldset> <infoway:tableSeparator titulo="Carências" colspan="2" /> </fieldset> ]]>
+				</html>
+				<display-property name="carenciaDLPs" display-name="Carência de DLPs" />
+
+				<html>
+		      	<![CDATA[ <fieldset> <infoway:tableSeparator titulo="Prazos" colspan="2" /> </fieldset> ]]>
+				</html>
+
+				<display-property name="prazoDeEntregaDeLoteSemMulta"
+					display-name="Prazo para entrega de lote sem multa" />
+				<display-property name="prazoFinalParaEntregaDeLote"
+					display-name="Prazo máximo para entrega de lote" />
+				<display-property name="multaPorAtrasoDeEntregaDeLote"
+					display-name="Multa por atraso de entrega de lote" />
+				<display-property name="dataVigenciaPrazoFinalEntregaDeLote"
+					display-name="Data de início da vigência" type="date" />
+				<display-property name="tempoLimiteRecursoGlosa" 
+					display-name="Prazo máximo para recursar glosa" />
+
+				<html>
+		      	<![CDATA[ <fieldset> <infoway:tableSeparator titulo="Calculo de financiamento" colspan="2" /> </fieldset> ]]>
+				</html>
+
+				<display-property name="aliquotaDeFinanciamento"
+					display-name="Aliquota de Financiamento sobre o salário" />
+				<display-property name="salarioBaseLimite"
+					display-name="Salário Base de Cáculo" />
+				<display-property name="quantidadeMaximaDeSalarios"
+					display-name="Quantidade de Salários Mínimos" />
+				<display-property name="valorSalarioMinimoVigente"
+					display-name="Valor do Salário Mínimo Vigente" />
+				
+				<display-property name="periodicidadeTratamentoOdonto"
+					display-name="Periodicidade de Tratamentos Odonto" />
+					
+				<display-property name="quantidadeTratementoOdonto"
+					display-name="Quantidade de Tratamentos Odonto" />
+					
+		 	    <collection-display display-name="E-mails (para o envio de informações do Portal do Beneficiário)" name="emailsPortal" >
+				 	<display-property name="email" align="left" size="40"/>
+				 </collection-display>
+				 
+				<display-property name="quantidadeDiasEnvioPrimeiroEmail" display-name="Quantidade de Dias para Envio do 1o. Email"/>
+				<collection-display name="emailsContratos" display-name="E-mails - Envio de informações dos contratos de prestadores">
+					<display-property name="email" display-name="Email" type="string"/>					
+				</collection-display>
+				 
+				 <html>
+		      		<![CDATA[ <fieldset> <infoway:tableSeparator titulo="Procedimentos dobrados" colspan="2" /> </fieldset> ]]>
+				</html>
+
+				<display-property name="procedimentoValoradoPeloPorte" 
+				type="boolean" display-name="Procedimentos valorados pelo porte"/>
+				
+	    		<display-property name="procedimentoDobrado" 
+				type="boolean" display-name="Valor dos procedimentos dobrados por tipo de acomodação"/>
+								 
+				 <collection-display display-name="Tipos de Acomodação para dobrar valor do procedimento" name="tiposDeAcomodacaoDobradas" >
+				 	<display-property name="descricao" align="left" size="20"/>
+				 </collection-display>
+				 
+				 <!-- Reguladores -->
+				 
+				 <html>
+		      		<![CDATA[ <fieldset> <infoway:tableSeparator titulo="Avisos para reguladores" colspan="2" /> </fieldset> ]]>
+				</html>
+				 
+				 <display-property name="smsIntervaloVerificacaoEmMinutos" display-name="Intervalo de verificação (minutos)"/>
+					
+				 <display-property name="smsNumeroEmHorarioNaoComercial" display-name="Número de telefone para horário não comercial"/>
+				 
+				 <display-property name="emailRegulador" display-name="E-mail regulador"/>
+
+				<collection-display display-name="Horários para enviar" name="smsHorarios" >
+				 	<display-property name="inicioDoIntervalo" display-name="Início do intervalo"/>
+				 	<display-property name="finalDoIntervalo" display-name="Final do intervalo"/>
+				 	<display-property name="tipoDeMensagem" display-name="Tipo de mensagem"/>
+				 </collection-display>
+				 
+				 <display-property name="prazoSolicitacaoEmConsultaUrgencia" display-name="Prazo Máximo para Solicitação em Consulta de Urgência"/>
+
+			     </session-param>
+		
+             
+			<step-return display-name="Painel De Controle" name="painel"
+				type="br.com.infowaypi.ecarebc.painelDeControle.PainelDeControle"
+				scope="session" />
+		</step-method>
+
+		<step-method display-name="Alterar Painel" name="alterarPainel">
+
+			<update-param display-name="Painel De Controle" name="painel"
+				type="br.com.infowaypi.ecarebc.painelDeControle.PainelDeControle"
+				operation="none">
+
+				<html>
+		      	<![CDATA[ <infoway:tableSeparator titulo="Carências" colspan="2" /> ]]>
+				</html>
+				<update-property name="carenciaDLPs" size="3"
+					display-name="Carência de DLPs" input-type="int" type="java.lang.Integer" />
+
+
+				<html>
+		      	<![CDATA[  <infoway:tableSeparator titulo="Prazos" colspan="2" /> ]]>
+				</html>
+
+				<update-property name="prazoDeEntregaDeLoteSemMulta" 
+					size="3" display-name="Prazo para entrega de lote sem Multa"
+					input-type="int" type="java.lang.Integer" />
+				<update-property name="multaPorAtrasoDeEntregaDeLote"
+					size="5" type="java.math.BigDecimal" display-name="Multa por Atraso de Entrega de Lote (%)"
+					input-type="percentage" />
+				<update-property name="prazoFinalParaEntregaDeLote"
+					size="3" display-name="Prazo Máximo para entrega de lote"
+					input-type="int" type="java.lang.Integer" />
+				<update-property name="dataVigenciaPrazoFinalEntregaDeLote" 
+					size="12" display-name="Data de início da vigência" input-type="date"
+					type="java.util.Date" />
+				<update-property name="tempoLimiteRecursoGlosa" size="3" 
+					display-name="Prazo máximo para recursar glosa" input-type="int"
+					type="java.lang.Integer" />
+
+				<html>
+		      	<![CDATA[ <fieldset> <infoway:tableSeparator titulo="Calculo de financiamento" colspan="2" /> </fieldset> ]]>
+				</html>
+
+				<update-property name="aliquotaDeFinanciamento"
+					size="5" type="java.math.BigDecimal" display-name="Aliquota de Financiamento sobre o salário (%)" />
+				<update-property name="quantidadeMaximaDeSalarios" 
+					size="3" display-name="Quantidade de Salários Mínimos"
+					input-type="int" type="java.lang.Integer" />			
+				<update-property name="valorSalarioMinimoVigente"
+					size="15" type="java.math.BigDecimal" display-name="Valor do Salário Mínimo Vigente" />
+				
+				<update-property name="periodicidadeTratamentoOdonto" size="2" input-type="int"
+					display-name="Periodicidade de Tratamentos Odonto" type="java.lang.Integer"/>
+					
+				<update-property name="quantidadeTratementoOdonto" size="2" input-type="int"
+					display-name="Quantidade de Tratamentos Odonto" type="java.lang.Integer"/>
+				
+				<update-collection name="emailsPortal"   type="br.com.infowaypi.ecarebc.painelDeControle.EmailPainel"  display-name="E-mails (para o envio de informações do Portal do Beneficiário)"
+					 include-method="addEmail" exclude-method="removeEmail">
+
+					<update-insert> 
+						<update-property name="email" input-type="string"  align="left" width-percentage="20" display-name="E-mail"
+							editable="false"   />
+					</update-insert>
+					
+				</update-collection>
+				
+				<update-property name="quantidadeDiasEnvioPrimeiroEmail"
+					size="10" type="java.lang.Integer" display-name="Quantidade de Dias para Envio do 1o. Email" />
+				<update-collection name="emailsContratos"
+						type="br.com.infowaypi.ecarebc.painelDeControle.EmailPainel"
+						display-name="E-mails - Envio de informações dos contratos de prestadores"
+					 	include-method="addEmailContratos"
+					 	exclude-method="removeEmailContratos" >
+
+						<update-insert> 
+							<update-property name="email" input-type="string"  align="left" width-percentage="20" display-name="E-mail" editable="false" />
+						</update-insert>
+				</update-collection>
+				
+				 <html>
+		      		<![CDATA[ <fieldset> <infoway:tableSeparator titulo="Procedimentos dobrados" colspan="2" /> </fieldset> ]]>
+				</html>
+				
+				<update-property name="procedimentoValoradoPeloPorte" type="java.lang.Boolean"  
+				display-name="Procedimentos valorados pelo porte" input-type="boolean"/>
+				
+	    		<update-property name="procedimentoDobrado" type="java.lang.Boolean"  
+				display-name="Valor dos procedimentos dobrados por tipo de acomodação" input-type="boolean"/>
+				
+				<update-collection name="tiposDeAcomodacaoDobradas" type="br.com.infowaypi.ecarebc.procedimentos.TipoAcomodacao"  display-name="Tipos de Acomodação para dobrar valor do procedimento"
+					 include-method="addTipoDeAcomodacaoDobrada" exclude-method="removeTipoDeAcomodacaoDobrada" >
+					
+					<autocomplete style-class="autocomplete" minimum-characters="3">
+						<search-property name="descricao" display-name="Descricao"/>
+						<name-property name="descricao" display-name="Descricao"/>
+					</autocomplete>	
+			
+				</update-collection>
+				
+				<!-- Reguladores -->
+				 
+				 <html>
+		      		<![CDATA[ <fieldset> <infoway:tableSeparator titulo="Avisos para reguladores" colspan="2" /> </fieldset> ]]>
+				</html>
+				 
+				 <update-property name="smsIntervaloVerificacaoEmMinutos" display-name="Intervalo de verificação (minutos)" 
+				 					size="5" input-type="int" required="true" type="java.lang.Integer" />
+					
+				 <update-property name="smsNumeroEmHorarioNaoComercial" display-name="Número de telefone para horário não comercial" 
+				 					mask="(99)9999-9999" type="java.lang.String" required="true"/>
+				 					
+				 <update-property name="emailRegulador" display-name="E-mail regulador" 
+				 					type="java.lang.String" required="true"/>
+
+				<update-collection 
+					name="smsHorarios" 
+					field-name="smsHorarios"
+					display-name="Horários para enviar"
+					type="br.com.infowaypi.ecare.scheduller.sms.IntervaloDeTempo" include-method="addSmsHorario" exclude-method="removeSmsHorario">
+
+					<update-insert>
+					    <update-property name="inicioDoIntervalo" display-name="Início do intervalo" editable="false"/>
+	  			        <update-property name="finalDoIntervalo" display-name="Final do intervalo" editable="false"/>
+	  			        <update-property name="tipoDeMensagem" display-name="Tipo de mensagem" editable="false"/>
+					</update-insert>
+				</update-collection>
+				 	
+				<update-property name="prazoSolicitacaoEmConsultaUrgencia" display-name="Prazo Máximo para Solicitação em Consulta de Urgência" type="java.lang.Integer"/> 					
+			</update-param>
+
+			<step-return display-name="Painel De Controle" name="painel"
+				type="br.com.infowaypi.ecarebc.painelDeControle.PainelDeControle"
+				scope="session" />
+		</step-method>
+
+		<step-method display-name="Conferir Alterações" name="salvarPainel"
+			committed="true">
+			<session-param name="painel"
+				type="br.com.infowaypi.ecarebc.painelDeControle.PainelDeControle">
+
+				<html>
+		      	<![CDATA[ <fieldset> <infoway:tableSeparator titulo="Carências" colspan="2" /> </fieldset> ]]>
+				</html>
+				<display-property name="carenciaDLPs" display-name="Carência de DLPs" />
+
+
+				<html>
+		      	<![CDATA[ <fieldset> <infoway:tableSeparator titulo="Prazos" colspan="2" /> </fieldset> ]]>
+				</html>
+				<display-property name="prazoDeEntregaDeLoteSemMulta"
+					display-name="Prazo para entrega de lote sem Multa" />
+				<display-property name="multaPorAtrasoDeEntregaDeLote"
+					display-name="Multa por Atraso de Entrega de Lote" />
+				<display-property name="prazoFinalParaEntregaDeLote"
+					display-name="Prazo para entrega de lote" />
+				<display-property name="dataVigenciaPrazoFinalEntregaDeLote"
+					display-name="Data de início da vigência" type="date" />
+				<display-property name="tempoLimiteRecursoGlosa" 
+					display-name="Prazo máximo para recursar glosa" />
+
+				<html>
+		      	<![CDATA[ <fieldset> <infoway:tableSeparator titulo="Calculo de financiamento" colspan="2" /> </fieldset> ]]>
+				</html>
+
+				<display-property name="aliquotaDeFinanciamento"
+					display-name="Aliquota de Financiamento sobre o salário" />
+				<display-property name="salarioBaseLimite"
+					display-name="Salário Base de Cáculo" />
+				<display-property name="quantidadeMaximaDeSalarios"
+					display-name="Quantidade de Salários Mínimos" />
+				<display-property name="valorSalarioMinimoVigente"
+					display-name="Valor do Salário Mínimo Vigente" />
+				
+				<display-property name="procedimentoValoradoPeloPorte" 
+				type="boolean" display-name="Procedimentos valorados pelo porte"/>
+				
+	    		<display-property name="procedimentoDobrado" 
+				type="boolean" display-name="Valor de procedimentos dobrados por tipo de acomodação"/>
+				
+				<display-property name="periodicidadeTratamentoOdonto"
+					display-name="Periodicidade de Tratamentos Odonto" />
+					
+				<display-property name="quantidadeTratementoOdonto"
+					display-name="Quantidade de Tratamentos Odonto" />
+				
+			     <collection-display  display-name="E-mails (para o envio de informações do Portal do Beneficiário)"  name="emailsPortal" >
+				 	<display-property name="email" align="left" size="40"/>
+				 </collection-display>
+				 
+				<display-property name="quantidadeDiasEnvioPrimeiroEmail" display-name="Quantidade de Dias para Envio do 1o. Email"/>
+				<collection-display name="emailsContratos" display-name="E-mails - Envio de informações dos contratos de prestadores">
+					<display-property name="email" display-name="Email" type="string"/>					
+				</collection-display>
+				 
+				 <collection-display display-name="Tipos de Acomodação para dobrar valor do procedimento" name="tiposDeAcomodacaoDobradas" >
+				 	<display-property name="descricao" align="left" size="20"/>
+				 </collection-display>
+				 
+				   <!-- SMS -->
+				 
+				 <html>
+		      		<![CDATA[ <fieldset> <infoway:tableSeparator titulo="SMS Regulador" colspan="2" /> </fieldset> ]]>
+				</html>
+				 
+				 <display-property name="smsIntervaloVerificacaoEmMinutos" display-name="Intervalo de verificação (minutos)"/>
+					
+				 <display-property name="smsNumeroEmHorarioNaoComercial" display-name="Número de telefone para horário não comercial"/>
+				 
+				 <display-property name="emailRegulador" display-name="E-mail regulador"/>
+
+				<collection-display display-name="Horários para enviar" name="smsHorarios" >
+				 	<display-property name="inicioDoIntervalo" display-name="Início do intervalo"/>
+				 	<display-property name="finalDoIntervalo" display-name="Final do intervalo"/>
+				 	<display-property name="tipoDeMensagem" display-name="Tipo de mensagem"/>
+				 </collection-display>
+				 
+				 <display-property name="prazoSolicitacaoEmConsultaUrgencia" display-name="Prazo Máximo para Solicitação em Consulta de Urgência"/>
+				 
+			</session-param>
+
+			<step-return display-name="Painel De Controle" name="painel"
+				type="br.com.infowaypi.ecarebc.painelDeControle.PainelDeControle"
+				scope="session" />
+		</step-method>
+
+		<step-method display-name="Nova Configuração" name="finalizar">
+
+			<html>
+				<![CDATA[ <infoway:mensagemSucesso mensagem="Configurações salvas com sucesso."/> ]]>
+			</html>
+
+			<session-param name="painel"
+				type="br.com.infowaypi.ecarebc.painelDeControle.PainelDeControle">
+				<html>
+		      	<![CDATA[ <fieldset> <infoway:tableSeparator titulo="Carências" colspan="2" /> </fieldset> ]]>
+				</html>
+				<display-property name="carenciaDLPs" display-name="Carência de DLPs" />
+				<html>
+		      	<![CDATA[ <fieldset> <infoway:tableSeparator titulo="Prazos" colspan="2" /> </fieldset> ]]>
+				</html>
+				<display-property name="prazoDeEntregaDeLoteSemMulta"
+					display-name="Prazo para entrega de lote sem Multa" />
+				<display-property name="multaPorAtrasoDeEntregaDeLote"
+					display-name="Multa por Atraso de Entrega de Lote" />
+				<display-property name="prazoFinalParaEntregaDeLote"
+					display-name="Prazo para entrega de lote" />
+				<display-property name="dataVigenciaPrazoFinalEntregaDeLote"
+					display-name="Data de início da vigência" type="date" />
+				<display-property name="tempoLimiteRecursoGlosa" 
+					display-name="Prazo máximo para recursar glosa" />
+
+				<html>
+		      	<![CDATA[ <fieldset> <infoway:tableSeparator titulo="Calculo de financiamento" colspan="2" /> </fieldset> ]]>
+				</html>
+
+				<display-property name="aliquotaDeFinanciamento"
+					display-name="Aliquota de Financiamento sobre o salário" />
+				<display-property name="salarioBaseLimite"
+					display-name="Salário Base de Cáculo" />
+				<display-property name="quantidadeMaximaDeSalarios"
+					display-name="Quantidade de Salários Mínimos" />
+				<display-property name="valorSalarioMinimoVigente"
+					display-name="Valor do Salário Mínimo Vigente" />
+					
+				<display-property name="periodicidadeTratamentoOdonto"
+					display-name="Periodicidade de Tratamentos Odonto" />
+					
+				<display-property name="quantidadeTratementoOdonto"
+					display-name="Quantidade de Tratamentos Odonto" />
+				
+			     <collection-display  display-name="E-mails (para o envio de informações do Portal do Beneficiário)"  name="emailsPortal" >
+				 	<display-property name="email" align="left" size="40"/>
+				 </collection-display>
+				 
+				<display-property name="quantidadeDiasEnvioPrimeiroEmail" display-name="Quantidade de Dias para Envio do 1o. Email"/>
+				<collection-display name="emailsContratos" display-name="E-mails - Envio de informações dos contratos de prestadores">
+					<display-property name="email" display-name="Email" type="string"/>					
+				</collection-display>
+				 
+				<html>
+		      		<![CDATA[ <fieldset> <infoway:tableSeparator titulo="Procedimentos dobrados" colspan="2" /> </fieldset> ]]>
+				</html>
+
+				<display-property name="procedimentoValoradoPeloPorte" 
+				type="boolean" display-name="Procedimentos valorados pelo porte"/>
+				
+	    		<display-property name="procedimentoDobrado" 
+				type="boolean" display-name="Valor dos procedimentos dobrados por tipo de acomodação"/>
+								 
+				 <collection-display display-name="Tipos de Acomodação para dobrar valor do procedimento" name="tiposDeAcomodacaoDobradas" >
+				 	<display-property name="descricao" align="left" size="20"/>
+				 </collection-display>
+				 
+				 <!-- Reguladores -->
+				 
+				 <html>
+		      		<![CDATA[ <fieldset> <infoway:tableSeparator titulo="Avisos para reguladores" colspan="2" /> </fieldset> ]]>
+				</html>
+				 
+				 <display-property name="smsIntervaloVerificacaoEmMinutos" display-name="Intervalo de verificação (minutos)"/>
+					
+				 <display-property name="smsNumeroEmHorarioNaoComercial" display-name="Número de telefone para horário não comercial"/>
+				 
+				 <display-property name="emailRegulador" display-name="E-mail regulador"/>
+
+				<collection-display display-name="Horários para enviar" name="smsHorarios" >
+				 	<display-property name="inicioDoIntervalo" display-name="Início do intervalo"/>
+				 	<display-property name="finalDoIntervalo" display-name="Final do intervalo"/>
+				 	<display-property name="tipoDeMensagem" display-name="Tipo de mensagem"/>
+				 </collection-display>
+				 
+				 <display-property name="prazoSolicitacaoEmConsultaUrgencia" display-name="Prazo Máximo para Solicitação em Consulta de Urgência"/>
+			</session-param>
+		</step-method>
+
+	</flow>
+</jheat-mapping>

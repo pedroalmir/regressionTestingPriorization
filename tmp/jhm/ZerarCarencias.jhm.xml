@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+<flow
+	name="zerarCarencias" 
+	class="br.com.infowaypi.ecare.services.suporte.ZerarCarenciasService"
+	display-name="Zerar Carências" section="flowSuporte">
+		
+	<description>Zerar Carências</description>
+		
+	<step-method name="buscarSegurado" display-name="Buscar Beneficiário" buttons-position="bottom">
+		<step-param name="cpfDoTitular" size="24" mask="999.999.999-99" input-type="string" type="java.lang.String" display-name="CPF do Titular"/>
+		<step-param name="numeroDoCartao" size="24" mask="99.9999999999.99.9-9" input-type="string" type="java.lang.String" display-name="Número do cartão do Titular"/>
+		<step-return display-name="Segurado" type="br.com.infowaypi.ecare.segurados.Segurado" name="segurado" scope="session"/>
+	</step-method>
+
+	<step-method name="zerarCarencias" display-name="Confirmar Operação" committed="true" buttons-position="bottom">
+		<session-param name="segurado" operation="none">
+				<display-property name="pessoaFisica.nome" display-name="Nome"/>
+				<display-property name="numeroDoCartao" display-name="Número do cartão"/>
+				<display-property name="pessoaFisica.cpf" display-name="CPF"/>
+				<display-property name="pessoaFisica.descricaoDoSexo" display-name="Sexo"/>
+				<display-property name="carenciaRestanteUrgencias" display-name="Carência restante para urgências (horas)"  type="int"/>
+				<display-property name="carenciaRestanteConsultasExamesDeBaixaComplexidade" display-name="Carência restante para consultas e Exames de baixa complexidade (dias)"  type="int"/>
+				<display-property name="carenciaRestanteExamesEspeciaisDeAltaComplexidadeCirurgiasEInternamento" display-name="Carência restante para exames de alta complexidade (dias)"  type="int"/>
+				<display-property name="carenciaRestanteExamesEspeciaisDeAltaComplexidadeCirurgiasEInternamento" display-name="Carência restante para cirurgias e internação (dias)"  type="int"/>
+				<display-property name="carenciaRestanteParaPartos" display-name="Carência restante para partos (dias)"  type="int"/>
+				<display-property name="carenciaRestanteParaDoencasPreExistentes" display-name="Carência restante doenças pré-existentes (dias)"  type="int"/>
+		</session-param>
+	</step-method>
+	
+	<step-method name="finalizar" display-name="Finalizar">
+		<html>
+			<![CDATA[
+				<infoway:mensagemSucesso mensagem="Carências zeradas!" />
+			]]>
+		</html>
+		<session-param name="segurado" operation="none">
+				<display-property name="pessoaFisica.nome" display-name="Nome"/>
+				<display-property name="numeroDoCartao" display-name="Número do cartão"/>
+				<display-property name="pessoaFisica.cpf" display-name="CPF"/>
+				<display-property name="pessoaFisica.descricaoDoSexo" display-name="Sexo"/>
+				<display-property name="carenciaRestanteUrgencias" display-name="Carência restante para urgências (horas)"  type="int"/>
+				<display-property name="carenciaRestanteConsultasExamesDeBaixaComplexidade" display-name="Carência restante para consultas e Exames de baixa complexidade (dias)"  type="int"/>
+				<display-property name="carenciaRestanteExamesEspeciaisDeAltaComplexidadeCirurgiasEInternamento" display-name="Carência restante para exames de alta complexidade (dias)"  type="int"/>
+				<display-property name="carenciaRestanteExamesEspeciaisDeAltaComplexidadeCirurgiasEInternamento" display-name="Carência restante para cirurgias e internação (dias)"  type="int"/>
+				<display-property name="carenciaRestanteParaPartos" display-name="Carência restante para partos (dias)"  type="int"/>
+				<display-property name="carenciaRestanteParaDoencasPreExistentes" display-name="Carência restante doenças pré-existentes (dias)"  type="int"/>
+		</session-param>
+	</step-method>
+	
+</flow>	
+</jheat-mapping>

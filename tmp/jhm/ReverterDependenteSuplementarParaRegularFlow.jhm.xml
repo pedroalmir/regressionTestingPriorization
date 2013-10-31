@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+<flow
+	name="ReverterDependenteSuplementarParaRegular" 
+	class="br.com.infowaypi.ecare.services.suporte.ReverterDependenteSuplementarParaRegularFlow"
+	display-name="Alterar Dependente Suplementar Para Dependente Regular" section="flowSuporte">
+		
+	<description>Alterar Dependente Suplementar Para Dependente Regular</description>
+		
+	<step-method name="buscaSegurado" display-name="Buscar Dependente" title="Buscar Dependente" buttons-position="bottom">
+		<step-param name="cartao" mask="99.9999999999.99.9-9" size="24" required="true" input-type="string" type="java.lang.String" display-name="Número do Cartão"/>
+			
+		<step-return name="dependenteSuplementar" type="br.com.infowaypi.ecare.segurados.DependenteSuplementar" 
+	         display-name="Dependente Suplementar" scope="session"/>
+	</step-method>
+		
+	<step-method name="reverterDependente" display-name="Mudar o Tipo de Segurado" title="Mudar o Tipo de Segurado" committed="true">
+		
+		<session-param name="usuario"/>
+		
+		<session-param name="dependenteSuplementar" display-name="Detalhes do Segurado" type="br.com.infowaypi.ecare.segurados.DependenteSuplementar">
+			<display-property name="pessoaFisica.nome" type="string" display-name="Nome do Segurado"/>
+			<display-property name="numeroDoCartao" display-name="Número do Cartão"/>
+			<display-property name="pessoaFisica.dataNascimento" type="date" display-name="Data de Nascimento"/>
+			<display-property name="tipoDeSegurado" type="string" display-name="Tipo de Segurado"/>
+			<display-property name="situacao.descricao" type="string" display-name="Situação(Sistema)"/>
+		</session-param>
+		
+		<step-return name="dependenteRegular" type="br.com.infowaypi.ecare.segurados.Segurado" 
+	         display-name="Dependente" scope="session"/>
+	</step-method>
+	
+	<step-method name="finalizar" display-name="Finalizar">
+		<html>
+			<![CDATA[
+				<infoway:mensagemSucesso mensagem="Tipo de segurado alterado para Dependente Regular!" />
+			]]>
+		</html>
+		<session-param name="dependenteRegular" display-name="Detalhes do Segurado" type="br.com.infowaypi.ecare.segurados.Segurado" operation="reload">
+			<display-property name="pessoaFisica.nome" type="string" display-name="Nome do Segurado"/>
+			<display-property name="numeroDoCartao" display-name="Número do Cartão"/>
+			<display-property name="pessoaFisica.dataNascimento" type="date" display-name="Data de Nascimento"/>
+			<display-property name="situacao.descricao" type="string" display-name="Situação(Sistema)"/>
+		</session-param>
+	</step-method>
+	
+</flow>	
+</jheat-mapping>

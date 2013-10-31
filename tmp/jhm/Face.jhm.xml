@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+	
+	<class-mapping class="br.com.infowaypi.ecarebc.odonto.Face" name="Face" display-name="Faces" 
+		id-name="idFace" link-for-detail="tipoFace" type="simple" section="cadastros">
+		
+		<description>Faces</description>
+		
+		<property name="descricao" type="string" not-null="true">
+			<display name="Descrição" options="search,detail-only"/>
+	    </property>
+	    
+	    <many-to-one options="none"
+			class="br.com.infowaypi.ecarebc.odonto.TipoFace" 
+			name="tipoFace" display-name="Tipo de Face" autocomplete="false">
+			<display-property name="tipo"/>
+		</many-to-one>
+		
+		<many-to-one options="listing"
+			class="br.com.infowaypi.ecarebc.odonto.Dente" 
+			name="dente" display-name="Dente" autocomplete="false">
+			<display-property name="descricao"/>
+		</many-to-one>
+	    
+		<!-- cadastros -->
+		<role name="root" insert="true" exec="true" update="true" read="true" write="true"/>
+		<role name="atendente" insert="false" exec="false" update="false" read="true" write="false"/>
+		
+		<validate-method name="validate"/>
+
+	</class-mapping>
+
+</jheat-mapping>

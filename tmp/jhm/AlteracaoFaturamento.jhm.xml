@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+	
+	<class-mapping class="br.com.infowaypi.ecarebc.financeiro.faturamento.AlteracaoFaturamento" name="AlteracaoFaturamento" 
+		display-name="Alterações de Faturamentos" id-name="idAlteracaoFaturamento" link-for-detail="data" type="dependent" section="">
+
+ 		<many-to-one class="br.com.infowaypi.ecarebc.financeiro.faturamento.AbstractFaturamento" 
+			name="faturamento" 
+	    	display-name="Faturamento" options="listing">
+			<display-property name="prestador.pessoaJuridica.fantasia"/>
+		</many-to-one>
+
+		<property name="data" type="date">
+			<display name="Data" options="listing"/>
+	    </property>  
+		
+		<property name="valorIncremento" type="bigdecimal">
+			<display name="Valor Incluído" options="listing"/>
+	    </property>
+	    
+	    <property name="valorDecremento" type="bigdecimal">
+			<display name="Valor Excluído" options="listing"/>
+	    </property>
+	    
+	    <property name="motivo" type="bigdecimal">
+			<display name="Motivo" options="listing"/>
+	    </property>	    
+
+	    <many-to-one options="listing,detail-only"
+			class="br.com.infowaypi.msr.user.Usuario" 
+			name="usuario" display-name="Usuário">
+			<display-property name="nome"/>
+		</many-to-one>
+
+	</class-mapping>
+
+</jheat-mapping>

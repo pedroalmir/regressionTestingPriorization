@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+
+<jheat-mapping>
+
+	<class-mapping
+		class="br.com.infowaypi.ecarebc.procedimentos.ProcedimentoCirurgico"
+		name="ProcedimentoCirurgico" display-name="Procedimento Cirúrgico"
+		id-name="idProcedimento"
+		link-for-detail="procedimentoDaTabelaCBHPM.codigoEDescricao"
+		type="readonly" depends="guia" section="cadastros">
+
+		<many-to-one options="detail-only"
+			class="br.com.infowaypi.ecarebc.atendimentos.GuiaCompleta"
+			name="guia" display-name="Guia">
+			<display-property name="autorizacao" />
+		</many-to-one>
+
+		<many-to-one options="listing,search"
+			class="br.com.infowaypi.ecarebc.procedimentos.TabelaCBHPM"
+			name="procedimentoDaTabelaCBHPM" display-name="Procedimento"
+			autocomplete="true">
+			<display-property name="codigoEDescricao" />
+
+			<restrictions>
+				<restriction property-name="situacao.descricao" property-value="Ativo(a)"/>
+				<restriction property-name="cirurgico" property-value="true" />
+				<restriction property-name="visibilidade" type="lowerequals" property-value="1" />
+				
+	    		<!-- Procedimentos Anestesicos. -->
+		    	<restriction property-name="codigo" type="notequals" property-value="90000001"/>
+		    	<restriction property-name="codigo" type="notequals" property-value="90000002"/>
+		    	<restriction property-name="codigo" type="notequals" property-value="90000003"/>
+		    	<restriction property-name="codigo" type="notequals" property-value="90000004"/>
+			</restrictions>
+		</many-to-one>
+		
+		<many-to-one options="listing,search,detail-only"
+			class="br.com.infowaypi.ecarebc.associados.Profissional"
+			name="profissionalResponsavel" display-name="Profissional"
+			minimum-characters="7" search-type="likerigth" not-null="false"
+			autocomplete="true" mask-detail="As 7 letras iniciais">
+			<display-property name="pessoaFisica.nome" type="string" />
+		</many-to-one>
+
+		<many-to-one options="listing,search,detail-only"
+			class="br.com.infowaypi.ecarebc.associados.Profissional"
+			name="profissionalAuxiliar1"
+			display-name="Primeiro profissional auxiliar" minimum-characters="7"
+			search-type="likerigth" not-null="false" autocomplete="true">
+			<display-property name="pessoaFisica.nome" />
+		</many-to-one>
+
+		<many-to-one options="listing,search,detail-only"
+			class="br.com.infowaypi.ecarebc.associados.Profissional"
+			name="profissionalAuxiliar2"
+			display-name="Segundo profissional auxiliar" minimum-characters="7"
+			search-type="likerigth" not-null="false" autocomplete="true">
+			<display-property name="pessoaFisica.nome" />
+		</many-to-one>
+
+		<many-to-one options="listing,search,detail-only"
+			class="br.com.infowaypi.ecarebc.associados.Profissional"
+			name="profissionalAuxiliar3"
+			display-name="Terceiro profissional auxiliar" minimum-characters="7"
+			search-type="likerigth" not-null="false" autocomplete="true">
+			<display-property name="pessoaFisica.nome" />
+		</many-to-one>
+		
+		<many-to-one options="listing,search,detail-only"
+			class="br.com.infowaypi.ecarebc.associados.Profissional"
+			name="anestesista" display-name="Anestesista" minimum-characters="7"
+			search-type="likerigth" not-null="false" autocomplete="true">
+			<display-property name="pessoaFisica.nome" />
+		</many-to-one>
+
+		<property name="bilateral" type="boolean">
+			<display name="Bilateral" options="listing,detail-only"
+				align="center" />
+		</property>
+
+		<property name="incluiVideo" type="boolean">
+			<display name="Inclui Vídeo" options="detail-only"
+				align="center" />
+		</property>
+
+		<property name="horarioEspecial" type="boolean">
+			<display name="Horário Especial" options="detail-only"
+				align="center" />
+		</property>
+
+		<select-property name="porcentagem" display-name="Porcentagem"
+			options="" null-option="true">
+			<entry display-name="50%" key-value="PORCENTAGEM_50" />
+			<entry display-name="70%" key-value="PORCENTAGEM_70" />
+			<entry display-name="100%" key-value="PORCENTAGEM_100" />
+		</select-property>
+
+		<property name="valorAtualDoProcedimento" type="money">
+			<display name="Valor Unitário"
+				options="listing,detail-only" />
+		</property>
+
+		<property name="valorAtualDaModeracao" type="percentage">
+			<display name="Moderação" options="listing,detail-only" />
+		</property>
+
+		<validate-method name="validate">
+			<session-param name="usuario" />
+		</validate-method>
+
+	</class-mapping>
+
+</jheat-mapping>

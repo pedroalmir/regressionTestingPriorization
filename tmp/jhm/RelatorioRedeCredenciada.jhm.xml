@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<report
+		name="relatorioRedeCredenciada"
+		method-name="buscarPrestadores"
+		class="br.com.infowaypi.ecare.services.RelatorioPrestadores"
+		display-name="Consulta a Rede Credenciada" 
+		section="portalBeneficiarioTitular, portalBeneficiarioDependente,aloSaudeSection,relatorioCentral,consultasCentralDeRelacionamento,relatoriosAuditor,relatorioFaturista">
+
+		<description>Prestadores Credenciados</description>
+		
+		<select-param
+				name="prestador" display-name="Escolha o prestador"
+				type="br.com.infowaypi.ecarebc.associados.Prestador" display-label-head="false">
+				<autocomplete style-class="autocomplete" minimum-characters="3" force-selection="true" mask-detail="As 3 letras iniciais">
+					<search-property name="pessoaJuridica.fantasia" display-name="Prestador"/>
+					<name-property name="pessoaJuridica.fantasia" display-name="Prestador"/>
+				</autocomplete>	
+		</select-param>
+		
+		<select-param
+			display-name="Escolha a especialidade" name="especialidade" 
+			type="br.com.infowaypi.ecarebc.associados.Especialidade" display-label-head="false">
+				<autocomplete style-class="autocomplete" minimum-characters="3" force-selection="true" mask-detail="As 3 letras iniciais">
+					<search-property name="descricao" display-name="Especialidade"/>
+					<name-property name="descricao" display-name="Especialidade"/>
+				</autocomplete>
+		</select-param>
+		
+		<select-param
+			display-name="Escolha o profissional" name="profissional" 
+			type="br.com.infowaypi.ecarebc.associados.Profissional" display-label-head="false" >
+				<autocomplete mask-detail="As 7 letras iniciais" style-class="autocomplete" minimum-characters="7" force-selection="true">
+					<search-property name="crmNome" display-name="Profissional"/>
+					<name-property name="crmNome" display-name="Profissional"/>
+				</autocomplete>
+		</select-param>
+		<select-param
+				name="municipio" display-name="Escolha o Municipio"
+				type="br.com.infowaypi.msr.address.Municipio" display-label-head="false">
+				<autocomplete style-class="autocomplete" minimum-characters="3" force-selection="true" mask-detail="As 3 letras iniciais">
+					<search-property name="descricao" display-name="Município"/>
+					<name-property name="descricao" display-name="Município"/>
+				</autocomplete>	
+		</select-param>
+		
+		<report-param display-name="Bairro" name="bairroCitado" input-type="string" size="35"/>
+
+		<html><![CDATA[<b>Modalidade Atendimento</b><br>]]></html>
+		<report-param name="eletivo" display-name="Eletivo" input-type="boolean" type="java.lang.Boolean"/>
+		<report-param name="urgencia" display-name="Urgência" input-type="boolean" type="java.lang.Boolean"/>
+		<report-param name="odontologico" display-name="Odontológico" input-type="boolean" type="java.lang.Boolean"/>
+		
+		<report-return name="resumo" type="br.com.infowaypi.ecarebc.associados.ResumoPrestadores" 
+			 display-name="">
+			<html>
+			<![CDATA[
+				<div class="not-for-print">
+				<fieldset ><legend>Resultado Encontrado</legend></fieldset>
+				</div>
+				<tr class="not-for-print">
+					<td style="color: rgb(153, 51, 0); text-align: right;" width="100">
+					<span>Rede Credenciada: </span></td>
+					<td style="text-align: left;"><span class="valuesColumn"><c:set
+						var="resumo" value="${resumo}" scope="session" /> <html:link
+						href="JHeatAction.do?action=download&sectionName=${sectionName}&propertyName=arquivoPdf.arquivo&objectSession=resumo&nameFile=arquivoPdf.tituloArquivo&fileType=pdf">
+						<bean:message key="pageOptions.file.download" />
+					</html:link></span></td>
+				</tr>
+					]]>
+			</html>		
+			
+			<html>
+			<![CDATA[
+				<div align="right">
+					<br>
+					<span class="not-for-print">
+						<button type="button" name="imprimir" class="actionButton" onclick="window.print();">Imprimir</button>
+					</span>
+					<br><br>			
+				</div>
+				 
+				<div class="not-for-print">	
+					<%@ include file="/view/jsp/includes/PrestadorDetalhe.jsp" %>
+				</div>
+				
+				<%@ include file="/view/jsp/includes/imprimirRedeCredenciada.jsp"%>
+
+				<div align="right">
+					<span class="not-for-print"> 
+						<br>
+						<button type="button" name="imprimir" class="actionButton" onclick="window.print();">Imprimir</button> 
+					</span>
+				</div> 
+				]]>
+			</html>	
+		</report-return>
+		
+		
+	</report>	
+	
+</jheat-mapping>

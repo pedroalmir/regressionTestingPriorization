@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<report 
+		name="relatorioSeguradosRecadastrados" 
+		method-name="gerarRelatorio"  
+		class="br.com.infowaypi.ecare.services.RelatorioSeguradosRecadastrados"
+		display-name="Relatório de Recadastramento e Questionário" section="consultasCentralDeRelacionamento,relatorioCentral,relatoriosAuditor,relatoriosGerenciaAdesao" response-by-ajax="true">
+			
+		<description>Relatório de Beneficiários Recadastrados</description>
+		
+		<html>
+			<![CDATA[ <infoway:mensagemInformacao mensagem="Relatório que informa a quantidade de beneficiário recadastrados."/> ]]>
+		</html>
+
+		<report-param name="dataInicial" type="java.lang.String" display-name="Data inicial" input-type="date"/>
+		<report-param name="dataFinal" type="java.lang.String" display-name="Data final" input-type="date"/>
+		
+		<!-- report-param name="exibirSegurado" type="java.lang.Boolean" display-name="Exibir Segurados" input-type="boolean"/-->
+		
+		<session-param name="usuario"/>
+		
+		<report-return name="resumos" type="br.com.infowaypi.ecare.segurados.ResumoSegurados" 
+		         display-name="Resultado Encontrado">
+		         
+			
+			<html>
+				<![CDATA[ <infoway:tableSeparator titulo="Informações Gerais(Todos os tipos de Beneficiários)" colspan="2"/> ]]>
+			</html>	
+			<display-property name="numeroTotalDeAdesoes" display-name="Total"/>	
+			<display-property name="totalDeSeguradosRecadastrados" display-name="Total Recadastrados"/>
+			<display-property name="porcentagemSeguradosRecadastrados" display-name="Porcentagem Recadastrados" type="percentage"/>
+			<display-property name="totalDeSeguradosComQuestionarioAplicado" display-name="Total com Questionário Aplicado"/>	
+			<display-property name="porcentagemSeguradosComQuestionarioAplicado" display-name="Porcentagem com Questionários Aplicados" type="percentage"/>
+
+			<html>
+				<![CDATA[ <infoway:tableSeparator titulo="Informações sobre Titulares" colspan="2"/> ]]>
+			</html>	
+			<display-property name="numeroTotalDeAdesoesDeTitulares" display-name="Total"/>	
+			<display-property name="totalDeTitularesRecadastrados" display-name="Total Recadastrados"/>
+			<display-property name="porcentagemTitularesRecadastrados" display-name="Porcentagem Recadastrados" type="percentage"/>
+			<display-property name="totalDeTitularesComQuestionarioAplicado" display-name="Total com Questionários Aplicados"/>
+			<display-property name="porcentagemTitularesComQuestionarioAplicado" display-name="Porcentagem com Questionários Aplicados" type="percentage"/>
+			
+			<html>
+				<![CDATA[ <infoway:tableSeparator titulo="Informações sobre Dependentes Diretos" colspan="2"/> ]]>
+			</html>	
+			<display-property name="numeroTotalDeAdesoesDeDependentes" display-name="Total"/>	
+			<display-property name="totalDeDependentesRecadastrados" display-name="Total Recadastrados"/>	
+			<display-property name="porcentagemDependentesRecadastrados" display-name="Porcentagem Recadastrados" type="percentage"/>
+			<display-property name="totalDeDependentesComQuestionarioAplicado" display-name="Total com Questionários Aplicados"/>	
+			<display-property name="porcentagemDependentesComQuestionarioAplicado" display-name="Porcentagem com Questionários Aplicados" type="percentage"/>
+
+			<html>
+				<![CDATA[ <infoway:tableSeparator titulo="Informações sobre Dependentes Suplementar" colspan="2"/> ]]>
+			</html>	
+			<display-property name="numeroTotalDeAdesoesDeDependentesSuplementares" display-name="Total"/>	
+			<display-property name="totalDeDependentesSuplementaresRecadastrados" display-name="Total Recadastrados"/>	
+			<display-property name="porcentagemDependentesSuplementaresRecadastrados" display-name="Porcentagem Recadastrados" type="percentage"/>
+			<display-property name="totalDeDependentesSuplementaresComQuestionarioAplicado" display-name="Total com Questionários Aplicados"/>	
+			<display-property name="porcentagemDependentesSuplementaresComQuestionarioAplicado" display-name="Porcentagem com Questionários Aplicados" type="percentage"/>
+			
+			<html>
+				<![CDATA[ <infoway:tableSeparator titulo="Informações sobre Pensionistas" colspan="2"/> ]]>
+			</html>	
+			<display-property name="numeroTotalDeAdesoesDePensionistas" display-name="Total"/>	
+			<display-property name="totalDePensionistasRecadastrados" display-name="Total Recadastrados"/>	
+			<display-property name="porcentagemPensionistasRecadastrados" display-name="Porcentagem Recadastrados" type="percentage"/>
+			<display-property name="totalDePensionistasComQuestionarioAplicado" display-name="Total com Questionários Aplicados"/>	
+			<display-property name="porcentagemPensionistasComQuestionarioAplicado" display-name="Porcentagem com Questionários Aplicados" type="percentage"/>
+			
+		</report-return>	
+		
+	</report>
+	
+</jheat-mapping>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+	
+	<class-mapping class="br.com.infowaypi.ecarebc.atendimentos.acordos.AcordoPorte" name="AcordoPorte" display-name="Acordo Porte" 
+		id-name="idAcordo" link-for-detail="descricao" type="dependent" depends="prestador" section="" roles="root,auditor,atendente,prestador">
+
+		<many-to-one
+			options=""
+			class="br.com.infowaypi.ecarebc.associados.Prestador"
+			name="prestador"
+			display-name="Prestador">
+			<display-property name="pessoaJuridica.fantasia"/>
+		</many-to-one>		
+		
+		<many-to-one class="br.com.infowaypi.ecarebc.procedimentos.Porte" name="porte" not-null="true"
+	    	display-name="Porte" autocomplete="true" options="listing,search">
+			<display-property name="descricao"/>
+		</many-to-one>
+		
+		<property name="valorProfissional" not-null="false" type="money">
+			<display name="Valor Profissional" options="listing,search"/>
+	    </property>  
+		
+		<property name="valorAnestesista" not-null="false" type="money">
+			<display name="Valor Anestesista" options="listing,search"/>
+	    </property>   
+
+		<property name="valorAuxiliar1" not-null="false" type="money">
+			<display name="Valor Auxiliar 1" options="listing,search"/>
+	    </property>  
+		
+		<property name="valorAuxiliar2" not-null="false" type="money">
+			<display name="Valor Auxiliar 2" options="listing,search"/>
+	    </property> 
+
+		<property name="valorAuxiliar3" not-null="false" type="money">
+			<display name="Valor Auxiliar 3" options="listing,search"/>
+	    </property>  
+		
+		<property name="valorAuxiliar4" not-null="false" type="money">
+			<display name="Valor Auxiliar 4" options="listing,search"/>
+	    </property> 
+    	
+		<property name="valorTaxaSala" not-null="false" type="money">
+			<display name="Valor Sala" options="listing,search"/>
+	    </property>
+		
+	</class-mapping>    
+	
+</jheat-mapping>

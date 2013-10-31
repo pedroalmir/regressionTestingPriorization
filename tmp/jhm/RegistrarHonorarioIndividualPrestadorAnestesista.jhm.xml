@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE jheat-mapping PUBLIC
+    "-//JHeat/JHeat DTD 1.0//BR"
+    "http://www.infoway-pi.com.br/jheat.dtd">
+    
+<jheat-mapping>
+	<flow name="registrarHonorarioIndividualPrestadorAnestesista" display-name="Registrar Honorário Individual" 
+		class="br.com.infowaypi.ecare.services.honorarios.RegistrarHonorarioIndividualPrestadorAnestesista" section="honorarioAnestesita"
+		roles="prestadorAnestesista">
+	
+		<description>Registra um honorário individual para prestador anestesista.</description>
+		
+		<!-- INFORMAR NÚMERO DA AUTORIZAÇÃO -->	
+		<step-method display-name="Informar Número de Autorização" name="buscarGuia" buttons-position="bottom">
+			<step-param name="autorizacao" required="true" input-type="string" size="12" type="java.lang.String" display-name="Autorização"/>	
+			<session-param name="prestador" operation="reload"/>
+		
+			<step-return display-name="" name="guiaOrigem" type="br.com.infowaypi.ecarebc.atendimentos.honorario.GeradorGuiaHonorarioInterface" scope="session"/>
+		</step-method>
+		
+		<!-- INFORMAR HONORÁRIOS -->
+		<step-method display-name="Informar Honorários" name="informarHonorarios">
+			<session-param name="prestador" operation="reload"/>
+			
+			<select-param operation="reload"
+				name="profissionaisNOME"
+				display-name="Médico(Nome)"
+				type="br.com.infowaypi.ecarebc.associados.Profissional" display-label-head="false" required="true">
+				<autocomplete mask-detail="Os 3 números iniciais" style-class="autocomplete" minimum-characters="3" force-selection="true">
+					<search-property name="crm" display-name="Médico(CRM)" search-type="likerigth"/>
+					<name-property name="crmNome" display-name="Médico(CRM)"/>
+				</autocomplete>
+			</select-param>
+			
+			<select-param name="grauDeParticipacao" display-name="Grau de Participação" 
+				type="java.lang.Integer" required="true"  operation="reload">
+				<enum-combo
+					class="br.com.infowaypi.ecarebc.enums.GrauDeParticipacaoEnum" 
+					display="getDescricao"  value="getCodigo" name="getDescricao">
+					<remove-entry key-value="RESPONSAVEL"/>
+					<remove-entry key-value="PRIMEIRO_AUXILIAR"/>
+					<remove-entry key-value="SEGUNDO_AUXILIAR"/>
+					<remove-entry key-value="TERCEIRO_AUXILIAR"/>
+				</enum-combo>
+			</select-param>
+
+			<html>
+				<![CDATA[<c:if test="${not empty guiaOrigem.procedimentosCirurgicosQueAindaPodemGerarHonorariosAnestesitas}">]]>
+			</html>
+
+			<update-param display-name="" name="guiaOrigem" 
+				type="br.com.infowaypi.ecarebc.atendimentos.honorario.GeradorGuiaHonorarioInterface">
+				<update-collection display-name="Procedimentos" name="procedimentosCirurgicosQueAindaPodemGerarHonorariosAnestesitas" 
+					type="br.com.infowaypi.ecarebc.procedimentos.ProcedimentoCirurgico">
+					<update-insert>
+					<update-property name="procedimentoDaTabelaCBHPM.codigo" display-name="Código" editable="false"/>
+						<update-property name="procedimentoDaTabelaCBHPM.descricao" display-name="Procedimento" editable="false"/>
+						<update-property name="profissionalResponsavel.pessoaFisica.nome" display-name="Profissional Responsável" editable="false"/>  			        
+	  			        <update-property name="quantidade" display-name="Quantidade" input-type="int" editable="false"/>
+						<update-property name="valorVirtualDoProcedimento" display-name="Valor Unitário" input-type="bigdecimal" editable="false" />
+	  			        <update-property name="valorTotal" display-name="Valor Total" input-type="bigdecimal" editable="false"/>
+						<update-select-property name="porcentagemProxy" display-name="Porcentagem" type="java.math.BigDecimal">
+							<constants-group class="br.com.infowaypi.ecarebc.procedimentos.ProcedimentoCirurgico">
+								<entry display-name="100%" key-value="PORCENTAGEM_100" />
+								<entry display-name="70%" key-value="PORCENTAGEM_70" />
+								<entry display-name="50%" key-value="PORCENTAGEM_50" />
+							</constants-group>
+						</update-select-property>
+						<update-property name="dataRealizacao" display-name="Data Realização" input-type="date" editable="true" type="java.util.Date"/>
+	  			        <update-property name="incluiVideoProxy" display-name="Inclui Vídeo" input-type="boolean" editable="true" type="java.lang.Boolean"/>
+						<update-property name="horarioEspecialProxy" display-name="Horário Especial" input-type="boolean" editable="true" type="java.lang.Boolean"/>
+						<update-property name="adicionarHonorario" display-name="Adicionar Honorario" input-type="boolean" type="java.lang.Boolean"/>
+					</update-insert>
+				</update-collection>
+			</update-param>
+			
+			<html>
+				<![CDATA[ 
+					</c:if> 
+					<c:if test="${not empty guiaOrigem.procedimentosNormaisQueAindaPodemGerarHonorariosAnestesitas}">
+				]]>
+			</html>
+
+			<update-param display-name="" name="guiaOrigem"
+				type="br.com.infowaypi.ecarebc.atendimentos.honorario.GeradorGuiaHonorarioInterface">
+				<update-collection display-name="Procedimentos Não Cirurgicos" name="procedimentosNormaisQueAindaPodemGerarHonorariosAnestesitas" 
+					type="br.com.infowaypi.ecarebc.procedimentos.Procedimento">
+					<update-insert>
+					<update-property name="procedimentoDaTabelaCBHPM.codigo" display-name="Código" editable="false"/>
+						<update-property name="procedimentoDaTabelaCBHPM.descricao" display-name="Procedimento" editable="false"/>
+						<update-property name="profissionalResponsavel.pessoaFisica.nome" display-name="Profissional Responsável" editable="false"/>  			        
+	  			        <update-property name="quantidade" display-name="Quantidade" input-type="int" editable="false"/>
+						<update-property name="valorVirtualDoProcedimento" display-name="Valor Unitário" input-type="bigdecimal" editable="false" />
+	  			        <update-property name="valorTotal" display-name="Valor Total" input-type="bigdecimal" editable="false"/>
+	  			        <update-property name="incluiVideoProxy" display-name="Inclui Vídeo" input-type="boolean" editable="true" type="java.lang.Boolean"/>
+						<update-property name="horarioEspecialProxy" display-name="Horário Especial" input-type="boolean" editable="true" type="java.lang.Boolean"/>
+						<update-property name="adicionarHonorario" display-name="Adicionar Honorario" input-type="boolean" type="java.lang.Boolean"/>
+					</update-insert>
+				</update-collection>
+			</update-param>
+			
+			<html>
+				<![CDATA[
+					</c:if>
+					<fieldset>
+						<legend>Outras informações:</legend>
+					</fieldset>
+					<br/>
+				]]>
+			</html>
+						
+			<step-param name="numeroDeRegistro" display-name="Número de Registro" required="true" />
+			
+			<session-param name="usuario"/>
+			
+			<html>
+				<![CDATA[
+					<infoway:GuiaApresentacao guiaApresentacao="${guiaOrigem}"/>
+				]]>
+			</html>
+			
+			<step-return name="guia" display-name="" type="br.com.infowaypi.ecarebc.atendimentos.honorario.GuiaHonorarioMedico"  scope="session"/>						
+		</step-method>
+		
+		<!-- CONFERIR DADOS -->
+		<step-method display-name="Conferir Dados" name="conferirDados" committed="true" buttons-position="both">
+			<session-param name="guia" operation="none"/>
+			<html>
+				<![CDATA[
+					<infoway:GuiaApresentacao guiaApresentacao="${guia}"/>
+				]]>
+			</html>
+			<step-return name="guia" display-name="" type="br.com.infowaypi.ecarebc.atendimentos.honorario.GuiaHonorarioMedico"/>
+		</step-method>
+		
+		<!-- FINALIZAR -->
+		<step-method display-name="Finalizar" name="finalizar">
+			<html>
+				<![CDATA[
+					<span class="not-for-print">
+						<button type="button" name="imprimir" class="actionButton" onclick="window.print();">Imprimir</button>
+					</span>
+					
+					<infoway:mensagemSucessoMarcacoes2_1 mensagem="Guia de honorário gerada com sucesso." 
+						autorizacaoHonorario="${guia.autorizacao}" autorizacaoOrigem="${guiaOrigem.autorizacao}"/>
+					
+					<infoway:GuiaApresentacao guiaApresentacao="${guia}"/>
+					
+					<infoway:imprimirGuiaHonorarioMedico guia="${guia}"/>
+					
+					<span class="not-for-print">
+						<button type="button" name="imprimir" class="actionButton" onclick="window.print();">Imprimir</button>
+					</span>
+				]]>
+			</html>
+		</step-method>
+	
+	</flow>
+</jheat-mapping>

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+<flow 
+	name="cancelarLancamentoConsulta" 
+	class="br.com.infowaypi.ecare.services.CancelamentoConsultaService"
+	display-name="Cancelar Consulta" section="marcacao">
+		
+	<description>Cancelamento de guias de consulta</description>		
+	
+	<step-method name="buscarGuiasCancelamento" display-name="Identificar Beneficiário" title="Identificar Beneficiário"
+	buttons-position="bottom">
+		<!--html>
+			<![CDATA[
+				<c:set var="mensagemInformacao" value="O prestador só poderá cancelar guias cadastradas por ele mesmo. Não é possível o cancelamento de guias vindas do ecare." scope="request"/>
+				<%@ include file="/view/jsp/includes/MensagemDeInformacaoAtencao.jsp" %>
+			]]>
+		</html-->
+		<step-param name="cpfDoTitular" size="24" mask="999.999.999-99" input-type="string" type="java.lang.String" display-name="CPF do Titular"/>
+		<step-param name="numeroDoCartao" size="24" mask="99.9999999999.99.9-9" input-type="string" type="java.lang.String" display-name="Número do cartão do beneficiário"/>
+			
+		<session-param name="usuario"/>
+		<step-return name="resumoGuias" type="br.com.infowaypi.ecare.atendimento.ResumoGuias" 
+			display-name="Resumo de Guias" scope="session"/>
+	</step-method>
+	
+	<step-method name="selecionarGuia" display-name="Escolher Guia">
+		<select-param
+			name="guias"
+			type="br.com.infowaypi.ecarebc.atendimentos.GuiaSimples"
+			display-name="Selecione a Guia"
+			session-property-ref="resumoGuias">
+			<radio-group>
+				<display-property name="autorizacao" display-name="Autorização"/>
+				<display-property name="dataDeAbertura" display-name="Criação" type="date"/>
+				<display-property name="dataAtendimento" display-name="Atendimento" type="date"/>				
+				<display-property name="segurado.pessoaFisica.nome" display-name="Segurado"/>
+				<display-property name="situacao.descricao" display-name="Situação"/>
+				<display-property name="situacao.dataSituacao" display-name="Data" type="date"/>				
+				<display-property name="descricaoDoTipo" display-name="Tipo"/>
+				<display-property name="valorTotal" display-name="Valor total" type="money"/>				
+			</radio-group>
+		</select-param>
+		<step-return name="guia" type="br.com.infowaypi.ecarebc.atendimentos.GuiaSimples" 
+			 display-name="" scope="session"/>
+	</step-method>
+
+	<step-method name="cancelarGuia" display-name="Conferir Dados da Guia" title="Conferir Dados" committed="true">
+			<step-param name="motivo" type="java.lang.String" display-name="Motivo" size="82"/>
+			<session-param name="usuario"/>
+			<session-param name="guia"/>
+			<html>
+				<![CDATA[
+					<infoway:GuiaApresentacao guiaApresentacao="${guia}"/>
+				]]>
+			</html>
+	</step-method>
+		
+	<step-method name="finalizar" display-name="Imprimir Comprovante de Cancelamento" title="Imprimir Comprovante"> 
+		<html>
+			<![CDATA[  <infoway:mensagemSucessoMarcacoes mensagem="Consulta cancelada com sucesso!" autorizacao="${guia.autorizacao}"/> ]]>
+		</html>
+
+		<html>
+			<![CDATA[ 
+				<span class="not-for-print">
+					<button type="button" name="imprimir" class="actionButton" onclick="window.print();">Imprimir</button>
+				</span>
+			]]>
+		</html>
+			
+		<session-param name="guia"/>
+		<html>
+			<![CDATA[
+					<infoway:GuiaApresentacao guiaApresentacao="${guia}"/>
+			]]>
+		</html>
+		<html>
+				<![CDATA[ <infoway:imprimirGuia titulo="COMPROVANTE DE CANCELAMENTO DE GUIA"/> ]]>
+		</html>
+		
+		<html>
+			<![CDATA[ 
+				<infoway:imprimirGuia titulo="COMPROVANTE DE CANCELAMENTO DE GUIA"/> 
+				<span class="not-for-print">
+					<button type="button" name="imprimir" class="actionButton" onclick="window.print();">Imprimir</button>
+				</span>
+			]]>
+		</html>
+		
+	</step-method>
+</flow>	
+</jheat-mapping>

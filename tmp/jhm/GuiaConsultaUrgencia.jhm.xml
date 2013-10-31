@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+	
+	<class-mapping class="br.com.infowaypi.ecarebc.atendimentos.GuiaConsultaUrgencia" name="GuiaConsultaUrgencia" display-name="Consulta de Urgência" 
+		id-name="idGuia" link-for-detail="autorizacao" type="readonly" section="" roles="root,auditor,atendente,prestador,prestadorCompleto,prestadorConsulta,prestadorExame,prestadorConsultaExame,prestadorInternacaoUrgencia,prestadorOdonto,gestor">
+
+		<property name="autorizacao" type="string" not-null="true">
+			<display name="Autorização" options="listing,search,detail-only" maxlength="6" align="center" size="20"/>
+	    </property>  
+	    
+		<property name="tipo" type="string" not-null="true">
+			<display name="Tipo de Guia" options="listing,detail-only" maxlength="6" align="center" size="20"/>
+	    </property>  
+
+		<property name="dataAtendimento" type="date" not-null="true">
+			<display name="Dta. Atendimento" options="detail-only" mask="99/99/9999" maxlength="10" size="20"/>
+	    </property>
+	    
+		<property name="situacao.descricao" type="string" not-null="true">
+			<display name="Situacao" options="detail-only"/>
+	    </property>
+	    
+		<property name="situacao.data" type="date" not-null="true">
+			<display name="Dta. Situacao" options="detail-only" mask="99/99/9999" maxlength="10" size="20"/>
+	    </property>
+		
+		<many-to-one options="listing,search"
+			class="br.com.infowaypi.ecare.segurados.Segurado" 
+			name="segurado" display-name="Segurado" autocomplete="true">
+			<display-property name="pessoaFisica.nome"/>
+		</many-to-one>		
+
+		<many-to-one options=""
+			class="br.com.infowaypi.ecarebc.associados.Profissional" 
+			name="profissional" display-name="Profissional" autocomplete="true" mask-detail="As 7 letras iniciais" minimum-characters="7">
+			<display-property name="pessoaFisica.nome"/>
+		</many-to-one>
+		
+		<many-to-one options="listing,search"
+			class="br.com.infowaypi.ecarebc.associados.Prestador" 
+			name="prestador" display-name="Prestador" autocomplete="true" >
+			<display-property name="pessoaJuridica.fantasia"/>
+		</many-to-one>		
+
+		<property name="valorTotal" not-null="true" type="money">
+			<display name="Valor Total" options="listing,detail-only"/>
+	    </property> 
+	    
+	    <property name="valorCoParticipacao" type="money" calculated="true" >
+			<display name="Valor Co-participação" options="listing,detail-only"/>
+	    </property>
+			
+		<collection 
+			class="br.com.infowaypi.ecarebc.procedimentos.Procedimento" 
+			name="procedimentos" display-name="Procedimentos" 
+	    	master-detail="false"/>
+
+	    <collection 
+			class="br.com.infowaypi.msr.situations.Situacao" 
+			name="situacoes" display-name="Histórico de Operações" 
+	    	master-detail="false"/>
+	
+		
+	</class-mapping>    
+	
+</jheat-mapping>

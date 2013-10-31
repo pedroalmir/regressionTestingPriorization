@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+	
+	<class-mapping class="br.com.infowaypi.ecarebc.odonto.EstruturaOdonto" name="EstruturaOdonto" display-name="Estrutura Odontológica" 
+		id-name="idEstrutura" type="readonly" link-for-detail="idEstrutura" section="cadastros" global-link="true" roles="auditor, prestadorOdonto, centralDeServico, prestadorCompleto">
+
+	    <many-to-one options="listing,search"
+			class="br.com.infowaypi.ecarebc.odonto.Denticao" null-option="true" null-description="Selecione a Dentição" disable-message="Selecione a Dentição"
+			name="denticao" display-name="Dentição" not-null="false">
+			<display-property name="tipo"/>
+		</many-to-one>
+		
+		<many-to-one options="listing,search"
+			class="br.com.infowaypi.ecarebc.odonto.Arcada" null-option="true" null-description="Selecione a Arcada" disable-message="Selecione a Dentição"
+			name="arcada" display-name="Arcada" not-null="false" service-class="br.com.infowaypi.ecarebc.odonto.Denticao" target="arcadas">
+			<display-property name="posicao"/>
+			<depends-property name="denticao" search-property="denticao" type="br.com.infowaypi.ecarebc.odonto.Denticao"/>
+		</many-to-one> 
+		
+		<many-to-one options="listing,search"
+			class="br.com.infowaypi.ecarebc.odonto.Quadrante" null-option="true" null-description="Selecione o Quadrante" disable-message="Selecione a Arcada"
+			name="quadrante" display-name="Hemiarcada" not-null="false" service-class="br.com.infowaypi.ecarebc.odonto.Arcada" target="quadrantes">
+			<display-property name="descricao"/>
+			<depends-property name="arcada" search-property="arcada" type="br.com.infowaypi.ecarebc.odonto.Arcada"/>
+		</many-to-one>
+		
+		<many-to-one options="listing,search"
+			class="br.com.infowaypi.ecarebc.odonto.Dente" null-option="true" null-description="Selecione o Dente" disable-message="Selecione o Quadrante"
+			name="dente" display-name="Elemento" not-null="false" service-class="br.com.infowaypi.ecarebc.odonto.Quadrante" target="dentes">
+			<display-property name="descricao"/>
+			<depends-property name="quadrante" search-property="quadrante" type="br.com.infowaypi.ecarebc.odonto.Quadrante"/>
+		</many-to-one>
+		
+		<collection 
+			class="br.com.infowaypi.ecarebc.procedimentos.ProcedimentoOdontoRestauracao" 
+			name="procedimentosRealizadosPorEstrutura" display-name="Tratamentos Odontológicos Realizados" 
+	    	master-detail="false"/>
+	    	
+	    <collection 
+			class="br.com.infowaypi.ecarebc.procedimentos.ProcedimentoOdontoRestauracao" 
+			name="procedimentosSolicitadosPorEstrutura" display-name="Tratamentos Odontológicos Solicitados/Autorizados" 
+	    	master-detail="false"/>
+	    
+	    <collection 
+			class="br.com.infowaypi.ecarebc.procedimentos.ProcedimentoOdontoRestauracao" 
+			name="procedimentosNaoAutorizadosPorEstrutura" display-name="Tratamentos Odontológicos Não Autorizados" 
+	    	master-detail="false"/>
+	    	
+	    <validate-method name="validate"/>
+	    
+	</class-mapping>
+</jheat-mapping>

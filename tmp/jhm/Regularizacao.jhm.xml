@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+	
+	<class-mapping class="br.com.infowaypi.ecare.segurados.Regularizacao" name="Regularizacao" 
+		display-name="Regularizações" id-name="idRegularizacao" link-for-detail="pessoaFisica.nome" 
+        type="simple" section=""  roles="root,relacionamento,centralDeServico">
+
+		<description>Histórico de Regularizações de Dependentes</description>
+		
+   		<many-to-one
+			options="" autocomplete="true"
+			class="br.com.infowaypi.ecare.segurados.Dependente"
+			name="dependente"
+			display-name="Dependente">
+			<display-property name="pessoaFisica.nome"/>
+		</many-to-one>		
+
+		<property name="dataRegularizacao" type="date" not-null="true">
+			<display name="Data Regularização" options="search,listing"/>
+		</property>
+
+   		<many-to-one
+			options="listing"
+			class="br.com.infowaypi.msr.user.Usuario"
+			name="usuario" autocomplete="true"
+			display-name="Usuario">
+			<display-property name="login"/>
+		</many-to-one>		
+
+	</class-mapping>		
+	
+</jheat-mapping>

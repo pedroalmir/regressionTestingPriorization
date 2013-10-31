@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<report 
+		name="relatorioConsultasPorBeneficiario" 
+		display-name="Consultas por Beneficiário" 
+		class="br.com.infowaypi.ecare.services.RelatorioConsultasPorBeneficiario" 
+		method-name="gerarRelatorio" 
+		section="relatoriosAuditor"
+		response-by-ajax="true">
+
+		<description>Quant. de Beneficiários por Situação</description>
+		
+		<report-param name="mes" required="true" type="java.util.Date" display-name="Mês" mask="99/9999" input-type="month-year"/>
+		
+		<report-return name="relatorio" type="br.com.infowaypi.ecare.services.RelatorioConsultasPorBeneficiario" display-name="Resultado Encontrado">
+			<html>
+				<![CDATA[ <infoway:tableSeparator titulo="Consultas Realizadas" colspan="2"/> ]]>
+			</html>
+			<display-property name="mes" align="left" display-name="Mês" type="month-year"/>
+			<display-property name="qtdeGuiasEletivas" align="left" display-name="Qtde. Consultas Eletivas"/>
+			<display-property name="qtdeGuiasUrgencia" align="left" display-name="Qtde. Consultas Urgência"/>
+			<display-property name="qtdeTotalGuias" align="left" display-name="Qtde. Total Consultas"/>
+
+			<html>
+				<![CDATA[ <infoway:tableSeparator titulo="Número de Beneficiários Ativos" colspan="2"/> ]]>
+			</html>
+			<display-property name="qtdeSegurados" align="left" display-name="Qtde. Beneficiários Ativos"/>
+
+			<html>
+				<![CDATA[ <infoway:tableSeparator titulo="Consultas por Beneficiário" colspan="2"/> ]]>
+			</html>
+			<display-property name="guiasEletivasBeneficiario" align="left" display-name="Consultas Eletivas por Beneficiário"/>
+			<display-property name="guiasUrgenciaBeneficiario" align="left" display-name="Consultas Urgência por Beneficiário"/>
+			<display-property name="consultasBeneficiario" align="left" display-name="Consultas por Beneficiário"/>
+		</report-return>		
+	</report>
+</jheat-mapping>

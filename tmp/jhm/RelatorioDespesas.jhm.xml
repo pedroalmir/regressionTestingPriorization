@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<report
+		name="relatorioDespesasPorFaixa"
+		method-name="gerarRelatorio"
+		class="br.com.infowaypi.ecare.services.RelatorioReceitaEDespesa"
+		display-name="Despesas por Faixa Etária" section="relatorioFinanceiro,relatoriosAuditor" response-by-ajax="true">
+		
+		<description>Relatório de Despesas por Faixa etária</description>
+		
+		<select-param name="tipoSegurado" display-name="" type="java.lang.String">
+			<constants-group class="br.com.infowaypi.ecare.services.RelatorioReceitaEDespesa" name="Tipo de Beneficiário" >
+				<entry display-name="Todos" key-value="TODOS"/>
+				<entry display-name="Titular" key-value="TITULAR"/>
+				<entry display-name="Pensionista" key-value="PENSIONISTA"/>
+				<entry display-name="Dependente" key-value="DEPENDENTE"/>	
+				<entry display-name="Dependente Suplementar" key-value="DEPENDENTE_SUPLEMENTAR"/>
+			</constants-group>
+		</select-param>
+		<report-param name="competencia" required="true" type="java.lang.String" display-name="Competência" mask="99/9999" input-type="month-year" size="10"/>
+		
+		<report-return name="resumo" type="br.com.infowaypi.ecare.resumos.ResumoReceitaEDespesa"
+			display-name="Detalhamento despesas por faixa">
+		 
+			<html>
+				<![CDATA[ <infoway:tableSeparator titulo="Resumo Geral" colspan="2"/> ]]>
+			</html>
+			
+			<display-property name="receitaTotal" display-name="Receita total" type="money" />
+			<display-property name="despesaTotal" display-name="Despesa total" type="money" />
+			<display-property name="despesaTotalSeguradosEncontrados" display-name="Despesa total dos beneficiários encontrados" type="money" />
+			
+			<html>
+			<![CDATA[
+				<%@ include file="/view/jsp/includes/RelatorioDespesasPorFaixa.jsp" %>
+				]]>
+			</html>
+
+		</report-return>
+		
+	</report>
+	
+</jheat-mapping>

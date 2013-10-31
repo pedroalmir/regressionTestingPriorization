@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+	
+	<class-mapping class="br.com.infowaypi.ecare.arquivos.RemessaDeCartao" name="RemessaDeCartao" display-name="Remessa de Cartão" 
+		id-name="idRemessaDeCartao" link-for-detail="dataGeracao" type="simple" section="cadastrosCentralDeRelacionamento" roles="root,relacionamento,centralDeServico" >
+		
+		<description>Remessa de Cartao dos Segurados</description>
+		
+		<property name="dataGeracao" type="date" not-null="false">
+			<display name="Data de Geração" mask="99/99/9999" size="10" options="search,listing,detail-only"/>
+		</property>
+		
+		<property name="conteudoArquivo" type="file" name-file="nomeArquivo"  not-null="false">
+			<display name="Download" options="listing,detail-only"/>
+		</property>
+		
+		<property name="enviado" type="boolean" not-null="false">
+			<display name="Enviado" options="listing,fixed" mask-detail="Marque apenas quando os cartões forem enviados para o beneficiário." />
+		</property>
+		
+		<collection
+			class="br.com.infowaypi.ecare.segurados.Cartao" 
+			name="cartoes" display-name="Cartões" 
+	    	options="" master-detail="false"/>    
+	    
+	    <properties-order>
+			<property-order name="dataGeracao" mode="desc"/>
+		</properties-order>
+		
+	    <validate-method name="validate"/>
+	    
+	</class-mapping>
+
+</jheat-mapping>

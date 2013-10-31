@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<report
+		name="relatorioFaturamentoPorPrestador"
+		method-name="executarBusca"
+		class="services.RelatorioFaturamentoPorPrestador"
+		display-name="Componentes de Custo de Internação" section="relatoriosAuditor" response-by-ajax="true">
+				
+		<report-param name="competencia" type="java.lang.String" display-name="Competência" mask="99/9999" input-type="month-year"/>
+	
+		<report-return name="resumoFaturamento" type="resumos.ResumoFaturamento" 
+			 display-name="Componentes de custo por prestador">
+		
+			<html>
+				<![CDATA[ <infoway:tableSeparator titulo="Guias/Exames do prestador" colspan="2"/> ]]>
+			</html>			
+			<collection-display display-name="Internações" name="resumosDetalheFaturamento" order="desc" default-sort="1">
+				<display-property name="prestador" display-name="Prestador"/>
+				<display-property name="qtdGuiasInternacaoDetalhe" display-name="Qtd. Internações"/>
+
+				<display-property name="qtdExamesInternacaoDetalhe" display-name="Qtd.Exames" type="int"/>
+				<display-property name="examesInternacaoDetalhe" display-name="Valor Exames" type="bigdecimal"/>
+				
+				<display-property name="qtdProcedimentosCirurgicosDetalhe" display-name="Qtd. Procedimentos" type="int"/>
+				<display-property name="procedimentosCirurgicosDetalhe" display-name="Valor Procedimentos" type="bigdecimal"/>
+				
+				<display-property name="qtdProcedimentoOutrosDetalhe" display-name="Qtd. Outros" type="int"/>
+				<display-property name="procedimentoOutrosDetalhe" display-name="Valor Outros" type="bigdecimal"/>
+				
+				<display-property name="honorariosMedicos" display-name="Valor Honorários" type="bigdecimal"/>
+			</collection-display>
+			
+			<html>
+				<![CDATA[ <infoway:tableSeparator titulo="Itens da guia" colspan="2"/> ]]>
+			</html>	
+			<collection-display display-name="Internações" name="resumosDetalheFaturamento" order="desc" default-sort="1">
+				<display-property name="prestador" display-name="Prestador"/>
+				
+				<display-property name="qtdDiariasDetalhe" display-name="Qtd. Diárias" type="int"/>
+				<display-property name="diariasDetalhe" display-name="Valor Diárias" type="bigdecimal"/>
+				
+				<display-property name="qtdPacotesDetalhe" display-name="Qtd. Pacotes" type="int"/>
+				<display-property name="pacotesDetalhe" display-name="Valor Pacotes" type="bigdecimal"/>
+
+				<display-property name="qtdTaxasDetalhe" display-name="Qtd. Taxas" type="int"/>
+				<display-property name="taxasDetalhe" display-name="Valor Taxas" type="bigdecimal"/>
+				
+				<display-property name="qtdGasoterapiasDetalhe" display-name="Qtd. Gasoterapias" type="int"/>
+				<display-property name="gasoterapiasDetalhe" display-name="Valor Gasoterapias" type="bigdecimal"/>
+			</collection-display>
+			
+			<html>
+				<![CDATA[ <infoway:tableSeparator titulo="Materiais" colspan="2"/> ]]>
+			</html>	
+			<collection-display display-name="Internações" name="resumosDetalheFaturamento" order="desc" default-sort="1">
+				<display-property name="prestador" display-name="Prestador"/>
+				
+				<display-property name="qtdMateriaisMedicosApartamentoDetalhe" display-name="Qtd. Mat/Enfermaria" type="int"/>
+				<display-property name="materiaisMedicosApartamentoDetalhe" display-name="Valor Mat/Enfermaria" type="bigdecimal"/>
+				
+				<display-property name="qtdMateriaisMedicosUTIDetalhe" display-name="Qtd. Mat/UTI" type="int"/>
+				<display-property name="materiaisMedicosUTIDetalhe" display-name="Valor Mat/UTI" type="bigdecimal"/>
+				
+				<display-property name="qtdMateriaisMedicosBlocoCirurgicoDetalhe" display-name="Qtd. Mat/Bloco Cirúrgico" type="int"/>
+				<display-property name="materiaisMedicosBlocoCirurgicoDetalhe" display-name="Valor Mat/Bloco Cirúrgico" type="bigdecimal"/>
+				
+				<display-property name="qtdMateriaisProntoSocorroDetalhe" display-name="Qtd. Mat/Pronto Socorro" type="int"/>
+				<display-property name="materiaisProntoSocorroDetalhe" display-name="Valor Mat/Pronto Socorro" type="bigdecimal"/>
+				
+				<display-property name="qtdSolucoesParenteraisDetalhe" display-name="Qtd. Sol. Parenterais" type="int"/>
+				<display-property name="solucoesParenteraisDetalhe" display-name="Valor Sol. Parenterais" type="bigdecimal"/>
+			</collection-display>
+
+			<html>
+				<![CDATA[ <infoway:tableSeparator titulo="Medicamentos" colspan="2"/> ]]>
+			</html>	
+			<collection-display display-name="Internações" name="resumosDetalheFaturamento" order="desc" default-sort="1">
+				<display-property name="prestador" display-name="Prestador"/>
+				
+				<display-property name="qtdMedicamentosApartamentoDetalhe" display-name="Qtd. Med/Enfermaria" type="int"/>
+				<display-property name="medicamentosApartamentoDetalhe" display-name="Valor Med/Enfermaria" type="bigdecimal"/>
+				
+				<display-property name="qtdMedicamentosUTIDetalhe" display-name="Qtd. Med/UTI" type="int"/>
+				<display-property name="medicamentosUTIDetalhe" display-name="Valor Med/UTI" type="bigdecimal"/>
+				
+				<display-property name="qtdMedicamentosBlocoCirurgicoDetalhe" display-name="Qtd. Med/Bloco Cirúrgico" type="int"/>
+				<display-property name="medicamentosBlocoCirurgicoDetalhe" display-name="Valor Med/Bloco Cirúrgico" type="bigdecimal"/>
+				
+				<display-property name="qtdMedicamentosProntoSocorroDetalhe" display-name="Qtd. Med/Pronto Socorro" type="int"/>
+				<display-property name="medicamentosProntoSocorroDetalhe" display-name="Valor Med/Pronto Socorro" type="bigdecimal"/>
+			</collection-display>
+			 	
+		</report-return>
+		
+	</report>
+	
+</jheat-mapping>

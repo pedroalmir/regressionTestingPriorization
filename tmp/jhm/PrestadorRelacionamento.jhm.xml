@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+	
+	<class-mapping class="br.com.infowaypi.ecare.associados.PrestadorRelacionamento" name="PrestadorRelacionamento" 
+		display-name="Prestadores" id-name="idPrestador" link-for-detail="pessoaJuridica.fantasia" type="simple" section="cadastrosCentralDeRelacionamento,cadastrosCentral" roles="root,centralDeServico,relacionamento,aloSaude,auditor,auditorOdonto">
+		
+		<description>Prestadores/Credenciados que realizam exames e consultas</description>
+
+		<html>
+			<![CDATA[
+				<fieldset>
+					<legend>Dados do Prestador</legend>
+				</fieldset>
+				<br/>
+			]]>
+		</html>
+		
+		<property name="pessoaJuridica.fantasia" type="string" not-null="true">
+			<display name="Nome Fantasia" options="listing,search"/>
+	    </property>  
+
+		<property name="pessoaJuridica.razaoSocial" type="string" not-null="false">
+			<display name="Razão Social" options=""/>
+	    </property>
+
+		<property name="pessoaFisica" type="boolean" not-null="true">
+			<display name="Pessoa Física" options="detail-only"/>
+	    </property>
+	  
+		<many-to-many 
+	    	name="especialidades" 
+	    	display-name="Especialidades Associadas" 
+	    	class="br.com.infowaypi.ecarebc.associados.Especialidade">
+    		<autocomplete style-class="autocomplete" minimum-characters="3" force-selection="true">
+				<search-property name="descricao" display-name="Descrição"/>
+				<name-property name="descricao" display-name="Descrição"/>
+			</autocomplete>	
+		</many-to-many>
+
+		<many-to-many 
+	    	name="profissionais" 
+	    	display-name="Profissionais Associados" 
+	    	class="br.com.infowaypi.ecare.associados.ProfissionalRelacionamento">
+    		<autocomplete style-class="autocomplete" minimum-characters="7" force-selection="true" mask-detail="As 7 letras iniciais">
+				<search-property name="pessoaFisica.nome" display-name="Nome" search-type="likerigth"/>
+				<name-property name="pessoaFisica.nome" display-name="Nome"/>
+			</autocomplete>	
+		</many-to-many>
+
+
+		<html>
+			<![CDATA[
+				<br/>
+				<fieldset>
+					<legend>Tipos de Servi&ccedil;os</legend>
+				</fieldset>
+				<br/>
+			]]>
+		</html>
+		
+		<property name="fazConsulta" type="boolean" not-null="true">
+			<display name="Faz Consulta" options=""/>
+	    </property>
+		
+		<property name="fazExame" type="boolean" not-null="true">
+			<display name="Faz Exame" options=""/>
+	    </property>
+		
+		<!-- property name="fazConsultaUrgencia" type="boolean" not-null="true">
+			<display name="Faz Consulta de Urgência" options=""/>
+	    </property-->
+		
+		<property name="fazAtendimentoUrgencia" type="boolean" not-null="true">
+			<display name="Faz Atendimento de Urgência" options=""/>
+	    </property>
+		
+		<property name="fazInternacaoUrgencia" type="boolean" not-null="true">
+			<display name="Faz Internação De Urgência" options=""/>
+	    </property>
+	    
+	    <property name="fazInternacaoEletiva" type="boolean" not-null="true">
+			<display name="Faz Internação Eletiva" options=""/>
+	    </property>
+		
+		<property name="fazOdontologico" type="boolean" not-null="true">
+			<display name="Odontológico" options=""/>
+	    </property>
+
+		<html>
+			<![CDATA[
+				<br/>
+				<fieldset>
+					<legend>Dados Para Contato</legend>
+				</fieldset>
+				<br/>
+			]]>
+		</html>
+		
+		<property name="pessoaJuridica.telefone" type="string" not-null="false">
+			<display name="Telefone" options="listing" size="20"/>
+	    </property>  
+
+		<property name="pessoaJuridica.celular" type="string" not-null="false">
+			<display name="Celular" options="" size="20"/>
+	    </property>  
+
+		<property name="pessoaJuridica.fax" type="string" not-null="false">
+			<display name="Fax" options="" size="20"/>
+	    </property>  
+
+		<property name="pessoaJuridica.email" type="string" not-null="false">
+			<display name="Email" options=""/>
+	    </property>  
+
+		<property name="pessoaJuridica.endereco.bairro" type="string" not-null="false">
+			<display name="Bairro" options="listing"/>
+	    </property>  
+
+		<property name="pessoaJuridica.endereco.numero" type="string" not-null="false">
+			<display name="Número" options="" size="20"/>
+	    </property>  
+
+		<property name="pessoaJuridica.endereco.logradouro" type="string" not-null="false">
+			<display name="Logradouro" options=""/>
+	    </property>  
+
+		<property name="pessoaJuridica.endereco.complemento" type="string" not-null="false">
+			<display name="Complemento" options=""/>
+	    </property>  
+
+		<property name="pessoaJuridica.endereco.cep" type="string" not-null="false">
+			<display name="CEP" options="" mask="99.999-999" maxlength="10" size="20"/>
+	    </property>  
+
+		<property name="pessoaJuridica.endereco.pontoDeReferencia" type="string" not-null="false">
+			<display name="Pt. de Referência" options=""/>
+	    </property>  
+	    
+		<many-to-one class="br.com.infowaypi.msr.address.Municipio" 
+			name="pessoaJuridica.endereco.municipio" 
+			not-null="true"
+			autocomplete="true"
+	    	display-name="Município" options="listing">
+			<display-property name="descricao"/>
+		</many-to-one>		
+
+		<role name="relacionamento" insert="false" exec="false" update="false" read="true"/>
+		<role name="centralDeServico" insert="false" exec="false" update="false" read="true"/>
+
+		<validate-method name="validate"/>
+		
+	</class-mapping>
+
+</jheat-mapping>

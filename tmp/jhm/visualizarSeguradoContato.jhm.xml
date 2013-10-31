@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+<jheat-mapping>
+	<jheat-tag name="visualizarSeguradoContato">
+
+		<description>Visualização Contato do Segurado</description>
+
+		<attribute name="segurado" type="br.com.infowaypi.ecare.segurados.Segurado"
+			display-name="">
+
+			<html>
+			<![CDATA[
+				<fieldset>
+					<legend>Contato</legend>
+				</fieldset>
+			]]>
+			</html>
+
+			<display-property name="pessoaFisica.telefoneResidencial"
+				align="left" display-name="Telefone Residencial" />
+			<display-property name="pessoaFisica.telefoneDoTrabalho"
+				align="left" display-name="Telefone do Trabalho" />
+			<display-property name="pessoaFisica.celular" align="left"
+				display-name="Celular" />
+			<display-property name="pessoaFisica.email" align="left"
+				display-name="Email" />
+
+		</attribute>
+
+	</jheat-tag>
+</jheat-mapping>

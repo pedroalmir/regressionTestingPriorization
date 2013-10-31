@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+
+<jheat-mapping>
+<flow 
+	name="auditarGuiaOdonto" 
+	class="br.com.infowaypi.ecare.services.AuditarTratamentoOdonto"
+	display-name="Auditar Cirurgia Odontológica" section="auditoriaOdonto">
+		
+	<description>Auditar Cirurgias Odontológicas</description>
+	
+	<step-method name="buscarGuiasCirurgia" display-name="Buscar Guias" buttons-position="bottom">
+			
+			<step-param name="autorizacao" type="java.lang.String" display-name="Autorização"/>
+			<step-param name="dataInicial" type="java.lang.String" display-name="Data inicial" input-type="date"/>
+			<step-param name="dataFinal" type="java.lang.String" display-name="Data final" input-type="date"/>
+			
+			<select-param
+				name="prestador"
+				display-name="Escolha o Prestador"
+				type="br.com.infowaypi.ecarebc.associados.Prestador">
+				<autocomplete style-class="autocomplete" minimum-characters="3" force-selection="true">
+					<search-property name="pessoaJuridica.fantasia" display-name="Prestador"/>
+					<name-property name="pessoaJuridica.fantasia" display-name="Prestador"/>
+				</autocomplete>
+				<restrictions>
+					<restriction property-value="Ativo(a)" property-name="situacao.descricao" type="equals" />
+				</restrictions>	
+			</select-param>
+			
+			<step-return name="resumo" type="br.com.infowaypi.ecarebc.atendimentos.ResumoGuias" 
+		         display-name="Resumo" scope="session"/>
+	</step-method>
+	
+	<step-method name="selecionarGuia" display-name="Selecionar Guia">
+		
+		<select-param
+			name="guias"
+			type="br.com.infowaypi.ecarebc.atendimentos.GuiaCirurgiaOdonto"
+			display-name="Selecione a Guia"
+			session-property-ref="resumo" operation="reload">
+			<radio-group>
+				<display-property name="autorizacao" display-name="Autorização" />
+				<display-property name="segurado.pessoaFisica.nome" display-name="Beneficiário" />
+				<display-property name="tipo" display-name="Tipo" />
+				<display-property name="prestador.pessoaJuridica.fantasia" display-name="Prestador"/>
+				<display-property name="situacao.descricao" display-name="Situação" />
+				<display-property name="situacao.dataSituacao" display-name="Data" type="date" />
+				<display-property name="valorTotal" display-name="Valor total" type="money" />
+			</radio-group>
+		</select-param>	
+		
+		<session-param name="usuario"/>
+		
+		<step-return name="guia" type="br.com.infowaypi.ecarebc.atendimentos.GuiaCirurgiaOdonto" display-name="GuiaSelecionada" scope="session"/>
+	</step-method>
+	
+    <step-method name="auditarGuia" display-name="Auditar Guia" title="Auditar Guia">
+       	<step-param display-name="Glosar guia" type="java.lang.Boolean" name="glosarTotalmente" input-type="boolean"/>
+    	 
+    	<step-param display-name="Motivo da glosa" input-type="text" name="motivoGlosa"/>
+    	
+       	<update-param name="guia" display-name="" type="br.com.infowaypi.ecarebc.atendimentos.GuiaCirurgiaOdonto" operation="none" >
+			<update-collection 
+				name="procedimentosSimplesNaoCanceladosOdonto" 
+				field-name="procedimentosSimplesNaoCancelados"
+				display-name="Alterar Exames"
+				include-method="addProcedimento"
+				exclude-method="removeProcedimento"
+				type="br.com.infowaypi.ecarebc.procedimentos.Procedimento">
+			    <update-insert>
+			    	<update-property name="procedimentoDaTabelaCBHPM.codigo" display-name="Código" input-type="string" editable="false"/>
+			    	<update-property name="procedimentoDaTabelaCBHPM.descricao" display-name="Descrição" editable="false"/>
+					<update-property name="bilateral"  display-name="Bilateral" input-type="boolean" editable="false"/>  			        
+  			        <update-property name="quantidade" display-name="Quantidade" input-type="int" editable="false"/>
+					<update-property name="valorAtualDoProcedimento" display-name="Valor Unitário" input-type="bigdecimal" editable="false" />
+  			        <update-property name="valorTotal" display-name="Valor Total" input-type="bigdecimal" editable="false"/>
+			    </update-insert>
+        	</update-collection>
+        	
+        	<html>
+				<![CDATA[
+				<c:if test="${!empty guia.procedimentosCirurgicos}">]]>
+			</html>
+        	
+        	<update-collection 
+					name="procedimentosCirurgicosUpdateOdonto" 
+					field-name="procedimentosCirurgicos"
+					
+					display-name="Alterar Procedimentos Cirúrgicos"
+					type="br.com.infowaypi.ecare.procedimentos.ProcedimentoCirurgicoSR">
+				    <update-insert>
+				    	<update-property name="procedimentoDaTabelaCBHPM.codigo" display-name="Código" input-type="string" editable="false"/>
+	  			        <update-property name="procedimentoDaTabelaCBHPM.descricao" display-name="Descrição" editable="false"/>
+	  			        <update-select-property name="profissionalResponsavel" display-name="Profissional Responsável" type="br.com.infowaypi.ecarebc.associados.Profissional"
+	  			        	width-percentage="18">
+	  			        	<autocomplete mask-detail="As 7 letras iniciais" minimum-characters="7" style-class="autocomplete" size="35">
+        						<search-property display-name="Nome" name="pessoaFisica.nome" search-type="likerigth"/>
+        						<name-property name="crmNome" display-name="Nome"/>	
+        					</autocomplete>
+	  			        </update-select-property>
+	  			        <update-select-property name="profissionalAuxiliar1" display-name="Primeiro Auxiliar" type="br.com.infowaypi.ecarebc.associados.Profissional"
+	  			        	width-percentage="18">
+	  			        	<autocomplete mask-detail="As 7 letras iniciais" minimum-characters="7" style-class="autocomplete" size="35">
+        						<search-property display-name="Nome" name="pessoaFisica.nome" search-type="likerigth"/>
+        						<name-property name="crmNome" display-name="Nome"/>	
+        					</autocomplete>
+	  			        </update-select-property>
+	  			        
+	  			        <update-select-property name="profissionalAuxiliar2" display-name="Segundo Auxiliar" type="br.com.infowaypi.ecarebc.associados.Profissional"
+	  			        	width-percentage="18">
+	  			        	<autocomplete mask-detail="As 7 letras iniciais" minimum-characters="7" style-class="autocomplete" size="35">
+        						<search-property display-name="Nome" name="pessoaFisica.nome" search-type="likerigth"/>
+        						<name-property name="crmNome" display-name="Nome"/>	
+        					</autocomplete>
+	  			        </update-select-property>
+	  			        
+	  			        <update-select-property name="profissionalAuxiliar3" display-name="Terceiro Auxiliar" type="br.com.infowaypi.ecarebc.associados.Profissional"	
+		  			        width-percentage="18">
+	  			        	<autocomplete mask-detail="As 7 letras iniciais" minimum-characters="7" style-class="autocomplete" size="35">
+        						<search-property display-name="Nome" name="pessoaFisica.nome" search-type="likerigth"/>
+        						<name-property name="crmNome" display-name="Nome"/>	
+        					</autocomplete>
+	  			        </update-select-property>
+	  			        <update-property name="valorTotal" display-name="Valor Total" input-type="bigdecimal" editable="false"/>
+				    </update-insert>
+        	</update-collection>
+			
+			<html>
+				<![CDATA[</c:if>]]>
+			</html>
+			
+        	<update-collection 
+					name="procedimentosCirurgicosInsertOdonto"  
+					field-name="procedimentosCirurgicosAutorizados"
+					display-name="Inserir Procedimentos Cirúrgicos"
+					include-method="addProcedimento"
+					exclude-method="removeProcedimento" 
+					type="br.com.infowaypi.ecare.procedimentos.ProcedimentoCirurgicoSR">
+				    <update-insert>
+				    	<update-property name="procedimentoDaTabelaCBHPM.codigo" display-name="Código" input-type="string" editable="false"/>
+	  			        <update-property name="procedimentoDaTabelaCBHPM.descricao" display-name="Descrição" editable="false"/>
+	  			        <update-property name="profissionalResponsavel.pessoaFisica.nome" display-name="Profissional Responsável" editable="false"/>
+	  			        <update-property name="profissionalAuxiliar1.pessoaFisica.nome" display-name="1º Auxiliar" editable="false"/>
+	  			        <update-property name="profissionalAuxiliar2.pessoaFisica.nome" display-name="2º Auxiliar" editable="false"/>
+	  			        <update-property name="profissionalAuxiliar3.pessoaFisica.nome" display-name="3º Auxiliar" editable="false"/>
+	  			        <update-property name="valorTotal" display-name="Valor Total" input-type="bigdecimal" editable="false"/>
+				    </update-insert>
+        	</update-collection>
+        	
+        	<update-collection 
+					name="procedimentosOutrosAutorizadosOdonto"
+					field-name="procedimentosOutrosAutorizados"
+					display-name="Alterar Outros Procedimentos"
+					include-method="addProcedimento"
+					exclude-method="removeProcedimento" 
+					type="br.com.infowaypi.ecarebc.procedimentos.ProcedimentoOutros">
+				    <update-insert>
+				    	<update-property name="procedimentoDaTabelaCBHPM.codigo" display-name="Código" input-type="string" editable="false"/>
+	  			        <update-property name="procedimentoDaTabelaCBHPM.descricao" display-name="Descrição" editable="false"/>
+	  			        <update-property name="profissionalResponsavel.pessoaFisica.nome" display-name="Profissional Responsável" editable="false"/>
+	  			        <update-property name="quantidade" display-name="Quantidade" editable="false"/>
+	  			        <update-property name="valorTotal" display-name="Valor Total" input-type="bigdecimal" editable="false"/>
+				    </update-insert>
+        	</update-collection>
+        	
+        	<update-collection 
+					name="itensDiariaOdonto" 
+					field-name="itensDiaria"
+					display-name="Alterar Diárias"
+					include-method="addItemDiaria"
+					exclude-method="removeItemDiaria"
+					type="br.com.infowaypi.ecarebc.atendimentos.acordos.itensAcordos.ItemDiaria">
+				    <update-insert>
+				    	<update-property name="diaria.descricao" display-name="Descrição" input-type="string" editable="false"/>
+				    	<update-property name="valor.quantidade" display-name="Quantidade" editable="false"/>
+				    	<update-property name="valor.valor" display-name="Valor" input-type="bigdecimal" editable="false"/>
+				    </update-insert>
+        	</update-collection>
+        	
+        	<update-collection 
+					name="itensTaxaOdonto" 
+					field-name="itensTaxa"
+					display-name="Alterar Taxas"
+					include-method="addItemTaxa"
+					exclude-method="removeItemTaxa"
+					type="br.com.infowaypi.ecarebc.atendimentos.acordos.itensAcordos.ItemTaxa">
+				    <update-insert>
+				    	<update-property name="taxa.descricao" display-name="Descrição" input-type="string" editable="false"/>
+				    	<update-property name="valor.quantidade" display-name="Quantidade" editable="false"/>
+				    	<update-property name="valor.valor" display-name="Valor" input-type="bigdecimal" editable="false"/>
+				    </update-insert>
+        	</update-collection>
+        	
+        	<update-collection 
+					name="itensGasoterapiaOdonto" 
+					field-name="itensGasoterapia"
+					display-name="Alterar Gasoterapias"
+					include-method="addItemGasoterapia"
+					exclude-method="removeItemGasoterapia"
+					type="br.com.infowaypi.ecarebc.atendimentos.acordos.itensAcordos.ItemGasoterapia">
+				    <update-insert>
+						<update-property name="gasoterapia.descricao" display-name="Gasoterapia"  input-type="string" editable="false" />
+  			        	<update-property name="valor.valor" display-name="Valor Unitário (1h)" input-type="bigdecimal" editable="false"/>				    
+  			        	<update-property name="quantidadeFormatada" display-name="Horas" input-type="int" editable="false"/>
+  			        	<update-property name="valorTotal" display-name="Valor Total" input-type="bigdecimal" editable="false"/>
+				    </update-insert>
+        	</update-collection>
+        	
+        	<update-collection 
+					name="itensPacoteOdonto" 
+					field-name="itensPacote"
+					display-name="Alterar Pacotes"
+					include-method="addItemPacote"
+					exclude-method="removeItemPacote"
+					type="br.com.infowaypi.ecarebc.atendimentos.acordos.itensAcordos.ItemPacote">
+				    <update-insert>
+						<update-property name="pacote.descricao" display-name="Pacote"  input-type="string" editable="false" />
+  			        	<update-property name="pacote.valorTotal" display-name="Valor Total"  input-type="bigdecimal" editable="false" />
+				    </update-insert>
+        	</update-collection>
+        	
+      		<update-property display-name="Valor Total de Materiais em Enfermaria" name="valoresMatMed.valorTotalMateriaisMedicosApartamento" editable="false" type="java.math.BigDecimal" input-type="money"/>
+      		<update-property display-name="Valor Total de Materiais em Enfermaria Auditado" name="valoresMatMed.valorTotalMateriaisMedicosApartamentoAuditado" editable="true" type="java.math.BigDecimal" input-type="money"/>
+      		<update-property display-name="Valor Total de Materiais em UTI" name="valoresMatMed.valorTotalMateriaisMedicosUTI" editable="false" type="java.math.BigDecimal" input-type="money"/>
+      		<update-property display-name="Valor Total de Materiais em UTI Auditado" name="valoresMatMed.valorTotalMateriaisMedicosUTIAuditado" editable="true" type="java.math.BigDecimal" input-type="money"/>
+      		<update-property display-name="Valor Total de Materiais em Bloco Cirúrgico" name="valoresMatMed.valorTotalMateriaisMedicosBlocoCirurgico" editable="false" type="java.math.BigDecimal" input-type="money"/>      		
+      		<update-property display-name="Valor Total de Materiais em Bloco Cirúrgico Auditado" name="valoresMatMed.valorTotalMateriaisMedicosBlocoCirurgicoAuditado" editable="true" type="java.math.BigDecimal" input-type="money"/>      		      		
+			<update-property display-name="Valor Total de Materiais em Pronto Socorro" name="valoresMatMed.valorTotalMateriaisProntoSocorro" editable="false" type="java.math.BigDecimal" input-type="money"/>      		
+      		<update-property display-name="Valor Total de Materiais em Pronto Socorro Auditado" name="valoresMatMed.valorTotalMateriaisProntoSocorroAuditado" editable="true" type="java.math.BigDecimal" input-type="money"/>      		      		
+			
+
+      		<update-property display-name="Valor Total de Medicamentos em Enfermaria" name="valoresMatMed.valorTotalMedicamentosApartamento" editable="false" type="java.math.BigDecimal" input-type="money"/>      		      		      		
+      		<update-property display-name="Valor Total de Medicamentos em Enfermaria Auditado" name="valoresMatMed.valorTotalMedicamentosApartamentoAuditado" editable="true" type="java.math.BigDecimal" input-type="money"/>      		      		      		      		
+      		<update-property display-name="Valor Total de Medicamentos em UTI" name="valoresMatMed.valorTotalMedicamentosUTI" editable="false" type="java.math.BigDecimal" input-type="money"/>   
+    		<update-property display-name="Valor Total de Medicamentos em UTI Auditado" name="valoresMatMed.valorTotalMedicamentosUTIAuditado" editable="true" type="java.math.BigDecimal" input-type="money"/>      		      		      		      		   		      		      		      		
+    		<update-property display-name="Valor Total de Medicamentos em Bloco Cirúrgico" name="valoresMatMed.valorTotalMedicamentosBlocoCirurgico" editable="false" type="java.math.BigDecimal" input-type="money"/>      		      		      		      		   		      		      		      		    		
+    		<update-property display-name="Valor Total de Medicamentos em Bloco Cirúrgico Auditado" name="valoresMatMed.valorTotalMedicamentosBlocoCirurgicoAuditado" editable="true" type="java.math.BigDecimal" input-type="money"/>      		      		      		      		   		      		      		      		    		    		
+			<update-property display-name="Valor Total de Medicamentos em Pronto Socorro" name="valoresMatMed.valorTotalMedicamentosProntoSocorro" editable="false" type="java.math.BigDecimal" input-type="money"/>      		      		      		      		   		      		      		      		    		
+    		<update-property display-name="Valor Total de Medicamentos em Pronto Socorro Auditado" name="valoresMatMed.valorTotalMedicamentosProntoSocorroAuditado" editable="true" type="java.math.BigDecimal" input-type="money"/>      		      		      		      		   		      		      		      		    		    		
+			
+    		<update-property display-name="Materiais Especiais" name="valoresMatMed.valorTotalMateriaisEspeciais" editable="false" type="java.math.BigDecimal" input-type="money"/>
+			<update-property display-name="Materiais Especiais Auditado" name="valoresMatMed.valorTotalMateriaisEspeciaisAuditado" editable="true" type="java.math.BigDecimal" input-type="money"/>
+			<update-property display-name="Medicamentos Especiais" name="valoresMatMed.valorTotalMedicamentosEspeciais" editable="false" type="java.math.BigDecimal" input-type="money"/>
+			<update-property display-name="Medicamentos Especiais Auditado" name="valoresMatMed.valorTotalMedicamentosEspeciaisAuditado" editable="true" type="java.math.BigDecimal" input-type="money"/>
+			<update-property display-name="Outros Valores" name="valoresMatMed.valorOutros" editable="false" type="java.math.BigDecimal" input-type="money" />
+			<update-property display-name="Outros Valores Auditado" name="valoresMatMed.valorOutrosAuditado" editable="true" type="java.math.BigDecimal" input-type="money"/>
+			<update-property name="valoresMatMed.descricaoOutros" type="java.lang.String" display-name="Descrição Outros" editable="false" input-type="text" />			
+				
+		</update-param>
+		
+		<session-param name="usuario"/>
+		
+		<html>
+			<![CDATA[<infoway:GuiaApresentacao guiaApresentacao="${guia}" isFluxoAuditoria="true"/>]]>
+		</html>
+			
+		<step-return name="guia" type="br.com.infowaypi.ecarebc.atendimentos.GuiaCirurgiaOdonto" 
+	         display-name="GuiaSelecionada" scope="session"/>
+		         
+	</step-method>
+	
+	<step-method name="salvarGuia" display-name="Conferir Dados" title="Conferir Dados" committed="true">
+		<session-param name="guia" operation="none"/>
+		<html>
+			<![CDATA[<infoway:GuiaApresentacao guiaApresentacao="${guia}" isFluxoAuditoria="true"/>]]>
+		</html>
+	</step-method>
+		
+	<step-method name="finalizar" display-name="Imprimir Comprovante de Confirmação" title="Imprimir Comprovante">
+		<html>
+			<![CDATA[  
+			<infoway:mensagemSucessoMarcacoes mensagem="Guia auditada com sucesso!" autorizacao="${guia.autorizacao}"/> 
+			]]>
+		</html>
+	
+		<html>
+			<![CDATA[ 
+				<span class="not-for-print">
+					<button type="button" name="imprimir" class="actionButton" onclick="window.print();">Imprimir</button>
+				</span>
+			]]>
+		</html>
+		
+		<session-param name="guia" operation="none"/>
+		
+		<html>
+			<![CDATA[
+				<infoway:GuiaApresentacao guiaApresentacao="${guia}" isFluxoAuditoria="true"/>
+ 
+				<infoway:imprimirGuia titulo="COMPROVANTE DE AUDITORIA"/> 
+				<span class="not-for-print">
+					<button type="button" name="imprimir" class="actionButton" onclick="window.print();">Imprimir</button>
+				</span>
+			]]>
+		</html>
+		
+	</step-method>
+	
+</flow>
+</jheat-mapping>

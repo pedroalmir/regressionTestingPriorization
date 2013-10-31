@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<flow name="registrarPagamento" 
+		class="br.com.infowaypi.ecare.financeiro.faturamento.RegistrarPagamentoService"
+		display-name="Registrar Pagamento de Faturamento" section="faturamento">
+		
+		<description>Registro de Pagamento de Faturamento</description>
+		
+		<step-method name="buscarFaturamento" display-name="Buscar Faturamento" buttons-position="bottom" committed="false">
+			<step-param name="competencia" type="java.util.Date" display-name="Competência" input-type="month-year" required="true"/>
+			<select-param name="prestador"
+				display-name="Prestador"
+				type="br.com.infowaypi.ecarebc.associados.Prestador"
+				required="true">
+				<autocomplete mask-detail="As 3 letras iniciais" style-class="autocomplete" minimum-characters="3" force-selection="true">
+					<search-property name="pessoaJuridica.fantasia" display-name="Prestador"/>
+					<name-property name="pessoaJuridica.fantasia" display-name="Prestador"/>
+				</autocomplete>	
+			</select-param>
+			
+			<select-param name="tipoFaturamento" display-name="Tipo de Faturamento" type="java.lang.Integer" required="true" null-option="true">
+				<constants-group class="br.com.infowaypi.ecarebc.constantes.Constantes" name="Tipo Faturamento">
+					<entry display-name="Faturamento Normal" key-value="TIPO_FATURAMENTO_NORMAL"/>
+					<entry display-name="Faturamento Capitação" key-value="TIPO_FATURAMENTO_CAPITACAO"/>
+					<entry display-name="Faturamento Passivo" key-value="TIPO_FATURAMENTO_PASSIVO"/>
+				</constants-group>
+			</select-param>
+			
+			<step-return display-name="Faturamento" name="resumo" type="br.com.infowaypi.ecarebc.financeiro.faturamento.ResumoFaturamentos" scope="session"/>
+		</step-method>
+		
+		<step-method display-name="Efetuar Pagamento" name="efetuarPagamento">
+			<select-param name="acaoPagamento" display-name="Registrar" required="true" null-option="true" null-description="Nenhum"
+					type="br.com.infowaypi.ecare.financeiro.faturamento.AcaoPagamentoFaturamentoEnum">
+				<enum-combo display="getDescricao" value="getAcao" 
+					input-type="combo" name="getDescricao"
+					class="br.com.infowaypi.ecare.financeiro.faturamento.AcaoPagamentoFaturamentoEnum"/> 
+			</select-param>
+			<step-param name="dataPagamento" display-name="Data de Pagamento" input-type="date" type="java.util.Date" required="false"/>
+			<step-param name="numeroEmpenho" display-name="Número do empenho" required="false"/>
+			<collection-param display-name="Ocorrências" name="ocorrencias" type="br.com.infowaypi.ecarebc.financeiro.faturamento.OcorrenciaFaturamento">
+				<insert>
+					<display-property name="descricao" display-name="Descrição"/>
+				</insert>
+			</collection-param>
+			<session-param name="resumo" display-name="Detalhes do Faturamento" operation="none">
+				<display-property name="prestador.pessoaJuridica.fantasia" align="left" display-name="Prestador"/>
+				<display-property name="prestador.pessoaJuridica.cnpj" display-name="CPF/CNPJ"/>
+				<display-property name="descricaoCategoria" display-name="Categoria"/>
+				<display-property name="status" display-name="Situação"/>
+				<display-property name="competencia" display-name="Competência" type="month-year"/>
+				<display-property name="dataGeracao" display-name="Data da geração" type="date"/>
+				<display-property name="valorConsultas" display-name="Consultas" align="right" type="money" />
+				<display-property name="valorExames" display-name="Exames" align="right" type="money" />
+				<display-property name="valorConsultasOdonto" display-name="Cons. Odonto" align="right" type="money" />
+				<display-property name="valorExamesOdonto" display-name="Ex. Odonto" align="right" type="money" />
+				<display-property name="valorAtendimentosUrgencia" display-name="Atend. Urgências" align="right" type="money" />
+				<display-property name="valorInternacoes" display-name="Internações" align="right" type="money" />
+				<display-property name="valorGuiasHonorario" display-name="Guias de Honorário" align="right" type="money" />
+				<display-property name="valorGuiasAcompanhamentoAnestesico" display-name="Guias de Acompanhamento Anestésico" align="right" type="money" />
+				<display-property name="valorSaldoAlteracoes" display-name="Saldo de Alterações" type="money"/>
+				<display-property name="valorBruto" display-name="Valor Pago" align="right" type="money" />
+				<collection-display display-name="Ocorrências" name="ocorrencias">
+					<display-property name="descricao" display-name="Descricao"/>
+					<display-property name="dataOcorrencia" display-name="Data" type="date"/>
+				</collection-display>
+			</session-param>
+			<session-param name="usuario"/>
+			<step-return display-name="resumo" name="Faturamento" type="br.com.infowaypi.ecarebc.financeiro.faturamento.ResumoFaturamentos" scope="session"/>
+		</step-method>
+		
+		<step-method display-name="Conferir Dados" name="salvarFaturamento" committed="true">
+			<session-param name="resumo" operation="none">
+				<display-property name="prestador.pessoaJuridica.fantasia" align="left" display-name="Prestador"/>
+				<display-property name="prestador.pessoaJuridica.cnpj" display-name="CPF/CNPJ"/>
+				<display-property name="descricaoCategoria" display-name="Categoria"/>
+				<display-property name="status" display-name="Situação"/>
+				<display-property name="competencia" display-name="Competência" type="month-year"/>
+				<display-property name="dataGeracao" display-name="Data da geração" type="date"/>
+				<display-property name="dataPagamento" display-name="Data Pagamento" type="date"/>
+				<display-property name="valorConsultas" display-name="Consultas" align="right" type="money" />
+				<display-property name="valorExames" display-name="Exames" align="right" type="money" />
+				<display-property name="valorConsultasOdonto" display-name="Cons. Odonto" align="right" type="money" />
+				<display-property name="valorExamesOdonto" display-name="Ex. Odonto" align="right" type="money" />
+				<display-property name="valorAtendimentosUrgencia" display-name="Atend. Urgências" align="right" type="money" />
+				<display-property name="valorInternacoes" display-name="Internações" align="right" type="money" />
+				<display-property name="valorGuiasHonorario" display-name="Guias de Honorário" align="right" type="money" />
+				<display-property name="valorGuiasAcompanhamentoAnestesico" display-name="Guias de Acompanhamento Anestésico" align="right" type="money" />
+				<display-property name="valorSaldoAlteracoes" display-name="Saldo de Alterações" type="money"/>
+				<display-property name="valorBruto" display-name="Valor Pago" align="right" type="money" />
+				<collection-display display-name="Ocorrências" name="ocorrencias">
+					<display-property name="descricao" display-name="Descricao"/>
+					<display-property name="dataOcorrencia" display-name="Data" type="date"/>
+				</collection-display>
+			</session-param>
+			<step-return display-name="resumo" name="Faturamento" type="br.com.infowaypi.ecarebc.financeiro.faturamento.ResumoFaturamentos" scope="session"/>
+		</step-method>
+		
+		<step-method display-name="Finalizar" name="finalizar">
+			<html>
+				<![CDATA[ 
+					<infoway:mensagemSucesso mensagem = "Registro realizado com sucesso!"/>
+				]]>
+			</html>
+			<session-param name="resumo" operation="none">
+				<display-property name="prestador.pessoaJuridica.fantasia" align="left" display-name="Prestador"/>
+				<display-property name="prestador.pessoaJuridica.cnpj" display-name="CPF/CNPJ"/>
+				<display-property name="descricaoCategoria" display-name="Categoria"/>
+				<display-property name="status" display-name="Situação"/>
+				<display-property name="competencia" display-name="Competência" type="month-year"/>
+				<display-property name="dataGeracao" display-name="Data da geração" type="date"/>
+				<display-property name="dataPagamento" display-name="Data Pagamento" type="date"/>
+				<display-property name="valorConsultas" display-name="Consultas" align="right" type="money" />
+				<display-property name="valorExames" display-name="Exames" align="right" type="money" />
+				<display-property name="valorConsultasOdonto" display-name="Cons. Odonto" align="right" type="money" />
+				<display-property name="valorExamesOdonto" display-name="Ex. Odonto" align="right" type="money" />
+				<display-property name="valorAtendimentosUrgencia" display-name="Atend. Urgências" align="right" type="money" />
+				<display-property name="valorInternacoes" display-name="Internações" align="right" type="money" />
+				<display-property name="valorGuiasHonorario" display-name="Guias de Honorário" align="right" type="money" />
+				<display-property name="valorGuiasAcompanhamentoAnestesico" display-name="Guias de Acompanhamento Anestésico" align="right" type="money" />
+				<display-property name="valorSaldoAlteracoes" display-name="Saldo de Alterações" type="money"/>
+				<display-property name="valorBruto" display-name="Valor Pago" align="right" type="money" />
+				<collection-display display-name="Ocorrências" name="ocorrencias">
+					<display-property name="descricao" display-name="Descricao"/>
+					<display-property name="dataOcorrencia" display-name="Data" type="date"/>
+				</collection-display>
+			</session-param>
+		</step-method>
+	</flow>	
+</jheat-mapping>

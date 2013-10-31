@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+	
+	<class-mapping class="br.com.infowaypi.ecarebc.financeiro.conta.Conta" name="Conta" 
+		display-name="Conta" id-name="idConta" link-for-detail="idConta" 
+        type="simple" section="" roles="root,auditor,atendente,prestador">
+
+		<description>Contas do Titular</description>
+
+		<property name="valorCobrado" not-null="true" type="money">
+			<display name="Valor Cobrado" options="listing" />
+	    </property> 
+		
+		<property name="dataVencimento" type="date" not-null="true">
+			<display name="Vencimento" options="listing" />
+	    </property>
+	    
+	    <property name="competencia" type="date" not-null="true">
+			<display name="Competência" options="listing" />
+	    </property>  
+		
+		<property name="vinculado" type="boolean" not-null="true">
+			<display name="Vinculado" options="" />
+	    </property>
+	    		
+	</class-mapping>
+	
+			
+
+		
+</jheat-mapping>

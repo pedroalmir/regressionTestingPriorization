@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<flow 
+		name="gerarFaturamento" 
+		class="br.com.infowaypi.ecare.financeiro.faturamento.FaturamentoAlternativoService"
+		display-name="Gerar Faturamento" section="faturamento">
+		
+		<description>Geração de Faturamentos</description>
+		
+		<step-method name="verificarGeracao" display-name="Informar Dados" buttons-position="bottom">
+			
+			<step-param name="ordenador" required="true" type="java.lang.Integer" mask="99999999" input-type="int" display-name="Ordenador" size="10" maxlength="8"/>
+			
+			<session-param name="usuario"/>
+			
+			<step-return
+				display-name=""
+				name="resumoFaturamento"
+				type="br.com.infowaypi.ecare.financeiro.faturamento.ResumoFinanceiro"
+				scope="session"/>
+			<html><![CDATA[
+				<script type="text/javascript">
+					
+					var isBotoesPreparados = false;
+					var isFormSubmit = false;
+					
+					function prepararBotoes() {
+						var els = document.getElementsByTagName("button");
+						
+						for (var i = 0; i < els.length; i++) {
+							if (els[i].name === "submit") {
+								var submitBtn = els[i];
+								var pbar = null;
+								submitBtn.onclick = function() {
+									var ordenador = document.getElementById('ordenador').value;
+									if (pbar == null) {
+										pbar = new ProgressBar("progressBarFaturamento", true, {
+											"ordenador": ordenador
+										});
+										pbar.onfinished = function () {
+											isFormSubmit = true;
+											var formulario = document.getElementsByTagName("form")[0].submit.click();
+											formulario.submit.click();
+											return true;
+										};
+										pbar.onexception = pbar.onfinished;
+										pbar.start();
+									}
+									
+									return isFormSubmit;
+								};
+							}
+						}
+					}
+					
+					/* Código Mágico e Feliz para executar um código ao carregar a página */
+					if (document.addEventListener) {
+						document.addEventListener("DOMContentLoaded", function () { isBotoesPreparados = true; prepararBotoes(); }, false);
+					}
+					else if (document.all && !window.opera) {
+						document.write("<script type=\"text/javascript\" id=\"contentloadtag\" defer=\"defer\" src=\"javascript:void(0)\"><\/script>");
+						var contentloadtag = document.getElementById("contentloadtag");
+						contentloadtag.onreadystatechange = function() {
+							if (this.readyState === "complete") {
+								isBotoesPreparados = true;
+								prepararBotoes();
+							}
+						}
+					}
+					var originalOnLoad = window.onload;
+					window.load = function () {
+						setTimeout("if (!isBotoesPreparados) { prepararBotoes(); }", 0);
+					};
+				</script>
+			]]></html>	
+		</step-method>
+
+		<step-method name="conferirDados" display-name="Conferir Dados" buttons-position="bottom" committed="true">
+			<html>
+				<![CDATA[  <infoway:mensagemAlerta mensagem="Se você realmente deseja gerar o faturamento para a competência informada clique no botão Avançar."/> ]]>
+			</html>
+			<session-param 
+				name="resumoFaturamento" 
+				type="br.com.infowaypi.ecare.financeiro.faturamento.ResumoFinanceiro">
+				
+				<html>
+					<![CDATA[ <infoway:tableSeparator titulo="Dados Ordenador" colspan="2"/> ]]>
+				</html>
+				<display-property name="ordenador.competencia" display-name="Competência" type="month-year"/>
+				<display-property name="ordenador.dataRecebimento" display-name="Data de Recebimento das Contas" type="date"/>
+				<display-property name="ordenador.limiteAFaturarNormal" display-name="Limite a Faturar Normal" type="money"/>
+				<display-property name="ordenador.limiteAFaturarPassivo" display-name="Limite a Faturar Passivo" type="money"/>
+				<display-property name="ordenador.valorAFaturarNormal" display-name="Subtotal Normal" type="money"/>
+				<display-property name="ordenador.valorAFaturarPassivo" display-name="Subtotal Passivo" type="money"/>
+				<display-property name="ordenador.total" display-name="Total Bruto" type="money"/>
+				
+				<html>
+					<![CDATA[ <infoway:tableSeparator titulo="Resumo Geral" colspan="2"/> ]]>
+				</html>
+				<display-property name="valorTotalNormal" display-name="Sub Total Normal" type="money"/>
+				<display-property name="valorTotalPassivo" display-name="Sub Total Passivo" type="money"/>			
+				<display-property name="valorTotal" display-name="Valor Total (Bruto)" type="money"/>				
+				<display-property name="ordenador.competencia" display-name="Competência" type="month-year"/>
+				
+				<collection-display display-name="Resumo por prestador" name="detalhes" default-sort="1" order="asc">
+					<display-property name="prestador.pessoaJuridica.fantasia" align="left" display-name="Nome"/>
+					<display-property name="prestador.descricaoCategoria" align="left" display-name="Categoria"/>
+					<display-property name="valorNormal" display-name="Valor Normal" type="money"/>
+					<display-property name="valorPassivo" display-name="Valor Passivo" type="money"/>	
+					<display-property name="valorTotal" align="right" display-name="Valor Bruto" type="money"/>	
+				</collection-display>
+			</session-param>
+			
+			<session-param name="usuario"/>
+			<step-return name="resumoFaturamento" type="br.com.infowaypi.ecare.financeiro.faturamento.ResumoFinanceiro" 
+		         display-name="Resumo" scope="session"/>
+		</step-method>
+		
+		<step-method name="finalizar" display-name="Faturamento Gerado">
+			<html>
+				<![CDATA[
+					 <infoway:mensagemSucesso mensagem = "Faturamento gerado com sucesso!"/>
+				]]>
+			</html>
+			
+			<session-param 
+				name="resumoFaturamento" 
+				type="br.com.infowaypi.ecare.financeiro.faturamento.ResumoFinanceiro">
+				<html>
+					<![CDATA[ <infoway:tableSeparator titulo="Resumo Geral" colspan="2"/> ]]>
+				</html>
+				<display-property name="valorTotalNormal" display-name="Sub Total Normal" type="money"/>
+				<display-property name="valorTotalPassivo" display-name="Sub Total Passivo" type="money"/>			
+				<display-property name="valorTotal" display-name="Valor Total (Bruto)" type="money"/>				
+				<display-property name="ordenador.competencia" display-name="Competência" type="month-year"/>
+				
+				<!-- html>
+					<![CDATA[ <infoway:tableSeparator titulo="Categorias" colspan="2"/> ]]>
+				</html>			
+			
+				<collection-display name="resumos" display-name="Resumo dos Faturamentos Encontrados">
+					<display-property name="descricao" display-name="Descrição"/>
+					<display-property name="valorBruto" display-name="Valor Bruto" type="money"/>
+				</collection-display -->
+				
+				<collection-display display-name="Resumo por prestador" name="detalhes">
+					<display-property name="prestador.pessoaJuridica.fantasia" align="left" display-name="Nome"/>
+					<display-property name="prestador.descricaoCategoria" align="left" display-name="Categoria"/>
+					<display-property name="valorNormal" display-name="Valor Normal" type="money"/>
+					<display-property name="valorPassivo" display-name="Valor Passivo" type="money"/>	
+					<display-property name="valorTotal" align="right" display-name="Valor Bruto" type="money"/>	
+				</collection-display>
+			</session-param>
+			
+		</step-method>
+
+	</flow>	
+	
+</jheat-mapping>

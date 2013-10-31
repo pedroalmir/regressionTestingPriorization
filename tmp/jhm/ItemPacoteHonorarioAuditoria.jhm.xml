@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+	
+	<class-mapping class="br.com.infowaypi.ecarebc.atendimentos.acordos.itensAcordos.ItemPacoteHonorarioAuditoria" name="itemPacote" display-name="Itens Pacote" 
+		id-name="idItemGuia" link-for-detail="pacote.descricao" type="readonly" section="">
+
+		<many-to-one name="pacote" class="br.com.infowaypi.ecarebc.procedimentos.Pacote"
+	    		display-name="Pacote" autocomplete="true" options="listing" not-null="true"> 
+	    	<display-property name="codigoDescricao"/>
+	    </many-to-one>
+	    
+   		<many-to-one options="listing" 
+			class="br.com.infowaypi.ecarebc.associados.Profissional" 
+			name="profissional" display-name="Profissional Responsável" minimum-characters="3"  search-type="likefull" not-null="true" 
+			autocomplete="true" mask-detail="CRM ou Nome" >
+			<display-property name="crmNome" type="string"/>
+		</many-to-one>
+		
+	    <select-property name="porcentagem" display-name="Porcentagem"
+			options="" null-option="false">
+			<entry display-name="50%" key-value="PORCENTAGEM_50" />
+			<entry display-name="70%" key-value="PORCENTAGEM_70" />
+			<entry display-name="100%" key-value="PORCENTAGEM_100" />
+		</select-property>
+	    
+	    <property name="valorAcordo" type="money" not-null="true">
+	     	<display options="listing,detail-only" name="Valor Acordo"/>
+	    </property>
+	    
+		<property name="situacao.descricao" type="string" not-null="false">
+	     	<display options="listing,detail-only" name="Situação"/>
+	    </property>
+		
+		<validate-method name="validate">
+		</validate-method>
+		
+	</class-mapping>    
+	
+</jheat-mapping>

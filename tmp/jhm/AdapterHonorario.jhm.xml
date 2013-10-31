@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<class-mapping class="br.com.infowaypi.ecare.services.honorariomedico.adapter.AdapterHonorario" 
+		name="AdapterHonorario" display-name="AdapterHonorario" type="readonly" 
+		section="" id-name="">
+
+		<many-to-one options="listing,search,detail-only"
+			class="br.com.infowaypi.ecarebc.associados.Profissional"
+			name="profissional" display-name="Profissional"
+			minimum-characters="7" search-type="likerigth" not-null="false"
+			autocomplete="true" mask-detail="As 7 letras iniciais">
+			<display-property name="pessoaFisica.nome" type="string" />
+		</many-to-one>
+
+	</class-mapping>
+
+</jheat-mapping>

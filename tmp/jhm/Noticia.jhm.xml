@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+	
+	<class-mapping class="br.com.infowaypi.msr.noticia.Noticia" name="Noticia" display-name="Notícias" 
+		id-name="idNoticia" link-for-detail="titulo" type="simple" section="noticias">
+		
+		<description>Notícias cadastradas no sistema</description>
+
+	    <property name="dataInclusao" type="date" not-null="true">
+			<display name="Dta. Inclusão" options="listing" mask="99/99/9999" maxlength="10" size="20"/>
+	    </property>  
+
+		<select-property name="tipoNoticia" display-name="Cor/Destaque" options="">
+			<entry display-name="Azul (Informação)" key-value="TIPO_NOTICIA_INFORMACAO"/>	
+			<entry display-name="Amarelo (Aviso Importante)" key-value="TIPO_NOTICIA_ALERTA"/>				
+		</select-property>
+		
+		<property name="titulo" type="string" not-null="true">
+			<display name="Título" options="listing,search"/>
+	    </property>
+	    
+		<property name="corpo" type="text" not-null="true">
+			<display name="Corpo" options=""/>
+	    </property>
+	    
+	
+		<enum-property name="destino" display-name="Destinatário(s)" class="br.com.infowaypi.ecare.enums.DestinatarioNoticiaEnum" display="getDescricao" value="getValor" options="" >
+		</enum-property>	
+			
+			
+		<property name="somenteNaPaginaInicial" type="boolean" not-null="false">
+			<display name="Só na P. Principal" options=""/>
+	    </property>
+			
+		<property name="ativa" type="boolean" not-null="false">
+			<display name="Ativa" options=""/>
+	    </property>
+
+		<property name="usuario.nome" type="string" not-null="true">
+			<display name="Usuário" options="detail-only"/>
+	    </property>
+	</class-mapping>
+</jheat-mapping>

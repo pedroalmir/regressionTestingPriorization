@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+
+<jheat-mapping>
+
+	<class-mapping class="br.com.infowaypi.ecare.programaPrevencao.ProgramaDePrevencao" name="programaDePrevencao" display-name="Programa de Prevenção" 
+		id-name="idProgramaDePrevencao" link-for-detail="nome" section="pps">
+		
+		<property name="idProgramaDePrevencao" type="long">
+			<display name="Código do Programa" size="10" options="search,listing,detail-only"/>
+		</property>
+		
+		<property name="nome" type="string" not-null="true">
+			<display name="Nome do programa" size="56" options="search,listing"/>
+		</property>
+		
+		<property name="objetivo" type="text" not-null="true">
+			<display name="Objetivo do programa" options="" />
+		</property>
+
+		<property name="inicio" type="date" not-null="true">
+			<display name="Data de inicio" size="10" options="search,listing" />
+		</property>
+		
+		<property name="fim" type="date" not-null="false">
+			<display name="Data de finalização" size="10" options="search,detail-only" />
+		</property>
+		
+		<property name="situacao.descricao" type="string" not-null="false">
+			<display name="Situação" options="listing,detail-only"/>
+	    </property>
+	    
+		<many-to-one class="br.com.infowaypi.ecarebc.associados.Profissional"
+			name="responsavel" display-name="Profissional responsável"
+			autocomplete="true" options="">
+			<display-property name="crmNome" />
+		</many-to-one>
+		
+		<many-to-many name="cids" display-name="CID" class="br.com.infowaypi.ecarebc.procedimentos.CID">
+			<autocomplete minimum-characters="3" style-class="autocomplete" force-selection="true">
+				<search-property display-name="CID" name="codigoEDescricaoDaDoenca"/>
+				<name-property display-name="CID" name="codigoEDescricaoDaDoenca"/>
+			</autocomplete>
+		</many-to-many>
+		
+		<collection class="br.com.infowaypi.msr.situations.Situacao"
+			name="situacoes" display-name="Histórico de Situações" options=""
+			master-detail="false">
+			<properties-order>
+				<property-order name="ordem" mode="asc" />
+			</properties-order>
+		</collection>
+
+		<collection
+			class="br.com.infowaypi.ecare.programaPrevencao.ProfissionalEspecialidade"
+			name="medicos" display-name="Médicos Associados" master-detail="true" options="">
+		</collection>
+		
+		<collection 
+			name="eventos" display-name="Eventos" options=""
+			class="br.com.infowaypi.ecare.programaPrevencao.Evento">
+		</collection>
+		
+		<html>
+			<![CDATA[
+				<script type="text/javascript">
+							var botao = document.getElementsByName('buttonaddmedicos')[0];
+							botao.onclick = function() {
+								JHeat.addObject(new Array('profissional_medicos',
+														'especialidade_medicos'),
+														'medicosprogramaDePrevencao',
+												'/JHeatMasterDetailAction.do?action=addObject&sectionName=${sectionName}&className=br_com_infowaypi_ecare_programaPrevencao_ProgramaDePrevencao&collectionMapping=medicos&collection=medicos');
+								JHeat.clearFields(new Array('profissional_medicos',
+										'profissional_pessoaFisica_nome_medicos',
+										'especialidade_medicos',
+										'especialidade_descricao_medicos'), new Array(),
+										new Array(), new Array(), new Array());
+								document.getElementById('profissional_pessoaFisica_nome_medicos').focus();
+							};
+						</script>
+			]]>
+		</html>
+		
+		<validate-method name="validate">
+			<session-param name="usuario"/>
+		</validate-method>
+
+		<methods>
+			<method name="encerrar" display-name="Encerrar Programa">
+				<step-param name="dataencerramento" type="java.util.Date" input-type="date" 
+					display-name="Data Encerramento"/>
+				<step-param name="motivo" type="java.lang.String"
+					display-name="Motivo" size="50" />
+				<session-param name="usuario"/>
+				<messages>
+					<question>Deseja encerrar este Programa?</question>
+					<success>Programa encerrado com sucesso.</success>
+					<error>Ocorreu um erro ao encerar o Programa. Tente novamente.</error>
+				</messages>
+			</method>
+		</methods>
+	</class-mapping>
+</jheat-mapping>

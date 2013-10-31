@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<class-mapping class="br.com.infowaypi.ecarebc.procedimentos.ProcedimentoAnestesico" name="ProcedimentoAnestesico" display-name="Procedimento Anestésico"
+		id-name="idProcedimento" link-for-detail="procedimentoDaTabelaCBHPM.codigoEDescricao" type="readonly" depends="guia" section="">
+	    
+		<many-to-one options="listing,search"
+			class="br.com.infowaypi.ecarebc.procedimentos.TabelaCBHPM"
+  			name="procedimentoDaTabelaCBHPM" display-name="Procedimento" autocomplete="true">
+			<display-property name="codigoEDescricao"/>
+
+		    <restrictions>
+				<restriction property-name="situacao.descricao" property-value="Ativo(a)" />
+				<restriction property-name="codigo" type="likerigth" property-value="9000000%"/>
+			</restrictions>
+		</many-to-one>
+		
+		<property name="situacao.descricao" type="string">
+			<display name="Situação" options="listing,detail-only"/>
+	    </property>
+		
+		<many-to-one options="detail-only"
+			class="br.com.infowaypi.ecarebc.atendimentos.GuiaSimples" 
+			name="guia" display-name="Guia">
+			<display-property name="segurado.pessoaFisica.nome"/>
+		</many-to-one>
+	
+		<property name="incluiVideo" type="boolean">
+			<display name="Inclui Vídeo" options="" align="default" />
+		</property>
+
+		<property name="horarioEspecial" type="boolean">
+			<display name="Horário Especial" options=""	align="default" />
+		</property>
+		
+	</class-mapping>
+</jheat-mapping>

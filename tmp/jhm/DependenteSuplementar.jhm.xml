@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC
+	"-//JHeat/JHeat DTD 1.0//BR"
+	"http://www.infoway-pi.com.br/jheat.dtd">
+
+<jheat-mapping>
+	
+	<class-mapping class="br.com.infowaypi.ecare.segurados.DependenteSuplementar" name="DependenteSuplementar" 
+		display-name="Dependentes Suplementares" id-name="idSegurado" link-for-detail="pessoaFisica.nome" 
+        type="dependent" depends="titular" section="cadastrosAuditor, cadastrosCentralDeRelacionamento,cadastros,cadastrosCentral,cadastrosCobranca, cadastroSuporte, cadastrosGerenciaAdesao,cadastrosRedeCredenciada"  roles="root,gerenciaAdesao, auditor">
+
+		<description>Dependentes vinculados aos titulares</description>
+
+		<html>
+			<![CDATA[
+				<fieldset>
+					<legend>Dados Pessoais</legend>
+				</fieldset>
+				<br/>
+			]]>
+		</html>
+   		<many-to-one
+			options="" autocomplete="true"
+			class="br.com.infowaypi.ecare.segurados.Titular"
+			name="titular"
+			display-name="Titular">
+			<display-property name="pessoaFisica.nome"/>
+		</many-to-one>
+
+		<property name="numeroDoCartao" type="string" not-null="true">
+			<display name="Número do Cartão" options="listing,search,detail-only" mask="99.9999999999.99.9-9" maxlength="6" align="center" size="24"/>
+		</property>
+
+		<property name="pessoaFisica.nome" type="string" not-null="true">
+			<display name="Nome" options="listing,search"/>
+		</property>
+
+		<property name="pessoaFisica.identidade" type="string" not-null="false">
+			<display name="Identidade" options="" size="20"/>
+		</property>
+
+		<property name="pessoaFisica.cpf" type="string" not-null="false">
+			<display name="CPF" options="search" mask="999.999.999-99" maxlength="14" size="24"/>
+		</property>
+
+		<property name="pessoaFisica.dataNascimento" type="date" not-null="true">
+			<display name="Nascimento" options="" mask="99/99/9999" maxlength="10" size="12"/>
+		</property>
+
+		<select-property name="pessoaFisica.sexo" display-name="Sexo" options="listing">
+			<entry display-name="Masculino" key-value="SEXO_MASCULINO"/>
+			<entry display-name="Feminino" key-value="SEXO_FEMININO"/>
+		</select-property>
+
+		<html>
+			<![CDATA[
+				<fieldset>
+					<legend>Dados do Contrato</legend>
+				</fieldset>
+				<br/>
+			]]>
+		</html>
+
+		<select-property name="tipoDeDependencia" display-name="Parentesco" options="" null-option="true">
+			<entry display-name="Pai/Mãe" key-value="TIPO_SUPLEMENTAR_PAIS"/>
+			<entry display-name="Avô/avó" key-value="TIPO_SUPLEMENTAR_AVOS"/>
+			<entry display-name="Bisavô/bisavó" key-value="TIPO_SUPLEMENTAR_BISAVOS"/>
+			<entry display-name="Tataravô/tataravó" key-value="TIPO_SUPLEMENTAR_TATARAVOS"/>
+			<entry display-name="Filho(a)" key-value="TIPO_SUPLEMENTAR_FILHO"/>
+			<entry display-name="Neto(a)" key-value="TIPO_SUPLEMENTAR_NETO"/>
+			<entry display-name="Bisneto(a)" key-value="TIPO_SUPLEMENTAR_BISNETO"/>
+			<entry display-name="Tataraneto(a)" key-value="TIPO_SUPLEMENTAR_TATARANETO"/>
+			<entry display-name="Sobrinho(a)" key-value="TIPO_SUPLEMENTAR_SOBRINHO"/>
+			<entry display-name="Tio" key-value="TIPO_SUPLEMENTAR_TIOS"/>
+			<entry display-name="Irmão" key-value="TIPO_IRMAO"/>
+		</select-property>
+
+		<property name="dataAdesao" type="date" not-null="true">
+			<display name="Data de Adesão" options="" mask="99/99/9999" maxlength="10" size="12"/>
+		</property>
+
+		 <property name="aplicacaoQuestionario" type="date" not-null="false">
+			<display name="Aplicação do Questionário" options="" mask="99/99/9999" maxlength="10" size="10"/>
+		</property>
+
+		<property name="tipoDeSegurado" type="string" not-null="false">
+			<display name="Tipo" options="detail-only"/>
+		</property>
+
+		<property name="dataVencimentoCarteira" type="date" not-null="true">
+			<display name="Vencimento da Carteira" options="detail-only" size="20" mask="99/99/9999" maxlength="10"/>
+		</property>
+
+		<property name="recadastrado" type="boolean" not-null="true">
+			<display name="Recadastrado" options="listing,detail-only"/>
+	    </property>
+	    
+		<property name="dataPenultimaAtualizacao" type="timestamp" not-null="false" next-field-inline="true">
+			<display name="Penúltima Alteração" options="detail-only" />
+		</property>
+		
+		<property name="usuarioPenultimaAtualizacao.nome" not-null="false">
+			<display name="Usuário que realizou a penúltima alteração" options="detail-only" />
+		</property>
+
+		<property name="dataUltimaAtualizacao" type="timestamp" not-null="false" next-field-inline="true">
+			<display name="Última Alteração" options="detail-only" />
+		</property>
+		
+		<property name="usuarioUltimaAtualizacao.nome" not-null="false">
+			<display name="Usuário que realizou a última alteração" options="detail-only" />
+		</property>
+		
+	    <property name="inicioDaCarencia" type="date">
+			<display name="Inicio da carencia" options="detail-only"/>
+	    </property>
+	    
+	    <property name="carenciaRestanteUrgencias" type="int" calculated="true">
+			<display name="Carência restante para urgências (horas)" options="detail-only"/>
+		</property>
+
+		<property name="carenciaRestanteConsultasExamesDeBaixaComplexidade" type="int" calculated="true">
+			<display name="Carência restante para consultas e Exames de baixa complexidade (dias)" options="detail-only"/>
+		</property>
+
+		<property name="carenciaRestanteExamesEspeciaisDeAltaComplexidadeCirurgiasEInternamento" type="int" calculated="true">
+			<display name="Carência restante para exames de alta complexidade (dias)" options="detail-only"/>
+		</property>
+
+		<property name="carenciaRestanteExamesEspeciaisDeAltaComplexidadeCirurgiasEInternamento" type="int" calculated="true">
+			<display name="Carência restante para cirurgias e internação (dias)" options="detail-only"/>
+		</property>
+
+		<property name="carenciaRestanteParaPartos" type="int" calculated="true">
+			<display name="Carência restante para partos (dias)" options="detail-only"/>
+		</property>
+
+		<property name="carenciaRestanteParaDoencasPreExistentes" type="int" calculated="true">
+			<display name="Carência restante para doenças pré-existentes (dias)" options="detail-only"/>
+		</property>
+
+	    <property name="situacaoCadastral.descricao" type="string" not-null="true">
+			<display name="Situação Cadastral" options="detail-only"/>
+	    </property> 
+	    
+	    <property name="situacaoCadastral.data" type="date" not-null="true">
+			<display name="Data da Situação Cadastral" options="detail-only"/>
+	    </property> 
+		
+		<property name="situacao.descricao" type="string" not-null="false">
+			<display name="Situação (Sistema)" options="listing,detail-only"/>
+	    </property>
+	    
+	    <collection class="br.com.infowaypi.ecare.questionarioqualificado.Questionario" 
+			name="questionarios" display-name="Questionário Qualificado" options="" master-detail="false"/>
+	    
+	    <collection 
+			class="br.com.infowaypi.ecare.segurados.Cartao" 
+			name="cartoes" display-name="Cartões" 
+	    	options="" master-detail="false"/>
+
+	    <collection 
+			class="br.com.infowaypi.msr.situations.Situacao" 
+			name="situacoes" display-name="Histórico de Situações" 
+	    	master-detail="false"/>
+
+	    <collection 
+			class="br.com.infowaypi.ecare.financeiro.Cobranca" 
+			name="cobrancas" display-name="Boletos" 
+	    	master-detail="false"/>
+	    	
+		<collection 
+			class="br.com.infowaypi.ecarebc.atendimentos.GuiaSimples" 
+			name="guias" display-name="Guias" 
+	    	master-detail="false"/>
+	    	
+	    <collection 
+			class="br.com.infowaypi.ecarebc.promocao.PromocaoConsulta" 
+			name="consultasPromocionais" display-name="Consultas Promocionais" 
+	    	master-detail="false"/>		
+
+		<collection class="br.com.infowaypi.ecarebc.utils.Alteracao" name="alteracoes" display-name="Alterações" 
+	    	master-detail="false" options="detail-only"/>
+	    	
+    	<property name="motivoAlteracao" not-null="false" type="text">
+			<display name="Motivo de alteração" options="listing" mask-detail="Preencher apenas quando alterar a data de adesão ou nascimento."/>
+		</property>
+
+		<role name="root" exec="true" insert="true" read="true" update="true" write="true"/>
+		
+		<role name="relacionamento" insert="true" exec="true" update="true" read="true" write="true" sections="cadastrosCentralDeRelacionamento, autorizacoesCentralDeRelacionamento, consultasCentralDeRelacionamento, simulacaoServicoSaude, exportacaoDeDados, informacoesGerais, meuCadastro" />
+		<role name="centralDeServico" exec="true" insert="true" read="true" update="true" write="true"/>
+	    <role name="auditor" exec="false" insert="false" read="true" update="false" write="false"/>
+		<role name="atendente" exec="false" insert="false" read="true" update="false" write="false"/>
+		<role name="cobranca" insert="false" exec="false" update="false" read="true" write="false"/>
+		
+		<!-- cadastrosRedeCredenciada -->
+		<role name="gerenciaRedeCredenciada" insert="false" exec="false" read="true" update="false" />
+		
+		<validate-method name="validate">
+			<session-param name="usuario"/>
+		</validate-method>
+
+		<methods>
+			<method name="reativar" display-name="Reativar">
+				<step-param name="motivo" type="java.lang.String" display-name="Motivo"/>
+				<step-param name="dataAdesao" type="java.util.Date" input-type="date" display-name="Data de Adesão"/>
+				<session-param name="usuario"/>
+				<messages>
+					<question>Deseja reativar este beneficiário?</question>
+					<success>Situação alterada com sucesso. Beneficiário Reativado.</success>
+					<error>Ocorreu um erro ao alterar a situação do beneficiário. Tente novamente.</error>
+				</messages>
+			</method>
+			<method name="suspender" display-name="Suspender">
+				<step-param name="motivo" type="java.lang.String" display-name="Motivo"/>
+				<session-param name="usuario"/>
+				<messages>
+					<question>Deseja suspender este segurado?</question>
+					<success>Situação alterada com sucesso. Beneficiário Suspenso.</success>
+					<error>Ocorreu um erro ao alterar a situação do beneficiário. Tente novamente.</error>
+				</messages>
+			</method>
+			<method name="cancelar" display-name="Cancelar">
+				<step-param name="motivo" type="java.lang.String" display-name="Motivo"/>
+				<session-param name="usuario"/>
+				<messages>
+					<question>Deseja realmante cancelar este beneficiário?</question>
+					<success>Situação alterada com sucesso. Segurado Cancelado.</success>
+					<error>Ocorreu um erro ao alterar a situação do beneficiário. Tente novamente.</error>
+				</messages>
+			</method>
+			<method name="iniciarCarencia" display-name="Setar Carencia">
+				<step-param name="dataInicioCarencia" type="java.util.Date" display-name="Data de Inicio da Carência" input-type="date"/>
+				<session-param name="usuario"/>
+				<access-restriction name="roleRestriction" type="edit">
+					<session-restriction name="usuario" property="role" value="suporte" operation="equals"/>
+				</access-restriction>			
+				<messages>
+                    <question>Informe a data de inicio da carência</question>
+                    <success>Data de Inicio Alterada com sucesso.</success>
+                    <error>Ocorreu um erro ao mudar a data. Tente novamente.</error>
+				</messages>	
+			</method>
+		</methods>
+	</class-mapping>
+</jheat-mapping>

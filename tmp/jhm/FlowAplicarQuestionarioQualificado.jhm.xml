@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+
+<jheat-mapping>
+	<flow name="aplicarQuestionarioQualificado"
+		display-name="Aplicar Questionário Qualificado"
+		class="br.com.infowaypi.ecare.services.questionarioqualificado.FlowAplicarQuestionarioQualificado"
+		section="cadastrosGerenciaAdesao">
+		
+		<description>Aplicação do questionário qualificado.</description>
+	
+		<step-method display-name="Buscar Segurado" name="buscarSegurado" buttons-position="bottom">			 
+			<step-param name="cpfDoTitular" size="24" mask="999.999.999-99" input-type="string" type="java.lang.String" display-name="CPF do Segurado"/>
+			<step-param name="numeroDoCartao" size="24" mask="99.9999999999.99.9-9" input-type="string" type="java.lang.String" display-name="Número do cartão do beneficiário"/>
+			
+			<!--Atributo necessário para a alteração do questionario qualificado  -->
+			<html><![CDATA[<div style="display:none">]]></html>
+			<step-param name="isAlteracao" display-name="" input-type="boolean" type="java.lang.Boolean"/>
+			<html><![CDATA[</div>]]></html>
+			
+			<step-return name="segurado" type="br.com.infowaypi.ecare.segurados.Segurado" display-name="" scope="session"/>		
+		</step-method>
+	
+		<step-method name="preencherQuestionario" display-name="Preencher questionário" buttons-position="both">
+			
+			<update-param display-name="" name="segurado" property="questionario" type="br.com.infowaypi.ecare.segurados.Segurado" 
+					property-type="br.com.infowaypi.ecare.questionarioqualificado.Questionario" operation="lock">
+					
+				<update-collection display-name="TEM OU TEVE" name="respostasDoenca" type="br.com.infowaypi.ecare.questionarioqualificado.Resposta" >
+					<update-insert>
+						<update-property name="doencaNumeroItem" field-name="pergunta.numeroItem" display-name="ITEM" editable="false" align="left"/>
+						<update-property name="perguntaDoenca" field-name="pergunta.descricao" display-name="Pergunta" editable="false" align="left"/>
+						<update-property-boolean name="assertivaDoenca" field-name="assertiva" display-name="Resposta" true-description="Sim" false-description="Não"/>
+						<update-property name="observacoesDoenca" field-name="observacoes" display-name="Observação" editable="true" input-type="string" size="20"/>
+					</update-insert>
+				</update-collection>
+				
+				<update-collection display-name="FEZ OU FAZ" name="respostasTratamento" type="br.com.infowaypi.ecare.questionarioqualificado.Resposta" >
+					<update-insert>
+						<update-property name="perguntaNumeroItem" field-name="pergunta.numeroItem" display-name="ITEM" editable="false" align="left"/>
+						<update-property name="perguntaTratamento" field-name="pergunta.descricao" display-name="Pergunta" editable="false" align="left"/>
+						<update-property-boolean name="assertivaTratamento" field-name="assertiva" display-name="Resposta" true-description="Sim" false-description="Não"/>
+						<update-property name="observacoesTratamento" field-name="observacoes" display-name="Observação" editable="true"  input-type="string" size="20"/>
+					</update-insert>
+				</update-collection>
+
+				<update-collection name="adaptersSubgrupo" display-name="Grupo de Procedimento"
+					type="br.com.infowaypi.ecare.questionarioqualificado.AdapterSubgrupoCBHPM" >
+					<update-insert>
+				    	<update-property name="subgrupo.codigo" display-name="Código"  editable="false"/>
+				    	<update-property name="subgrupo.descricao" display-name="Descrição" editable="false"/>
+				    </update-insert>
+				    
+				    <methods-collection>
+				    	<method-collection display-name="Inserir" name="inserirAdapterSubgrupo" option-method="insert" />
+				    	<method-collection display-name="Excluir" name="excluirAdapterSubgrupo" option-method="listing" />
+				    </methods-collection>
+				    
+				</update-collection>
+				
+				<update-collection name="cids" field-name="cids"
+					type="br.com.infowaypi.ecarebc.procedimentos.CID" display-name="Adicionar CID (Hipóteses Diagnósticas)"
+					include-method="addCid" exclude-method="removeCid">
+					
+					<autocomplete style-class="autocomplete" minimum-characters="4" force-selection="true">
+						<search-property name="codigoEDescricaoDaDoenca" display-name="Descrição"/>
+						<name-property name="codigoEDescricaoDaDoenca" display-name="Descrição"/>
+					</autocomplete>
+				</update-collection>
+				
+			</update-param>
+			
+			<update-param display-name="Cálculo do IMC" name="segurado" type="br.com.infowaypi.ecare.segurados.Segurado">
+				<update-property name="questionario.peso" display-name="Peso" editable="true" input-type="money" type="java.math.BigDecimal" maxlength="5" mask-detail="Quilos" required="true"/>			
+				<update-property name="questionario.altura" display-name="Altura" editable="true" input-type="money" type="java.math.BigDecimal" maxlength="4" mask-detail="metros" required="true"/>			
+			</update-param>
+			
+			<step-return name="questionario" type="br.com.infowaypi.ecare.questionarioqualificado.Questionario" display-name="" scope="session" />
+			
+		</step-method>
+		
+		<step-method name="importarArquivo" display-name="Importar Arquivo" committed="true" buttons-position="both">
+		
+			<step-param name="motivoAteracao" display-name="Motivo de Alteração" size="80" required="false"/>
+			<step-param name="dataAplicacao" input-type="date" type="java.util.Date" display-name="Data da Aplicação" mask="99/99/9999" required="true"/>
+		
+			<update-param display-name="Importar Arquivo" name="questionario" type="br.com.infowaypi.ecare.questionarioqualificado.Questionario">
+				<html><![CDATA[  ]]></html>
+			</update-param>
+			
+			<step-param name="arquivoTemp" display-name="Importação do Questionário Qualificado Parte 1" type="[B" input-type="file" mask-detail="formato jpg" />
+
+			<step-param name="arquivoTemp2" display-name="Importação do Questionário Qualificado Parte 2" type="[B" input-type="file" mask-detail="formato jpg" />
+			
+			<session-param name="usuario" operation="reload"/>
+			
+			<html><![CDATA[ 
+					<infoway:QuestionarioApresentacao questionario="${questionario}"/>
+		 	]]></html> 
+			
+			<step-return name="questionario" type="br.com.infowaypi.ecare.questionarioqualificado.Questionario" display-name="" scope="session" />
+		</step-method>
+		
+		<step-method name="finalizar" display-name="Verificar Questionário aplicado">
+			<html>
+				<![CDATA[
+					<infoway:mensagemSucesso mensagem="Questionário aplicado com sucesso!"/>
+					<infoway:QuestionarioApresentacao questionario="${questionario}"/>
+				]]>
+			</html> 
+		 	
+		</step-method>
+	</flow>
+</jheat-mapping>

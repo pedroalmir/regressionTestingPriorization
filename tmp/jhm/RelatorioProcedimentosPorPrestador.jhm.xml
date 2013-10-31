@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<report 
+		name="relatorioProcedimentoPorPrestador" 
+		method-name="gerarRelatorio"  
+		class="br.com.infowaypi.ecare.relatorio.RelatorioProcedimentosPorPrestador"
+		display-name="Procedimentos por Prestador" section="relatoriosAuditor" response-by-ajax="true">
+			
+		<description>Relatório de Procedimentos por Prestador</description>
+		
+		<select-param 
+			name="procedimento" 
+			display-name=" " 
+			type="br.com.infowaypi.ecarebc.procedimentos.TabelaCBHPM">
+			<autocomplete style-class="autocomplete" minimum-characters="5" force-selection="true">
+				<search-property display-name="Procedimento" name="codigoEDescricao"/>
+				<name-property display-name="Procedimento" name="codigoEDescricao"/>
+			</autocomplete>
+		</select-param>
+		
+		<select-param
+			name="prestador"
+			display-name=""
+			type="br.com.infowaypi.ecarebc.associados.Prestador">
+			<autocomplete style-class="autocomplete" minimum-characters="3" force-selection="true">
+				<search-property name="pessoaJuridica.fantasia" display-name="Prestador"/>
+				<name-property name="pessoaJuridica.fantasia" display-name="Prestador"/>
+			</autocomplete>	
+		</select-param>	
+
+		<report-param name="dataInicial" type="java.util.Date" display-name="Data inicial" input-type="date"/>
+		<report-param name="dataFinal" type="java.util.Date" display-name="Data final" input-type="date"/>
+		
+		<report-return name="resumo" type="br.com.infowaypi.ecare.resumos.ResumoProcedimentosPorPrestador" 
+		         display-name="Resultado Encontrado">
+		         <collection-display display-name="Resultados Encontrados" order="desc" default-sort="5" name="itens">
+		         	<display-property name="prestador.pessoaJuridica.fantasia" display-name="Prestador"/>
+		         	<display-property name="procedimento.descricao" display-name="Procedimento"/>
+		         	<display-property name="numeroDeProcedimentos" display-name="Quantidade"/>
+		         	<display-property name="valorUnitario" display-name="Valor Unitário" type="money"/>
+		         	<display-property name="valorTotal" display-name="Valor Total" type="money"/>
+		         </collection-display>
+		</report-return>
+		
+	</report>
+	
+</jheat-mapping>			         

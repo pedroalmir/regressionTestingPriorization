@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+<flow
+	name="alterarEmpenho" 
+	class="br.com.infowaypi.ecare.services.suporte.AlterarEmpenhoService"
+	display-name="Alterar Empenho" section="flowSuporte">
+		
+	<description>Alterar Empenho</description>
+		
+	<step-method name="buscarFaturamento" display-name="Buscar Faturamento" buttons-position="bottom">
+		<html>
+			<![CDATA[
+				<infoway:mensagemAlerta mensagem="Caro usuário, ao informar o número de empenho todos os demais campos de pesquisa informados serão ignorados pela busca. "/> 
+			]]>
+		</html>
+		<step-param name="numeroEmpenho" type="java.lang.String" display-name="Número do empenho"/>
+		<step-param name="competencia" type="java.lang.String" display-name="Competência" mask="99/9999"/>
+		<select-param
+			name="prestador"
+			display-name="Prestador"
+			type="br.com.infowaypi.ecarebc.associados.Prestador">
+			<autocomplete style-class="autocomplete" minimum-characters="3" force-selection="true">
+				<search-property name="pessoaJuridica.fantasia" display-name="Prestador"/>
+				<name-property name="pessoaJuridica.fantasia" display-name="Prestador"/>
+			</autocomplete>	
+		</select-param>
+		<step-return name="resumo" type="br.com.infowaypi.ecarebc.financeiro.faturamento.ResumoFaturamentos"
+			display-name="Resumo" scope="session" />
+	</step-method>
+
+	<step-method name="selecionarFaturamento" display-name="Selecionar Faturamento" buttons-position="bottom">
+			<select-param
+					name="faturamentos"
+					type="br.com.infowaypi.ecarebc.financeiro.faturamento.AbstractFaturamento"
+					display-name="Selecione o Faturamento"
+					session-property-ref="resumo" operation="none">
+				<radio-group default-checked="none">
+					<display-property name="competencia" display-name="Competência" type="month-year"/>
+					<display-property name="nome" display-name="Nome"/>
+					<display-property name="tipoFaturamento" display-name="Tipo"/>					
+				</radio-group>
+			</select-param>
+			<step-return name="faturamento" type="br.com.infowaypi.ecarebc.financeiro.faturamento.AbstractFaturamento" display-name="" scope="session"/>
+	</step-method>
+	
+	<step-method name="alterarEmpenho" display-name="Alterar Informações do Empenho" committed="true" buttons-position="bottom">
+		<update-param name="faturamento" display-name="Detalhes do Faturamento" type="br.com.infowaypi.ecarebc.financeiro.faturamento.AbstractFaturamento">
+				<update-property name="dataPagamento" display-name="Data de Pagamento" type="java.util.Date" input-type="date" editable="true"/>
+				<update-property name="numeroEmpenho" display-name="Número do empenho" editable="true"/>
+				<update-property name="prestador.pessoaJuridica.fantasia" display-name="Prestador" editable="false"/>
+				<update-property name="prestador.pessoaJuridica.cnpj" display-name="CPF/CNPJ" editable="false"/>
+				<update-property name="descricaoStatus" display-name="Situação" editable="false"/>
+				<update-property name="competencia" display-name="Competência" editable="false" input-type="month-year"/>
+				<update-property name="dataGeracao" display-name="Data da geração" editable="false" input-type="date"/>
+				<update-property name="valorBruto" display-name="Valor Pago" editable="false" input-type="money"/>
+			</update-param>
+	</step-method>
+	
+	<step-method name="finalizar" display-name="Finalizar">
+		<html>
+			<![CDATA[
+				<infoway:mensagemSucesso mensagem="Infrmação de empenho alterada com sucesso!" />
+			]]>
+		</html>
+		<session-param name="faturamento" display-name="Detalhes do Faturamento" type="br.com.infowaypi.ecarebc.financeiro.faturamento.AbstractFaturamento">
+			<display-property name="dataPagamento" display-name="Data de Pagamento" type="date"/>
+			<display-property name="numeroEmpenho" display-name="Número do empenho"/>
+			<display-property name="prestador.pessoaJuridica.fantasia" display-name="Prestador"/>
+			<display-property name="prestador.pessoaJuridica.cnpj" display-name="CPF/CNPJ"/>
+			<display-property name="descricaoStatus" display-name="Situação"/>
+			<display-property name="competencia" display-name="Competência"  type="month-year" />
+			<display-property name="dataGeracao" display-name="Data da geração" type="date"/>
+			<display-property name="valorBruto" display-name="Valor Pago" type="money"/>
+		</session-param>
+	</step-method>
+	
+</flow>	
+</jheat-mapping>

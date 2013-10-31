@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<report
+		name="relatorioAprazamento"
+		method-name="gerarRelatorio"
+		class="br.com.infowaypi.ecare.relatorio.RelatorioAprazamento"
+		display-name="Relatório de Aprazamento" section="relatoriosRedeCredenciada" response-by-ajax="true"
+		roles="gerenciaRedeCredenciada">
+		
+		<html>
+				<![CDATA[
+					<infoway:mensagemInformacao mensagem="Serão contabilizadas Guias de Consulta que estejam em uma das seguintes situações: Pago(a), Faturado(a) ou Confirmado(a). Ao se marcar a opção <b>Exibir Guias</b>, você poderá perceber uma demora no carregamento dos resultados."/> 
+				]]>
+		</html>
+		
+		<report-param name="dataInicial" display-name="Data inicial" input-type="date" type="java.util.Date" required="true"/>
+		<report-param name="dataFinal" display-name="Data final" input-type="date" type="java.util.Date" required="true"/>
+		<report-param name="exibirGuias" display-name="Exibir Guias" input-type="boolean" type="java.lang.Boolean"/>
+
+		<report-return name="resumo" type="br.com.infowaypi.ecare.resumos.ResumoRelatorioAprazamento" display-name="Resultado Encontrado">
+			<display-property name="quantDias" display-name="DIFERENÃ‡A ACUMULADA (DIAS)"/>
+			<display-property name="quantGuias" display-name="QTDE. GUIAS ENCONTRADAS"/>
+			<display-property name="media" display-name="DIFERENCA MÃ‰DIA EM DIAS ENTRE A MARCAÃ‡ÃƒO E O ATENDIMENTO" type="bigdecimal"/>
+
+			<html>
+				<![CDATA[
+					<c:if test="${resumo.exibeGuias}">
+				]]>
+			</html>
+
+			<collection-display display-name="Listagem das Guias" name="agrupamentoValores" default-sort="8" order="desc">
+				<display-property name="autorizacao" display-name="Autorização" />
+				<display-property name="dataMarcacao" display-name="Criação" type="date"/>
+				<display-property name="dataAtendimento" display-name="Atendimento" type="date"/>
+				<display-property name="nome" display-name="Segurado" />
+				<display-property name="prestador" display-name="Prest." />
+				<display-property name="situacao" display-name="Sit." />
+				<display-property name="valor" display-name="Total" type="money"/>
+				<display-property name="quantidadeDias" display-name="Aprazamento" type="int"/>
+			</collection-display>
+			
+			<html>
+				<![CDATA[
+					</c:if>
+				]]>
+			</html>
+		</report-return>
+		
+	</report>	
+	
+</jheat-mapping>

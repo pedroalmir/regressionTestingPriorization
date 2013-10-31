@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+
+<jheat-mapping>
+<flow 
+	name="autorizarExamesProcedimentosEspeciais" 
+	class="br.com.infowaypi.ecare.services.AutorizarExamesProcedimentosEspeciais"
+	display-name="Exames Especiais/ Procedimentos/Pacotes " section="marcacao,autorizacoesCentralDeRelacionamento">
+		
+	<description>Autorizar Exames e Procedimentos Especiais</description>
+	
+	<step-method name="buscarGuias" display-name="Buscar Guias">
+			<step-param name="autorizacao" type="java.lang.String" display-name="Autorização"/>
+			<step-param name="dataInicial" type="java.util.Date" display-name="Data inicial" input-type="date"/>
+			<step-param name="dataFinal" type="java.util.Date" display-name="Data final" input-type="date"/>
+			
+			<select-param
+				name="prestador"
+				display-name="Escolha o Prestador"
+				type="br.com.infowaypi.ecarebc.associados.Prestador">
+				<autocomplete style-class="autocomplete" minimum-characters="3" force-selection="true">
+					<search-property name="pessoaJuridica.fantasia" display-name="Prestador"/>
+					<name-property name="pessoaJuridica.fantasia" display-name="Prestador"/>
+				</autocomplete>
+				<restrictions>
+					<restriction property-value="Ativo(a)" property-name="situacao.descricao" type="equals" />
+				</restrictions>	
+			</select-param>
+			
+			<step-return name="resumo" type="br.com.infowaypi.ecarebc.atendimentos.ResumoGuias" display-name="Resumo" scope="session"/>
+	</step-method>
+	
+	<step-method name="selecionarGuiaAutorizacao" display-name="Selecionar Guia">
+		<select-param
+			name="guiasComExamesParaAutorizacao"
+			type="br.com.infowaypi.ecarebc.atendimentos.GuiaCompleta"
+			display-name="Selecione a Guia"
+			session-property-ref="resumo" operation="reload">
+			<radio-group>
+				<display-property name="idGuia" display-name="Autorização"/>
+				<display-property name="tipo" display-name="Tipo de Guia"/>			
+				<display-property name="segurado.pessoaFisica.nome" display-name="Beneficiário"/>
+				<display-property name="situacao.descricao" display-name="Situação"/>
+				<display-property name="situacao.dataSituacao" display-name="Data" type="date"/>				
+				<display-property name="valorTotal" display-name="Valor total" type="money"/>								
+			</radio-group>
+		</select-param>				
+		<session-param name="usuario" />
+		
+		<step-return name="guia" type="br.com.infowaypi.ecarebc.atendimentos.GuiaCompleta" 
+		         display-name="GuiaSelecionada" scope="session"/>
+	</step-method>
+	
+	<step-method name="autorizarExamesProcedimentosEspeciais" display-name="Autorizar Exames/Procedimentos Especiais">
+	
+		<html>
+			<![CDATA[
+				<infoway:criticasObservacoesGuia guia="${guia}"/>
+			]]>
+		</html>
+	
+		<update-param name="guia" display-name="" type="br.com.infowaypi.ecarebc.atendimentos.GuiaCompleta">
+			<update-collection display-name="Selecionar Exames" name="examesEspeciaisNaoAutorizados" 
+				type="br.com.infowaypi.ecarebc.procedimentos.Procedimento">
+				<update-insert>
+					<update-property display-name="Código" name="procedimentoDaTabelaCBHPM.codigo" editable="false" input-type="string"/>
+					<update-property display-name="Descrição" name="procedimentoDaTabelaCBHPM.descricao" editable="false" input-type="string"/>
+					<update-property name="bilateral" display-name="Bilateral" editable="false" input-type="boolean"/>
+					<update-property display-name="Nível" name="procedimentoDaTabelaCBHPM.nivel" editable="false" input-type="string"/>
+					<update-property name="quantidade" display-name="Quantidade" editable="false" input-type="string"/>
+					<update-property display-name="Valor Unitário" name="valorAtualDoProcedimento" editable="false" input-type="bigdecimal"/>
+					<update-property display-name="Valor Total" name="valorTotal" editable="false" input-type="bigdecimal"/>
+					<update-property display-name="Motivo da Autorização ou Não Autorização" name="motivoProcedimento" field-name="motivo" input-type="text" editable="true"/>
+					<update-property-boolean display-name="Autorizar" name="autorizadoExames" field-name="autorizado" false-description="Não" true-description="Sim" type="java.lang.Boolean" width-percentage="12" />
+				</update-insert>
+				<access-restriction name="examesNaoAutorizados" type="edit">
+					<session-restriction name="guia" property="examesEspeciaisNaoAutorizados" operation="notempty"/>
+				</access-restriction>
+			</update-collection>
+			<update-collection display-name="Selecionar Pacotes" name="itensPacoteSolicitados" 
+				type="br.com.infowaypi.ecarebc.atendimentos.acordos.itensAcordos.ItemPacote">
+				<update-insert>
+					<update-property display-name="Código" name="pacote.codigo" editable="false" input-type="string"/>
+					<update-property display-name="Descrição" name="pacote.descricao" editable="false" input-type="string"/>
+					<update-property display-name="Valor Total" name="pacote.valorTotal" editable="false" input-type="money"/>
+					<update-property-boolean display-name="Autorizar" name="autorizadoPacotes" field-name="autorizado" false-description="Não" true-description="Sim" type="java.lang.Boolean" width-percentage="12" />
+				</update-insert>
+				<access-restriction name="restrictionPacotesNaoAutorizados" type="edit">
+					<session-restriction name="guia" property="itensPacoteSolicitados" operation="notempty"/>
+				</access-restriction>
+			</update-collection>
+			<update-collection display-name="Selecionar Procedimentos" name="procedimentosCirurgicosNaoAutorizados" 
+				type="br.com.infowaypi.ecare.procedimentos.ProcedimentoCirurgicoSR">
+				<update-insert>
+					<update-property display-name="Código" name="codigoProcedimentos" field-name="procedimentoDaTabelaCBHPM.codigo" editable="false" input-type="string"/>
+					<update-property display-name="Descrição" name="descricaoProcedimentos" field-name="procedimentoDaTabelaCBHPM.descricao" editable="false" input-type="string"/>
+					<update-property name="bilateralProcedimentos" field-name="bilateral" display-name="Bilateral" editable="false" input-type="boolean"/>
+					<update-property display-name="Nível" name="nivelProcedimentos" field-name="procedimentoDaTabelaCBHPM.nivel" editable="false" input-type="string"/>
+					<update-property name="quantidadeProcedimentos" field-name="quantidade" display-name="Quantidade" editable="false" input-type="string"/>
+					<update-property display-name="Valor Unitário" name="valorAtualDoProcedimentoProcedimentos" field-name="valorAtualDoProcedimento" editable="false" input-type="bigdecimal"/>
+					<update-property display-name="Valor Total"  name="valorTotalProcedimentos" field-name="valorTotal" editable="false" input-type="bigdecimal"/>
+					<update-property name="dataRealizacao" display-name="Data de Realização" editable="false" input-type="date" type="java.util.Date"/>
+					<update-select-property name="porcentagem" display-name="Porcentagem" type="java.math.BigDecimal">
+						<constants-group class="br.com.infowaypi.ecarebc.procedimentos.ProcedimentoCirurgico">
+							<entry display-name="50%" key-value="PORCENTAGEM_50" />
+							<entry display-name="70%" key-value="PORCENTAGEM_70" />
+							<entry display-name="100%" key-value="PORCENTAGEM_100" />
+						</constants-group>
+					</update-select-property>
+					<update-property display-name="Motivo da Autorização ou Não Autorização" name="motivoProcedimento" field-name="motivo" input-type="text" editable="true"/>
+					<update-property-boolean display-name="Autorizar" name="autorizadoProcedimentos" field-name="autorizado" false-description="Não" true-description="Sim" type="java.lang.Boolean"/>
+				</update-insert>
+				<access-restriction name="cirurgiasNaoAutorizadas" type="edit">
+					<session-restriction name="guia" property="procedimentosCirurgicosNaoAutorizados" operation="notempty"/>
+				</access-restriction>
+			</update-collection>
+		</update-param>
+		
+		<session-param name="usuario"/>
+		<html>
+			<![CDATA[
+				<infoway:GuiaApresentacao guiaApresentacao="${guia}"/>
+			]]>
+		</html>			
+		<step-return name="guia" type="br.com.infowaypi.ecarebc.atendimentos.GuiaCompleta" 
+	         display-name="GuiaSelecionada" scope="session"/>
+	</step-method>
+	
+	<step-method name="conferirDados" display-name="Conferir Dados" committed="true">
+			<session-param name="guia" operation="none"/>
+			<html>
+				<![CDATA[
+					<infoway:criticasObservacoesGuia guia="${guia}"/>
+					<infoway:GuiaApresentacao guiaApresentacao="${guia}"/>
+				]]>
+			</html>	
+	
+			<step-return name="guia" type="br.com.infowaypi.ecarebc.atendimentos.GuiaCompleta" 
+		         display-name="GuiaSelecionada" scope="session"/>
+	</step-method>
+	
+	<step-method name="finalizar" display-name="Finalizar" committed="true">
+			<session-param name="guia" operation="none"/>
+			
+			<html>
+				<![CDATA[
+					<infoway:criticasObservacoesGuia guia="${guia}"/>
+					<infoway:mensagemSucessoMarcacoes mensagem="Guia Autorizada com sucesso!" autorizacao="${guia.autorizacao}"/>
+				]]>
+			</html>
+			
+			<html>
+				<![CDATA[
+					<infoway:GuiaApresentacao guiaApresentacao="${guia}"/>
+				]]>
+			</html>	
+	</step-method>
+	
+</flow>
+</jheat-mapping>	

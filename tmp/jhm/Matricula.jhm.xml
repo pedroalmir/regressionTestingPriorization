@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+	
+	<class-mapping class="br.com.infowaypi.ecare.segurados.Matricula" name="Matricula" 
+		display-name="Matrículas" id-name="idMatricula" link-for-detail="descricao" 
+        type="dependent" depends="segurado" section="cadastros,cadastrosCentral,cadastrosCobranca,cadastrosGerenciaAdesao" roles="root,gerenciaAdesao">
+
+		<description>Matrículas pertencentes ao Beneficiário</description>
+		
+		<many-to-one
+			options="" autocomplete="true"
+			class="br.com.infowaypi.ecare.segurados.Segurado"
+			name="segurado" display-name="Beneficiário Matricula">
+			<display-property name="pessoaFisica.nome" options="listing"/>
+		</many-to-one>	
+		
+		<many-to-one class="br.com.infowaypi.ecare.segurados.Empresa" name="empresa" not-null="false"
+	    	display-name="Empresa" options="search,listing">
+			<display-property name="descricao" display-name="Empresa"/>
+		</many-to-one>
+		
+		<property name="descricao" type="string" not-null="true" search-type="equals" >
+			<display name="Código" size="8" options="search,listing"/>
+	    </property>  
+		
+		<property name="ordem" type="int" not-null="false">
+			<display name="Ordem" options="detail-only,listing"/>
+	    </property>
+	    
+	    <property name="salario" type="money" real-class="java.math.BigDecimal" not-null="true">
+			<display name="Salário" options="" />
+	    </property>
+	    
+	    <property name="ativa" type="boolean">
+			<display name="Ativa" options="detail-only,listing" />
+	    </property>
+	    
+	    <select-property display-name="Tipo de pagamento" options="listing" name="tipoPagamento">
+	    	<entry display-name="Folha" key-value="FORMA_PAGAMENTO_FOLHA"/>
+	    	<entry display-name="Boleto" key-value="FORMA_PAGAMENTO_BOLETO"/>
+	    	<entry display-name="Débito em Conta" key-value="FORMA_PAGAMENTO_DEBITO_EM_CONTA"/>
+	    </select-property>
+	    
+	    
+	    <collection 
+			class="br.com.infowaypi.ecarebc.financeiro.consignacao.Consignacao" 
+			name="consignacoes" display-name="Consignações" 
+	    	master-detail="false"/>
+	    
+	    <!-- cadastros -->
+		<role name="root" exec="true" insert="true" read="true" update="true" write="true"/>
+		<role name="atendente" exec="false" insert="false" read="true" update="false" write="false"/>
+		
+		<!-- cadastrosCentral -->
+		<role name="centralDeServico" exec="true" insert="true" read="true" update="true" write="true"/>
+		
+		<!-- cadastrosCobranca -->
+		<role name="cobranca" exec="false" insert="false" read="true" update="false" write="false"/>
+	    
+	    <methods>
+	    	<method display-name="(Re)Ativar" name="ativar" validate="false">
+				<session-param name="usuario"/>
+	    		<messages>
+					<question>Deseja realmante ativar esta matricula?</question>
+					<success>Matrícula ativada com sucesso.</success>
+	    		</messages>
+	    	</method>
+	    	
+	    </methods>
+				
+		<validate-method name="validate">
+			<session-param name="usuario"/>
+		</validate-method>
+				
+	</class-mapping>		
+
+		
+</jheat-mapping>

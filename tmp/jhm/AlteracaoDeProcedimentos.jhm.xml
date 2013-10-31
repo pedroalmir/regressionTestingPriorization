@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+<flow 
+	name="alterarProcedimentos" 
+	class="br.com.infowaypi.ecare.services.AlteracaoDeProcedimentos"
+	display-name="Alterar Procedimentos/Pacotes" section="marcacao">
+		
+	<description>Alteração de Procedimentos</description>
+		
+		<step-method name="buscarGuiaAlteracaoDeProcedimento" display-name="Informar Número de Autorização" title="Informar Número de Autorização" buttons-position="bottom">
+			<step-param name="autorizacao" required="true" input-type="string" size="12" display-name="Autorização" />
+			<session-param name="usuario" />
+			<step-return name="guia" type="br.com.infowaypi.ecarebc.atendimentos.GuiaSimples" display-name="" scope="session" />		
+		</step-method>
+		
+		<step-method display-name="Alterar procedimentos" name="alterarProcedimentos">
+							
+			<html>
+				<![CDATA[
+		  			<infoway:criticasObservacoesGuia guia="${guia}"/>
+				]]>
+			</html>
+							
+			<update-param name="guia" display-name="" type="br.com.infowaypi.ecarebc.atendimentos.GuiaSimples" operation="none">
+			
+			<!-- Exibe uma tela de inserção de procedimentos odontologicos no caso da guia ser uma GuiaExameOdonto -->		
+			
+				<update-collection 
+						name="procedimentosOdontoParaAlteracaoInsert" 
+						field-name="procedimentosParaAlteracao"
+						display-name="Incluir/Excluir Procedimentos"
+						include-method="addProcedimentoAlteracao"
+						exclude-method="removeProcedimento"
+						type="br.com.infowaypi.ecarebc.procedimentos.ProcedimentoOdonto">
+					    
+					<update-insert>
+				    	<update-property name="codigoIns" field-name="procedimentoDaTabelaCBHPM.codigo" display-name="Código" input-type="string" editable="false" />
+						<update-property name="descricaoIns" field-name="procedimentoDaTabelaCBHPM.descricao" display-name="Descrição" input-type="string" editable="false" />
+						<update-property name="tipoEstruturaIns" field-name="procedimentoDaTabelaCBHPM.tipoEstrutura" display-name="Aplicação" input-type="string" editable="false" />
+						<update-property name="descricaoEstruturas" field-name="descricaoEstruturas" display-name="Estrutura(s)" input-type="string" editable="false" />
+						<update-property name="valorTotal" field-name="valorTotal" display-name="Valor Bruto" editable="false" input-type="bigdecimal" />	
+				    </update-insert>
+				    
+				    <restrictions>
+				    	<restriction property-name="procedimentoDaTabelaCBHPM.ativo" property-value="true"/>
+				    	<restriction property-name="procedimentoDaTabelaCBHPM.nivel" property-value="1" type="notequals"/>
+				    	<restriction property-name="procedimentoDaTabelaCBHPM.elementoAplicado" property-value="5" type="notequals"/>
+				    	<restriction property-name="procedimentoDaTabelaCBHPM.visibilidade" type="greaterequals" property-value="1"/>
+			    	</restrictions>
+			    	
+			    	<access-restriction name="eGuiaOdonto" type="edit">
+						<session-restriction name="guia" property="exameOdonto" operation="equals" value="true" type="boolean" />
+					</access-restriction>
+
+	        	</update-collection>
+			
+				<!-- Exibe uma tela de alteração no caso da guiaSimples já possuir procedimentos em sua coleção-->
+				<update-collection 
+						name="procedimentosParaAlteracaoUpdate"
+						field-name="procedimentosParaAlteracao" 
+						display-name="Alterar Procedimentos"
+						type="br.com.infowaypi.ecarebc.procedimentos.Procedimento">
+					    <update-insert>
+					    	<update-property name="codigoEdit" field-name="procedimentoDaTabelaCBHPM.codigo" display-name="Código" input-type="string" editable="false"/>
+					    	<update-property name="descricaoEdit" field-name="procedimentoDaTabelaCBHPM.descricao" display-name="Descrição" editable="false"/>
+							<update-property name="bilateralEdit" field-name="bilateral"  display-name="Bilateral" input-type="boolean" editable="false"/>  			        
+		  			        <update-property name="quantEdit" field-name="quantidade" display-name="Quantidade" type="java.lang.Integer" input-type="int" editable="true" />
+							<update-property name="valorAtEdit" field-name="valorAtualDoProcedimento" display-name="Valor Unitário" input-type="bigdecimal" editable="false" />
+		  			        <update-property name="valorTotEdit" field-name="valorTotal" display-name="Valor Total" input-type="bigdecimal" editable="false"/>
+					    </update-insert>
+					    
+					   <access-restriction name="naoEGuiaOdonto" type="edit">
+							<session-restriction name="guia" property="exameOdonto" operation="equals" value="false" type="boolean" />
+						</access-restriction>
+					
+	        	</update-collection>
+	        
+	       		 <!-- Exibe uma tela de inserção de procedimentos-->	
+				<update-collection 
+						name="procedimentosParaAlteracaoInsert" 
+						field-name="procedimentosParaAlteracao"
+						display-name="Incluir/Excluir Procedimentos"
+						include-method="addProcedimentoAlteracao"
+						exclude-method="removeProcedimento"
+						type="br.com.infowaypi.ecarebc.procedimentos.Procedimento">
+					    <update-insert>
+					    	<update-property name="codigoIns" field-name="procedimentoDaTabelaCBHPM.codigo" display-name="Código" input-type="string" editable="false"/>
+					    	<update-property name="descricaoIns" field-name="procedimentoDaTabelaCBHPM.descricao" display-name="Descrição" editable="false"/>
+							<update-property name="bilateralIns" field-name="bilateral"  display-name="Bilateral" input-type="boolean" editable="false"/>  			        
+		  			        <update-property name="quantIns" field-name="quantidade" display-name="Quantidade" input-type="int" editable="false"/>
+							<update-property name="valorAtIns" field-name="valorAtualDoProcedimento" display-name="Valor Unitário" input-type="bigdecimal" editable="false" />
+		  			        <update-property name="valorTotIns" field-name="valorTotal" display-name="Valor Total" input-type="bigdecimal" editable="false"/>
+					    </update-insert>
+					    
+					    <access-restriction name="naoEGuiaOdonto" type="edit">
+							<session-restriction name="guia" property="exameOdonto" operation="equals" value="false" type="boolean" />
+						</access-restriction>
+						
+	        	</update-collection>
+	        	
+	        	<update-collection 
+					name="procedimentosCirurgicosUpdate" 
+					field-name="procedimentosCirurgicosComHonorariosNaoGerados"
+					display-name="Alterar Procedimentos Cirúrgicos"
+					type="br.com.infowaypi.ecare.procedimentos.ProcedimentoCirurgicoSR">
+				    <update-insert>
+				    	<update-property name="procedimentoDaTabelaCBHPM.codigo" display-name="Código" input-type="string" editable="false" width-percentage="10"/>
+	  			        <update-property name="procedimentoDaTabelaCBHPM.descricao" display-name="Descrição" editable="false" width-percentage="20"/>
+	  			        <update-select-property name="profissionalResponsavel" display-name="Profissional Responsável" type="br.com.infowaypi.ecarebc.associados.Profissional"
+	  			        	width-percentage="16" >
+	  			        	<autocomplete mask-detail="As 7 letras iniciais" minimum-characters="7" style-class="autocomplete" size="30">
+        						<search-property display-name="Nome" name="pessoaFisica.nome" search-type="likerigth"/>
+        						<name-property name="crmNome" display-name="Nome"/>	
+        					</autocomplete>
+	  			        </update-select-property>
+	  			        <update-select-property name="profissionalAuxiliar1" display-name="Primeiro Auxiliar" type="br.com.infowaypi.ecarebc.associados.Profissional"
+	  			        	width-percentage="16">
+	  			        	<autocomplete mask-detail="As 7 letras iniciais" minimum-characters="7" style-class="autocomplete" size="30">
+        						<search-property display-name="Nome" name="pessoaFisica.nome" search-type="likerigth"/>
+        						<name-property name="crmNome" display-name="Nome"/>	
+        					</autocomplete>
+	  			        </update-select-property>
+	  			        
+	  			        <update-select-property name="profissionalAuxiliar2" display-name="Segundo Auxiliar" type="br.com.infowaypi.ecarebc.associados.Profissional"
+	  			        	width-percentage="16">
+	  			        	<autocomplete mask-detail="As 7 letras iniciais" minimum-characters="7" style-class="autocomplete" size="30">
+        						<search-property display-name="Nome" name="pessoaFisica.nome" search-type="likerigth"/>
+        						<name-property name="crmNome" display-name="Nome"/>	
+        					</autocomplete>
+	  			        </update-select-property>
+	  			        
+	  			        <update-select-property name="profissionalAuxiliar3" display-name="Terceiro Auxiliar" type="br.com.infowaypi.ecarebc.associados.Profissional"	
+		  			        width-percentage="16">
+	  			        	<autocomplete mask-detail="As 7 letras iniciais" minimum-characters="7" style-class="autocomplete" size="30">
+        						<search-property display-name="Nome" name="pessoaFisica.nome" search-type="likerigth"/>
+        						<name-property name="crmNome" display-name="Nome"/>	
+        					</autocomplete>
+	  			        </update-select-property>
+	  			        <update-property name="valorTotal" display-name="Valor Total" input-type="bigdecimal" editable="false" width-percentage="6"/>
+				    </update-insert>
+				    
+				    <access-restriction name="isInternacaoOrCirurgiaOdonto" type="edit">
+				    	<session-restriction name="guia" property="internacao" operation="equals" value="true" type="boolean" logic-operation="or"/>
+				    	<session-restriction name="guia" property="cirurgiaOdonto" operation="equals" value="true" type="boolean"/>
+				    </access-restriction>
+        		</update-collection>
+        		
+        		<update-collection 
+					name="procedimentosCirurgicosInsert"  
+					field-name="procedimentosCirurgicosComHonorariosNaoGerados"
+					display-name="Inserir Procedimentos Cirúrgicos"
+					include-method="addProcedimento"
+					exclude-method="removeProcedimento" 
+					type="br.com.infowaypi.ecare.procedimentos.ProcedimentoCirurgicoSR">
+				    <update-insert>
+				    	<update-property name="procedimentoDaTabelaCBHPM.codigo" display-name="Código" input-type="string" editable="false" width-percentage="6" />
+	  			        <update-property name="procedimentoDaTabelaCBHPM.descricao" display-name="Descrição" editable="false" width-percentage="20"/>
+	  			        <update-property name="profissionalResponsavel.pessoaFisica.nome" display-name="Profissional Responsável" editable="false" width-percentage="16"/>
+	  			        <update-property name="profissionalAuxiliar1.pessoaFisica.nome" display-name="1º Auxiliar" editable="false" width-percentage="16" />
+	  			        <update-property name="profissionalAuxiliar2.pessoaFisica.nome" display-name="2º Auxiliar" editable="false" width-percentage="16"/>
+	  			        <update-property name="profissionalAuxiliar3.pessoaFisica.nome" display-name="3º Auxiliar" editable="false" width-percentage="16"/>
+	  			        <update-property name="porcentagem" type="java.math.BigDecimal" display-name="Porcentagem" editable="false"/>
+	  			        <update-property name="valorTotal" display-name="Valor Total" input-type="money" type="java.math.BigDecimal" editable="false" width-percentage="6"/>
+				    </update-insert>
+				    
+				    <access-restriction name="isInternacaoOrCirurgiaOdonto" type="edit">
+				    	<session-restriction name="guia" property="internacao" operation="equals" value="true" type="boolean" logic-operation="or"/>
+				    	<session-restriction name="guia" property="cirurgiaOdonto" operation="equals" value="true" type="boolean"/>
+				    </access-restriction>
+				    
+        		</update-collection>
+        		
+        		<update-collection name="itensPacoteInsertAlteracaoProcedimentos" field-name="itensPacoteNaoCanceladosENegados" display-name="Incluir/Excluir Pacotes" 
+					        		include-method="addItemPacoteComValidacao"	exclude-method="cancelarItemPacote" 
+					        		type="br.com.infowaypi.ecarebc.atendimentos.acordos.itensAcordos.ItemPacote">
+				    <update-insert>
+						<update-property display-name="Código" name="pacote.codigo" editable="false" input-type="string"/>
+						<update-property display-name="Descrição" name="pacote.descricao" editable="false" input-type="string"/>
+						<update-property display-name="Porcentagem (%)" name="porcentagemPacote" editable="false" field-name="porcentagem" input-type="bigdecimal"/>
+						<update-property display-name="Situação" name="situacao.descricao" editable="false" input-type="string"/>
+						<update-property display-name="Valor Total" name="valorTotalFormatado" input-type="string" editable="false"/>
+				    </update-insert>
+				    <access-restriction name="isInternacao" type="edit">
+						<session-restriction name="guia" property="internacao" operation="equals" type="boolean" value="true"/>
+					</access-restriction>
+        		</update-collection>
+        		
+        	
+			</update-param>
+			<session-param name="usuario"/>
+			<html>
+				<![CDATA[
+					<infoway:GuiaApresentacao guiaApresentacao="${guia}" mostrarAlteracoes="true"/>
+				]]>
+			</html>
+		</step-method>
+		
+		<step-method display-name="Conferir dados" name="conferirDados" committed="true">
+			<session-param name="guia" operation="none"/>
+			
+			<html>
+				<![CDATA[
+					<infoway:criticasObservacoesGuia guia="${guia}"/>
+					<infoway:GuiaApresentacao guiaApresentacao="${guia}" mostrarAlteracoes="true"/>
+				]]>
+			</html>
+		</step-method>
+		
+		<step-method display-name="Finalizar" name="finalizar">
+			<html>
+				<![CDATA[ 
+				
+				<infoway:criticasObservacoesGuia guia="${guia}"/>
+				
+				<infoway:mensagemSucessoMarcacoes mensagem="Procedimento(s) Alterado(s) com sucesso!" autorizacao="${guia.autorizacao}"/>				
+
+				<span class="not-for-print">
+					<button type="button" name="imprimir" class="actionButton" onclick="window.print();">Imprimir</button>
+				</span>
+
+				<infoway:GuiaApresentacao guiaApresentacao="${guia}" mostrarAlteracoes="true"/>
+
+					<c:choose> 
+					  <c:when test="${guia.guiaImpressaoNova}"> 
+					    <c:choose>
+						  	<c:when test="${guia.exame}" >
+						  		<infoway:imprimirGuiaExame titulo="REIMPRESSAO DE GUIA"/>
+						  	</c:when>
+						  	<c:when test="${guia.tratamentoSeriado}" >
+						  		<infoway:imprimirGuiaTratamentoSeriado titulo="REIMPRESSAO DE GUIA"/>
+						  	</c:when>
+						  	<c:otherwise> 
+							    <infoway:imprimirGuiaInternacao titulo="REIMPRESSAO DE GUIA"/> 
+							</c:otherwise> 
+						</c:choose> 
+					  </c:when> 
+					  <c:otherwise> 
+					    <infoway:imprimirGuia titulo="REIMPRESSAO DE GUIA"/> 
+					  </c:otherwise> 
+					</c:choose> 
+					<span class="not-for-print">
+						<button type="button" name="imprimir" class="actionButton" onclick="window.print();">Imprimir</button>
+					</span>
+					
+			]]>
+			</html>
+		</step-method>
+		
+	</flow>
+</jheat-mapping>		

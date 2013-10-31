@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<report
+		name="relatorioAcompanhamentoRecursoGlosaAuditor"
+		method-name="gerarRelatorio"
+		class="br.com.infowaypi.ecare.services.recurso.relatorio.RelatorioAcompanhamentoRecursoGlosa"
+		display-name="Relatório de acompanhamento de Recursos de glosa" 
+		section="relatoriosAuditor" 
+		response-by-ajax="false">
+		
+		<description>Relatório de acompanhamento de Recursos de glosa</description>
+		
+		<report-param name="autorizacao" required="false" type="java.lang.String" display-name="Autorização"/>
+		<report-param name="dataInicial" type="java.lang.String" display-name="Data inicial" input-type="date"/>
+		<report-param name="dataFinal" type="java.lang.String" display-name="Data final" input-type="date"/>
+		
+		<select-param
+			name="prestador"
+			display-name="Escolha o Prestador"
+			type="br.com.infowaypi.ecarebc.associados.Prestador">
+			<autocomplete style-class="autocomplete" minimum-characters="3" force-selection="true">
+				<search-property name="pessoaJuridica.fantasia" display-name="Prestador"/>
+				<name-property name="pessoaJuridica.fantasia" display-name="Prestador"/>
+			</autocomplete>
+			<restrictions>
+				<restriction property-value="Ativo(a)" property-name="situacao.descricao" type="equals" />
+			</restrictions>	
+		</select-param>
+		
+		<select-param
+			name="situacao" 
+			display-name="Escolha a Situação" type="java.lang.String" >
+			<constants-group name="Situação" class="br.com.infowaypi.ecare.constantes.Constantes">
+				<entry display-name="Recursado(a)" key-value="SITUACAO_RECURSADO"/>
+				<entry display-name="Enviado(a)" key-value="SITUACAO_ENVIADO"/>
+				<entry display-name="Recebido(a)" key-value="SITUACAO_RECEBIDO"/>
+				<entry display-name="Deferido(a)" key-value="SITUACAO_DEFERIDO"/>
+				<entry display-name="Indeferido(a)" key-value="SITUACAO_INDEFERIDO"/>
+				<entry display-name="Faturado(a)" key-value="SITUACAO_FATURADA"/>
+				<entry display-name="Pago(a)" key-value="SITUACAO_PAGO"/>
+			</constants-group>
+		</select-param>
+		
+		<session-param name="usuario"/>
+		
+		<report-return name="resumo" type="br.com.infowaypi.ecare.services.recurso.relatorio.ResumoAcompanhamentoRecursoGlosa"
+			display-name="">
+		 	
+			<html>
+				<![CDATA[
+  					<%@ include file="/view/jsp/includes/RelatorioGuiaRecursoGlosa.jsp"%>
+				]]>
+			</html>
+			
+		</report-return>
+	</report>
+</jheat-mapping>

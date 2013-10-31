@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+	
+	<class-mapping class="br.com.infowaypi.ecarebc.segurados.RegistroPacientesCronicos" name="RegistroPacientesCronicos" 
+		display-name="Registro para Pacientes Crônicos" id-name="idObservacao" link-for-detail="dataCriacao" 
+		type="readonly" depends="segurado" section="" roles="root,centralDeServico" >
+		
+		<description>Registros para pacientes crônicos</description>		
+		
+		<property name="titulo" type="string" not-null="false">
+			<display name="Título" options="listing,search"/>
+	    </property>
+		
+		<property name="texto" type="text" not-null="false">
+			<display name="Texto" options="listing,search"/>
+	    </property>
+	    
+	    <property name="dataDeCriacao" type="date">
+	    	<display name="Data" options="listing, detail-only"/>
+	    </property>
+	    
+	    <many-to-one options="listing, detail-only"
+			class="br.com.infowaypi.msr.user.Usuario" 
+			name="usuario" display-name="Usuário">
+			<display-property name="nome" options="detail-only"/>
+		</many-to-one>
+	    
+	    <many-to-one options="detail-only"
+			class="br.com.infowaypi.ecarebc.segurados.AbstractSegurado" 
+			name="segurado" display-name="Segurado">
+			<display-property name="pessoaFisica.nome" display-name="Nome" options="detail-only"/>
+		</many-to-one>		
+	    
+		<validate-method name="validate">
+			<session-param name="usuario"/>
+		</validate-method>
+		
+	</class-mapping>
+
+</jheat-mapping>

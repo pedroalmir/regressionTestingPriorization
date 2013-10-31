@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+<flow
+	name="retirarAltaDeGuias" 
+	class="br.com.infowaypi.ecare.services.suporte.RetirarAltaInternacoesService"
+	display-name="Retirar Fechamento e Alta de Internações" section="flowSuporte">
+		
+	<description>Retirar Altas Internações</description>
+		
+	<step-method name="buscarGuia" display-name="Informar Numero de Autorizacao" title="Informar Numero de Autorizacao" buttons-position="bottom">
+		<step-param name="autorizacao" input-type="string" size="12" type="java.lang.String" display-name="Autorização" />
+		<step-return name="guia" type="br.com.infowaypi.ecarebc.atendimentos.GuiaInternacao" display-name="Guia de Internacao" scope="session" />		
+	</step-method>
+
+	
+	<step-method name="alterarGuia" display-name="Conferir dados" committed="true">
+		<session-param name="guia" operation="none"/>
+		<html>
+			<![CDATA[
+				<infoway:mensagemAlerta mensagem="Caro usuário, você está prestes a retirar a Alta Hospitalar e/ou a situação \"Fechado(a)\" desta guia. Se voce tem certeza que deseja prosseguir, clique em avançar. "/> 
+			]]>
+		</html>
+		<html>
+			<![CDATA[
+				<infoway:GuiaApresentacao guiaApresentacao="${guia}"/>
+			
+			]]>
+		</html>
+		<step-return name="guia" type="br.com.infowaypi.ecarebc.atendimentos.GuiaInternacao" 
+			 display-name="" scope="session"/>
+	</step-method>
+	
+	<step-method name="finalizar" display-name="Finalizar" title="Finalizar">			
+		<session-param name="guia" operation="none"/>	
+		<html>
+			<![CDATA[
+				<infoway:mensagemSucessoMarcacoes mensagem="Alta Hospitalar retirada com sucesso!" autorizacao="${guia.autorizacao}"/>
+				<infoway:GuiaApresentacao guiaApresentacao="${guia}"/>
+			]]>
+		</html>
+	</step-method>
+</flow>	
+</jheat-mapping>

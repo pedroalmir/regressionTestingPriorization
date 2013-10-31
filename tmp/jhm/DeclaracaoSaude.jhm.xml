@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+	
+	<class-mapping class="br.com.infowaypi.ecarebc.produto.DeclaracaoSaude" name="DeclaracaoSaude"
+		display-name="Questionário" id-name="idDeclaracaoSaude" type="simple"  link-for-detail="segurado.numeroDoCartao" 
+		roles="root,relacionamento,centralDeServico,auditorOdonto,auditor,gerenciaAdesao" section="">
+		
+		<property name="segurado.numeroDoCartao" type="string" not-null="true">
+			<display name="Número do Cartão" options="listing,detail-only" mask="99.9999999999.99.9-9" maxlength="6" align="center" size="24"/>
+	    </property>
+		
+		<property name="dataCriacao" not-null="true" type="date">
+			<display options="listing" name="Data do Preenchimento"/>
+		</property>
+
+        <property name="dataAlteracao" not-null="false" type="date">
+        	<display options="listing" name="Data da Alteração"/>
+        </property>
+        
+        <many-to-one name="usuario" display-name="Usuario" class="br.com.infowaypi.msr.user.Usuario" not-null="true" options="listing,search" autocomplete="true		">
+         	<display-property name="nome"/>
+        </many-to-one>
+        
+       	<collection name="respostasDoenca" display-name="Teve ou Tem" 
+       		class="br.com.infowaypi.ecarebc.produto.RespostaDeclarada" options="listing"/>
+       	
+       	<collection name="respostasTratamento" display-name="Fez ou Faz" 
+       		class="br.com.infowaypi.ecarebc.produto.RespostaDeclarada" options="listing" />
+
+		<many-to-many name="subgruposProcedimentos" display-name="Subgrupos de Procedimentos" class="br.com.infowaypi.ecarebc.procedimentos.SubgrupoCBHPM">
+			<combo display-property="descricao"/>
+		</many-to-many>
+		
+        <many-to-many name="cids" display-name="CIDs" class="br.com.infowaypi.ecarebc.procedimentos.CID">
+        	<autocomplete style-class="autocomplete" minimum-characters="3" force-selection="true">
+        		<search-property display-name="Descrição" name="descricaoDaDoenca"/>
+        		<name-property display-name="Descrição" name="descricaoDaDoenca"/>
+       		</autocomplete>
+        </many-to-many>	 
+       	 
+       	<property name="peso" not-null="true" type="bigdecimal">
+        	<display options="" name="Peso"/>
+        </property>
+        
+        <property name="altura" not-null="true" type="bigdecimal">
+        	<display options="" name="Altura"/>
+        </property>
+        
+        <property name="IMC" calculated="true" type="bigdecimal">
+        	<display options="" name="IMC"/>
+        </property>
+       	
+       	<collection name="arquivos" display-name="Arquivo(s) do Questionário" class="br.com.infowaypi.ecare.arquivos.ArquivoDownloadJPG" >
+      		<access-restriction name="roleRestriction" type="edit">
+				<session-restriction name="usuario" property="role" operation="empty"/>
+			</access-restriction>
+       	</collection>
+       	
+       	<collection name="alteracoesDaDeclaracao.alteracoes" display-name="Histórico de Alterações" class="br.com.infowaypi.ecarebc.utils.Alteracao" />
+       	
+       	<role name="gerenciaAdesao" update="false"/>
+       	<role name="root" update="false" exec="false"/>
+       	<role name="auditor" update="false" exec="false"/>
+       	<role name="auditorOdonto" update="false" exec="false"/>
+       	<methods>
+       		<method-flow display-name="Aplicar Questionário" name="aplicarQuestionarioQualificado" step-name="buscarSegurado">
+       			<target-param name="numeroDoCartao" value="${this.numeroDoCartao}"/>
+       			<target-param name="isAlteracao" value="false"/>
+       		</method-flow>
+       		<method-flow display-name="Alterar Questionário" name="aplicarQuestionarioQualificado" step-name="buscarSegurado">
+       			<target-param name="numeroDoCartao" value="${this.numeroDoCartao}"/>
+       			<target-param name="isAlteracao" value="true"/>
+       		</method-flow>
+    	</methods>			
+	</class-mapping>	
+</jheat-mapping>

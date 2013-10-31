@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+	
+	<class-mapping class="br.com.infowaypi.ecarebc.odonto.EstruturaOdontoEFLayer" name="EstruturaOdontoEFLayer" 
+		display-name="Estrutura Odontológica" id-name="idEstruturaOdontoEFLayer" type="readonly" section="cadastros" global-link="true"
+		roles="auditor, prestadorOdonto, centralDeServico, prestadorCompleto">
+
+		<many-to-one options="listing"
+			class="br.com.infowaypi.ecarebc.odonto.Dente" null-option="true" null-description="Selecione o Dente" disable-message="Selecione o Quadrante"
+			name="dente" display-name="Elemento" not-null="true">
+			<display-property name="descricao"/>
+		</many-to-one>
+		
+		<html><![CDATA[<label for="dente" id="faces_label">Faces:&nbsp;*</label>]]></html>
+		
+		<property name="mesial" type="boolean" next-field-inline="true" not-null="false"> 
+			<display name="Mesial" options="listing" /> 
+		</property>
+		
+		<property name="oclusal_Incisiva" type="boolean" next-field-inline="true" not-null="false">
+			<display name="Oclusal/Incisiva" options="listing"/>
+		</property>
+		
+		<property name="lingual_Palatina" type="boolean" next-field-inline="true" not-null="false">
+			<display name="Lingual/Palatina" options="listing"/>		
+		</property>
+		
+		<property name="vestibular" type="boolean" next-field-inline="true" not-null="false">
+			<display name="Vestibular" options="listing"/>
+		</property>
+		
+		<property name="distal" type="boolean" not-null="false"> 
+			<display name="Distal" options="listing"/> 
+		</property>
+		
+		<validate-method name="validate"/>		
+	</class-mapping>
+</jheat-mapping>

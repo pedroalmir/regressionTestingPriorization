@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+<flow
+	name="fecharParcialSuporte" 
+	class="br.com.infowaypi.ecare.services.suporte.FecharParcialSuporteService"
+	display-name="Fechar Parcial" section="flowSuporte">
+		
+	<description>Fechar Parcial</description>
+		
+	<step-method name="buscarGuia" display-name="Informar Numero de Autorizacao" title="Informar Numero de Autorizacao" buttons-position="bottom">
+		<step-param name="autorizacao" input-type="string" size="12" type="java.lang.String" display-name="Autorização" required="true"/>
+		<step-return name="guia" type="br.com.infowaypi.ecarebc.atendimentos.GuiaInternacao" display-name="Guia de Internacao" scope="session" />		
+	</step-method>
+
+	<step-method name="fecharGuia" display-name="Informar dados do fechamento">
+		<session-param name="usuario" operation="none"/>
+		<step-param name="receber" input-type="boolean" type="java.lang.Boolean" display-name="Receber" />
+		<session-param name="guia" operation="none"/>
+		<step-param name="motivo" input-type="string" type="java.lang.String" display-name="Motivo de fechamento" required="true"/>
+		<step-param name="dataFinal"  type="java.util.Date" input-type="date" display-name="Data de término de atendimento" required="true"/>
+		
+		<html>
+			<![CDATA[
+				<infoway:GuiaApresentacao guiaApresentacao="${guia}"/>
+			]]>
+		</html>
+		<step-return name="guia" type="br.com.infowaypi.ecarebc.atendimentos.GuiaInternacao" 
+			 display-name="" scope="session"/>
+	</step-method>
+	
+	<step-method name="conferirDados" display-name="Conferir dados" committed="true">
+		<session-param name="guia" operation="none"/>
+		<html>
+			<![CDATA[
+				<infoway:GuiaApresentacao guiaApresentacao="${guia}"/>
+			
+			]]>
+		</html>
+		<step-return name="guia" type="br.com.infowaypi.ecarebc.atendimentos.GuiaInternacao" 
+			 display-name="" scope="session"/>
+	</step-method>
+	
+	<step-method name="finalizar" display-name="Finalizar">			
+		<session-param name="guia" operation="none"/>	
+		<html>
+			<![CDATA[
+				<infoway:mensagemSucessoMarcacoes mensagem="Guia fechada com sucesso!" autorizacao="${guia.autorizacao}"/>
+				<infoway:GuiaApresentacao guiaApresentacao="${guia}"/>
+			]]>
+		</html>
+	</step-method>
+</flow>	
+</jheat-mapping>

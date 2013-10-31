@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<!-- metodo = gerarRelatorio -->
+	<report	
+		name="relatorioPreviaOrdenador" 
+		method-name="gerarRelatorio"
+		class="br.com.infowaypi.ecare.financeiro.ordenador.RelatorioPreviaOrdenadorService"
+		display-name="Prévia Ordenador" 
+		section="relatoriosAuditor,relatorioCentral,relatorioFaturista" 
+		response-by-ajax="true"
+		roles="root,gestor,auditor,centralDeServico">
+	
+		<description>Relatório financeiro prévia ordenador</description>
+		
+		<report-param name="competencia" required="true" type="java.util.Date" display-name="Competência" mask="99/9999" input-type="month-year"/>
+		
+		<select-param name="categoria" display-name="" type="java.lang.Integer">
+			<constants-group class="br.com.infowaypi.ecarebc.constantes.Constantes" name="Categoria">
+				<entry display-name="Todas" key-value="TIPO_PRESTADOR_TODOS"/>
+				<entry display-name="Clínica de Exames" key-value="TIPO_PRESTADOR_CLINICAS_DE_EXAMES"/>
+				<entry display-name="Clínica Ambulatorial" key-value="TIPO_PRESTADOR_CLINICAS_AMBULATORIAIS"/>
+				<entry display-name="Clínica de Odontologia" key-value="TIPO_PRESTADOR_CLINICAS_DE_ODONTOLOGIA"/>
+				<entry display-name="Dentistas" key-value="TIPO_PRESTADOR_DENTISTAS"/>
+				<entry display-name="Hospital" key-value="TIPO_PRESTADOR_HOSPITAL"/>
+				<entry display-name="Laboratório" key-value="TIPO_PRESTADOR_LABORATORIO"/>
+				<entry display-name="Médicos Credenciados" key-value="TIPO_PRESTADOR_MEDICOS"/>
+				<entry display-name="Anestesista" key-value="TIPO_PRESTADOR_ANESTESISTA"/>
+				<entry display-name="Outros Profissionais" key-value="TIPO_PRESTADOR_OUTROS"/>
+			</constants-group>
+		</select-param>
+		
+		<report-return name="resumo" type="br.com.infowaypi.ecare.financeiro.ordenador.ResumoOrdenador" 
+			 display-name="Resultado Encontrado">
+			<html>
+			<![CDATA[
+				<%@ include file="/view/jsp/includes/RelatorioPreviaOrdenador.jsp" %>
+				]]>
+			</html>		
+		</report-return>
+	</report>	
+	
+</jheat-mapping>

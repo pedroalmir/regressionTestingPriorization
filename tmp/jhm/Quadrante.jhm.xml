@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+	
+	<class-mapping class="br.com.infowaypi.ecarebc.odonto.Quadrante" name="Quadrante" display-name="Quadrantes" 
+		id-name="idQuadrante" link-for-detail="numero" type="simple" section="cadastros">
+		
+		<description>Quadrantes</description>
+		
+		<property name="arcada.denticao.descricao" type="string" not-null="true">
+			<display name="Dentição" options="listing,search,detail-only"/>
+	    </property>
+	    
+	    <many-to-one options="listing"
+			class="br.com.infowaypi.ecarebc.odonto.Arcada" 
+			name="arcada" display-name="Arcada" autocomplete="false">
+			<display-property name="descricao"/>
+		</many-to-one>
+		
+		<property name="descricao" type="string" not-null="true">
+			<display name="Descrição" options="search,detail-only"/>
+	    </property>
+		
+		<select-property display-name="Número" options="listing" name="numero">
+	    	<entry display-name="1" key-value="QUADRANTE_1"/>
+	    	<entry display-name="2" key-value="QUADRANTE_2"/>
+	    	<entry display-name="3" key-value="QUADRANTE_3"/>
+	    	<entry display-name="4" key-value="QUADRANTE_4"/>
+	    	<entry display-name="5" key-value="QUADRANTE_5"/>
+	    	<entry display-name="6" key-value="QUADRANTE_6"/>
+	    	<entry display-name="7" key-value="QUADRANTE_7"/>
+	    	<entry display-name="8" key-value="QUADRANTE_8"/>
+		</select-property>
+		
+	    <select-property display-name="Lado" options="listing" name="lado">
+	    	<entry display-name="Direito" key-value="LADO_DIREITO"/>
+	    	<entry display-name="Esquerdo" key-value="LADO_ESQUERDO"/>
+	    </select-property>
+		
+		<many-to-one options="listing"
+			class="br.com.infowaypi.ecarebc.odonto.Dente" 
+			name="incisivoCentral" display-name="Incisivo Central" autocomplete="false">
+			<display-property name="numero"/>
+		</many-to-one>
+		
+		<many-to-one options="listing"
+			class="br.com.infowaypi.ecarebc.odonto.Dente" 
+			name="incisivoLateral" display-name="Incisivo Lateral" autocomplete="false">
+			<display-property name="numero"/>
+		</many-to-one>
+		
+		<many-to-one options="listing"
+			class="br.com.infowaypi.ecarebc.odonto.Dente" 
+			name="canino" display-name="Canino" autocomplete="false">
+			<display-property name="numero"/>
+		</many-to-one>
+		
+		<many-to-one options="listing"
+			class="br.com.infowaypi.ecarebc.odonto.Dente" 
+			name="preMolar1" display-name="1º Pré-Molar" autocomplete="false">
+			<display-property name="numero"/>
+		</many-to-one>
+		
+		<many-to-one options="listing"
+			class="br.com.infowaypi.ecarebc.odonto.Dente" 
+			name="preMolar2" display-name="2º Pré-Molar" autocomplete="false">
+			<display-property name="numero"/>
+		</many-to-one>
+		
+		<many-to-one options="listing"
+			class="br.com.infowaypi.ecarebc.odonto.Dente" 
+			name="molar1" display-name="1º Molar" autocomplete="false">
+			<display-property name="numero"/>
+		</many-to-one>
+		
+		<many-to-one options="listing"
+			class="br.com.infowaypi.ecarebc.odonto.Dente" 
+			name="molar2" display-name="2º Molar" autocomplete="false">
+			<display-property name="numero"/>
+		</many-to-one>
+		
+		<many-to-one options="listing"
+			class="br.com.infowaypi.ecarebc.odonto.Dente" 
+			name="molar3" display-name="3º Molar" autocomplete="false">
+			<display-property name="numero"/>
+		</many-to-one>
+		
+		<!-- cadastros -->
+		<role name="root" insert="true" exec="true" update="true" read="true" write="true"/>
+		<role name="atendente" insert="false" exec="false" update="false" read="true" write="false"/>
+		
+		<validate-method name="validate"/>
+
+	</class-mapping>
+
+</jheat-mapping>

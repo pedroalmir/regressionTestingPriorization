@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+	
+	<class-mapping class="br.com.infowaypi.ecarebc.atendimentos.acordos.itensAcordos.Valor" name="Valor" display-name="Histórico de Valores e Quantidades" 
+		id-name="idValor" link-for-detail="valor" type="readonly" section="">
+
+		<many-to-one name="situacao" class="br.com.infowaypi.msr.situations.Situacao"
+	    		display-name="Situação" autocomplete="false" options="listing" not-null="true"> 
+	    	<display-property name="valor"/>
+	    </many-to-one>
+	    
+	    <property name="valor" type="bigdecimal" not-null="true">
+			<display name="Valor" options="listing,search,detail-only" align="center"/>
+	    </property> 
+	    
+	    <property name="quantidade" type="int" not-null="true">
+			<display name="Quantidade" options="listing,search,detail-only" align="center"/>
+	    </property> 
+	
+	</class-mapping>    
+	
+</jheat-mapping>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+
+<jheat-mapping>
+	<class-mapping class="br.com.infowaypi.ecarebc.financeiro.faturamento.ordenador.Ordenador" name="ordenador" display-name="Ordenador"
+		id-name="idOrdenador" link-for-detail="identificador" type="simple" section="">
+	
+	<property name="competencia" type="date">
+		<display name="Competência" options=""/>
+	</property>
+	
+	<property name="dataRecebimento" type="date">
+		<display name="Data de Recebimento das Contas" options=""/>
+	</property>
+	
+	<property name="dataGeracao" type="date">
+		<display name="Data de Geração" options=""/>
+	</property>
+	
+	<property name="limiteAFaturarNormal" type="bigdecimal">
+		<display name="Limite a Faturar Normal" options=""/>
+	</property>
+	
+	<property name="limiteAFaturarPassivo" type="bigdecimal">
+		<display name="Limite a Faturar Passivo" options=""/>
+	</property>
+	
+	<property name="valorAFaturarNormal" type="bigdecimal">
+		<display name="Valor a Faturar Normal" options=""/>
+	</property>
+	
+	<property name="valorAFaturarPassivo" type="bigdecimal">
+		<display name="Valor a Faturar Passivo" options=""/>
+	</property>
+	
+	<many-to-one name="usuario" display-name="Usuário" class="br.com.infowaypi.msr.user.Usuario" options="">
+		<display-property name="login" />
+	</many-to-one>
+	
+	<collection name="informacoesOrdenador" display-name="Informaçoes Por Prestador"
+		 class="br.com.infowaypi.ecarebc.financeiro.faturamento.ordenador.InformacaoOrdenador" />
+				
+	</class-mapping>
+</jheat-mapping>		

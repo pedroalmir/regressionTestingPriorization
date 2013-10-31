@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+
+<jheat-mapping>
+
+	<report 
+		name="relatorioInternacaoPorPrestador" 
+		display-name="Internações por Prestador" 
+		class="br.com.infowaypi.ecare.services.RelatorioInternacaoPorPrestador" 
+		method-name="gerarRelatorio" 
+		section="relatoriosAuditor"
+		response-by-ajax="true">
+
+		<description>Relatório de internações por tipo de tratamento (clínico ou cirúrgico) e por origem (eletiva ou urgencia) para cada prestador.</description>
+		
+		<report-param name="dataInicial" required="true" type="java.util.Date" display-name="Data Inicial" mask="99/99/9999" input-type="date"/>
+		
+		<report-param name="dataFinal" required="true" type="java.util.Date" display-name="Data Final" mask="99/99/9999" input-type="date"/>
+		
+		<select-param name="tipoInternacao" display-name="Selecione o Tipo de Internação" type="java.lang.String" required="true">
+			<constants-group class="br.com.infowaypi.ecare.services.RelatorioInternacaoPorPrestador" name="Tipo de Internação">
+				<entry display-name="Internação Eletiva" key-value="TIPO_INTERNACAO_ELETIVA"/>
+				<entry display-name="Internação de Urgência" key-value="TIPO_INTERNACAO_URGENCIA"/>
+			</constants-group>
+		</select-param>
+		
+		<select-param name="ordem" display-name="Selecione a Ordem de Classificação" type="java.lang.String" required="true">
+			<constants-group class="br.com.infowaypi.ecare.services.RelatorioInternacaoPorPrestador" name="Ordem de Classificação">
+				<entry display-name="Por Prestador" key-value="POR_PRESTADOR"/>
+				<entry display-name="Por Internações Abertas" key-value="POR_INTERNACAO_ABERTA"/>
+				<entry display-name="Por Internações Fechadas" key-value="POR_INTERNACAO_FECHADA"/>
+			</constants-group>
+		</select-param>
+
+		<report-return name="relatorio" type="br.com.infowaypi.ecare.services.RelatorioInternacaoPorPrestador" display-name="Prestadores com Produção">
+			<html>
+				<![CDATA[ <infoway:tableSeparator titulo="Resumo" colspan="2"/> ]]>
+			</html>
+			<display-property name="tipoInternacao" align="left" display-name="Tipo de Internação"/>
+			<display-property name="qtdePrestadores" align="left" display-name="Qtde. Prestadores"/>
+			<display-property name="qtdeInternacoesAutorizadas" align="left" display-name="Qtde. Internações Autorizadas"/>
+			<display-property name="qtdeInternacoesAbertas" align="left" display-name="Qtde. Internações Abertas"/>
+			<display-property name="qtdeInternacoesFechadas" align="left" display-name="Qtde. Internações Fechadas"/>
+			
+			<html>
+				<![CDATA[ <infoway:tableSeparator titulo="Detalhamento" colspan="2"/> ]]>
+			</html>
+			<collection-display name="resumoInternacoesPorTratamento" display-name="Resumo de Internações por Prestador">
+				<display-property name="prestador" align="left" display-name="Prestadores"/>
+				<display-property name="qtdeClinicoAberto" align="right" display-name="Qtde. Intern. Cl. Abertas"/>
+				<display-property name="qdeCirurgicoAberto" align="right" display-name="Qtde. Intern. Cir. Abertas"/>
+				<display-property name="totalAberto" align="right" display-name="Total Intern. Abertas"/>
+				<display-property name="qtdeClinicoFechado" align="right" display-name="Qtde. Intern. Cl. Fechadas"/>
+				<display-property name="qtdeCirurgicoFechado" align="right" display-name="Qtde. Intern. Cir. Fechadas"/>
+				<display-property name="totalFechado" align="right" display-name="Total Intern. Fechadas"/>
+				<display-property name="diferenca" align="right" display-name="Dif. Intern. Abertas"/>
+			</collection-display>
+		</report-return>		
+	</report>
+</jheat-mapping>

@@ -10,7 +10,11 @@
  */
 package com.pedroalmir.testPriorization.util.svn;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.Iterator;
 
@@ -19,13 +23,11 @@ import org.tmatesoft.svn.core.SVNNodeKind;
 import org.tmatesoft.svn.core.SVNProperties;
 import org.tmatesoft.svn.core.SVNProperty;
 import org.tmatesoft.svn.core.SVNURL;
-import org.tmatesoft.svn.core.auth.ISVNAuthenticationManager;
 import org.tmatesoft.svn.core.internal.io.dav.DAVRepositoryFactory;
 import org.tmatesoft.svn.core.internal.io.fs.FSRepositoryFactory;
 import org.tmatesoft.svn.core.internal.io.svn.SVNRepositoryFactoryImpl;
 import org.tmatesoft.svn.core.io.SVNRepository;
 import org.tmatesoft.svn.core.io.SVNRepositoryFactory;
-import org.tmatesoft.svn.core.wc.SVNWCUtil;
 
 /**
  * This example shows how to fetch a file and its properties from the repository
@@ -55,18 +57,21 @@ import org.tmatesoft.svn.core.wc.SVNWCUtil;
  * Repository latest revision: 2802
  */
 public class DisplayFile {
+	public static final String PREFIX = "stream2file";
+    public static final String SUFFIX = ".tmp";
 	/*
 	 * args parameter is used to obtain a repository location URL, user's
 	 * account name & password to authenticate him to the server, the file path
 	 * in the rpository (the file path should be relative to the the
 	 * path/to/repository part of the repository location URL).
 	 */
-	public static void main(String[] args) {
+	@SuppressWarnings({ "resource", "unused" })
+	public static void main(String[] args) throws IOException {
 		/* Default values: */
-		String url = "http://slim3.googlecode.com/svn/trunk";
+		String url = "http://symja.googlecode.com/svn/trunk";
 		String name = "anonymous";
 		String password = "anonymous";
-		String filePath = "slim3/build.xml";
+		String filePath = "matheclipse-core/src/main/java/org/matheclipse/core/stat/descriptive/SymbolicStatUtils.java";
 		/* Initializes the library (it must be done before ever using the library itself) */
 		setupLibrary();
 
@@ -108,6 +113,10 @@ public class DisplayFile {
 		 */
 		SVNProperties fileProperties = new SVNProperties();
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		
+		final File tempFile = File.createTempFile(PREFIX, SUFFIX);
+	    tempFile.deleteOnExit();
+	    FileOutputStream outputStream = new FileOutputStream(tempFile);
 
 		try {
 			/*
@@ -129,7 +138,8 @@ public class DisplayFile {
 			 * in the repository at the latest revision (which is meant by a
 			 * negative revision number).
 			 */
-			repository.getFile(filePath, -1, fileProperties, baos);
+			repository.getFile(filePath, -1, fileProperties, outputStream);
+			outputStream.close();
 
 		} catch (SVNException svne) {
 			System.err.println("error while fetching the file contents and properties: " + svne.getMessage());
@@ -166,7 +176,13 @@ public class DisplayFile {
 			System.out.println("File contents:");
 			System.out.println();
 			try {
-				baos.writeTo(System.out);
+				BufferedReader br = new BufferedReader(new FileReader(tempFile));
+				 String line = null;
+				 while ((line = br.readLine()) != null) {
+				   System.out.println(line);
+				 }
+				
+				//baos.writeTo(System.out);
 			} catch (IOException ioe) {
 				ioe.printStackTrace();
 			}

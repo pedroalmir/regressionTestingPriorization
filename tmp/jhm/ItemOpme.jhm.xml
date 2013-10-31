@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+	
+	<class-mapping class="br.com.infowaypi.ecarebc.opme.ItemOpme" name="ItemOpme" display-name="Órtese/Prótese/Material Especial" 
+		id-name="idItemOpme" link-for-detail="opme.descricao" type="readonly" section="">
+		
+		<description>Órteses, Próteses ou Materiais Especiais</description>
+		
+		<many-to-one name="opme" class="br.com.infowaypi.ecarebc.opme.Opme"
+	    		display-name="Descrição" autocomplete="true" options="listing" not-null="true"> 
+	    	<display-property size="60" name="descricao"/>
+    	    <restrictions>
+    			<restriction property-value="null" property-name="fornecedor" type="notequals"/>
+    			<restriction property-value="Ativo(a)" property-name="situacao.descricao" type="equals" />
+	    	</restrictions>
+	    </many-to-one>
+	    
+	    <property name="quantidadeSolicitada" type="int">
+	    	<display options="listing" name="Quantidade" size="10"/>
+	    </property>
+		
+	    <property name="situacao.descricao" type="string" not-null="false" calculated="true" >
+			<display name="Situação" options="listing, detail-only" />
+	    </property>
+	    
+	    <validate-method name="validate">
+	    	<session-param name="usuario"/>
+	    </validate-method>
+	    
+	</class-mapping>
+
+</jheat-mapping>

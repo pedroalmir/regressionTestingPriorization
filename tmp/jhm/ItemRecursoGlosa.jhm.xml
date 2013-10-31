@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<class-mapping class="br.com.infowaypi.ecare.services.recurso.ItemRecursoGlosa"
+	 name="ItemRecursoGlosa" display-name="ItemRecursoGlosa" type="readonly" 
+	 section="" id-name="idItemRecursoGlosa">
+	</class-mapping>
+
+</jheat-mapping>

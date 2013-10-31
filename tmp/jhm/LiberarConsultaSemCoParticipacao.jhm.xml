@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<flow
+		name="liberarConsultaSemParticipacao" 
+		class="br.com.infowaypi.ecare.services.consultas.LiberarConsultasPromocionaisService"
+		display-name="Liberar Consulta sem Co-participação" section="aloSaudeSection">
+		
+		<description>Liberar consultas sem Coparticiapação</description>
+
+		<step-method name="buscar" display-name="Buscar Beneficiário" title="Buscar Beneficiário" buttons-position="bottom">
+			<step-param name="cpfDoTitular" size="24" mask="999.999.999-99" input-type="string" type="java.lang.String" display-name="CPF do Titular"/>
+			<step-param name="numeroDoCartao" size="24" mask="99.9999999999.99.9-9" input-type="string" type="java.lang.String" display-name="Número do cartão do beneficiário"/>
+			
+			<step-return name="seguradosEncontrados" type="br.com.infowaypi.ecare.segurados.ResumoSegurados" 
+		         display-name="Beneficiários Encontrados" scope="session"/>
+		</step-method>
+		
+		<step-method name="selecionarSegurado" display-name="Selecionar Beneficiário" title="Selecionar Beneficiário">
+		
+			<select-param
+					name="segurados"
+					type="br.com.infowaypi.ecare.segurados.Segurado"
+					display-name="Selecione o Beneficiário"
+					session-property-ref="seguradosEncontrados" operation="reload">
+				<radio-group>
+					<display-property name="numeroDoCartao" display-name="Número do Cartão"/>
+					<display-property name="pessoaFisica.nome" display-name="Nome"/>
+					<display-property name="tipoDeSegurado" display-name="Tipo"/>					
+				</radio-group>
+			</select-param>
+			
+			<step-return name="seguradoSelecionado" type="br.com.infowaypi.ecare.segurados.Segurado" 
+		         display-name="SeguradoSelecionado" scope="session"/>	
+		</step-method>
+		
+		<step-method name="criarConsultaPromocional" display-name="Criar Consulta sem Co-Participação" title="Informar Dados">
+			
+			<session-param name="usuario" />
+			
+			<html>
+				<![CDATA[ <infoway:tableSeparator titulo="Dados do Beneficiário" colspan="2"/> ]]>
+			</html>
+			
+			<update-param name="seguradoSelecionado" operation="none" type="br.com.infowaypi.ecare.segurados.Segurado" display-name="Segurado">
+				<update-property name="pessoaFisica.nome" display-name="Nome" editable="false"/>
+				<update-property name="numeroDoCartao" display-name="Número do cartão" editable="false"/>
+				<update-property name="pessoaFisica.cpf" display-name="CPF" editable="false"/>
+				<update-property name="pessoaFisica.descricaoDoSexo" display-name="Sexo" editable="false"/>
+				<update-property name="pessoaFisica.dataNascimento" display-name="Data de nascimento" editable="false" input-type="date"/>
+				<update-property name="pessoaFisica.endereco.municipio.descricao" display-name="Municipio" editable="false"/>
+				<update-property name="pessoaFisica.endereco.logradouro" display-name="Rua" editable="false"/>
+				<update-property name="pessoaFisica.endereco.bairro" display-name="Bairro" editable="false"/>
+				<update-property name="pessoaFisica.telefoneResidencial" display-name="Telefone residencial" editable="false"/>
+				
+				<update-collection name="consultasPromocionaisLiberadas" display-name="Alterar Consultas Liberadas" type="br.com.infowaypi.ecarebc.promocao.PromocaoConsulta" >
+					<update-insert>
+						<update-property name="dataCriacao" display-name="Data de criação" editable="false" input-type="date"/>
+						<update-property name="dataDeVencimento" display-name="Data de vencimento" editable="false" input-type="date"/>
+						<update-property name="descricaoDoTipo" display-name="Tipo" editable="false"/>
+						<update-property name="situacao.descricao" display-name="Situação" editable="false"/>
+						<update-property name="situacao.dataSituacao" display-name="Data da Situação" editable="false" input-type="date"/>
+						<update-select-property name="especialidadeSelect" field-name="especialidade" display-name="Especialidade" type="br.com.infowaypi.ecarebc.associados.Especialidade">
+							<autocomplete minimum-characters="3" style-class="autocomplete">
+								<search-property display-name="Descrição" name="descricao" search-type="likefull"/>
+								<name-property name="descricao" display-name="Descrição"/>
+							</autocomplete>
+							<restrictions>
+								<restriction property-value="true" property-name="ativa" type="equals" />
+							</restrictions>
+						</update-select-property>
+						<update-property name="observacao.texto" display-name="Observação" editable="false"/>
+					</update-insert>
+				</update-collection>
+				
+			</update-param>
+			
+			<html>
+				<![CDATA[ <fieldset><legend>Liberar Nova Consulta Promocional</legend></fieldset> ]]>
+			</html>
+
+			<select-param display-name="Tipo da consulta" name="tipo" type="java.lang.Integer" null-option="true" required="false" display-label-head="false">
+				<constants-group name="Tipo de consulta" class="br.com.infowaypi.ecarebc.promocao.PromocaoConsulta">
+					<entry display-name="ELETIVA" key-value="TIPO_ELETIVA"/>
+					<entry display-name="URGÊNCIA" key-value="TIPO_URGENCIA"/>
+				</constants-group>
+			</select-param>
+			
+			<select-param display-name="Escolha a especialidade" name="especialidade" 
+				type="br.com.infowaypi.ecarebc.associados.Especialidade" required="false" null-option="true" display-label-head="false">
+				<combo display-property="descricao" display-name="Especialidade" />
+				<restrictions>
+					<restriction property-value="true" property-name="ativa" type="equals" />
+				</restrictions>
+			</select-param>
+			
+			<step-param name="observacao" display-name="Observação" input-type="text" type="java.lang.String"/>	
+			
+			<step-return name="seguradoSelecionado" type="br.com.infowaypi.ecare.segurados.Segurado" 
+		         display-name="Segurado" scope="session"/>
+		</step-method>
+		
+		<step-method name="conferirDados" display-name="Conferir Dados" title="Conferir Dados" committed="true">
+		
+			<html>
+				<![CDATA[ <infoway:tableSeparator titulo="Dados do Beneficiário" colspan="2"/> ]]>
+			</html>
+			
+			<session-param name="seguradoSelecionado" operation="none">
+				<display-property name="pessoaFisica.nome" display-name="Nome"/>
+				<display-property name="numeroDoCartao" display-name="Número do cartão"/>
+				<display-property name="pessoaFisica.cpf" display-name="CPF"/>
+				<display-property name="pessoaFisica.descricaoDoSexo" display-name="Sexo"/>
+				<display-property name="pessoaFisica.dataNascimento" display-name="Data de nascimento" type="date"/>
+				<display-property name="pessoaFisica.endereco.municipio.descricao" display-name="Municipio"/>
+				<display-property name="pessoaFisica.endereco.logradouro" display-name="Rua"/>
+				<display-property name="pessoaFisica.endereco.bairro" display-name="Bairro"/>
+				<display-property name="pessoaFisica.telefoneResidencial" display-name="Telefone residencial"/>
+				
+				<collection-display name="consultasPromocionaisLiberadas" display-name="Especialidades das Consultas sem Co-Participaçao">
+					<display-property name="dataCriacao" display-name="Data de criação" type="date"/>
+					<display-property name="dataDeVencimento" display-name="Data de vencimento" type="date"/>
+					<display-property name="descricaoDoTipo" display-name="Tipo" type="string"/>
+					<display-property name="situacao.descricao" display-name="Situação"/>
+					<display-property name="situacao.dataSituacao" display-name="Data da Situação" type="date"/>
+					<display-property name="especialidade.descricao" display-name="Especialidade"/>
+					<display-property name="observacao.texto" display-name="Observação"/>
+				</collection-display>
+				
+			</session-param>		
+		
+		<step-return name="seguradoSelecionado" type="br.com.infowaypi.ecare.segurados.Segurado" 
+		         display-name="Segurado" scope="session"/>
+	 </step-method>
+	 
+	 <step-method name="finalizar" display-name="Finalizar" title="Finalizar">
+	 
+	 		<html>
+				<![CDATA[ <infoway:mensagemSucesso mensagem="Consulta promocional liberada com sucesso"/> ]]>
+			</html>
+		
+			<session-param name="seguradoSelecionado" operation="none">
+				<display-property name="pessoaFisica.nome" display-name="Nome"/>
+				<display-property name="numeroDoCartao" display-name="Número do cartão"/>
+				<display-property name="pessoaFisica.cpf" display-name="CPF"/>
+				<display-property name="pessoaFisica.descricaoDoSexo" display-name="Sexo"/>
+				<display-property name="pessoaFisica.dataNascimento" display-name="Data de nascimento" type="date"/>
+				<display-property name="pessoaFisica.endereco.municipio.descricao" display-name="Municipio"/>
+				<display-property name="pessoaFisica.endereco.logradouro" display-name="Rua"/>
+				<display-property name="pessoaFisica.endereco.bairro" display-name="Bairro"/>
+				<display-property name="pessoaFisica.telefoneResidencial" display-name="Telefone residencial"/>
+				
+				<collection-display name="consultasPromocionaisLiberadas" display-name="Especialidades das Consultas sem Co-Participaçao">
+					<display-property name="dataCriacao" display-name="Data de criação" type="date"/>
+					<display-property name="dataDeVencimento" display-name="Data de vencimento" type="date"/>
+					<display-property name="descricaoDoTipo" display-name="Tipo" type="string"/>
+					<display-property name="situacao.descricao" display-name="Situação"/>
+					<display-property name="situacao.dataSituacao" display-name="Data da Situação" type="date"/>
+					<display-property name="especialidade.descricao" display-name="Especialidade"/>
+					<display-property name="observacao.texto" display-name="Observação"/>
+				</collection-display>
+				
+			</session-param>	
+	 </step-method>
+		
+	</flow>
+</jheat-mapping>		
+		
+			

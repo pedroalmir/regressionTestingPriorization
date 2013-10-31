@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+	<report name="relatorioProrrogacoes" 
+			display-name="Relatório de Prorrogações" 
+			class="br.com.infowaypi.ecare.relatorio.RelatorioProrrogacoes" 
+			method-name="buscarProrrogacoes" 
+			section="relatoriosAuditor,relatorioFaturista"
+			roles="faturista, auditor, root"> 
+		
+		<report-param name="autorizacao" display-name="Autorização"/>
+		
+		<report-return name="resumo" type="br.com.infowaypi.ecare.resumos.ResumoProrrogacoes" >
+			<html>
+				<![CDATA[
+					<%@ include file="/view/jsp/includes/RelatorioProrrogacoes.jsp" %>
+				]]>
+			</html>
+		</report-return>
+		
+	</report>
+</jheat-mapping>
+	

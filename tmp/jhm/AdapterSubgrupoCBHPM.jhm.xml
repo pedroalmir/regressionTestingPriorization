@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+	
+	<class-mapping class="br.com.infowaypi.ecare.questionarioqualificado.AdapterSubgrupoCBHPM" name="adapterSubgrupoCBHPM"
+		display-name="Questionário" id-name="" section="">
+		
+       	<!-- GRUPO -->
+		<many-to-one name="grupo" display-name="Grupo" class="br.com.infowaypi.ecarebc.procedimentos.GrupoCBHPM" options="" autocomplete="false" null-option="true" disable-message="Nenhum">
+			<display-property name="codigoDescricao" display-name="Grupo"/>
+		</many-to-one>
+		
+		<!-- SUBGRUPO -->
+		<many-to-one name="subgrupo" display-name="Subgrupo" class="br.com.infowaypi.ecarebc.procedimentos.SubgrupoCBHPM" 
+				options="listing" autocomplete="false" service-class="br.com.infowaypi.ecarebc.procedimentos.GrupoCBHPM" target="subgrupos" null-option="true" disable-message="Nenhum" null-description="Nenhum">
+			<display-property name="codigoDescricao" display-name="Subgrupo"/>
+			<depends-property name="grupo" search-property="grupo" type="br.com.infowaypi.ecarebc.procedimentos.GrupoCBHPM" />
+		</many-to-one>
+		
+	</class-mapping>	
+
+</jheat-mapping>

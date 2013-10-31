@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<flow 
+		name="cancelarNoticia" 
+		class="br.com.infoway.ecare.services.noticias.NoticiaServiceProxy"
+		display-name="Cancelar Notícia" section="noticias">
+		
+		<description>Cancelar Notícia</description>
+		
+		<step-method name="pesquisarNoticia" display-name="Buscar Notícia" buttons-position="bottom">
+		
+			<step-param name="titulo" type="java.lang.String" display-name="Título" input-type="string" size="80"/>	
+
+			<step-return name="resumoNoticias" type="br.com.infoway.ecarebc.service.noticias.ResumoNoticias" 
+				 display-name="Noticias" scope="session"/>
+
+		</step-method>
+		
+		<step-method name="cancelarNoticia" display-name="Escolher Notícia" committed="true">
+	
+			<select-param
+					name="noticias"
+					type="br.com.infowaypi.msr.noticia.Noticia"
+					display-name="Selecione a Notícia" 
+					session-property-ref= "resumoNoticias" operation="reload">
+					<radio-group>
+						<display-property name="dataInclusao" display-name="Data de Inclusão" type="date"/>
+						<display-property name="titulo" display-name="Título" />
+						<display-property name="descricaoTipoNoticia" display-name="Cor / Destaque"/>
+						<display-property name="destino" display-name="Destinatário(s)"/>
+					</radio-group>
+			</select-param>
+			<step-return name="noticia" type="br.com.infowaypi.msr.noticia.Noticia" 
+				 display-name="Noticia" scope="session"/>
+			
+		</step-method>
+		
+		<step-method name="finalizar" display-name="Notícia Cancelada">
+			<html>
+				<![CDATA[
+					<div class="alert confirmation not-for-print" style="margin-left:0;margin-right:0;">
+						Notícia cancelada com sucesso!
+					</div>					
+				]]>
+			</html>
+		
+			<session-param name="noticia" display-name="Notícia Cancelada">
+				<display-property name="dataInclusao" display-name="Data de Inclusão" type="date"/>
+				<display-property name="titulo" display-name="Título" />
+				<display-property name="corpo" display-name="Corpo"/>
+				<display-property name="somenteNaPaginaInicial" display-name="Só na P. Principal" type="boolean"/>
+				<display-property name="ativa" display-name="Ativa" type="boolean"/>
+				<display-property name="descricaoTipoNoticia" display-name="Cor / Destaque"/>
+				<display-property name="destino" display-name="Destinatário(s)"/>
+			</session-param>
+			
+		</step-method>
+		
+	</flow>	
+</jheat-mapping>

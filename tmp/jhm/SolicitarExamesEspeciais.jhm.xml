@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+
+<jheat-mapping>
+	<flow 
+		name="solicitarExamesEspeciais" 
+		class="br.com.infowaypi.ecare.services.SolicitarExamesEspeciais"
+		display-name="Solicitar Exames Especiais" section="urgenciaInternacao">
+			
+		<description>Inclusão de novos procedimentos especiais</description>
+			
+		<step-method name="buscarGuia" display-name="Informar Número de Autorização" title="Informar Número de Autorização" buttons-position="bottom">
+			<step-param name="autorizacao" input-type="string" size="12" type="java.lang.String" display-name="Autorização"/>
+			<session-param name="prestador"/>
+			<step-return name="guia" type="br.com.infowaypi.ecarebc.atendimentos.GuiaCompleta" display-name="Guia de Internacao Eletiva" scope="session" />		
+		</step-method>
+		
+		<step-method name="adicionarProcedimentos" display-name="Exames Especiais" title="Solicitar Procedimentos Especiais">
+			
+			<select-param display-name="Tipo da Solicitação" name="tipoSolicitacao" type="java.lang.Integer" display-label-head="false">
+				<constants-group name="Tipo da Solicitação" class="br.com.infowaypi.ecarebc.service.SolicitarExamesEspeciaisService">
+					<entry display-name="Realização Externa" key-value="TIPO_EXTERNO" />
+					<entry display-name="Realização Interna" key-value="TIPO_INTERNO" />
+				</constants-group>
+			</select-param>
+			
+			<collection-param  
+				name="exames"
+				display-name="Adicionar os Exames"
+				type="br.com.infowaypi.ecarebc.procedimentos.Procedimento">
+			    <insert>
+				    <display-property name="procedimentoDaTabelaCBHPM.codigo" display-name="Código"/>
+  			        <display-property name="procedimentoDaTabelaCBHPM.descricao" display-name="Descrição"/>
+  			        <display-property name="bilateral" display-name="Bilateral" type="boolean"/>
+  			        <display-property name="valorTotal" display-name="Valor Bruto" type="money"/>
+			    </insert>
+			    <restrictions>
+			    	<restriction property-name="procedimentoDaTabelaCBHPM.nivel" property-value="1" type="notequals"/>
+			    	<restriction property-name="procedimentoDaTabelaCBHPM.tipo" property-value="2" type="notequals"/>
+			    </restrictions>
+			</collection-param>
+			
+			<session-param name="guia" operation="none"/>
+			<session-param name="usuario"/>
+			
+			<html>
+				<![CDATA[
+					<infoway:GuiaApresentacao guiaApresentacao="${guia}"/>
+				]]>
+			</html>
+			
+			<step-return name="guiaNova" type="br.com.infowaypi.ecarebc.atendimentos.GuiaSimples" 
+	         display-name="Conferir Dados" scope="session"/>
+		</step-method>
+		
+		<step-method name="salvarGuia" display-name="Conferir Dados" title="Conferir Dados" committed="true">
+				<session-param name="guiaNova" operation="none"/>
+			
+			<html>
+				<![CDATA[
+					<infoway:GuiaApresentacao guiaApresentacao="${guiaNova}"/>
+				]]>
+			</html>
+						
+		</step-method>
+		
+		<step-method name="finalizar" display-name="Imprimir Comprovante" title="Imprimir Comprovante">
+				
+				<html>
+					<![CDATA[ <infoway:mensagemSucessoMarcacoes mensagem="Procedimentos solicitados com sucesso!" autorizacao="${guiaNova.autorizacao}"/> ]]>
+				</html>
+				
+				<html>
+			<![CDATA[ 
+				<span class="not-for-print">
+					<button type="button" name="imprimir" class="actionButton" onclick="window.print();">Imprimir</button>
+				</span>
+			]]>
+				</html>
+				
+				<session-param name="guiaNova" />
+			
+				<html>
+					<![CDATA[
+						<infoway:GuiaApresentacao guiaApresentacao="${guiaNova}"/>
+					]]>
+				</html>
+				<html>
+					<![CDATA[ <infoway:imprimirGuia titulo="&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GUIA DE INTERNAÃ‡ÃƒO"/> 
+						<span class="not-for-print">
+						<button type="button" name="imprimir" class="actionButton" onclick="window.print();">Imprimir</button>
+					</span>
+					]]>
+				</html>
+						
+		</step-method>
+		
+	</flow>
+</jheat-mapping>		

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+
+<jheat-mapping>
+
+	<class-mapping
+		class="br.com.infowaypi.ecare.programaPrevencao.fluxos.ResumoGeralMpps"
+		name="resumoGeralMpps" display-name="Resumo geral Mpps" type="readonly"
+		id-name="idResumoGeralMpps" link-for-detail=""
+		section="pps">
+
+		<property name="nConsultasRealizadasPeloPrograma" type="bigdecimal"
+			not-null="false">
+			<display name="Número de consultas realizadas pelo programa"
+				size="10" options="detail-only" />
+		</property>
+
+		<property name="nConsultasDeUrgencia" type="bigdecimal"
+			not-null="false">
+			<display name="Número de consultas de urgência"
+				size="10" options="detail-only" />
+		</property>
+
+		<property name="nInteracoes" type="bigdecimal"
+			not-null="false">
+			<display name="Número de internações"
+				size="10" options="detail-only" />
+		</property>
+
+		<property name="nCoparticipacoesLiberadas" type="bigdecimal"
+			not-null="false">
+			<display name="Número de co-participações liberadas"
+				size="10" options="detail-only" />
+		</property>
+
+		<property name="nLimitesUltrapassadosDePacientesInscritosEmProgramas" type="bigdecimal"
+			not-null="false">
+			<display name="Número de limites ultrapassados em programas"
+				size="10" options="detail-only" />
+		</property>
+
+		<collection 
+			class="br.com.infowaypi.ecare.programaPrevencao.fluxos.ResumoBeneficiarioMpps" 
+			name="resumosBeneficiarios" display-name="Resumos beneficiários" 
+	    	options="listing,detail-only" master-detail="false" />
+
+	</class-mapping>
+
+</jheat-mapping>

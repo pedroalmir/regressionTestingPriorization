@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+
+<jheat-mapping>
+	<flow 
+		name="autorizarAcompanhamentoAnestesico" 
+		class="br.com.infowaypi.ecare.services.AutorizarAcompanhamentoAnestesico"
+		display-name="Autorizar Acompanhamento Anestésico" section="marcacao, autorizacoesCentralDeRelacionamento">
+		
+		<step-method display-name="Buscar Guia" name="buscarGuia">
+			<step-param name="autorizacao" input-type="string" size="12" type="java.lang.String" display-name="Autorização"/>
+			<step-return name="guia" type="br.com.infowaypi.ecarebc.atendimentos.GuiaAcompanhamentoAnestesico" 
+				display-name="Guia" scope="session"/>
+		</step-method>
+		
+		<step-method display-name="Autorizar Guia" name="autorizarGuia">
+			
+			<update-param name="guia" display-name="" type="br.com.infowaypi.ecarebc.atendimentos.GuiaAcompanhamentoAnestesico">
+				
+				<update-collection display-name="Selecionar Procedimentos" name="procedimentosNaoCanceladosENegados"
+					type="br.com.infowaypi.ecarebc.procedimentos.Procedimento">
+					<update-insert>
+						<update-property display-name="Código" name="procedimentoDaTabelaCBHPM.codigo" editable="false" input-type="string"/>
+						<update-property display-name="Descrição" name="procedimentoDaTabelaCBHPM.descricao" editable="false" input-type="string"/>
+						<update-property name="quantidade" display-name="Quantidade" editable="false" input-type="string"/>
+						<update-property display-name="Valor Unitário" name="valorAtualDoProcedimento" editable="false" input-type="bigdecimal"/>
+						<update-property display-name="Valor Total" name="valorTotal" editable="false" input-type="bigdecimal"/>
+						<update-property-boolean display-name="Autorizar" name="autorizadoExames" field-name="autorizado" false-description="Não" true-description="Sim" type="java.lang.Boolean" width-percentage="12"/>
+						<update-property display-name="Motivo" name="motivo" editable="true" input-type="text"/>
+					</update-insert>
+				</update-collection>
+			</update-param>
+			
+			<session-param name="usuario"/>
+			<html>
+				<![CDATA[
+					<infoway:GuiaApresentacao guiaApresentacao="${guia}"/>
+				]]>
+			</html>
+			<step-return name="guia" type="br.com.infowaypi.ecarebc.atendimentos.GuiaAcompanhamentoAnestesico" display-name=""/>
+		</step-method>
+		
+		<step-method display-name="Conferir Dados" name="salvarGuia" committed="true">
+			<session-param name="guia" operation="none"/>
+			<html>
+				<![CDATA[
+					<input type="hidden" name="autorizacao" id="autorizacao" value="${param.autorizacao}"/>
+					<infoway:GuiaApresentacao guiaApresentacao="${guia}"/>
+				]]>
+			</html>
+			<step-return name="guia" type="br.com.infowaypi.ecarebc.atendimentos.GuiaAcompanhamentoAnestesico" display-name=""/>
+		</step-method>
+		
+		<step-method display-name="Finalizar" name="finalizar">
+			<session-param name="guia"/>
+			<html>
+				<![CDATA[
+					<c:if test="${guia.autorizado}"> 
+						<infoway:mensagemSucessoMarcacoes mensagem="O acompanhamento anestésico foi autorizado." autorizacao="${guia.autorizacao}"/> 
+					</c:if> 
+					<c:if test="${!guia.autorizado}"> 
+						<infoway:mensagemInformacao mensagem="O acompanhamento anestésico não foi autorizado."/> 
+					</c:if>
+					<span class="not-for-print">
+						<button type="button" name="imprimir" class="actionButton" onclick="window.print();">Imprimir</button>
+					</span>
+				]]>
+			</html>
+			<html>
+				<![CDATA[
+					<infoway:GuiaApresentacao guiaApresentacao="${guia}"/>
+					<infoway:imprimirGuiaAcompanhamentoAnestesico guia="${guia}"/> 
+					<span class="not-for-print">
+						<button type="button" name="imprimir" class="actionButton" onclick="window.print();">Imprimir</button>
+					</span>
+				]]>
+			</html>
+		</step-method>
+		
+	</flow>
+</jheat-mapping>

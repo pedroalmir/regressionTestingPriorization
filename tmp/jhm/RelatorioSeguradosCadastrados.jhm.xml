@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<report
+		name="relatorioSeguradosAtivos"
+		method-name="computarResultado"
+		class="br.com.infowaypi.ecare.segurados.ResumoSegurados"
+		display-name="Beneficiários Cadastrados" section="relatoriosAuditor">
+		
+		<description>Relatório de beneficiário cadastrados no sistema</description>
+		
+		<html></html>
+		
+		<report-return name="resumos" type="br.com.infowaypi.ecare.segurados.ResumoSegurados" 
+			 display-name="Resultado Encontrado">
+			 
+			<!--display-property name="totalSegurados" display-name="Qtd. Segurados"/-->				 
+			
+			<html>
+				<![CDATA[ <infoway:tableSeparator titulo="Total de Beneficiários" colspan="2"/> ]]>
+			</html>
+			
+			<display-property name="totalTitulares" display-name="Titulares"/>
+			<display-property name="totalDependentes" display-name="Dependentes"/>	
+			<display-property name="totalSegurados" display-name="Total de Beneficiários"/>			
+
+			<html>
+				<![CDATA[ <infoway:tableSeparator titulo="Ativos" colspan="2"/> ]]>
+			</html>	
+			
+			<display-property name="titularesAtivos" display-name="Titulares"/>
+			<display-property name="dependentesAtivos" display-name="Dependentes"/>
+			<display-property name="seguradosAtivos" display-name="Total de Beneficiários"/>			
+				
+			<html>
+				<![CDATA[ <infoway:tableSeparator titulo="Inativos" colspan="2"/> ]]>
+			</html>
+			
+			<display-property name="titularesInativos" display-name="Titulares"/>
+			<display-property name="dependentesInativos" display-name="Dependentes"/>
+			<display-property name="seguradosInativos" display-name="Total de Beneficiários"/>			
+			
+			<html>
+				<![CDATA[ <infoway:tableSeparator titulo="Suspensos" colspan="2"/> ]]>
+			</html>
+			
+			<display-property name="titularesSuspensos" display-name="Titulares"/>
+			<display-property name="dependentesSuspensos" display-name="Dependentes"/>
+			<display-property name="seguradosSuspensos" display-name="Total de Beneficiários"/>			
+			
+			<html>
+				<![CDATA[ <infoway:tableSeparator titulo="Cancelados" colspan="2"/> ]]>
+			</html>
+			
+			<display-property name="titularesCancelados" display-name="Titulares"/>
+			<display-property name="dependentesCancelados" display-name="Dependentes"/>
+			<display-property name="seguradosCancelados" display-name="Total de Beneficiários"/>			
+
+			<html>
+				<![CDATA[ <infoway:tableSeparator titulo="Cadastrados (Aguardando 1º Pagamento)" colspan="2"/> ]]>
+			</html>
+			
+			<display-property name="titularesCadastrados" display-name="Titulares"/>
+			<display-property name="dependentesCadastrados" display-name="Dependentes"/>
+			<display-property name="seguradosCadastrados" display-name="Total de Beneficiários"/>
+			
+		</report-return>
+	
+	</report>
+	
+</jheat-mapping>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<report
+		name="relatorioInternacoesClinicasCirurgicas"
+		method-name="executarBusca"
+		class="services.RelatorioInternacoesClinicasCirurgicas"
+		display-name="Internações Clínicas/Cirúrgicas" section="relatoriosCadernoSR" response-by-ajax="true">
+				
+		<report-param name="competencia" type="java.lang.String" display-name="Competência" mask="99/9999" input-type="month-year"/>
+	
+		<report-return name="resumoInternacoes" type="resumos.ResumoInternacoes" 
+			 display-name="Resultado relatório">
+		
+			<html>
+				<![CDATA[ <infoway:tableSeparator titulo="Total Internações" colspan="2"/> ]]>
+			</html>			
+				<display-property name="quantidadeTotal" display-name="Quantidade" type="int"/>
+				<display-property name="valorTotal" display-name="Valor" type="bigdecimal"/>
+		  	<html>
+				<![CDATA[ <infoway:tableSeparator titulo="Internações Clínicas" colspan="2"/> ]]>
+			</html>			
+				<display-property name="quantidadeClinicos" display-name="Quantidade" type="int"/>
+				<display-property name="valorClinicos" display-name="Valor" type="bigdecimal"/>
+				
+			<html>
+				<![CDATA[ <infoway:tableSeparator titulo="Internações Cirúrgicas" colspan="2"/> ]]>
+			</html>					
+			 	<display-property name="quantidadeCirurgicos" display-name="Quantidade" type="int"/>
+				<display-property name="valorCirurgicos" display-name="Valor" type="bigdecimal"/>
+				
+			<html>
+				<![CDATA[ <infoway:tableSeparator titulo="Coopanest" colspan="2"/> ]]>
+			</html>					
+				<display-property name="valorCoopanest" display-name="Valor" type="bigdecimal"/>
+			 	
+		</report-return>
+		
+	</report>
+	
+</jheat-mapping>

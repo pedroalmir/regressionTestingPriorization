@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+<flow
+	name="ReimprimirGuias" 
+	class="br.com.infowaypi.ecare.services.ReimpressaoDeGuiasService"
+	display-name="Visualizar/Imprimir Guia" section="marcacao,auditor,urgenciaInternacao,consultasPrestador,examesPrestador,relatoriosPrestador, honorario, 
+		autorizacoesCentral, relatoriosAuditor, relatorioFaturista, autorizacoesCentralOdonto, autorizacoesCentralDeRelacionamento, odontoPrestador, odontoUrgenciaPrestador, marcacaoOdonto, auditoriaOdonto, abaOperador, reportSuporte">
+		
+	<description>Visualização/Impressão da 2ª Via de Guias</description>
+
+	<step-method name="buscarGuias" display-name="Escolher Beneficiário" title="Identificar Beneficiário" buttons-position="bottom" >
+		<html>
+			<![CDATA[
+				<infoway:mensagemAlerta mensagem="Caro usuário, ao informar uma Autorização todos os demais campos de pesquisa informados serão ignorados pela busca. "/> 
+			]]>
+		</html>
+		<step-param name="autorizacao" input-type="string" size="12" type="java.lang.String" display-name="Autorização" />
+		<step-param name="cpfDoTitular" size="24" mask="999.999.999-99" input-type="string" type="java.lang.String" display-name="CPF do Titular"/>
+		<step-param name="numeroDoCartao" size="24" mask="99.9999999999.99.9-9" input-type="string" type="java.lang.String" display-name="Número do cartão do beneficiário"/>
+		
+		<select-param
+			name="tipoDeGuia"
+			display-name=" " type="java.lang.Integer">
+			<constants-group name="Tipo" class="br.com.infowaypi.ecarebc.constantes.Constantes">
+				<entry display-name="Todas" key-value="TIPO_GUIA_TODAS"/>	
+				<entry display-name="Exame" key-value="TIPO_GUIA_EXAME"/>	
+				<entry display-name="Consulta" key-value="TIPO_GUIA_CONSULTA"/>
+				<entry display-name="Consulta Urgência" key-value="TIPO_GUIA_CONSULTA_URGENCIA"/>
+				<entry display-name="Consulta Odontológica" key-value="TIPO_GUIA_CONSULTA_ODONTO"/>
+				<entry display-name="Consulta Odontológica Urgência" key-value="TIPO_GUIA_CONSULTA_ODONTO_URGENCIA"/>
+				<entry display-name="Tratamento Odontológico" key-value="TIPO_GUIA_TRATAMENTO_ODONTO"/>
+				<entry display-name="Atendimento Subsequente" key-value="TIPO_GUIA_ATENDIMENTO_SUBSEQUENTE"/>
+				<entry display-name="Internação Eletiva" key-value="TIPO_GUIA_INTERNACAO_ELETIVA"/>					
+				<entry display-name="Internação Urgência" key-value="TIPO_GUIA_INTERNACAO_URGENCIA"/>
+				<entry display-name="Internações" key-value="TIPO_GUIA_TODAS_INTERNACAO"/>
+				<entry display-name="Honorário Médico" key-value="TIPO_GUIA_HONORARIO_MEDICO"/>
+				<entry display-name="Recursos de Glosa" key-value="TIPO_GUIA_RECURSO_GLOSA"/>
+			</constants-group>	
+		</select-param>
+		
+		<step-param name="dataInicial" display-name="Data inicial" type="java.util.Date" input-type="date" required="false" />
+		<step-param name="dataFinal" display-name="Data Final" type="java.util.Date" input-type="date" required="false"/>
+		
+		<session-param name="prestador" operation="none"/>
+		<session-param name="usuario"/>
+		<step-return name="resumoGuias" type="br.com.infowaypi.ecarebc.atendimentos.ResumoGuias" 
+			display-name="Resumo de Guias" scope="session"/>
+	</step-method>
+	
+	<step-method name="selecionarGuia" display-name="Escolher Guia">
+		<select-param
+			name="guias"
+			type="br.com.infowaypi.ecarebc.financeiro.faturamento.GuiaFaturavel"
+			display-name="Selecione a Guia"
+			session-property-ref="resumoGuias" operation="none">
+			<radio-group default-checked="none" default-sort="3">
+				<display-property name="autorizacao" display-name="Autorização"/>
+				<display-property name="tipo" display-name="Tipo da Guia"/>
+				<display-property name="dataAtendimento" display-name="Atendimento" type="date"/>				
+				<display-property name="segurado.pessoaFisica.nome" display-name="Beneficiário"/>
+				<display-property name="situacao.descricao" display-name="Situação"/>
+				<display-property name="situacao.dataSituacao" display-name="Data" type="date"/>				
+				<display-property name="valorTotalApresentado" display-name="Valor Apresentado" type="money"/>
+				<display-property name="valorPagoPrestadorApresentacao" display-name="Valor para Pgto" type="money"/>
+			</radio-group>
+		</select-param>
+		<step-return name="guia" type="br.com.infowaypi.ecarebc.financeiro.faturamento.GuiaFaturavel" 
+			 display-name="" scope="session"/>
+	</step-method>
+	
+	<step-method name="finalizarReimpressao" display-name="Imprimir Comprovante de Confirmação" title="Imprimir Comprovante">
+			
+		<session-param name="guia" operation="none"/>
+		
+		<html>
+			<![CDATA[ 
+				<span class="not-for-print">
+					<button type="button" name="imprimir" class="actionButton" onclick="window.print();">Imprimir</button>
+				</span>
+				<c:choose> 
+					<c:when test="${guia.recursoGlosa}"> 
+				  		<infoway:GuiaRecursoGlosa guia="${guia}" isFlowRecursar="false"/>
+				    </c:when> 
+				  	<c:otherwise> 
+					    <infoway:GuiaApresentacao guiaApresentacao="${guia}"/>
+					</c:otherwise> 
+				</c:choose> 
+			]]>
+		</html>
+
+		<html>
+			<![CDATA[
+		        <c:if test="${!guia.guiaImpressaoNova && (guia.exame || guia.internacao) && (prestador.idPrestador ne 373690)}">
+		        	<infoway:imprimirGuia titulo="REIMPRESSAO DE GUIA"/> 
+		        </c:if>
+		        <c:if test="${!guia.recursoGlosa && !guia.exame && !guia.acompanhamentoAnestesico && !guia.internacao && !guia.guiaImpressaoNova}">
+		        	<infoway:imprimirGuia titulo="REIMPRESSAO DE GUIA"/> 
+		        </c:if>
+		        <c:if test="${!guia.guiaImpressaoNova && guia.exame && (prestador.idPrestador eq 373690)}">
+		             <infoway:imprimirGuiaExameEGAAConfirmacaoExame guiaCompleta="${guia}" guiaAcompanhamentoAnestesico="${guia.guiaAcompanhamentoAnestesicoDeExame}" titulo="REIMPRESSAO DE GUIA"/>
+		        </c:if>
+		        <c:if test="${guia.guiaImpressaoNova}">
+				    <c:choose>
+					  	<c:when test="${guia.recursoGlosa}" >
+					  		<infoway:imprimirGuiaRecursoGlosa guia="${guia}"/>
+					  	</c:when>
+				    	<c:when test="${guia.honorarioMedico}" >
+					  		<infoway:imprimirGuiaHonorarioMedico guia="${guia}"/>
+					  	</c:when>
+					  	<c:when test="${guia.exame}" >
+					  		<infoway:imprimirGuia titulo="REIMPRESSAO DE GUIA"/>
+					  	</c:when>
+					  	<c:when test="${guia.acompanhamentoAnestesico}" >
+					  		<infoway:imprimirGuiaAcompanhamentoAnestesico guia="${guia}"/>
+					  	</c:when>
+					  	<c:otherwise> 
+						    <infoway:imprimirGuia titulo="REIMPRESSAO DE GUIA"/> 
+						</c:otherwise> 
+					</c:choose> 
+		        </c:if>
+				<span class="not-for-print">
+					<button type="button" name="imprimir" class="actionButton" onclick="window.print();">Imprimir</button>
+				</span>
+			]]>
+			</html>
+	</step-method>
+</flow>	
+</jheat-mapping>	
+	

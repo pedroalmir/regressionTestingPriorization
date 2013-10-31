@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+
+<jheat-mapping>
+
+	<flow name="excluirExame" class="br.com.infowaypi.ecare.services.ExcluirExame"	display-name="Excluir Exame" section="examesPrestador">
+
+		<description>Excluir Exame</description>
+
+		<step-method name="buscarGuiaExclusaoProcedimento"
+			display-name="Informar Número de Autorização" title="Informar Número de Autorização"
+			buttons-position="bottom">
+			
+			<step-param name="autorizacao" input-type="string" size="12"
+				type="java.lang.String" display-name="Autorização" />
+				
+			<session-param name="prestador" operation="none" />
+			
+			<step-return name="guia"
+				type="br.com.infowaypi.ecarebc.atendimentos.GuiaExame" display-name="Guias Encontradas"
+				scope="session" />
+		</step-method>
+
+		<step-method name="selecionarProcedimentos" display-name="Selecionar Procedimentos"
+			title="Selecionar Procedimentos">
+			
+		    <session-param name="usuario" operation="reload"/>
+		    
+			<step-param name="motivoExclusao" type="java.lang.String"  input-type="text" display-name="Motivo da Exclusão" required="true" />
+			
+			<update-param name="guia"
+				type="br.com.infowaypi.ecarebc.atendimentos.GuiaExame" display-name="" operation="lock">
+				
+				<update-collection
+					type="br.com.infowaypi.ecarebc.procedimentos.Procedimento" name="procedimentosNaoGlosadosNemCanceladosNemNegados"
+					display-name="Procedimentos não glosados, não cancelados, não negados e não removidos" >
+					
+					<update-insert>
+						<update-property name="procedimentoDaTabelaCBHPM.codigo"
+							display-name="Código" editable="false" />
+						<update-property name="procedimentoDaTabelaCBHPM.descricao"
+							display-name="Descrição" editable="false" />
+						<update-property name="procedimentoDaTabelaCBHPM.nivel"
+							display-name="Nível" editable="false" />
+						<update-property name="profissionalResponsavel.pessoaFisica.nome"
+							display-name="Profissional Responsável" editable="false" />
+						<update-property name="bilateral" display-name="Bilateral"
+							type="java.lang.Boolean" input-type="boolean" editable="false" />
+						<update-property name="quantidade" display-name="Quantidade"
+							type="java.lang.Integer" editable="false" />
+						<update-property name="valorAtualDoProcedimento"
+							display-name="Valor Unitário" type="java.math.BigDecimal"
+							input-type="money" editable="false" />
+						<update-property name="valorTotal" display-name="Valor Total"
+							type="java.math.BigDecimal" input-type="money" editable="false" />
+						<update-property name="selecionadoParaExclusao" type="java.lang.Boolean"
+							display-name="Excluir" input-type="boolean"  >
+					</update-property>
+					
+				</update-insert>
+					
+				</update-collection>
+			</update-param>
+
+			<step-return name="guia"
+				type="br.com.infowaypi.ecarebc.atendimentos.GuiaExame" display-name="Conferir Dados"
+				scope="session" />
+
+		</step-method>
+
+		<step-method name="salvarGuia" display-name="Conferir Dados"
+			title="Conferir Dados" committed="true">
+			<session-param name="guia" operation="none" />
+			<html>
+				<![CDATA[
+					<infoway:GuiaApresentacao guiaApresentacao="${guia}"/>
+				]]>
+			</html>
+
+			<step-return name="guia"
+				type="br.com.infowaypi.ecarebc.atendimentos.GuiaExame"
+				display-name="Conferir Dados" scope="session" />
+
+		</step-method>
+
+		<step-method name="finalizar" display-name="Imprimir Comprovante"
+			title="Imprimir Comprovante">
+
+			<session-param name="guia" operation="none" />
+			
+			<html>
+					<![CDATA[ <infoway:mensagemSucessoMarcacoes mensagem="Procedimento(s) excluido(s) com sucesso!" autorizacao="${guia.autorizacao}"/> ]]>
+		    </html>
+			
+			
+			<html>
+				<![CDATA[
+					<infoway:GuiaApresentacao guiaApresentacao="${guia}"/>
+					<infoway:imprimirGuia titulo="IMPRESSAO DE GUIA DE EXAME"/>
+					<span class="not-for-print">
+						<button type="button" name="imprimir" class="actionButton" onclick="window.print();">Imprimir</button>
+					</span>
+					]]>
+			</html>
+
+		</step-method>
+
+
+	</flow>
+</jheat-mapping>

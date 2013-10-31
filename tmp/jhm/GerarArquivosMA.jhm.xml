@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<report
+		name="arquivosMA"
+		method-name="gerarCSVMedAliance"
+		class="br.com.infowaypi.ecare.geracaoCSV.ArquivosMA"
+		display-name="Exportação de Dados" section="cadastrosCentralDeRelacionamento" response-by-ajax="true">
+		
+		<description>Geração dos arquivos de Exportação de Banco da Med Alliance</description>
+		<html>
+			<![CDATA[  
+				<infoway:mensagemInformacao mensagem="Geração dos arquivos de Exportação de Banco da Med Alliance"/>
+			]]>
+		</html>
+		<report-return name="arquivoMA " type="br.com.infowaypi.ecare.geracaoCSV.ArquivosMA"
+			display-name="">
+			
+		<html>
+			<![CDATA[  
+					<%@ include file="/view/jsp/includes/arquivosMAReport.jsp"%>				
+			]]>
+		</html>
+		 
+		</report-return>
+		
+	</report>
+	
+</jheat-mapping>

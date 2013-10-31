@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+	
+	<class-mapping class="br.com.infowaypi.ecarebc.odonto.Arcada" name="Arcada" display-name="Arcadas" 
+		id-name="idArcada" link-for-detail="posicao" type="simple" section="cadastros, cadastrosAuditor">
+		
+		<description>Arcadas Dentárias</description>
+		
+		<property name="descricao" type="string" not-null="true">
+			<display name="Descrição" options="search, detail-only"/>
+	    </property>
+	    
+	    <select-property display-name="Posição" options="listing" name="posicao">
+	    	<entry display-name="Superior" key-value="POSICAO_SUPERIOR"/>
+	    	<entry display-name="Inferior" key-value="POSICAO_INFERIOR"/>
+	    </select-property>
+	    
+	    <many-to-one options="listing"
+			class="br.com.infowaypi.ecarebc.odonto.Denticao" 
+			name="denticao" display-name="Dentição" autocomplete="false">
+			<display-property name="tipo"/>
+		</many-to-one>
+		
+		<many-to-one options="listing"
+			class="br.com.infowaypi.ecarebc.odonto.Quadrante" 
+			name="quadranteDireito" display-name="Quad. Direito" autocomplete="false">
+			<display-property name="descricao"/>
+		</many-to-one>
+		
+		<many-to-one options="listing"
+			class="br.com.infowaypi.ecarebc.odonto.Quadrante" 
+			name="quadranteEsquerdo" display-name="Quad. Esquerdo" autocomplete="false">
+			<display-property name="descricao"/>
+		</many-to-one>
+		
+		<!-- cadastros -->
+		<role name="root" insert="true" exec="true" update="true" read="true" write="true"/>
+		<role name="atendente" insert="false" exec="false" update="false" read="true" write="false"/>
+		
+		<!-- cadastrosAuditor -->
+		<role name="auditor" insert="false" exec="false" update="false" read="true" write="false"/>
+		<role name="regulador" insert="false" exec="false" update="false" read="true" write="false"/>
+		<role name="faturista" insert="false" exec="false" update="false" read="true" write="false"/>
+		<role name="auditorOdonto" insert="false" exec="false" update="false" read="true" write="false"/>
+		<role name="diretoriaMedica" insert="false" exec="false" update="false" read="true" write="false"/>
+		
+		<validate-method name="validate"/>
+
+	</class-mapping>
+
+</jheat-mapping>

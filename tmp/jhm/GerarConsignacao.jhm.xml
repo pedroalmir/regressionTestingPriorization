@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<flow 
+		name="geracaoDeConsignacoes" 
+		class="br.com.infowaypi.ecare.services.financeiro.consignacao.FlowGerarConsignacao"
+		display-name="Geração de Consignações" 
+		section="consignacoes">
+		
+		<step-method display-name="Informar Competência" name="verificarGeracao" buttons-position="bottom" title="Informar Competência" committed="false">
+			<step-param display-name="Competência" name="competencia" input-type="month-year" type="java.util.Date" required="true"/>
+			<step-return display-name="" name="flow" type="br.com.infowaypi.ecare.services.financeiro.consignacao.FlowGerarConsignacao" scope="session"/>
+			<html><![CDATA[
+				<script type="text/javascript">
+					
+					var isBotoesPreparados = false;
+					var isFormSubmit = false;
+					
+					function prepararBotoes() {
+						var els = document.getElementsByTagName("button");
+						
+						for (var i = 0; i < els.length; i++) {
+							if (els[i].name === "submit") {
+								var submitBtn = els[i];
+								var pbar = null;
+								submitBtn.onclick = function() {
+									var competencia = document.getElementById('competencia').value;
+									if (pbar == null) {
+										pbar = new ProgressBar("geracaoConsignacao", true, {
+											"competencia": competencia,
+										});
+										pbar.onfinished = function () {
+											isFormSubmit = true;
+											var formulario = document.getElementsByTagName("form")[0];
+											formulario.submit.click();
+											return true;
+										};
+										pbar.onexception = pbar.onfinished;
+										pbar.start();
+									}
+									return isFormSubmit;
+								};
+							}
+						}
+					}
+					
+					/* Código Mágico e Feliz para executar um código ao carregar a página */
+					if (document.addEventListener) {
+						document.addEventListener("DOMContentLoaded", function () { isBotoesPreparados = true; prepararBotoes(); }, false);
+					}
+					else if (document.all && !window.opera) {
+						document.write("<script type=\"text/javascript\" id=\"contentloadtag\" defer=\"defer\" src=\"javascript:void(0)\"><\/script>");
+						var contentloadtag = document.getElementById("contentloadtag");
+						contentloadtag.onreadystatechange = function() {
+							if (this.readyState === "complete") {
+								isBotoesPreparados = true;
+								prepararBotoes();
+							}
+						}
+					}
+					var originalOnLoad = window.onload;
+					window.load = function () {
+						setTimeout("if (!isBotoesPreparados) { prepararBotoes(); }", 0);
+					};
+				</script>
+			]]></html>
+		</step-method>
+		
+		<step-method display-name="Download dos arquivos de consignação gerados" name="download">
+			
+			<session-param name="flow" display-name="Arquivos gerados">
+				<display-property name="consignacoesZip" type="file" display-name="Consignações" type-file="zip" name-file="nomeArquivoConsignacoes"/>
+				<display-property name="logsZip" type="file" display-name="Logs" type-file="zip" name-file="nomeArquivoLogs"/>
+			</session-param>	
+			
+		</step-method>
+		
+	</flow>
+	
+</jheat-mapping>

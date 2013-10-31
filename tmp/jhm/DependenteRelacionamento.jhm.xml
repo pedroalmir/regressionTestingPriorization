@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+	
+	<class-mapping class="br.com.infowaypi.ecare.segurados.DependenteRelacionamento" name="DependenteRelacionamento" 
+		display-name="Dependentes" id-name="idSegurado" link-for-detail="pessoaFisica.nome" 
+        type="dependent" depends="titular" section="cadastrosCentralDeRelacionamento,cadastrosCobranca"  roles="relacionamento">
+
+		<description>Dependentes vinculados aos titulares</description>
+		
+   		<many-to-one
+			options="" autocomplete="true"
+			class="br.com.infowaypi.ecare.segurados.TitularRelacionamento"
+			name="titular"
+			display-name="Titular">
+			<display-property name="pessoaFisica.nome"/>
+		</many-to-one>		
+
+		<property name="numeroDoCartao" type="string" not-null="true">
+			<display name="Número do Cartão" options="listing,search,detail-only" mask="99.9999999999.99.9-9" maxlength="6" align="center" size="24"/>
+	    </property>  
+	    
+		<property name="pessoaFisica.nome" type="string" not-null="true">
+			<display name="Nome" options="listing,search"/>
+	    </property>  
+	    
+	    <!--property name="pessoaFisica.nomeDaMae" type="string" not-null="true">
+			<display name="Mãe" options=""/>
+	    </property-->  
+	    
+		<property name="pessoaFisica.identidade" type="string" not-null="false">
+			<display name="Identidade" options="" size="20"/>
+	    </property>  
+	    
+		<!--property name="pessoaFisica.tituloEleitoral" type="string" not-null="false">
+			<display name="Título Eleitoral" options="" size="20"/>
+	    </property-->  
+		
+		<property name="pessoaFisica.cpf" type="string" not-null="false">
+			<display name="CPF" options="search" mask="999.999.999-99" maxlength="14" size="24"/>
+	    </property>
+	    	    
+	    <property name="pessoaFisica.dataNascimento" type="date" not-null="true">
+			<display name="Nascimento" options="" mask="99/99/9999" maxlength="10" size="12"/>
+	    </property>  
+	    
+	    <select-property name="pessoaFisica.sexo" display-name="Sexo" options="listing">
+			<entry display-name="Masculino" key-value="SEXO_MASCULINO"/>
+			<entry display-name="Feminino" key-value="SEXO_FEMININO"/>
+		</select-property>
+
+		<!-- property name="desconto" type="int" not-null="false">
+			<display name="Desconto Adicional (%)" options="" mask="999" maxlength="3" size="5"/>		
+		</property>		
+
+	    <select-property name="motivoDesconto" display-name="Motivo do desconto" options="">
+			<entry display-name="(Sem Desconto)" key-value="SEM_DESCONTO"/>	    
+			<entry display-name="Funcionário(a)" key-value="FUNCIONARIO"/>
+			<entry display-name="Promoção" key-value="PROMOCAO"/>
+		</select-property>
+		
+		<property name="justificativaMotivo" type="string" not-null="false">
+			<display name="Justificativa do desconto" options=""/>
+	    </property>
+	    
+		<property name="carenciaCumpridaAdicional" type="int" not-null="false">
+			<display name="Carência (Dias)" options="" mask="9999" maxlength="4" size="5"/>		
+		</property -->	    	    
+	    		
+		<!--select-property name="pessoaFisica.estadoCivil" display-name="Estado Civil" options="">
+			<entry display-name="Outros" key-value="ESTADO_CIVIL_OUTROS"/>
+			<entry display-name="Solteiro(a)" key-value="ESTADO_CIVIL_SOLTEIRO"/>
+			<entry display-name="Casado(a)" key-value="ESTADO_CIVIL_CASADO"/>						
+			<entry display-name="Viúvo(a)" key-value="ESTADO_CIVIL_VIUVO"/>			
+			<entry display-name="Separado(a) Judicialmente" key-value="ESTADO_CIVIL_SEPARADO_JUDICIALMENTE"/>			
+			<entry display-name="Divorciado(a)" key-value="ESTADO_CIVIL_DIVORCIADO"/>			
+			<entry display-name="Estado Marital" key-value="ESTADO_CIVIL_ESTADO_MARITAL"/>			
+		</select-property-->
+	    
+	    <select-property name="tipoDeDependencia" display-name="Parentesco" options="" null-option="true">
+			<entry display-name="Filho(a) menor que 21 anos" key-value="TIPO_FILHO_MENOR_Q_21"/>
+			<entry display-name="Filho(a) menor que 25 anos(estudante)" key-value="TIPO_FILHO_MENOR_25_ANOS"/>
+			<entry display-name="Filho(a) excepcional/inválido" key-value="TIPO_FILHO_EXCEPCIONAL_INVALIDO"/>
+			<entry display-name="Enteado(a)" key-value="TIPO_ENTEADO"/>
+			<entry display-name="Tutelado(a))" key-value="TIPO_TUTELADO"/>
+			<entry display-name="Conjuge" key-value="TIPO_CONJUGUE"/>
+			<entry display-name="Companheiro(a)" key-value="TIPO_COMPANHEIRO"/>
+			<entry display-name="Ex-esposo(a)" key-value="TIPO_EX_ESPOSA"/>
+			<entry display-name="Ex-companheiro(a)" key-value="TIPO_EX_COMPANHEIRO"/>
+			<entry display-name="Mãe" key-value="TIPO_MAE"/>
+			<entry display-name="Pai" key-value="TIPO_PAI"/>
+			<entry display-name="Irmão" key-value="TIPO_IRMAO"/>
+		</select-property>
+		
+		<property name="dataAdesao" type="date" not-null="false">
+			<display name="Data de Adesão" options="listing,detail-only" mask="99/99/9999" maxlength="10" size="12"/>
+	    </property>
+	    
+	    <property name="aplicacaoQuestionario" type="date" not-null="false">
+			<display name="Aplicação do Questionário" options="" mask="99/99/9999" maxlength="10" size="10"/>
+	    </property>  
+	    
+		<property name="tipoDeSegurado" type="string" not-null="false">
+			<display name="Tipo" options="detail-only"/>
+	    </property>  
+	    
+		<property name="descricaoDaDependencia" type="string" not-null="false">
+			<display name="Desc. do Parentesco" options="detail-only"/>
+	    </property>  
+		
+		<property name="dataVencimentoCarteira" type="date" not-null="true">
+			<display name="Vencimento" options="detail-only" size="20" mask="99/99/9999" maxlength="10"/>
+	    </property>  
+	    
+	    <property name="recadastrado" type="boolean" not-null="true">
+			<display name="Recadastrado" options="listing,detail-only"/>
+	    </property>
+	    
+	    <property name="carenciaRestanteUrgencias" type="int" calculated="true">
+			<display name="Carência restante para urgências (horas)" options="detail-only"/>
+	    </property>
+		
+		<html><![CDATA[<c:if test="${object.seguradoHospitalar eq true}">]]></html>
+		
+		<property name="carenciaRestanteConsultasExamesDeBaixaComplexidade" type="int" calculated="true">
+			<display name="Carência restante para consultas e Exames de baixa complexidade (dias)" options="detail-only"/>
+	    </property>
+		
+		<property name="carenciaRestanteExamesEspeciaisDeAltaComplexidadeCirurgiasEInternamento" type="int" calculated="true">
+			<display name="Carência restante para exames de alta complexidade (dias)" options="detail-only"/>
+	    </property>
+	    
+	    <property name="carenciaRestanteExamesEspeciaisDeAltaComplexidadeCirurgiasEInternamento" type="int" calculated="true">
+			<display name="Carência restante para cirurgias e internação (dias)" options="detail-only"/>
+	    </property>
+	     
+	    <property name="carenciaRestanteParaPartos" type="int" calculated="true">
+			<display name="Carência restante para partos (dias)" options="detail-only"/>
+	    </property>
+	    
+	    <property name="carenciaRestanteParaDoencasPreExistentes" type="int" calculated="true">
+			<display name="Carência restante para doenças pré-existentes (dias)" options="detail-only"/>
+	    </property> 
+
+	    <html><![CDATA[</c:if>]]></html>
+	    
+	    <html><![CDATA[<c:if test="${object.seguradoOdonto eq true}">]]></html>
+	    
+	    <property name="carenciaOdontologicoProcedimentosSimplesFormatada" type="string" calculated="true">
+	    	<display options="detail-only" name="Carência Odontológica Procedimentos Simples"/>
+	    </property>
+	    
+	    <property name="carenciaOdontologicoProcedimentosComplexosFormatada" type="string" calculated="true">
+	    	<display options="detail-only" name="Carência Odontológica Procedimentos Complexos"/>
+	    </property>
+	    
+	    <html><![CDATA[</c:if>]]></html>
+		
+	    <!--many-to-many 
+	    	name="lesoes" 
+	    	display-name="Lesões Associadas" 
+	    	class="br.com.infowaypi.ecare.atendimento.Lesao">
+    		<autocomplete style-class="autocomplete" minimum-characters="3" force-selection="true">
+				<search-property name="descricao" display-name="Descrição"/>
+				<name-property name="descricao" display-name="Descrição"/>
+			</autocomplete>	
+		</many-to-many-->
+
+		<!--property name="observacao" type="string" not-null="false">
+			<display name="Observação sobre lesões" options="" size="100" maxlength="255"/>
+		</property-->
+				
+		<!--property name="pessoaFisica.telefoneResidencial" not-null="false">
+			<display name="Telefone" options="" size="20"/>
+	    </property>  
+
+		<property name="pessoaFisica.celular" not-null="false">
+			<display name="Celular" options="" size="20"/>
+	    </property>  
+
+		<property name="pessoaFisica.email" not-null="false">
+			<display name="Email" options=""/>
+	    </property-->  
+	    
+	    <property name="situacaoCadastral.descricao" type="string" not-null="true">
+			<display name="Situação Cadastral" options="detail-only"/>
+	    </property> 
+	    
+	    <property name="situacaoCadastral.data" type="date" not-null="true">
+			<display name="Data da Situação Cadastral" options="detail-only"/>
+	    </property> 
+		
+		<property name="situacao.descricao" type="string" not-null="false">
+			<display name="Situação (Sistema)" options="listing,detail-only"/>
+	    </property>
+
+	    <collection 
+			class="br.com.infowaypi.msr.situations.Situacao" 
+			name="situacoes" display-name="Histórico de Situações" 
+	    	master-detail="false"/>
+
+		<collection 
+			class="br.com.infowaypi.ecare.segurados.Cartao" 
+			name="cartoes" display-name="Cartões" 
+	    	options="" master-detail="false"/>
+	    	
+		<collection 
+			class="br.com.infowaypi.ecarebc.atendimentos.GuiaSimples" 
+			name="guias" display-name="Guias" 
+	    	master-detail="false"/>
+	    	
+	    <collection 
+			class="br.com.infowaypi.ecarebc.promocao.PromocaoConsulta" 
+			name="consultasPromocionais" display-name="Consultas Promocionais" 
+	    	master-detail="false"/>		
+
+		<!-- cadastrosCentralDeRelacionamento,cadastrosCobranca -->
+		<role name="relacionamento" write="true" insert="true" exec="true" update="true" read="true" sections="cadastrosCentralDeRelacionamento, autorizacoesCentralDeRelacionamento, consultasCentralDeRelacionamento, simulacaoServicoSaude, exportacaoDeDados, informacoesGerais, meuCadastro" />
+	    <role name="cobranca" insert="false" exec="false" update="false" read="true" write="false"/>
+		
+		<validate-method name="validate">
+			<session-param name="usuario"/>
+		</validate-method>
+	    
+
+	</class-mapping>		
+	
+</jheat-mapping>

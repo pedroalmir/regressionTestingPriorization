@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+
+<jheat-mapping>
+	<flow 
+		name="fecharAcompanhamentoAnestesico"
+		class="br.com.infowaypi.ecare.services.exame.FecharAcompanhamentoAnestesico"
+		display-name="Fechar Acompanhamento Anestésico" section="honorarioAnestesita">
+		
+		<step-method name="buscarGuia" display-name="Buscar Guia" title="Buscar Guia" buttons-position="bottom">
+			<step-param name="autorizacao" input-type="string" size="12" type="java.lang.String" display-name="Autorização" />
+			<session-param name="prestador" display-name="Prestador" operation="none"/>
+			
+			<step-return name="guia" type="br.com.infowaypi.ecarebc.atendimentos.GuiaAcompanhamentoAnestesico" 
+				display-name="Guia" scope="session"/>
+		</step-method>
+		
+		<step-method display-name="Fechar Acompanhamento Anestésico" name="fecharAcompanhamentoAnestesico">
+			
+			<step-param name="numeroDeRegistro" display-name="Número de Registro" required="true"/>
+			
+			<update-param name="guia" display-name="" type="br.com.infowaypi.ecarebc.atendimentos.GuiaAcompanhamentoAnestesico">
+				<update-property-boolean name="autorizado" display-name="Confirmar Fechamento?" true-description="Sim" false-description="Não"/>
+				
+				<update-collection name="procedimentosUpdate" 
+						field-name="procedimentosNaoGlosadosNemCanceladosNemNegados"
+						display-name="Procedimentos"
+						type="br.com.infowaypi.ecarebc.procedimentos.Procedimento">
+				    <update-insert>
+				    	<update-property name="procedimentoDaTabelaCBHPM.codigo" display-name="Código" input-type="string" editable="false"/>
+	  			        <update-property name="procedimentoDaTabelaCBHPM.descricao" display-name="Descrição" editable="false"/>
+	  			        <update-property name="valorTotal" display-name="Valor Total" input-type="money" editable="false" type="java.math.BigDecimal"/>
+	  			        <update-property name="incluiVideo" display-name="Inclui Vídeo" input-type="boolean" editable="true" type="java.lang.Boolean"/>
+						<update-property name="horarioEspecial" display-name="Horário Especial" input-type="boolean" editable="true" type="java.lang.Boolean"/>
+				    </update-insert>
+				    <restrictions>
+				    	<restriction property-value="9000000%" property-name="procedimentoDaTabelaCBHPM.codigo" type="like" />
+				    </restrictions>
+	        	</update-collection>
+	        	
+			</update-param>
+			<session-param name="usuario"/>
+			<html>
+				<![CDATA[
+					<infoway:GuiaApresentacao guiaApresentacao="${guia}"/>
+				]]>
+			</html>
+			
+			<step-return name="guia" type="br.com.infowaypi.ecarebc.atendimentos.GuiaAcompanhamentoAnestesico" 
+				display-name=""/>
+		</step-method>
+		
+		<step-method display-name="Conferir Dados" name="conferirDados" committed="true">
+			<session-param name="guia" operation="none"/>
+			<html>
+				<![CDATA[
+					<input type="hidden" name="autorizacao" id="autorizacao" value="${param.autorizacao}"/>
+					<infoway:GuiaApresentacao guiaApresentacao="${guia}"/>
+				]]>
+			</html>
+			<step-return name="guia" type="br.com.infowaypi.ecarebc.atendimentos.GuiaAcompanhamentoAnestesico" 
+				display-name=""/>
+		</step-method>
+		
+		<step-method display-name="Finalizar" name="finalizar">
+			<html>
+				<![CDATA[
+					<infoway:mensagemSucessoMarcacoes mensagem="Guia fechada com sucesso!" autorizacao="${guia.autorizacao}"/>
+					
+					<infoway:GuiaApresentacao guiaApresentacao="${guia}"/>
+					<infoway:imprimirGuiaAcompanhamentoAnestesico guia="${guia}"/>
+					<span class="not-for-print">
+						<button type="button" name="imprimir" class="actionButton" onclick="window.print();">Imprimir</button>
+					</span>
+				]]>
+			</html>
+		</step-method>
+		
+	</flow>
+</jheat-mapping>

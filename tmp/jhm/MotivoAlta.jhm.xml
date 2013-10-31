@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+	
+	<class-mapping class="br.com.infowaypi.ecarebc.atendimentos.alta.MotivoAlta" name="MotivoAlta" display-name="Motivo de Alta" 
+		id-name="idMotivoAlta" link-for-detail="descricao" type="simple" section="cadastros" roles="root">
+
+		<property name="codigo" type="string" not-null="true" search-type="likerigth">
+			<display name="Código" size="20" maxlength="8" mask="99999999" options="listing,search"/>
+	    </property>
+
+		<property name="descricao" type="string" not-null="true" search-type="likefull">
+			<display name="Descrição" options="listing,search"  maxlength="255"/>
+	    </property>
+	    
+	    <property name="descricaoCompleta" type="string" not-null="true" search-type="likefull">
+			<display name="Descrição" options="listing,search"  maxlength="255"/>
+	    </property>
+	    
+		<!-- cadastros -->
+		<role name="root" insert="true" exec="true" update="true" read="true" write="true"/>
+		<role name="atendente" insert="false" exec="false" update="false" read="true" write="false"/>
+	    
+	   	<validate-method name="validate" />
+	   	
+	</class-mapping>    
+	
+</jheat-mapping>

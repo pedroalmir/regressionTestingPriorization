@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+	<flow 
+		name="solicitarProcedimentoOdontoEspecial" 
+		class="br.com.infowaypi.ecare.services.odonto.SolicitacaoTratamentoOdonto"
+		display-name="Solicitar Outros Tratamentos" section="odontoPrestador">
+			
+		<description>Solicitação de procedimentos odontológicos especiais</description>		
+			 
+		<step-method name="buscarSegurado" display-name="Buscar Beneficiário" title="Buscar Beneficiário" buttons-position="bottom">
+			<step-param name="cpfDoTitular" size="24" mask="999.999.999-99" input-type="string" type="java.lang.String" display-name="CPF do Titular"/>
+			<step-param name="numeroDoCartao" size="24" mask="99.9999999999.99.9-9" input-type="string" type="java.lang.String" display-name="Número do cartão do beneficiário"/>
+			
+			<step-return name="seguradosEncontrados" type="br.com.infowaypi.ecare.segurados.ResumoSegurados" 
+		         display-name="" scope="session"/>
+		</step-method>
+			
+		<step-method name="criarGuiaEspecial" display-name="Adicionar Tratamentos" title="Adicionar Tratamentos">
+			<select-param
+					name="segurados"
+					type="br.com.infowaypi.ecare.segurados.Segurado"
+					display-name="Selecione o Beneficiário"
+					session-property-ref="seguradosEncontrados">
+				<radio-group>
+					<display-property name="numeroDoCartao" display-name="Número do Cartão"/>
+					<display-property name="pessoaFisica.nome" display-name="Nome"/>
+					<display-property name="tipoDeSegurado" display-name="Tipo"/>
+				</radio-group>
+			</select-param>
+			
+			<session-param name="prestador" operation="reload"/>		
+				
+			<select-param
+				name="profissionais"
+				display-name="Solicitante"
+				type="br.com.infowaypi.ecarebc.associados.Profissional" operation="reload">
+
+				<autocomplete mask-detail="As 7 letras iniciais" style-class="autocomplete" minimum-characters="7" force-selection="true">
+					<search-property name="crmNome" display-name="Solicitante" search-type="likerigth"/>
+					<name-property name="crmNome" display-name="Nome"/>
+				</autocomplete>	
+			</select-param>
+			
+			<collection-param  
+				name="procedimentosOD"
+				display-name="Escolha os Tratamentos"
+				type="br.com.infowaypi.ecarebc.procedimentos.ProcedimentoOdonto">
+
+			    <insert>
+			    	<display-property name="procedimentoDaTabelaCBHPM.codigo" display-name="Código"/>
+					<display-property name="procedimentoDaTabelaCBHPM.descricao" display-name="Descrição"/>
+					<display-property name="procedimentoDaTabelaCBHPM.tipoEstrutura" display-name="Aplicação"/>
+					<display-property name="descricaoEstruturas" display-name="Estrutura(s)"/>
+	  			    <display-property name="valorTotal" display-name="Valor Bruto" type="money"/>		
+			    </insert>
+			    
+			    <restrictions>
+			    	<restriction property-name="procedimentoDaTabelaCBHPM.ativo" property-value="true"/>
+			    	<restriction property-name="procedimentoDaTabelaCBHPM.nivelDeAutorizacao" property-value="1" type="notequals"/>
+			    	<restriction property-name="procedimentoDaTabelaCBHPM.elementoAplicado" property-value="5" type="notequals"/>
+			    	<restriction property-name="procedimentoDaTabelaCBHPM.visibilidade" type="greaterequals" property-value="1"/>
+			    </restrictions>
+			</collection-param>
+			
+			<collection-param name="observacoes"
+				type="br.com.infowaypi.ecarebc.atendimentos.Observacao"
+				display-name="Observações">
+				<insert>
+					<display-property name="texto"
+						display-name="Nova observação" />
+				</insert>
+			</collection-param>
+			
+			<session-param name="usuario" operation="reload"/>
+
+			<step-return name="guia" type="br.com.infowaypi.ecarebc.atendimentos.GuiaExameOdonto" 
+				 display-name="" scope="session"/>
+
+		</step-method>
+			
+		<step-method name="salvarGuia" display-name="Conferir Dados da Solicitação" committed="true" title="Conferir Dados">
+			<session-param name="guia" display-name="Informações da Guia" operation="none"/>
+			<html>
+				<![CDATA[
+					<infoway:GuiaApresentacao guiaApresentacao="${guia}"/>
+				]]>
+			</html>
+		</step-method>
+		
+		<step-method name="finalizar" display-name="Imprimir Comprovante de Confirmação" title="Imprimir Comprovante">
+			<html>
+				<![CDATA[ <infoway:mensagemSucessoMarcacoes mensagem="Tratamento(s) Odontológico(s) solicitado(s) com sucesso! <br/>
+				Aguarde a autorização da guia pelo auditor." autorizacao="${guia.autorizacao}"/> ]]>
+			</html>
+		
+			<html>
+			<![CDATA[ 
+				<span class="not-for-print">
+					<button type="button" name="imprimir" class="actionButton" onclick="window.print();">Imprimir</button>
+				</span>
+			]]>
+			</html>
+			
+			<session-param name="guia"/>
+			<html>
+				<![CDATA[
+					<infoway:GuiaApresentacao guiaApresentacao="${guia}"/>
+				]]>
+			</html>
+			
+			<html>
+				<![CDATA[ <infoway:imprimirGuia titulo="SOLICITAÃ‡ÃƒO DE TRATAMENTOS ODONTOLÃ“GICOS"/> 
+					<span class="not-for-print">
+						<button type="button" name="imprimir" class="actionButton" onclick="window.print();">Imprimir</button>
+					</span>
+					]]>
+			</html>
+		</step-method>
+	</flow>	
+</jheat-mapping>

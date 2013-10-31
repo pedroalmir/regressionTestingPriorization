@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+	
+	<class-mapping class="br.com.infowaypi.ecarebc.financeiro.faturamento.OcorrenciaFaturamento" name="ItemBrasIndice" display-name="Ocorrência" 
+		id-name="idOcorrenciaFaturamento" link-for-detail="descricao" type="readonly" section="" roles="">
+		
+		<property name="descricao" not-null="true" type="string">
+			<display name="Descrição" options="listing,search"/>
+	    </property>  
+
+		<property name="dataOcorrencia" type="date" not-null="true" >
+			<display name="Data" options="listing,detail-only"/>
+	    </property>
+		
+		<property name="tipo" type="int" not-null="true">
+			<display name="Tipo" options="listing,detail-only" />
+	    </property>
+		
+		<many-to-one class="br.com.infowaypi.ecarebc.financeiro.faturamento.AbstractFaturamento"
+			name="faturamento"
+			not-null="true"
+			autocomplete="true"
+			display-name="Faturamento"
+			options="listing,detail-only">
+			<display-property name="faturamento.prestador.pessoaFisica.fantasia"/>
+			<display-property name="fatuamento.competencia"/>
+		</many-to-one>
+	    
+	    <many-to-one class="br.com.infowaypi.msr.user.Usuario" 
+	    display-name="Usuario" 
+	    name="usuario" 
+	    options="listing,detail-only">
+			<display-property name="nome"/>
+		</many-to-one>	
+		    	
+	</class-mapping>    
+	
+</jheat-mapping>

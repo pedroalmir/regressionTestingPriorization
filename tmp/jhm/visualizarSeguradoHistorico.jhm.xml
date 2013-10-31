@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+<jheat-mapping>
+	<jheat-tag name="visualizarSeguradoHistorico">
+
+		<description>Visualização de Segurado</description>
+
+		<attribute name="segurado" type="br.com.infowaypi.ecare.segurados.Segurado"
+			display-name="">
+
+			<html>
+			<![CDATA[
+				<fieldset>
+					<legend>Histórico de Situação</legend>
+				</fieldset>
+			]]>
+			</html>
+					
+			<display-property name="situacao.descricao" align="left"
+				display-name="Descrição"  />
+				
+			<display-property name="situacao.motivo" align="left"
+				display-name="Motivo" />
+				
+		</attribute>
+
+	</jheat-tag>
+</jheat-mapping>

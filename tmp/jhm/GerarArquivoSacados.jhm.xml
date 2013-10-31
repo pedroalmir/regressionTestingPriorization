@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<report
+		name="arquivoSacados"
+		method-name="geracaoXlsSacados"
+		class="br.com.infowaypi.ecare.financeiro.boletos.GeracaoXLSSacados" 
+		display-name="Exportação de Dados" section="boletos" response-by-ajax="true">
+		
+		<description>Geração dos arquivos de Exportação de Sacados</description>
+		<html>
+			<![CDATA[  
+				<infoway:mensagemInformacao mensagem="Geração dos arquivos de Exportação de Sacados"/>
+			]]>
+		</html>
+		<report-return name="arquivoSacados" type="br.com.infowaypi.ecare.financeiro.boletos.GeracaoXLSSacados"
+			display-name="">
+				 
+		</report-return>
+		
+	</report>
+	
+</jheat-mapping>

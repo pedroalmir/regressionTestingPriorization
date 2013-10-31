@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+	<class-mapping class="br.com.infowaypi.ecare.cadastros.MotivoGlosa" name="MotivoGlosa" display-name="Motivo De Glosa" 
+		id-name="idMotivoGlosa" link-for-detail="descricao" type="simple" section="cadastros">
+		
+		<description>Motivos de Glosa</description>
+		
+		<property name="codigoMensagem" type="int">
+			<display options="listing" name="Código do Motivo" align="center"/>
+		</property>
+		
+		<property name="descricao" type="string" not-null="true">
+			<display name="Descrição" options="listing,search"/>
+		</property>
+		
+		<many-to-one class="br.com.infowaypi.ecare.cadastros.GrupoMotivoGlosa" 
+	    	name="grupo" 
+	    	not-null="true"
+	    	autocomplete="true"
+	    	display-name="Grupo" options="listing">
+			<display-property name="descricao"/>
+		</many-to-one>
+		
+		<property name="ativo" type="boolean" not-null="true">
+			<display options="listing" name="Ativo"/>
+		</property>
+		
+		<html>
+		   <![CDATA[<h4> Itens Aplicáveis à Glosa: </h4>]]>
+		</html>
+		
+		<property name="aplicavelTodos" next-field-inline="false" type="boolean" not-null="false">
+			<display options="listing" name="Todos"/>
+		</property>
+		
+		<property name="aplicavelGuiaCompleta" next-field-inline="false" type="boolean" not-null="false">
+			<display options="listing" name="Guia"/>
+		</property>
+		
+		<property name="aplicavelProcedimentos" next-field-inline="false" type="boolean" not-null="false">
+			<display options="listing" name="Procedimentos Cirúrgicos"/>
+		</property>
+		
+		<property name="aplicavelProcedimentosExames" next-field-inline="false" type="boolean" not-null="false">
+			<display options="listing" name="Exames"/>
+		</property>
+		
+		<property name="aplicavelOutrosProcedimentos" next-field-inline="false" type="boolean" not-null="false">
+			<display options="listing" name="Outros Procedimentos"/>
+		</property>
+		
+		<property name="aplicavelGasoterapias" next-field-inline="false" type="boolean" not-null="false">
+			<display options="listing" name="Gasoterapias"/>
+		</property>
+		
+		<property name="aplicavelTaxas" next-field-inline="false" type="boolean" not-null="false">
+			<display options="listing" name="Taxas"/>
+		</property>
+		
+		<property name="aplicavelPacotes" next-field-inline="false" type="boolean" not-null="false">
+			<display options="listing" name="Pacotes"/>
+		</property>
+		
+		<property name="aplicavelDiarias" next-field-inline="false" type="boolean" not-null="false">
+			<display options="listing" name="Diárias"/>
+		</property>
+		
+        <methods>
+			<method name="ativar" display-name="Ativar">
+				<step-param name="motivo" type="java.lang.String" display-name="Motivo"/>
+				<access-restriction name="roleRestriction" type="edit">
+					<session-restriction name="roleResriction" property="usuario.role" value="auditor" operation="notequals" logic-operation="or"/>
+					<session-restriction name="roleResriction" property="usuario.role" value="root" operation="notequals"/>
+				</access-restriction>
+				<messages>
+                    <question>Deseja reativar este Motivo de glosa?</question>
+                    <success>Situação alterada com sucesso. Motivo de glosa Reativado.</success>
+                    <error>Ocorreu um erro ao alterar a situação do Motivo de glosa. Tente novamente.</error>
+				</messages>				
+			</method>
+			<method name="desativar" display-name="Desativar">
+				<step-param name="motivo" type="java.lang.String" display-name="Motivo"/>
+				<access-restriction name="roleRestriction" type="edit">
+					<session-restriction name="roleResriction" property="usuario.role" value="auditor" operation="notequals" logic-operation="or"/>
+					<session-restriction name="roleResriction" property="usuario.role" value="root" operation="notequals"/>
+				</access-restriction>
+				<messages>
+                    <question>Deseja desativar este Motivo de glosa?</question>
+                    <success>Situação alterada com sucesso. Motivo de glosa Inativo.</success>
+                    <error>Ocorreu um erro ao alterar a situação do Motivo de glosa. Tente novamente.</error>
+				</messages>				
+			</method>
+		</methods>	
+        
+	</class-mapping>
+</jheat-mapping>

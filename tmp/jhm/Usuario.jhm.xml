@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+	
+	<class-mapping class="br.com.infowaypi.msr.user.Usuario" name="Usuario" display-name="Usuários" 
+		id-name="idUsuario" link-for-detail="nome" type="simple" section="cadastros">
+		
+		<description>Usuários cadastrados no sistema</description>
+		
+		<property name="nome" type="string" not-null="true">
+			<display name="Nome" options="listing,search"/>
+	    </property>
+	    
+		<property name="email" type="string" not-null="false">
+			<display name="Email" options=""/>
+	    </property>
+
+		<property name="local" type="string" not-null="false">
+			<display name="Local" options=""/>
+	    </property>
+	    
+		<property name="login" type="string" not-null="true">
+			<display name="Login" options="listing,search" size="20" maxlength="20"/>
+	    </property>
+	    
+		<property name="novaSenhaDigitada" type="password" not-null="false">
+			<display name="Nova Senha" options="" size="20"/>
+	    </property>
+
+		<property name="novaSenhaConfirmacao" type="password" not-null="false">
+			<display name="Confirme a senha" options="" size="20"/>
+	    </property>
+
+		<enum-property name="role" display-name="Role" null-option="true"
+				class="br.com.infowaypi.ecarebc.enums.Role" display="descricao" value="getValor" options="listing,search">
+			<remove-entry key-value="PRESTADOR"/>
+			<remove-entry key-value="PRESTADOR_ANESTESISTA"/>
+			<remove-entry key-value="MARCACAO"/>
+			<remove-entry key-value="CADASTRO"/>
+			<remove-entry key-value="SUPERVISOR"/>
+			<remove-entry key-value="SUPERVISOR_ODONTOLOGICO"/>
+			<remove-entry key-value="INTERIOR"/>
+		</enum-property>
+	    
+	    <select-property name="status" display-name="Status" options="listing">
+			<entry display-name="Ativo" key-value="ATIVO"/>
+			<entry display-name="Cancelado" key-value="CANCELADO"/>
+		</select-property>
+
+		<!-- cadastros -->
+		<role name="root" insert="true" exec="true" update="true" read="true" write="true"/>
+		<role name="atendente" insert="false" exec="false" update="false" read="true" write="false"/>
+
+		<validate-method name="validate"/>
+	    	
+	</class-mapping>
+
+</jheat-mapping>

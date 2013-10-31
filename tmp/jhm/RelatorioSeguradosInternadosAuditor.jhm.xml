@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<flow 
+		name="listarSeguradosInternados" 
+		class="br.com.infowaypi.ecare.services.RelatorioSeguradosInternadosService"
+		display-name="Internações Abertas" section="relatoriosAuditor,relatorioFaturista">
+
+		<description>Listagem de beneficiário internados</description>
+		
+		<step-method name="buscarGuias" display-name="Buscar Internações" buttons-position="bottom">
+
+			<step-param name="dataInicial" type="java.lang.String" display-name="Data inicial" input-type="date"/>
+			<step-param name="dataFinal" type="java.lang.String" display-name="Data final" input-type="date"/>
+			
+			<select-param
+				name="prestador"
+				display-name="Escolha o Prestador"
+				type="br.com.infowaypi.ecarebc.associados.Prestador">
+				<autocomplete style-class="autocomplete" minimum-characters="3" force-selection="true">
+					<search-property name="pessoaJuridica.fantasia" display-name="Prestador"/>
+					<name-property name="pessoaJuridica.fantasia" display-name="Prestador"/>
+				</autocomplete>	
+			</select-param>	
+			
+			<step-return name="resumo" type="br.com.infowaypi.ecare.resumos.ResumoGuia" 
+		         display-name="Resumo" scope="session"/>
+		</step-method>
+		
+		<step-method name="finalizar" display-name="Visualizar Beneficiários Internados" buttons-position="bottom">
+			<session-param name="resumo" display-name="Beneficiários Internados" style-class="not-for-print">
+				<collection-display name="guiasInternacaoEmAndamento" display-name="Dados sobre os beneficiário">
+					<display-property name="autorizacao" display-name="Autorização"/>					
+					<display-property name="segurado.pessoaFisica.nome" display-name="Nome"/>
+					<display-property name="prestador.pessoaJuridica.fantasia" display-name="Prestador"/>				
+					<display-property name="dataMarcacao" display-name="Data de Marcação" type="date"/>
+					<display-property name="dataAtendimento" display-name="Data de Atendimento" type="date"/>								
+				</collection-display>
+			</session-param>			
+		</step-method>	 
+	</flow>
+</jheat-mapping>		
+			

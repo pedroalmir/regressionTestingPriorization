@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+
+<jheat-mapping>
+	<report name="reportProducao" method-name="gerarRelatorio" 
+		class="br.com.infowaypi.ecare.relatorio.producao.RelatorioProducao" 
+		display-name="Relatório de Custo Apresentado e Apurado" section="relatoriosAuditor" response-by-ajax="true">
+		
+		<description>Relatório de Produção apresentada e apurada</description>
+
+		
+<!-- 		<report-param name="competencia" display-name="Competência" type="java.util.Date" input-type="month-year" size="8" mask-detail="mm/AAAA"/> -->
+		<report-param name="dataInicioAdmissao" display-name="Período Inicial" type="java.util.Date" input-type="date"/>
+		<report-param name="dataFimAdmissao" display-name="Período Final" type="java.util.Date" input-type="date"/>
+		
+		<report-return name="resumo" type="br.com.infowaypi.ecare.relatorio.producao.ResumoRelatorioProducao" display-name="">
+			<html>
+				<![CDATA[
+					<infoway:mensagemInformacao mensagem="Os números destacados em vermelho representam os valores apresentados pelo prestador, enquanto que os destacados em azul representam os valores apurados." />
+					<fieldset>
+						<legend>Produção</legend>
+					</fieldset>
+					<br/>
+				]]>
+			</html>
+			
+			<html>
+				<![CDATA[ <%@ include file="/view/jsp/includes/TabelaReportProducao.jsp" %> ]]>
+			</html>
+		</report-return>
+	</report>
+</jheat-mapping>

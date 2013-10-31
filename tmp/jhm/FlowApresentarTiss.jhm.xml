@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+<flow 
+	name="flowApresentarTiss" 
+	class="br.com.infowaypi.ecarebc.portalTiss.FlowApresentarTiss"
+	display-name="Apresentação Tiss" section="portalTissSistema, portalTiss">
+		
+		<step-method name="exibir" display-name="" title="" buttons-position="bottom">
+			<step-param name="versaoTiss" display-name="Versao Tiss"/>
+		</step-method>
+		
+	</flow>
+</jheat-mapping>		

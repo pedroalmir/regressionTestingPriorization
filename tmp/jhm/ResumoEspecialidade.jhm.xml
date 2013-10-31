@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+	<flow
+		name="buscarResumo" 
+		class="br.com.infowaypi.ecare.resumos.ResumoEspecialidade"
+		display-name="Listagem de Prestadores e Profissionais" section="pesquisas">
+		
+		<description>Listagem de Prestadores e Profissionais por especialidades</description>		
+		
+		<step-method name="resumoEspecialidade" display-name="Selecionar especialidade" 
+			title="Profissioais e Prestadores" buttons-position="bottom" >
+			
+			<select-param name="especialidades" display-name="Especialidade" type="br.com.infowaypi.ecarebc.associados.Especialidade">
+				<combo display-property="descricao" />
+				<restrictions>
+					<restriction property-value="true" property-name="ativa" type="equals" />
+				</restrictions>
+			</select-param>
+			
+			<step-return name="resumo" scope="session" display-name="" type="br.com.infowaypi.ecare.resumos.ResumoEspecialidade" />
+		</step-method>
+		
+		<step-method name="mostrarDetalhes" display-name="Disponibilidades">
+			<session-param name="resumo">
+				<display-property name="especialidade.descricao" display-name="Especialidade"/>
+				<html>
+					<![CDATA[ <infoway:tableSeparator titulo="Prestadores disponiveis " colspan="2"/> ]]>
+				</html>	
+				<collection-display name="prestadores" display-name="Prestador">
+					<display-property name="pessoaJuridica.fantasia" display-name="Nome"/>
+					<display-property name="pessoaJuridica.endereco" display-name="Endereço"/>
+					<display-property name="pessoaJuridica.endereco.municipio" display-name="Município"/>
+				</collection-display>
+				<html>
+					<![CDATA[ <infoway:tableSeparator titulo="Profissionais disponiveis " colspan="2"/> ]]>
+				</html>
+				<collection-display name="profissionais" display-name="Profissional">
+					<display-property name="profissional.pessoaFisica.nome" />
+				</collection-display>			
+			</session-param>
+		</step-method>
+		
+	</flow>
+</jheat-mapping>

@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+	 
+	<class-mapping class="br.com.infowaypi.ecarebc.procedimentos.Pacote" name="Pacote" display-name="Pacote" 
+		id-name="idPacote" link-for-detail="descricao" type="simple" section="cadastros,cadastrosAuditor,cadastrosRedeCredenciada,cadastrosConvidado" >
+		
+		<description>Cadastro de Pacotes</description>
+		
+		<property name="codigo" type="string" not-null="true">
+			<display name="Código" mask="99999999" maxlength="8" size="8"  options="listing,search"/>
+	    </property>
+		
+		<property name="codigoDescricao" type="string" not-null="false">
+			<display name="Código-Descrição" options="detail-only"/>
+		</property>
+		
+		<property name="descricao" type="string" not-null="true">
+			<display name="Descrição" options="listing,search"/>
+	    </property>
+		
+		<property name="descricaoCompleta" type="text" not-null="true">
+			<display name="Descrição Completa" options=""/>
+	    </property>
+				
+		<!-- property name="incluiTaxa" not-null="false" type="boolean">
+			<display name="Inclui Taxa" options=""/>
+	    </property>  
+		
+		<property name="incluiGasoterapia" not-null="false" type="boolean">
+			<display name="Inclui Gasoterapia" options=""/>
+	    </property>  
+		
+		<property name="incluiDiaria" not-null="false" type="boolean">
+			<display name="Inclui Diária" options=""/>
+	    </property-->
+	    
+	    <!-- DIARIA>
+	    <many-to-one class="br.com.infowaypi.ecarebc.atendimentos.Diaria" 
+	    	name="itemDiaria.diaria" 
+	    	not-null="false"
+	    	autocomplete="true"
+	    	display-name="Tipo de Acomodação" options="">
+			<display-property name="descricao"/>
+		</many-to-one>		
+		
+		 <property name="itemDiaria.valor.quantidade" type="int" not-null="true">
+	     	<display options="" name="Quantidade de diárias"/>
+	    </property>
+	    
+	    <property name="itemDiaria.valor.valor" type="money" not-null="true">
+	     	<display options="" name="Valor Unitário"/>
+	    </property-->
+	    <!-- FIM DIARIA-->
+
+	    <property name="valorMateriais" not-null="false" type="bigdecimal">
+			<display name="Valor Materiais" options="" size="8"/>
+	    </property>
+	     
+	    <property name="valorMedicamentos" not-null="false" type="bigdecimal">
+			<display name="Valor Medicamentos" options="" size="8"/>
+	    </property>
+	    
+	    <property name="valorMateriaisEspeciais" not-null="false" type="bigdecimal">
+			<display name="Valor Materiais Especiais" options="" size="8"/>
+	    </property>
+	    
+	    <property name="valorMedicamentosEspeciais" not-null="false" type="bigdecimal">
+			<display name="Valor Medicamentos Especiais" options="" size="8"/>
+	    </property>
+	
+	    <property name="quantidadeDiarias" not-null="false" type="int">
+			<display name="Quantidade de Diárias" options=""/>
+	    </property>  
+	    
+	    <property name="valorDiarias" not-null="false" type="bigdecimal">
+			<display name="Valor da Diária(unitário)" options=""/>
+	    </property>  
+	    
+	    
+	    <property name="valorTaxas" not-null="false" type="bigdecimal">
+			<display name="Valor Taxas" options=""/>
+	    </property>  
+	    
+	    
+	    <property name="valorGasoterapia" not-null="false" type="bigdecimal">
+			<display name="Valor Gasoterapias" options=""/>
+	    </property>  
+	    
+	    <property name="valorHonorarios" not-null="false" type="bigdecimal">
+			<display name="Valor Honorários médicos" options=""/>
+	    </property>  
+	    
+	    <property name="situacao.descricao" type="string" not-null="false" calculated="true" >
+			<display name="Situação" options="read-only,listing" />
+	    </property>
+	
+		<property name="valorTotal" not-null="true" type="bigdecimal">
+			<display name="Valor Total" options="listing"/>
+	    </property> 
+	
+	    <many-to-many 
+	    	name="procedimentosCBHPM" 
+	    	display-name="Procedimentos Associados" 
+	    	class="br.com.infowaypi.ecarebc.procedimentos.TabelaCBHPM">
+    		<autocomplete style-class="autocomplete" minimum-characters="3" force-selection="true">
+				<search-property name="codigoEDescricao" display-name="Descrição"/>
+				<name-property name="codigoEDescricao" display-name="Descrição"/>
+			</autocomplete>	
+		</many-to-many>
+	    	
+        <restrictions>
+			<restriction property-value="Inativo(a)" property-name="situacao.descricao" type="notequals" />
+		</restrictions>
+		
+		<restrictions-search-list>
+			<restriction property-value="Inativo(a)" property-name="situacao.descricao" type="notequals" >
+				<access-restriction name="visualizaInativos" type="read">
+					<session-restriction name="usuario" property="role" value="root" operation="notequals" type="string" logic-operation="and" />
+					<session-restriction name="usuario" property="role" value="auditor" operation="notequals" type="string" />
+				</access-restriction>
+			</restriction>
+		</restrictions-search-list>
+	    
+	    <properties-order>
+	    	<property-order name="situacao.descricao" />
+	    	<property-order name="codigo" />
+	    </properties-order>
+
+		<!-- cadastros -->
+		<role name="root" exec="true" insert="true" read="true" update="true" write="true"/>
+		<role name="atendente" read="true" exec="false" insert="false" update="false" write="false"/>
+		
+		<!-- cadastrosAuditor -->
+		<role name="auditor" insert="false" exec="false" update="false" read="true" write="false"/>
+		<role name="regulador" insert="false" exec="false" update="false" read="true" write="false"/>
+		<role name="faturista" insert="false" exec="false" update="false" read="true" write="false"/>
+		<role name="auditorOdonto" insert="false" exec="false" update="false" read="true" write="false"/>
+		<role name="diretoriaMedica" insert="false" exec="false" update="false" read="true" write="false"/>
+		
+		<!-- cadastrosRedeCredenciada -->
+		<role name="gerenciaRedeCredenciada" insert="true" exec="true" read="true" update="true" />
+		
+		<!-- outros -->
+		<role name="prestador" insert="false" exec="false" update="false" read="true" />
+		<role name="prestadorCompleto" insert="false" exec="false" update="false" read="true" /> 
+		<role name="prestadorConsExmIntUrg" insert="false" exec="false" update="false" read="true" />
+		<role name="prestadorConsIntUrg" insert="false" exec="false" update="false" read="true" />
+		<role name="prestadorInternacaoExameUrgencia" insert="false" exec="false" update="false" read="true" />
+		<role name="prestadorConsulta" insert="false" exec="false" update="false" read="true" />
+		<role name="prestadorExame" insert="false" exec="false" update="false" read="true" />
+		<role name="prestadorConsultaExame" insert="false" exec="false" update="false" read="true" />
+		<role name="prestadorInternacaoUrgencia" insert="false" exec="false" update="false" read="true" />
+		<role name="prestadorOdonto" insert="false" exec="false" update="false" read="true" />
+		
+
+		<validate-method name="validate">
+			<session-param name="usuario"/>
+		</validate-method>
+		
+		<methods>
+			<method name="reativar" display-name="Reativar">
+				<step-param name="motivo" type="java.lang.String" display-name="Motivo"/>
+				<session-param name="usuario"/>
+				<messages>
+                    <question>Deseja reativar este Pacote?</question>
+                    <success>Situação alterada com sucesso. Pacote Reativado.</success>
+                    <error>Ocorreu um erro ao alterar a situação da Pacote. Tente novamente.</error>
+				</messages>				
+			</method>
+			<method name="inativar" display-name="Inativar">
+				<step-param name="motivo" type="java.lang.String" display-name="Motivo"/>
+				<session-param name="usuario"/>
+				<messages>
+                    <question>Deseja inativar esta Pacote?</question>
+                    <success>Situação alterada com sucesso. Pacote inativado.</success>
+                    <error>Ocorreu um erro ao alterar a situação do Pacote. Tente novamente.</error>
+				</messages>				
+			</method>
+		</methods>
+		
+	</class-mapping>
+
+</jheat-mapping>

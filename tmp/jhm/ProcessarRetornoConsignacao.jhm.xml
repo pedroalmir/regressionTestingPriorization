@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<flow 
+		name="processarRetornoDeConsignacoes" 
+		class="br.com.infowaypi.ecare.scheduller.ProcessaRetornoConsignacaoOld"
+		display-name="Processamento de Retorno de Consignações" 
+		section="consignacoes">
+		
+		<step-method display-name="Informar Dados" name="informarArquivo" buttons-position="bottom" title="Informar Arquivo">
+			<step-param display-name="Arquivo de Retorno" name="arquivoRetorno" required="true" input-type="file" type="[B"/>		
+			<step-param display-name="Competência" name="competencia" input-type="month-year" type="java.util.Date" required="true"/>
+			<step-param display-name="Data de Pagamento" name="dataCompetencia" input-type="date" type="java.util.Date" required="true"/>
+			
+			<step-return display-name="resumo" type="br.com.infowaypi.ecare.financeiro.consignacao.ResumoRetorno" name="resumo" scope="session"/>
+		</step-method>
+		
+		<step-method display-name="Processar" name="verificarProcessamentoRetorno" buttons-position="bottom" title="Processar">
+			<html><![CDATA[
+				<script type="text/javascript">
+					var isBotoesPreparados = false;
+					var isFormSubmit = false;
+					
+					function prepararBotoes() {
+						var els = document.getElementsByTagName("button");
+						
+						for (var i = 0; i < els.length; i++) {
+							if (els[i].name === "submit") {
+								var submitBtn = els[i];
+								var pbar = null;
+								submitBtn.onclick = function() {
+									if (pbar == null) {
+										pbar = new ProgressBar("retornoConsignacao", true);
+										pbar.onfinished = function () {
+											isFormSubmit = true;
+											var formulario = document.getElementsByTagName("form")[0];
+											formulario.submit.click();
+											return true;
+										};
+										pbar.onexception = pbar.onfinished;
+										pbar.start();
+									}
+									
+									return isFormSubmit;
+								};
+							}
+						}
+					}
+					
+					/* Código Mágico e Feliz para executar um código ao carregar a página */
+					if (document.addEventListener) {
+						document.addEventListener("DOMContentLoaded", function () { isBotoesPreparados = true; prepararBotoes(); }, false);
+					}
+					else if (document.all && !window.opera) {
+						document.write("<script type=\"text/javascript\" id=\"contentloadtag\" defer=\"defer\" src=\"javascript:void(0)\"><\/script>");
+						var contentloadtag = document.getElementById("contentloadtag");
+						contentloadtag.onreadystatechange = function() {
+							if (this.readyState === "complete") {
+								isBotoesPreparados = true;
+								prepararBotoes();
+							}
+						}
+					}
+					var originalOnLoad = window.onload;
+					window.load = function () {
+						setTimeout("if (!isBotoesPreparados) { prepararBotoes(); }", 0);
+					};
+				</script>
+			]]></html>
+			<session-param name="resumo" operation="none" display-name="Dados sobre o processo">
+				<display-property name="competencia" display-name="Competência" type="date"/>
+				<display-property name="dataPagamento" display-name="Data de Pagamento" type="date"/>
+			</session-param>
+			
+			<step-return display-name="resumo" type="br.com.infowaypi.ecare.financeiro.consignacao.ResumoRetorno" name="resumo" scope="session"/>
+		</step-method>
+		
+		<step-method display-name="Finalizar" name="conferirDados">
+			<html>
+				<![CDATA[ <infoway:mensagemSucesso mensagem="Processo do retorno de consignação realizado com sucesso!"/> ]]>
+			</html>
+		
+			<session-param name="resumo" operation="none" display-name="Dados sobre o processo">
+				<display-property name="competencia" display-name="Competência" type="date"/>
+				<display-property name="dataPagamento" display-name="Data de Pagamento" type="date"/>
+				<display-property name="numeroDeCPFS" display-name="Numero de CPFS processados" type="int"/>
+				<display-property name="numeroDeCPFSDuplicados" display-name="Números de CPFS duplicados" type="int"/>
+			</session-param>
+			
+		</step-method>
+	</flow>
+	
+</jheat-mapping>

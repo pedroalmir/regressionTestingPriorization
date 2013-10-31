@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+	
+	<class-mapping class="br.com.infowaypi.msr.situations.Situacao" name="Situacao" display-name="Situações" 
+		id-name="idSituacao" link-for-detail="" type="readonly" section="" global-link="true" roles="root, auditor, auditorOdonto">
+		
+		<description>Situações cadastradas no sistema</description>
+		
+		<property name="descricao" type="string" not-null="true">
+			<display name="Descrição" options="detail-only,listing"/>
+	    </property>
+	    
+		<property name="motivo" type="string" not-null="true">
+			<display name="Motivo" options="listing"/>
+	    </property>
+	    
+		<property name="data" type="date" not-null="true">
+			<display name="Data" mask="99/99/9999" options="search,listing"/>
+	    </property>
+	    
+	    <many-to-one options="listing,detail-only" autocomplete="true"
+			class="br.com.infowaypi.msr.user.Usuario" 
+			name="usuario" display-name="Usuário">
+			<display-property name="nome" options="detail-only"/>
+		</many-to-one>		
+	    	
+	</class-mapping>
+
+</jheat-mapping>

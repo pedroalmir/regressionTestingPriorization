@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+
+<jheat-mapping>
+<flow 
+	name="autorizarInternacoes" 
+	class="br.com.infowaypi.ecarebc.service.autorizacoes.AutorizarInternacoes"
+	display-name="Autorizar Internações" section="marcacao,autorizacoesCentralDeRelacionamento">
+	<description>Autorizar Internações</description>
+	
+	<step-method name="buscarGuias" display-name="Buscar Internações" buttons-position="bottom">
+			<step-param name="autorizacao" type="java.lang.String" display-name="Autorização"/>
+			<step-param name="dataInicial" type="java.lang.String" display-name="Data inicial" input-type="date"/>
+			<step-param name="dataFinal" type="java.lang.String" display-name="Data final" input-type="date"/>
+			
+			<select-param
+				name="prestador"
+				display-name="Escolha o Prestador"
+				type="br.com.infowaypi.ecarebc.associados.Prestador">
+				<autocomplete style-class="autocomplete" minimum-characters="3" force-selection="true">
+					<search-property name="pessoaJuridica.fantasia" display-name="Prestador"/>
+					<name-property name="pessoaJuridica.fantasia" display-name="Prestador"/>
+				</autocomplete>
+				<restrictions>
+					<restriction property-value="Ativo(a)" property-name="situacao.descricao" type="equals" />
+				</restrictions>
+			</select-param>
+			
+			<step-return name="resumo" type="br.com.infowaypi.ecarebc.atendimentos.ResumoGuias" 
+		         display-name="Resumo" scope="session"/>
+	</step-method>
+	
+	<step-method name="selecionarGuia" display-name="Selecionar Guia" >
+		<select-param
+			name="guias"
+			type="br.com.infowaypi.ecarebc.atendimentos.GuiaInternacao"
+			display-name="Selecione a Guia"
+			session-property-ref="resumo" operation="reload">
+			<radio-group>
+				<display-property name="autorizacao" display-name="Autorização"/>
+				<display-property name="tipo" display-name="Tipo"/>
+				<display-property name="segurado.pessoaFisica.nome" display-name="Beneficiário"/>
+				<display-property name="situacao.descricao" display-name="Situação"/>
+				<display-property name="situacao.dataSituacao" display-name="Data" type="date"/>				
+				<display-property name="valorTotal" display-name="Valor total" type="money"/>								
+			</radio-group>
+		</select-param>	
+		<session-param name="usuario"/>		
+			
+		<step-return name="guia" type="br.com.infowaypi.ecarebc.atendimentos.GuiaInternacao" 
+		         display-name="GuiaSelecionada" scope="session"/>
+	</step-method>
+	
+	<step-method name="autorizarInternacao" display-name="Autorizar Guia" >
+			
+			<html>
+				<![CDATA[
+					<infoway:criticasObservacoesGuia guia="${guia}"/>
+				]]>
+			</html>
+	
+			<!-- if[AUTORIZAR_DIARIA_INTERNACAO] -->
+			<select-param name="autorizar" display-name="Autorizar" required="true" type="java.lang.Boolean" display-label-head="false">
+				<enum-combo class="br.com.infowaypi.ecare.utils.OpcaoEnum" input-type="check" display="getDescricao" value="getValor" />
+			</select-param>			
+			<!-- end[AUTORIZAR_DIARIA_INTERNACAO] -->
+			
+			<update-param display-name="" name="guia" type="br.com.infowaypi.ecarebc.atendimentos.GuiaCompleta" operation="none">
+				<!-- if_not[AUTORIZAR_DIARIA_INTERNACAO] -->
+				<update-property-boolean display-name="Autorizar" name="autorizadoExames" field-name="autorizado" false-description="Não" true-description="Sim" type="java.lang.Boolean" />
+				<!-- end[AUTORIZAR_DIARIA_INTERNACAO] -->
+				
+				<update-collection display-name="Procedimentos Cirúrgicos" name="procedimentosCirurgicosTemp" type="br.com.infowaypi.ecarebc.procedimentos.ProcedimentoCirurgico">
+					<update-insert>
+						<update-property name="procedimentoDaTabelaCBHPM.codigo" display-name="Código" editable="false" input-type="string"/>
+						<update-property name="procedimentoDaTabelaCBHPM.descricao" display-name="Descrição" editable="false" input-type="string"/>
+						<update-property name="valorTotal" display-name="ValorTotal" editable="false" input-type="money" />
+						<update-select-property name="porcentagem" type="java.math.BigDecimal"  display-name="Porcentagem (%)" editable="true" null-option="false">
+							<constants-group input-type="combo" class="br.com.infowaypi.ecarebc.constantes.Constantes">
+								<entry key-value="PORCENTAGEM_100" display-name="100%"/>
+								<entry key-value="PORCENTAGEM_70" display-name="70%"/>
+								<entry key-value="PORCENTAGEM_50" display-name="50%"/>
+							</constants-group>
+						</update-select-property>
+					</update-insert>
+				</update-collection>
+				
+				<!-- if[AUTORIZAR_DIARIA_INTERNACAO] -->
+				<update-collection display-name="Acomodações Solicitadas" name="diariasSolicitadas" field-name="diariasSolicitadas" type="br.com.infowaypi.ecarebc.atendimentos.acordos.itensAcordos.ItemDiaria">
+					<update-insert>
+						<update-property display-name="Diária" name="diaria.codigoDescricao" editable="false" />
+						<update-property display-name="Quantidade(Dias)" name="valor.quantidade" editable="false" />
+						<update-property display-name="Motivo da Solicitação" name="justificativa" editable="false" size="50" />
+						<update-property display-name="Situação" name="situacao.descricao" editable="false" />
+						<update-property display-name="Motivo da Autorização ou Não Autorização" name="justificativaNaoAutorizacao" input-type="text" editable="true"/>
+						<update-property-boolean display-name="Autorizar?" false-description="Não" true-description="Sim" name="autorizado" field-name="autorizado"/>
+					</update-insert>
+				</update-collection>
+				<!-- end[AUTORIZAR_DIARIA_INTERNACAO] -->
+			</update-param>
+			
+			<html><![CDATA[<br/>]]></html>
+			
+			<!-- if[AUTORIZAR_DIARIA_INTERNACAO] -->
+			<collection-param  
+				name="diarias"
+				display-name="Inserir Acomodação" 
+				type="br.com.infowaypi.ecare.atendimentos.acordos.itensAcordos.ItemDiariaAuditoria">
+			    <insert>
+				    <display-property name="diaria.descricao" display-name="Tipo de acomodação"/>
+				    <display-property name="justificativaNaoAutorizacao" display-name="Motivo de Inserção"/>
+  			        <display-property name="valor.valor" display-name="Valor Unitário" type="money"/>				    
+  			        <display-property name="valor.quantidade" display-name="Quantidade(Dias)" type="int"/>
+			    </insert>
+			</collection-param>
+			
+			<html><![CDATA[<br/>]]></html>
+			<!-- end[AUTORIZAR_DIARIA_INTERNACAO] -->
+			
+			<step-param name="observacao" type="java.lang.String" display-name="Observação" input-type="text"/>
+			<session-param name="usuario"/>
+			<html>
+				<![CDATA[
+					<infoway:GuiaApresentacao guiaApresentacao="${guia}"/>
+				]]>
+			</html>
+			<step-return name="guia" type="br.com.infowaypi.ecarebc.atendimentos.GuiaCompleta" 
+		         display-name="GuiaSelecionada" scope="session"/>
+	</step-method>
+	
+	<step-method name="conferirDados" display-name="Conferir Dados" committed="true">
+			<session-param name="guia" operation="none"/>
+			<html>
+				<![CDATA[
+					<infoway:criticasObservacoesGuia guia="${guia}"/>
+					<infoway:GuiaApresentacao guiaApresentacao="${guia}"/>
+				]]>
+			</html>
+			<step-return name="guia" type="br.com.infowaypi.ecarebc.atendimentos.GuiaCompleta" 
+		         display-name="GuiaSelecionada" scope="session"/>
+	</step-method>
+	
+	<step-method name="finalizar" display-name="Finalizar" buttons-position="bottom" >
+			
+			<session-param name="guia" operation="none"/>
+			
+			<html>
+				<![CDATA[
+					<infoway:criticasObservacoesGuia guia="${guia}"/>
+					
+			<c:if test="${guia.situacao.descricao eq 'Autorizado(a)' || guia.situacao.descricao eq 'Aberto(a)'}">
+				<infoway:mensagemSucessoMarcacoes mensagem="Internação autorizada com sucesso!" autorizacao="${guia.autorizacao}"/>
+			</c:if>
+			
+			 <c:if test="${guia.situacao.descricao eq 'Não Autorizado(a)'}">
+				<infoway:mensagemInformacao mensagem="A solicitação de Internação NÃO foi aceita!"/> 
+			</c:if>
+			
+			<span class="not-for-print">
+				<button type="button" name="imprimir" class="actionButton" onclick="window.print();">Imprimir</button>
+			</span>
+			
+			<infoway:GuiaApresentacao guiaApresentacao="${guia}"/>
+			
+			<infoway:imprimirGuiaInternacaoAutorizada guia="${guia}"/> 
+				]]>
+			</html>			
+	</step-method>
+	
+</flow>
+</jheat-mapping>	

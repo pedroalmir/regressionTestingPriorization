@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<report
+		name="reportBaixarArquivosTiss"
+		method-name="buscarArquivos"
+		class="br.com.infowaypi.ecarebc.portalTiss.report.ReportBaixarArquivosTiss"
+		display-name="Baixar Arquivos Tiss" 
+		section="portalTissSistema">
+
+		<description>Baixar arquivos TISS do Prestador.</description>
+		
+		<report-param display-name="Data Inicial" name="dataInicial" input-type="date" type="java.util.Date" required="true"/>
+		
+		<report-param display-name="Data Final" name="dataFinal" input-type="date" type="java.util.Date" required="true"/>
+		
+		<session-param name="prestador"/>
+		
+		<report-return name="resumo" type="br.com.infowaypi.ecarebc.portalTiss.report.ResumoBaixarArquivoTiss" display-name="Arquivos Encontrados">
+				<display-property name="prestador.pessoaJuridica.fantasia" display-name="Prestador" />
+				<display-property name="periodo" display-name="Período de Entrega" />
+				<collection-display display-name="Arquivos Tiss" name="arquivos">
+					<display-property name="dataCriacao" display-name="Data Entrega" type="date" align="center"/>
+					<display-property name="numeroLote" display-name="Nº Lote" align="center"/>
+					<display-property name="arquivo" name-file="tituloArquivo" display-name="Arquivo Lote de Guias" type="file" type-file="xml"/>
+					<display-property name="numeroProtocolo" display-name="Nº Protocolo" align="center"/>
+					<display-property name="arquivoRelacionado.arquivo" name-file="arquivoRelacionado.tituloArquivo" display-name=" Arquivo Protocolo de Recebimento" type="file" type-file="xml"/>
+				</collection-display>				
+		</report-return>
+		
+		
+	</report>	
+	
+</jheat-mapping>

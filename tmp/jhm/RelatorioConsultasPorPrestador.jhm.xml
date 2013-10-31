@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<report 
+		name="relatorioConsultasPorPrestador" 
+		display-name="Consultas por Prestador" 
+		class="br.com.infowaypi.ecare.services.RelatorioConsultasPorPrestador" 
+		method-name="gerarRelatorio" 
+		section="relatoriosAuditor"
+		response-by-ajax="true">
+
+		<description>Relatório de consultas (eletivas e de urgência) realizadas em um determinado mês, agrupadas por seus respectivos prestadores.</description>
+
+		<html>
+			<![CDATA[ <infoway:mensagemInformacao mensagem="Para consultar um prestador em específico, digite o seu nome fantasia. Para consultar todos os prestadores, mantenha o campo Prestador em branco."/> ]]>
+		</html>
+
+		<report-param name="mes" required="true" type="java.util.Date" display-name="Mês" mask="99/9999" input-type="month-year"/>
+		
+		<select-param name="pessoa" display-name="Selecione o Tipo de Prestador" type="java.lang.String">
+			<constants-group class="br.com.infowaypi.ecare.services.RelatorioConsultasPorPrestador" name="Tipo de Prestador">
+				<entry display-name="Pessoa Física" key-value="PESSOA_FISICA"/>
+				<entry display-name="Pessoa Jurídica" key-value="PESSOA_JURIDICA"/>
+			</constants-group>
+		</select-param>
+
+		<select-param name="prestadorPesquisado" display-name="Escolha o Prestador" type="br.com.infowaypi.ecarebc.associados.Prestador">
+			<autocomplete minimum-characters="3" style-class="autocomplete" force-selection="true">
+				<search-property display-name="Prestador" name="pessoaJuridica.fantasia"/>
+				<name-property display-name="Prestador" name="pessoaJuridica.fantasia"/>
+			</autocomplete>
+		</select-param>
+		
+		<select-param name="ordem" display-name="Selecione a Ordem de Classificação" type="java.lang.String">
+			<constants-group class="br.com.infowaypi.ecare.services.RelatorioConsultasPorPrestador" name="Ordem de Classificação">
+				<entry display-name="Prestador" key-value="POR_PRESTADOR"/>
+				<entry display-name="Percentual Produção" key-value="POR_PRODUCAO"/>
+				<entry display-name="Percentual Faturamento" key-value="POR_FATURAMENTO"/>
+			</constants-group>
+		</select-param>
+
+		<report-return name="relatorio" type="br.com.infowaypi.ecare.services.RelatorioConsultasPorPrestador" display-name="Prestadores com Produção">
+			<html>
+				<![CDATA[ <infoway:tableSeparator titulo="Resumo" colspan="2"/> ]]>
+			</html>
+			<display-property name="mes" align="left" display-name="Mês" type="month-year"/>
+			<display-property name="tipoPrestador" align="left" display-name="Tipo de Prestador"/>
+			<display-property name="qtdePrestadores" align="left" display-name="Qtde. Prestadores"/>
+			<display-property name="qtdeConsultasEletivas" align="left" display-name="Qtde. Consultas Eletivas"/>
+			<display-property name="vlrConsultasEletivas" type="bigdecimal" align="left" display-name="Vlr. Consultas Eletivas"/>
+			<display-property name="qtdeConsultasUrgencia" align="left" display-name="Qtde. Consultas Urgência"/>
+			<display-property name="vlrConsultasUrgencia" type="bigdecimal" align="left" display-name="Vlr. Consultas Urgência"/>
+			<display-property name="qtdeTotalGeral" align="left" display-name="Qtde. Total Geral"/>
+			<display-property name="vlrTotalGeral" type="bigdecimal" align="left" display-name="Vlr. Total Geral"/>
+
+			<html>
+				<![CDATA[ <c:if test="${relatorio.tipoPrestador eq 'Pessoa Jurídica'}">
+						  <infoway:tableSeparator titulo="Detalhamento" colspan="2"/> ]]>
+			</html>
+			<collection-display name="resumoPrestadorGuia" display-name="Detalhamento de Consultas por Prestador">
+				<display-property name="prestadorFantasia" align="left" display-name="Prestadores"/>
+				<display-property name="qtdeConsultasEletivas" align="right" display-name="Qtde. Consultas Eletivas"/>
+				<display-property name="vlrConsultasEletivas" align="right" display-name="Vlr. Consultas Eletivas (R$)" type="decimal"/>
+				<display-property name="qtdeConsultasUrgencia" align="right" display-name="Qtde. Consultas Urgência"/>
+				<display-property name="vlrConsultasUrgencia" align="right" display-name="Vlr. Consultas Urgência (R$)" type="decimal"/>
+				<display-property name="qtdeTotalConsultas" align="right" display-name="Qtde. Total Consultas"/>
+				<display-property name="vlrTotalConsultas" align="right" display-name="Vlr. Total Consultas (R$)" type="decimal"/>
+				<display-property name="percentualProducao" align="right" display-name="Percentual Produção (%)"/>
+				<display-property name="percentualFaturamento" align="right" display-name="Percentual Faturamento (%)"/>
+			</collection-display>
+			<html>
+				<![CDATA[ </c:if> ]]>
+			</html>
+
+			<html>
+				<![CDATA[ <c:if test="${relatorio.tipoPrestador eq 'Pessoa Física'}">
+						  <infoway:tableSeparator titulo="Detalhamento" colspan="2"/> ]]>
+			</html>
+			<collection-display name="resumoPrestadorGuia" display-name="Detalhamento de Consultas por Prestador">
+				<display-property name="prestadorFantasia" align="left" display-name="Prestadores"/>
+				<display-property name="qtdeConsultasEletivas" align="right" display-name="Qtde. Consultas Eletivas"/>
+				<display-property name="vlrConsultasEletivas" align="right" display-name="Vlr. Consultas Eletivas (R$)" type="decimal"/>
+				<display-property name="percentualFaturamento" align="right" display-name="Perc. Prod./Faturamen. (%)"/>
+			</collection-display>
+			<html>
+				<![CDATA[ </c:if> ]]>
+			</html>
+		</report-return>		
+	</report>
+</jheat-mapping>

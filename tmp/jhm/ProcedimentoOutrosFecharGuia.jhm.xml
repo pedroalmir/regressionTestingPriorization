@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<class-mapping class="br.com.infowaypi.ecarebc.procedimentos.ProcedimentoOutrosFecharGuia" name="ProcedimentoOutrosFecharGuia" display-name="Outros Procedimentos"
+		id-name="idProcedimento" link-for-detail="procedimentoDaTabelaCBHPM.codigoEDescricao" type="readonly" depends="guia" section="cadastros">
+		
+		<many-to-one options="listing,search"
+			class="br.com.infowaypi.ecarebc.procedimentos.TabelaCBHPM"
+			name="procedimentoDaTabelaCBHPM" display-name="Procedimento" autocomplete="true">
+			<display-property name="codigoEDescricao"/>
+
+		    <restrictions>
+				<restriction property-name="situacao.descricao" property-value="Ativo(a)" />
+		    	<restriction property-name="grupo" type="notequals" property-value="2"/>
+		    	<restriction property-name="grupo" type="notequals" property-value="4"/>
+		    	<restriction property-name="cirurgico" property-value="false" />
+		    	<restriction property-name="visibilidade" type="lowerequals" property-value="1"/>
+		    	
+		    	<!-- Exclui procedimentos de consulta, isso fará com que os códigos de 10101001 
+					até 10101045 não sejam listados, isso por conta de 10101001 ser o menor código 
+					que a busca traz -->
+		    	<restriction property-name="codigo" type="greaterthan" property-value="10101045"/>
+		    	
+		    	<!-- Procedimentos Anestesicos. -->
+		    	<restriction property-name="codigo" type="notequals" property-value="90000001"/>
+		    	<restriction property-name="codigo" type="notequals" property-value="90000002"/>
+		    	<restriction property-name="codigo" type="notequals" property-value="90000003"/>
+		    	<restriction property-name="codigo" type="notequals" property-value="90000004"/>
+		    	
+		    	<!-- Restrictions para evitar que no fluxo de fechamento de guia procedimenntos de nível 2 sejam  adicionados -->
+		    	<restriction property-name="nivel" type="equals" property-value="1" />
+		    	
+			</restrictions>
+		</many-to-one>
+		
+		<many-to-one options="listing,search"
+			class="br.com.infowaypi.ecarebc.associados.Profissional"
+			name="profissionalResponsavel" display-name="Profissional"
+			minimum-characters="7" search-type="likerigth" not-null="true"
+			autocomplete="true" mask-detail="As 7 letras iniciais">
+			<display-property name="pessoaFisica.nome" type="string" />
+		</many-to-one>
+		
+		<property name="dataRealizacao" type="date" not-null="true">
+			<display name="Dta. Realização" options="listing,search"
+				mask="99/99/9999" maxlength="10" size="20" />
+		</property>
+		
+		<property name="quantidade" type="int" >
+			<display options="detail-only" name="Quantidade" size="4" maxlength="4"/>
+		</property>
+		
+		<property name="valorAtualDoProcedimento" type="money">
+			<display name="Valor Unitário" options="listing,detail-only"/>
+	    </property>
+
+		<property name="valorAtualDaModeracao" type="percentage">
+			<display name="Moderação" options="listing,detail-only"/>
+	    </property>
+
+		<many-to-one options="detail-only"
+			class="br.com.infowaypi.ecarebc.atendimentos.GuiaCompleta" 
+			name="guia" display-name="Guia">
+			<display-property name="autorizacao"/>
+		</many-to-one>
+
+		<validate-method name="validate">
+			<session-param name="usuario"/>
+		</validate-method>
+
+	</class-mapping>
+
+</jheat-mapping>

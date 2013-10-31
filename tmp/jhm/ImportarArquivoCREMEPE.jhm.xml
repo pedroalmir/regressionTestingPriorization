@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<flow 
+		name="importarArquivoCREMEPE" 
+		class="br.com.infowaypi.ecare.services.ImportarArquivoCREMEPEService"
+		display-name="Importação do Arquivo CREMEPE" 
+		section="cadastros">
+		
+		<step-method display-name="Informar Arquivo" name="informarArquivo" buttons-position="bottom" title="Informar Arquivo">
+			<step-param display-name="Arquivo de importação CREMEPE" name="arquivoRetorno" required="true" input-type="file" type="[B"/>		
+			<session-param name="usuario" />
+			<step-return display-name="resumo" type="br.com.infowaypi.ecarebc.associados.ResumoProfissionais" name="resumo" scope="session"/>
+		</step-method>
+		
+		
+		<step-method display-name="Conferir Dados" name="salvar" committed="true">
+		
+			<session-param name="resumo" operation="none" display-name="Dados sobre o processo">
+				<display-property name="numeroProfissionaisEncontrados" display-name="Qtde. de Profissionais Importados" type="int" />
+				<collection-display display-name="Dados dos Profissionais Importados" name="profissionaisEncontrados">
+					<display-property name="crm" display-name="Número do Conselho"/>
+					<display-property name="conselho" display-name="Conselho"/>
+					<display-property name="pessoaFisica.nome" display-name="Nome"/>
+				</collection-display>
+			</session-param>
+			
+			<step-return display-name="resumo" type="br.com.infowaypi.ecarebc.associados.ResumoProfissionais" name="resumo" scope="session"/>
+			
+		</step-method>
+		
+		<step-method display-name="Finalizar" name="finalizar" committed="true">
+			<html>
+				<![CDATA[ <infoway:mensagemSucesso mensagem="Processo de importação realizado com sucesso!"/> ]]>
+			</html>
+		
+			<session-param name="resumo" operation="none" display-name="Dados sobre o processo">
+				<display-property name="numeroProfissionaisEncontrados" display-name="Qtde. de Profissionais Importados" type="int" />
+				<collection-display display-name="Dados dos Profissionais" name="profissionaisEncontrados">
+					<display-property name="crm" display-name="CRM"/>
+					<display-property name="conselho" display-name="Conselho"/>
+					<display-property name="pessoaFisica.nome" display-name="Nome"/>
+				</collection-display>
+			</session-param>
+			
+		</step-method>
+		
+	</flow>
+	
+</jheat-mapping>

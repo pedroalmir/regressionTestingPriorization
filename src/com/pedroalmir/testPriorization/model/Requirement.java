@@ -3,8 +3,12 @@
  */
 package com.pedroalmir.testPriorization.model;
 
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+
+import com.pedroalmir.testPriorization.util.enums.EnumJhmType;
 
 /**
  * @author Pedro Almir
@@ -17,6 +21,9 @@ public class Requirement {
 	private String description;
 	private int importance;
 	private List<Integer> clientPriority;
+	private Map<Klass, Integer> correlation;
+	private Klass mainClass;
+	private EnumJhmType enumJhmType;
 	
 	/**
 	 * 
@@ -28,6 +35,7 @@ public class Requirement {
 		this.description = "Not used yet!!!";
 		this.importance = 0;
 		clientPriority = new LinkedList<Integer>();
+		this.correlation = new LinkedHashMap<Klass, Integer>();
 	}
 	
 	/**
@@ -42,6 +50,15 @@ public class Requirement {
 		this.name = name;
 		this.description = description;
 		this.importance = importance;
+		this.correlation = new LinkedHashMap<Klass, Integer>();
+	}
+	
+	/**
+	 * @param requirement
+	 * @param value
+	 */
+	public void addCorrelation(Klass klass, Integer value){
+		this.correlation.put(klass, value);
 	}
 	
 	/**
@@ -130,7 +147,50 @@ public class Requirement {
 	 */
 	@Override
 	public String toString() {
-		return "Requirement [name=" + name + ", importance=" + importance + "]";
+		return "Requirement [id=" + id + ", name=" + name + ", description=" + description + ", mainClass=" + mainClass
+				+ ", enumJhmType=" + enumJhmType + "]";
+	}
+
+	/**
+	 * @return the correlation
+	 */
+	public Map<Klass, Integer> getCorrelation() {
+		return correlation;
+	}
+
+	/**
+	 * @param correlation the correlation to set
+	 */
+	public void setCorrelation(Map<Klass, Integer> correlation) {
+		this.correlation = correlation;
+	}
+
+	/**
+	 * @return the mainClass
+	 */
+	public Klass getMainClass() {
+		return mainClass;
+	}
+
+	/**
+	 * @param mainClass the mainClass to set
+	 */
+	public void setMainClass(Klass mainClass) {
+		this.mainClass = mainClass;
+	}
+
+	/**
+	 * @return the enumJhmType
+	 */
+	public EnumJhmType getEnumJhmType() {
+		return enumJhmType;
+	}
+
+	/**
+	 * @param enumJhmType the enumJhmType to set
+	 */
+	public void setEnumJhmType(EnumJhmType enumJhmType) {
+		this.enumJhmType = enumJhmType;
 	}
 
 }

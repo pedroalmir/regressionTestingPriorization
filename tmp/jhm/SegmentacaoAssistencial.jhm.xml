@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+<jheat-mapping>
+	<class-mapping class="br.com.infowaypi.ecarebc.produto.SegmentacaoAssistencial" name="SegmentacaoAssistencial" 
+		display-name="Segmentação Assistencial" id-name="idSegmentacaoAssistencial" link-for-detail="descricao" 
+		type="simple" section="produto">
+	
+		<description>Segmentação Assistencial</description>
+	
+		<property name="descricao" not-null="true">
+			<display name="Descrição" options="listing" />
+		</property>
+		
+		<enum-property name="caraterEnum" display-name="Carater de Atendimento" class="br.com.infowaypi.ecarebc.produto.CaraterEnum" 
+			options="listing" display="getDescricao" />				
+		
+		<enum-property name="tipoSegmentacaoEnum" display-name="Tipo Segmentação" class="br.com.infowaypi.ecarebc.produto.TipoSegmentacao" 
+			options="listing" display="getDescricao"/>
+		
+	</class-mapping>
+</jheat-mapping>

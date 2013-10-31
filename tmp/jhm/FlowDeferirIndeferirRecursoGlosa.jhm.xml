@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+
+<jheat-mapping>
+<flow 
+	name="deferirIndeferirResursoGlosa" 
+	class="br.com.infowaypi.ecare.services.recurso.FlowDeferirIndeferirRecursoGlosa"
+	display-name="Deferimento/Indeferimento de recursos de glosa" section="">
+	<description>Deferir/Indeferir recursos de glosa</description>
+	
+	<step-method name="buscarRecursos" display-name="Buscar Recursos" buttons-position="bottom">
+			<step-param name="autorizacao" type="java.lang.String" display-name="Autorização"/>
+			<step-param name="dataInicial" type="java.lang.String" display-name="Data inicial" input-type="date"/>
+			<step-param name="dataFinal" type="java.lang.String" display-name="Data final" input-type="date"/>
+			<session-param name="usuario" />
+			
+			<select-param
+				name="prestador"
+				display-name="Escolha o Prestador"
+				type="br.com.infowaypi.ecarebc.associados.Prestador">
+				<autocomplete style-class="autocomplete" minimum-characters="3" force-selection="true">
+					<search-property name="pessoaJuridica.fantasia" display-name="Prestador"/>
+					<name-property name="pessoaJuridica.fantasia" display-name="Prestador"/>
+				</autocomplete>
+				<restrictions>
+					<restriction property-value="Ativo(a)" property-name="situacao.descricao" type="equals" />
+				</restrictions>	
+			</select-param>
+			
+			<select-param
+				name="situacao" 
+				display-name="Escolha a Situação" type="java.lang.String" >
+				<constants-group name="Situação" class="br.com.infowaypi.ecare.constantes.Constantes">
+					<entry display-name="Recebido(a)" key-value="SITUACAO_RECEBIDO"/>
+					<entry display-name="Deferido(a)" key-value="SITUACAO_DEFERIDO"/>
+					<entry display-name="Indeferido(a)" key-value="SITUACAO_INDEFERIDO"/>
+				</constants-group>
+			</select-param>
+			
+			<step-return name="resumo" type="br.com.infowaypi.ecare.services.recurso.ResumoDeferimentoIndeferimentoDeRecurso" 
+		         display-name="Resumo" scope="session"/>
+	</step-method>
+	
+	<step-method name="selecionarRecurso" display-name="Selecionar Recurso">
+			<select-param 
+				name="recursos" 
+				display-name="Selecione um recurso"
+				type="br.com.infowaypi.ecare.services.recurso.GuiaRecursoGlosa"
+				session-property-ref="resumo" >
+			    <radio-group default-checked="none" group-property="guia.prestador.nome">
+			    	<display-property name="autorizacao" display-name="Autorização" align="center"/>
+			    	<display-property name="guiaOrigem.prestador.nome" display-name="Prestador" align="center"/>
+			    	<display-property name="dataRecursoFormatada" display-name="Data do recurso" align="center"/>
+			    </radio-group>
+       		</select-param>
+       		
+			<session-param name="resumo"/>
+			
+			<step-return name="recurso" type="br.com.infowaypi.ecare.services.recurso.GuiaRecursoGlosa" 
+		         display-name="Recurso" scope="session"/>
+	</step-method>
+	
+	<step-method name="deferirIndeferirRecursos" display-name="Deferir/Indeferir Recurso" >
+	
+			<update-param display-name="" name="recurso" type="br.com.infowaypi.ecare.services.recurso.GuiaRecursoGlosa">
+				
+				<update-collection 
+					name="deferirIndeferirRecursosStep" 
+					display-name="Deferir/Indeferir Recursos"
+					field-name="itensRecurso"
+					type="br.com.infowaypi.ecare.services.recurso.ItemRecursoGlosa">
+				    <update-insert>
+				    	<update-property name="guiaRecursoGlosa.autorizacao" display-name="Autorização" editable="false" input-type="string"/>
+						<update-property name="tipoItemRecurso" display-name="Item Recursado" editable="false" align="center" input-type="string"/>
+						<update-property name="dataEntradaRecurso" display-name="Data de entrada" editable="false" input-type="date" type="java.util.Date"/>
+						<update-property name="situacao.descricao" display-name="Situação" editable="false"/>
+						<update-property name="situacao.dataSituacao" display-name="Data da Situação" editable="false" input-type="date" type="java.util.Date"/>
+						<update-property name="justificativa" display-name="Justificativa do Recurso" editable="false" input-type="text"/>
+						<update-property-boolean display-name="Deferir/Indeferir" name="deferir" field-name="deferir" false-description="Indeferir" true-description="Deferir" type="java.lang.Boolean"/>
+						<update-property name="justificativaDeferimentoIndeferimento" display-name="Justificativa para Deferir/Indeferir" editable="true" input-type="text" />
+				    </update-insert>
+				    <restrictions>
+				    	<restriction property-value="Faturado(a)" property-name="situacao.descricao" type="notequals" />
+				    	<restriction property-value="Pago(a)" property-name="situacao.descricao" type="notequals" />
+				    </restrictions>
+        		</update-collection>
+			
+			</update-param>
+			
+			<session-param name="usuario"/>
+			
+ 			<html> 
+ 				<![CDATA[ 
+					<infoway:GuiaRecursoGlosa guia="${recurso}" isFlowRecursar="false" />
+ 					]]> 
+ 			</html> 
+			
+			<step-return name="recurso" type="br.com.infowaypi.ecare.services.recurso.GuiaRecursoGlosa" 
+		         display-name="Recurso" scope="session"/>
+	</step-method>
+	
+	<step-method name="salvarRecurso" display-name="Conferir Dados" committed="true">
+			<session-param name="recurso" operation="none"/>
+			<html>
+				<![CDATA[
+					<infoway:GuiaRecursoGlosa guia="${recurso}" isFlowRecursar="false" />
+ 					]]>
+			</html>
+			<step-return name="recurso" type="br.com.infowaypi.ecare.services.recurso.GuiaRecursoGlosa" 
+		         display-name="Recurso" scope="session"/>
+	</step-method>
+	
+	<step-method name="finalizar" display-name="Finalizar" buttons-position="bottom" >
+			
+			<session-param name="recurso" operation="none"/>
+			
+			<html>
+				<![CDATA[  <infoway:mensagemSucessoMarcacoes mensagem="Recursos deferidos ou indeferidos com sucesso!" autorizacao="${recurso.autorizacao}"/> ]]>
+			</html>
+			
+			<html>
+				<![CDATA[
+					<infoway:GuiaRecursoGlosa guia="${recurso}" isFlowRecursar="false" />
+ 	 				]]> 
+			</html>		
+	</step-method>
+	
+</flow>
+</jheat-mapping>	

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+<jheat-mapping>
+	<jheat-tag name="visualizarSeguradoDadosContrato">
+
+		<description>Visualização Dados do Contrato Segurado</description>
+
+		<attribute name="segurado" type="br.com.infowaypi.ecare.segurados.Segurado"
+			display-name="">
+
+			<html>
+			<![CDATA[
+				<fieldset>
+					<legend>Dados do Contrato</legend>
+				</fieldset>
+			]]>
+			</html>
+			
+			<display-property name="tipoDeSegurado" align="left"
+				display-name="Tipo" />
+			
+			<display-property name="dataAdesao" align="left"
+				display-name="Data de Adesão"  type="date"/>
+			
+			<display-property name="aplicacaoQuestionario" align="left"
+				display-name="Aplicação do Questionário" />
+			
+			<display-property name="situacaoCadastral.descricao" align="left"
+				display-name="Situação Cadastral" />
+			
+			<display-property name="situacaoCadastral.data" align="left"
+				display-name="Data da Situação Cadastral"  type="date"  />
+			
+			<display-property name="situacao.descricao" align="left"
+				display-name="Situação (Sistema)" />
+			
+			<display-property name="dataPenultimaAtualizacao" align="left"
+				display-name="Penúltima Alteração"  type="date" />
+				
+			<display-property name="dataUltimaAtualizacao" align="left"
+				display-name="Última Alteração"   type="date"/>
+				
+			<display-property name="inicioDaCarencia" align="left"
+				display-name="Inicio da carencia"   type="date"/>
+				
+			<display-property name="carenciaRestanteUrgencias" align="left"
+				display-name="Carência restante para urgências (horas)" />
+				
+			<display-property name="carenciaRestanteConsultasExamesDeBaixaComplexidade" align="left"
+				display-name="Carência restante para consultas e Exames de baixa complexidade (dias)" />
+				
+			<display-property name="carenciaRestanteExamesEspeciaisDeAltaComplexidadeCirurgiasEInternamento" align="left"
+				display-name="Carência restante para exames de alta complexidade (dias)" />
+				
+			<display-property name="carenciaRestanteExamesEspeciaisDeAltaComplexidadeCirurgiasEInternamento" align="left"
+				display-name="Carência restante para cirurgias e internação (dias)" />
+				
+			<display-property name="carenciaRestanteParaPartos" align="left"
+				display-name="Carência restante para partos (dias)" />
+				
+			<display-property name="carenciaRestanteParaDoencasPreExistentes" align="left"
+				display-name="Carência restante para doenças pré-existentes (dias)" />
+				
+			<display-property name="motivoAlteracao" align="left"
+				display-name="Motivo de alteração" />
+			
+		</attribute>
+
+	</jheat-tag>
+</jheat-mapping>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<report
+		name="extratoSeguradoCentral"
+		method-name="buscarConsignacoes"
+		class="br.com.infowaypi.ecare.services.RelatorioExtratoSegurado"
+		display-name="Extrato de Utilização" section="relatorioCentral" response-by-ajax="true">
+
+		<description>Relatório financeiro de guias</description>
+		
+		<report-param name="cpfTitular" size="24" mask="999.999.999-99" input-type="string" type="java.lang.String" display-name="CPF do Titular"/>
+		<report-param name="numeroDoCartao" size="24" mask="99.9999999999.99.9-9" input-type="string" type="java.lang.String" display-name="Número do cartão do beneficiário"/>		
+		
+		<report-return name="resumo" type="br.com.infowaypi.ecarebc.atendimentos.ResumoConsignacoes" 
+			 display-name="Resultado Encontrado">
+
+			<html>
+			<![CDATA[
+				<%@ include file="/view/jsp/includes/ExtratoSegurado.jsp" %>
+				]]>
+			</html>	
+			
+		</report-return>
+		
+	</report>	
+	
+</jheat-mapping>

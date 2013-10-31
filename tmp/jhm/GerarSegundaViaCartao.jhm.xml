@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+<flow 
+	name="gerarSegundaViaCartao" 
+	class="br.com.infowaypi.ecare.segurados.ImprimirSegundaViaCartao"
+	display-name="Gerar 2ª Via Cartão" section="cadastrosCentralDeRelacionamento">
+		
+	<description>Geração de Segunda Via de Cartões</description>
+		
+	<step-method name="buscarSegurado" display-name="Buscar Beneficiário" title="Informar titular" buttons-position="bottom">
+		<step-param name="cpfDoTitular" size="24" mask="999.999.999-99" input-type="string" type="java.lang.String" display-name="CPF do Titular"/>
+		<step-param name="numeroDoCartao" size="24" mask="99.9999999999.99.9-9" input-type="string" type="java.lang.String" display-name="Número do cartão do Titular"/>
+		<step-return name="resumo" type="br.com.infowaypi.ecare.segurados.ResumoSegurados" display-name="Resumo" scope="session" />		
+	</step-method>
+
+	<step-method name="selecionarSegurado" display-name="Selecionar Beneficiário" title="Selecionar Beneficiário" committed="true" buttons-position="bottom">
+		
+			<select-param
+					name="segurados"
+					type="br.com.infowaypi.ecare.segurados.Segurado"
+					display-name="Selecione o Beneficiário"
+					session-property-ref="resumo"  required="true" operation="none">
+				<radio-group default-checked="none">
+					<display-property name="numeroDoCartao" display-name="Número do Cartão"/>
+					<display-property name="pessoaFisica.nome" display-name="Nome"/>
+					<display-property name="tipoDeSegurado" display-name="Tipo"/>					
+				</radio-group>
+			</select-param>
+			<step-return display-name="Segurado" type="br.com.infowaypi.ecare.segurados.Segurado" name="segurado" scope="session"/>
+	</step-method>
+	
+	<step-method name="criarSegundaVia" display-name="Conferir Dados" title="Conferir Dados" committed="true" buttons-position="bottom">
+		<session-param name="segurado" operation="reload" display-name="Beneficiário" type="br.com.infowaypi.ecare.segurados.Segurado">
+			<display-property name="pessoaFisica.nome" display-name="Nome"/>
+			<display-property name="pessoaFisica.descricaoDoSexo" display-name="Sexo"/>
+			<display-property name="pessoaFisica.cpf" display-name="CPF"/>
+			<display-property name="pessoaFisica.endereco" display-name="Endereço"/>
+		</session-param>
+		<step-return display-name="Cartão" name="cartao" scope="session" type="br.com.infowaypi.ecare.segurados.Cartao"/>
+	</step-method>
+		
+	<step-method name="finalizar" display-name="Geração Concluída" title="Geração de Cartão" buttons-position="bottom"> 
+		<html>
+			<![CDATA[  <infoway:mensagemSucesso mensagem="Novo cartão gerado com sucesso!"/> ]]>
+		</html>
+		<session-param name="cartao" display-name="Cartão">
+			<display-property name="segurado.pessoaFisica.nome" display-name="Nome"/>
+			<display-property name="segurado.pessoaFisica.descricaoDoSexo" display-name="Sexo"/>
+			<display-property name="segurado.pessoaFisica.cpf" display-name="CPF"/>
+			<display-property name="numeroDoCartao" display-name="Número de Cartão"/>
+			<display-property name="viaDoCartao" display-name="Via do Cartão"/>
+		</session-param>
+
+	</step-method>
+	</flow>	
+</jheat-mapping>
+	
+	

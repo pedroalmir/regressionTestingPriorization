@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+	
+	<class-mapping class="br.com.infowaypi.ecare.atendimento.Ocorrencia" name="Ocorrencia" display-name="Alterar Ocorrências" 
+		id-name="idOcorrencia" type="simple" link-for-detail="resumo" section="callCenter">
+		
+		<description>Pesquisa e Alteração de Ocorrências</description>	
+		
+		<property  name="resumo" type="text" not-null="true" >
+			<display name="Resumo" options="listing"/>
+	    </property>
+	    
+	    <property name="dataAtendimento" type="date" not-null="true">
+			<display name="Data de Atendimento" options="listing,search" mask="99/99/9999" maxlength="10" size="20"/>
+	    </property>
+	    
+	    <!-- many-to-one class="br.com.infowaypi.msr.user.Usuario" name="atendente" not-null="true"
+	    	display-name="Atendente" autocomplete="true" options="detail-only">
+			<display-property name="nome"/>
+		</many-to-one-->
+	    
+	    <many-to-one class="br.com.infowaypi.ecare.segurados.Segurado" name="segurado" not-null="true"
+	    	display-name="Beneficiário" autocomplete="true" options="listing,search">
+			<display-property name="pessoaFisica.nome"/>
+		</many-to-one>
+	    
+	</class-mapping>
+	
+</jheat-mapping>	    

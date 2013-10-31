@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+<jheat-mapping>
+	<jheat-tag name="visualizarSegurado">
+
+		<description>Visualização de Segurado</description>
+
+		<attribute name="segurado" type="br.com.infowaypi.ecare.segurados.Segurado"
+			display-name="">
+
+			<html>
+			<![CDATA[
+				<fieldset>
+					<legend>Dados Pessoais</legend>
+				</fieldset>
+			]]>
+			</html>
+			<display-property name="numeroDoCartao" align="left"
+				display-name="Número do Cartão" />
+			<display-property name="pessoaFisica.nome" align="left"
+				display-name="Nome" />
+			<display-property name="pessoaFisica.dataNascimento"
+				align="left" display-name="Nascimento" type="date" />
+			<display-property name="pessoaFisica.identidade"
+				align="left" display-name="Identidade" />
+			<display-property name="pessoaFisica.cpf" align="left"
+				display-name="CPF" />
+			<display-property name="pessoaFisica.descricaoDoSexo"
+				align="left" display-name="Sexo" />
+			<display-property name="pessoaFisica.descricaoEstadoCivil"
+				align="left" display-name="Estado Civil" />
+			<display-property name="pessoaFisica.nomeConjuge"
+				align="left" display-name="Nome do Cônjuge" />
+			<display-property name="pessoaFisica.cpfDoConjugue"
+				align="left" display-name="CPF do Cônjuge" />
+			<display-property name="pessoaFisica.nomeDaMae"
+				align="left" display-name="Nome da Mãe" />
+		</attribute>
+
+	</jheat-tag>
+</jheat-mapping>

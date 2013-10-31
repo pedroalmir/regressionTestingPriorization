@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+
+<jheat-mapping>
+
+	<report name="exibicaoDadosCadastraisSeguradoReport"
+		method-name="exibirDadosSegurado"
+		class="br.com.infowaypi.ecare.relatorio.ExibicaoDadosCadastraisSegurado"
+		display-name="Dados Cadastrais" section="portalBeneficiarioTitular, portalBeneficiarioDependente"
+		response-by-ajax="true" auto-update="true" update-freq="0">
+
+		<session-param name="usuario" />
+		<html>
+			<![CDATA[
+			<style type="text/css">
+			<!--
+				.form-wrapper {
+   					 background: none repeat scroll 0 0 #FFFFFF;
+    				margin-bottom: -30px;
+				}
+             -->
+           </style>
+			]]>
+		</html>
+
+		<html>
+			<![CDATA[
+				<script type="text/javascript"> 
+				    document.getElementsByName('JHeatFormBean')[0].style.display = 'none';
+				</script>
+			]]>
+		</html>
+
+		<report-return name="segurado"
+			type="br.com.infowaypi.ecare.segurados.Segurado" display-name="">
+
+			<include-tag name="visualizarSegurado">
+				<arg name="segurado" value="segurado" />
+			</include-tag>
+
+			<include-tag name="visualizarSeguradoEndereco">
+				<arg name="segurado" value="segurado" />
+			</include-tag>
+
+			<include-tag name="visualizarSeguradoContato">
+				<arg name="segurado" value="segurado" />
+			</include-tag>
+
+			<include-tag name="visualizarSeguradoDadosContrato">
+				<arg name="segurado" value="segurado" />
+			</include-tag>
+
+			<include-tag name="visualizarSeguradoHistorico">
+				<arg name="segurado" value="segurado" />
+			</include-tag>
+		</report-return>
+	</report>
+</jheat-mapping>

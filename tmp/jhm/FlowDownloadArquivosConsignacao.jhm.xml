@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<flow 
+		name="downloadArquivosConsignacoes" 
+		class="br.com.infowaypi.ecare.services.financeiro.consignacao.FlowDownloadArquivosConsignacao"
+		display-name="Download de Arquivos de Consignação" 
+		section="consignacoes">
+		
+		<step-method display-name="Escolher arquivo" name="gerarArquivoZipConsignacoes" buttons-position="bottom" title="Informar Competência">
+			<step-param name="competencia" display-name="Competência" input-type="month-year" type="java.util.Date" required="true"/>
+			<step-return display-name="arquivoZip" name="arquivoZip" scope="session" type="br.com.infowaypi.ecare.services.financeiro.consignacao.FlowDownloadArquivosConsignacao"/>
+		</step-method>
+		
+		<step-method display-name="Baixar Aquivo" name="finalizar" buttons-position="bottom" title="Baixar Aquivo">
+			<session-param name="arquivoZip" display-name="Arquivo">
+				<display-property name="competencia" display-name="Competência" type="month-year"/>
+				<display-property name="quantidadeArquivos" display-name="Quantidade De Arquivos"/>
+				<display-property name="arquivosConsignacao" type="file"
+					display-name="Consignações" type-file="zip" name-file="nomeArquivoConsignacao" />
+					
+				<display-property name="arquivoLog" type="file"
+					display-name="Arquivo de Log" type-file="txt" name-file="nomeArquivoLog" >
+					<access-restriction name="temLog" type="read">
+						<session-restriction name="arquivoZip" property="arquivoLog" operation="notempty"/>
+					</access-restriction>
+				</display-property>	
+					
+			</session-param>	
+		
+		</step-method>
+				
+	</flow>
+	
+</jheat-mapping>

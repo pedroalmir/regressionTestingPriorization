@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+	
+	<class-mapping class="br.com.infowaypi.msr.msg.Mensagem" name="Mensagem" display-name="Mensagens" 
+		id-name="idMensagem" link-for-detail="" type="readonly" section="cadastros">
+		
+		<description>Caixa de mensagens do Usuário do sistema</description>
+		
+	   <enum-property name="tipoMensagem" display-name="Tipo" class="br.com.infowaypi.ecare.mensagem.alerta.TipoMensagemEnum" 
+	   		options="listing, search" display="getDescricao" value="getDescricao" >
+			
+			<remove-entry key-value="ERRO"/>
+		</enum-property>
+		
+		<property name="assunto" type="string" not-null="true">
+			<display name="Assunto" options="listing, search" size="55"/>
+	    </property>
+	    
+	    <many-to-one options="listing, search" class="br.com.infowaypi.msr.user.Usuario" name="destinatario" autocomplete="true"
+			display-name="Destinatario" not-null="false">
+			<display-property name="nome" align="center"/>
+		</many-to-one>	
+	    
+	    <property-editor name="mensagem" required="true" display-name="Conteúdo" />
+	    
+	    
+	    <property name="avisarRemetente" type="boolean" not-null="false" next-field-inline="true" padding-left="40">
+			<display name="Avisar Recebimento?" options="listing, detail-only" />
+	    </property>  
+	    
+	    <property name="lida" type="boolean" not-null="false" padding-left="20" next-field-inline="true">
+			<display name="Lida?" options="listing, detail-only" mask-detail="Somente"/>
+	    </property>  
+	    
+		 <!-- Restrição de Usuários -->
+    	<role name="root" write="false" read="true" exec="true" insert="false" update="true"/>
+<!-- 		<role name="auditor" write="false" read="true" exec="false" insert="false" update="false"/> -->
+<!-- 		<role name="faturista" write="false" read="true" exec="false" insert="false" update="false"/> -->
+<!-- 		<role name="cooperado" write="false" read="true" exec="false" insert="false" update="false"/> -->
+<!-- 		<role name="gerenteFinanceiro" exec="true" insert="false" read="true" update="true" write="false"/> -->
+<!-- 		<role name="gerenteCredenciamento" exec="true" insert="false" read="true" update="true" write="false"/> -->
+<!-- 		<role name="gerenteOperacional" exec="true" insert="false" read="true" update="false" write="false"/> -->
+<!-- 		<role name="analista" write="false" read="true" exec="false" insert="false" update="false"/> -->
+<!-- 		<role name="digitador" write="false" read="true" exec="false" insert="false" update="false"/> -->
+<!-- 		<role name="responsavelEscala" write="false" read="true" exec="false" insert="false" update="false"/> -->
+	    	
+	</class-mapping>
+
+</jheat-mapping>

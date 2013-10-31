@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+
+<jheat-mapping>
+
+	<class-mapping class="br.com.infowaypi.ecare.dicadesaude.DicaDeSaude"
+		name="DicaDeSaude" display-name="Dicas de Saúde" id-name="idArquivoBase"
+		type="simple" link-for-detail="tituloArquivo" section="cadastros">
+
+		<property name="tituloArquivo" type="string" not-null="true">
+			<display name="Título" options="listing,search" align="left"
+				maxlength="100" size="100" />
+		</property>
+
+		<property name="arquivo" not-null="true" type="file"
+			type-file="pdf" name-file="tituloArquivo">
+			<display options="" name="Arquivo PDF" />
+			
+			<access-restriction name="editarArquivoPDF" type="edit">
+				<session-restriction name="usuario" property="login" operation="empty"/>
+			</access-restriction>
+
+			<access-restriction name="inserirArquivoPDF" type="insert">
+				<session-restriction name="usuario" property="login" operation="notempty"/>
+			</access-restriction>
+			
+		</property>
+
+		<property name="dataCriacao" type="date" not-null="true">
+			<display name="Data de inclusão" options="detail-only" align="center" />
+		</property>
+
+		<enum-property name="situacao" display-name="Situação"
+			null-option="false" class="br.com.infowaypi.ecare.enums.SituacaoEnum"
+			value="getDescricao" options="" />
+       
+		<many-to-one options="detail-only"
+			class="br.com.infowaypi.msr.user.Usuario" 
+			name="usuario" display-name="Usuário">
+			<display-property name="nome" options="detail-only"/>
+		</many-to-one>		       
+       
+      
+	<html> 
+       <![CDATA[
+		<script type="text/javascript">
+			(function() {
+					var idvalor = ${object ne null && object.idArquivoBase ne null ? object.idArquivoBase : 0};
+					if (idvalor == 0) {
+							document.getElementById("situacao_label").style.display = "none";
+							document.getElementById("situacao").style.display = "none";
+									  }
+			})();
+   		</script>
+   	    		]]>
+	</html>
+
+		<validate-method name="validate">
+			<session-param name="usuario"></session-param>
+		</validate-method>
+
+
+	</class-mapping>
+</jheat-mapping>

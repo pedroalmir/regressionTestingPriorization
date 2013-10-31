@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+	
+	<class-mapping class="br.com.infowaypi.msr.address.Estado" name="Estado" display-name="Estados" 
+		id-name="idEstado" link-for-detail="descricao" type="simple" section="cadastros,cadastrosCentral,cadastrosGerenciaAdesao">
+		
+		<description>Estados cadastrados no sistema</description>
+		
+		<property name="descricao" type="string" not-null="true">
+			<display name="Descrição" options="listing,search"/>
+	    </property>
+			    
+		<property name="uf" type="string" not-null="true">
+			<display name="UF" options="listing,search" align="center" size="4" maxlength="3"/>
+	    </property>
+		
+	    <collection 
+			class="br.com.infowaypi.msr.address.Municipio" 
+			name="municipios" display-name="Municípios" 
+	    	options="insert" master-detail="false"/>		
+	    	
+		<!-- cadastros -->
+		<role name="root" exec="true" insert="true" read="true" update="true" write="true"/>
+		<role name="atendente" exec="false" insert="false" read="true" update="false" write="false"/>
+		
+		<!-- cadastrosCentral -->
+		<role name="centralDeServico" exec="false" insert="false" read="true" update="false" write="false"/>
+	    	
+	</class-mapping>
+
+</jheat-mapping>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<flow name="fecharFaturamento" display-name="Fechar Faturamento" section="faturamento"
+		class="br.com.infowaypi.ecare.financeiro.faturamento.FecharFaturamentoService">
+		
+		<description>Fechamento de Faturamentos</description>
+		
+		<step-method name="fecharFaturamentos" display-name="Buscar Faturamento" buttons-position="bottom" committed="true"> 
+			<step-param name="competencia" type="java.util.Date" display-name="Competência" input-type="month-year" required="true"/>
+			
+			<step-return name="resumo" type="br.com.infowaypi.ecarebc.financeiro.faturamento.ResumoFaturamentos" 
+		         display-name="Resumo" scope="session"/>
+		</step-method>
+		
+		<step-method name="finalizar" display-name="Faturamento Fechado" committed="true">
+			<html>
+				<![CDATA[
+					<infoway:mensagemSucesso mensagem="Faturamento da competencia ${resumo.competenciaFormatada} fechado com sucesso!"/>
+				]]>
+			</html>
+		</step-method>
+
+	</flow>	
+	
+</jheat-mapping>

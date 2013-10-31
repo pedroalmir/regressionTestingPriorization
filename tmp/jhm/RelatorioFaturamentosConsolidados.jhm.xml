@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<report
+		name="relatorioFaturamentoConsolidados"
+		method-name="gerarRelatorio"
+		class="br.com.infowaypi.ecare.services.RelatorioFaturamento"
+		display-name="Faturamentos" section="relatorioFinanceiro,relatoriosAuditor,relatorioFaturista" response-by-ajax="false">
+		
+		<description>Relatório Faturamentos do Prestador por Competência</description>
+		
+		<report-param name="competencia" required="true" type="java.lang.String" display-name="Competência" mask="99/9999" input-type="month-year"/>
+				
+		<select-param name="categoria" display-name="" type="java.lang.Integer">
+			<constants-group class="br.com.infowaypi.ecarebc.constantes.Constantes" name="Categoria">
+				<entry display-name="Todas" key-value="TIPO_PRESTADOR_TODOS"/>
+				<entry display-name="Clínica de Exames" key-value="TIPO_PRESTADOR_CLINICAS_DE_EXAMES"/>
+				<entry display-name="Clínica Ambulatorial" key-value="TIPO_PRESTADOR_CLINICAS_AMBULATORIAIS"/>
+				<entry display-name="Clínica de Odontologia" key-value="TIPO_PRESTADOR_CLINICAS_DE_ODONTOLOGIA"/>
+				<entry display-name="Dentistas" key-value="TIPO_PRESTADOR_DENTISTAS"/>
+				<entry display-name="Hospital" key-value="TIPO_PRESTADOR_HOSPITAL"/>
+				<entry display-name="Laboratório" key-value="TIPO_PRESTADOR_LABORATORIO"/>
+				<entry display-name="Médicos Credenciados" key-value="TIPO_PRESTADOR_MEDICOS"/>
+				<entry display-name="Anestesista" key-value="TIPO_PRESTADOR_ANESTESISTA"/>
+				<entry display-name="Outros Profissionais" key-value="TIPO_PRESTADOR_OUTROS"/>
+			</constants-group>
+		</select-param>
+		
+		<select-param name="tipoFaturamento" display-name="" type="java.lang.Integer">
+			<constants-group class="br.com.infowaypi.ecarebc.constantes.Constantes" name="Tipo Faturamento">
+				<entry display-name="Nenhum" key-value="TIPO_FATURAMENTO_NENHUM"/>
+				<entry display-name="Faturamento Normal" key-value="TIPO_FATURAMENTO_NORMAL"/>
+				<entry display-name="Faturamento Capitação" key-value="TIPO_FATURAMENTO_CAPITACAO"/>
+				<entry display-name="Faturamento Passivo" key-value="TIPO_FATURAMENTO_PASSIVO"/>
+			</constants-group>
+		</select-param>
+		
+		<select-param
+			name="prestador"
+			display-name=""
+			type="br.com.infowaypi.ecarebc.associados.Prestador">
+			<autocomplete style-class="autocomplete" minimum-characters="3" force-selection="true">
+				<search-property name="pessoaJuridica.fantasia" display-name="Prestador"/>
+				<name-property name="pessoaJuridica.fantasia" display-name="Prestador"/>
+			</autocomplete>	
+		</select-param>	
+		
+		<report-param name="detalhar" type="java.lang.Boolean" display-name="Detalhar Meses anteriores" input-type="boolean"/>
+		
+		<report-return name="resumo" type="br.com.infowaypi.ecarebc.financeiro.faturamento.ResumoFaturamentos"
+			display-name="Resumo de Faturamentos">
+		 
+			<html>
+				<![CDATA[ <infoway:tableSeparator titulo="Resumo Geral" colspan="2"/> ]]>
+			</html>
+			
+			<display-property name="numeroDePrestadores" align="left" display-name="Quant. Prestadores"/>
+			<display-property name="valorConsultas" display-name="Consultas" align="right" type="money" />
+			<display-property name="valorExames" display-name="Exames" align="right" type="money" />
+			<display-property name="valorConsultasOdonto" display-name="Cons. Odonto" align="right" type="money" />
+			<display-property name="valorExamesOdonto" display-name="Ex. Odonto" align="right" type="money" />
+			<display-property name="valorAtendimentosUrgencia" display-name="Atend. Urgências" align="right" type="money" />
+			<display-property name="valorInternacoes" display-name="Internações" align="right" type="money" />
+			<display-property name="valorGuiasHonorario" display-name="Guias de Honorário" align="right" type="money" />
+			<display-property name="valorBrutoSemAlteracoes" display-name="Valor Bruto" type="money"/>
+			<display-property name="valorSaldoAlteracoes" display-name="Saldo de Alterações" type="money"/>
+			<display-property name="valorBruto" display-name="Valor Pago" align="right" type="money" />	
+			
+			
+			<!--html>
+				<![CDATA[ <infoway:tableSeparator titulo="Informações sobre Glosas" colspan="2"/> ]]>
+			</html>
+
+			<display-property name="numeroProcedimentosGlosados" display-name="Procedimentos Glosados"/>
+			<display-property name="valorProcedimentosGlosados" display-name="Total"/ -->
+			
+			
+			
+			<html>
+				
+				<![CDATA[ 
+				<c:if test="${resumo.detalhar}">
+				<infoway:tableSeparator titulo="Valores do Faturamento por Data de Atendimento das Guias" colspan="2"/> 
+				
+				]]>
+			</html>
+			<collection-display name="detalhesValoresFaturamentos" display-name="Valores do Faturamento por Competência">
+				<display-property name="descricao" display-name="Mês"/>
+				<display-property name="quantidadeConsultas" display-name="Consultas" type="int"/>
+				<display-property name="valorConsultas" display-name="(R$)" align="right" type="bigdecimal"/>
+				<display-property name="quantidadeExames" display-name="Exames" type="int"/>
+				<display-property name="valorExames" display-name="(R$)" align="right" type="bigdecimal"/>
+				<display-property name="quantidadeConsultasOdonto" display-name="Cons. Odonto" type="int"/>
+				<display-property name="valorConsultasOdonto" display-name="(R$)" align="right" type="bigdecimal"/>
+				<display-property name="quantidadeExamesOdonto" display-name="Trat. Odonto" type="int"/>
+				<display-property name="valorExamesOdonto" display-name="(R$)" align="right" type="bigdecimal"/>
+				<display-property name="quantidadeAtendimentosUrgencia" display-name="Atend. Urgências" type="int"/>
+				<display-property name="valorAtendimentosUrgencia" display-name="(R$)" align="right" type="bigdecimal"/>
+				<display-property name="quantidadeInternacoes" display-name="Internações" type="int"/>
+				<display-property name="valorInternacoes" display-name="(R$)" align="right" type="bigdecimal"/>
+				<display-property name="quantidadeGuiasHonorario" display-name="Honorarios" type="int"/>
+				<display-property name="valorGuiasHonorario" display-name="(R$)" align="right" type="bigdecimal"/>
+				<display-property name="quantidadeTotal" display-name="Total" type="int"/>
+				<display-property name="valorTotal" display-name="(R$)" align="right" type="bigdecimal"/>				
+			</collection-display>
+			
+			<html>
+				<![CDATA[ <infoway:tableSeparator titulo="Informações sobre Exames Ambulatoriais" colspan="2"/> ]]>
+			</html>
+			
+			<display-property name="numeroGuiasExamesAmbulatoriais" display-name="Guias"/>
+			<display-property name="numeroExamesAmbulatoriais" display-name="Exames"/>
+			<display-property name="valorExamesAmbulatoriais" display-name="Total"/>
+			
+			<html>
+				<![CDATA[ <infoway:tableSeparator titulo="Informações sobre Exames Externos de Atend. de Urgência" colspan="2"/> ]]>
+			</html>
+			<display-property name="numeroGuiasExamesExternoAtendimentosUrgencia" display-name="Guias" />
+			<display-property name="numeroExamesExternoAtendimentosUrgencia" display-name="Exames"/>
+			<display-property name="valorExamesExternoAtendimentosUrgencia" display-name="Total"/>
+			
+			<html>
+				<![CDATA[ <infoway:tableSeparator titulo="Informações sobre Exames Externos de Internação" colspan="2"/> ]]>
+			</html>
+			
+			<display-property name="numeroGuiasExamesExternoInternacao" display-name="Guias"/>
+			<display-property name="numeroExamesExternoInternacao" display-name="Exames"/>
+			<display-property name="valorExamesExternoInternacao" display-name="Total"/>
+			
+			
+			<html>
+				
+				<![CDATA[ <infoway:tableSeparator titulo="Categorias" colspan="2"/> ]]>
+			</html>			
+		
+			<collection-display name="resumos" default-sort="2" order="desc" display-name="Resumo dos Faturamentos Encontrados">
+				<display-property name="descricao" align="left" display-name="Descrição"/>				
+				<display-property name="valorBruto" align="right" display-name="Valor Bruto" type="money"/>					
+			</collection-display>
+				
+			<html>
+				<![CDATA[ 
+				</c:if>
+				<infoway:tableSeparator titulo="Prestadores" colspan="2"/> 
+				]]>
+			</html>
+			
+			<collection-display name="faturamentos" display-name="Resumo dos Faturamentos Encontrados">
+				<display-property name="prestador.pessoaJuridica.cnpj" display-name="CPF/CNPJ"/>
+				<display-property name="prestador.pessoaJuridica.fantasia" align="left" display-name="Nome"/>
+				<display-property name="descricaoCategoria" align="left" display-name="Categoria"/>
+				<!-- display-property name="valorConsultas" display-name="Consultas" type="bigdecimal"/>
+				<display-property name="valorExames" display-name="Exames" type="bigdecimal"/>
+				<display-property name="valorConsultasOdonto" display-name="Cons. Odonto" type="bigdecimal"/>
+				<display-property name="valorExamesOdonto" display-name="Ex. Odonto" type="bigdecimal"/>
+				<display-property name="valorAtendimentosUrgencia" display-name="Atend. Urgências" type="bigdecimal"/>
+				<display-property name="valorInternacoes" display-name="Internações" type="bigdecimal"/-->
+				<display-property name="descricaoStatus" align="left" display-name="Situação"/>
+				<display-property name="numeroEmpenho" align="left" display-name="Número Empenho"/>
+				<display-property name="dataPagamento" display-name="Data Pagamento" type="date"/>	
+				<display-property name="valorBruto" align="right" display-name="Valor Bruto" type="money"/>	
+			</collection-display>
+			
+		</report-return>
+		
+	</report>
+	
+</jheat-mapping>

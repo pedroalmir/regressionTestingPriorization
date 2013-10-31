@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<report
+		name="relatorioPagamentos"
+		method-name="buscarPagamentos"
+		class="br.com.infowaypi.ecare.flows.RelatorioPagamentos"
+		display-name="Pagamentos" section="relatorios" response-by-ajax="true">
+		
+		<description>Relatório de contas a pagar e a receber por competência</description>
+		
+		<report-param name="competencia" type="java.lang.String" display-name="Competência" mask="99/9999" input-type="date"/>
+
+		<report-return name="resumo" type="br.com.infowaypi.ecare.consumos.ResumoPagamentos" 
+			 display-name="Resultado Encontrado">
+			 
+			<html>
+				<![CDATA[ <infoway:tableSeparator titulo="Contas a Receber" colspan="2"/> ]]>
+			</html>			
+			
+			<display-property name="previsaoAReceber" display-name="Prev. de Recebimento" type="money"/>				
+			<display-property name="confirmadoAReceber" display-name="Recebimentos Confirmados" type="money"/>
+			<display-property name="totalAReceber" display-name="Total a receber" type="money"/>
+
+			<html>
+				<![CDATA[ <infoway:tableSeparator titulo="Contas a Pagar" colspan="2"/> ]]>
+			</html>			
+			
+			<display-property name="previsaoAPargar" display-name="Prev. de Pagamento" type="money"/>				
+			<display-property name="confirmadoAPargar" display-name="Pagamentos Confirmados" type="money"/>
+			<display-property name="totalAPargar" display-name="Total a pagar" type="money"/>
+		</report-return>
+		
+	</report>
+	
+</jheat-mapping>

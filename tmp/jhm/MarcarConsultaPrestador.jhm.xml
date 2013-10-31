@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<flow
+		name="agendarConsultaPrestador" 
+		class="br.com.infowaypi.ecare.services.consultas.MarcacaoConsulta"
+		display-name="Agendar Consulta" section="consultasPrestador">
+		
+		<description>Agendamento de consultas</description>
+
+		<step-method name="buscarSegurado" display-name="Buscar Beneficiário" title="Buscar Beneficiário" buttons-position="bottom">
+			<step-param name="cpfDoTitular" size="24" mask="999.999.999-99" input-type="string" type="java.lang.String" display-name="CPF do Titular"/>
+			<step-param name="numeroDoCartao" size="24" mask="99.9999999999.99.9-9" input-type="string" type="java.lang.String" display-name="Número do cartão do beneficiário"/>
+			
+			<step-return name="seguradosEncontrados" type="br.com.infowaypi.ecare.segurados.ResumoSegurados" 
+		         display-name="Beneficiários Encontrados" scope="session"/>
+		         
+		</step-method>
+		
+		<step-method name="criarGuiaPrestador" display-name="Informar Dados" title="Informar Dados">
+		
+			<session-param name="seguradosEncontrados" display-name="Consultas Promocionais Liberadas">
+				<collection-display display-name="Consultas Promocionais Liberadas" name="consultasPromocionaisEletivas">
+					<display-property name="segurado.numeroDoCartao" display-name="Beneficiário"/>
+					<display-property name="segurado.pessoaFisica.nome" display-name="Beneficiário"/>
+					<display-property name="dataDeVencimento" display-name="Data de vencimento" type="date"/>
+					<display-property name="especialidade.descricao" display-name="Especialidade"/>
+				</collection-display>
+			</session-param>
+			
+			<select-param
+					name="segurados"
+					type="br.com.infowaypi.ecare.segurados.Segurado"
+					display-name="Selecione o Beneficiário"
+					session-property-ref="seguradosEncontrados" required="true" operation="reload">
+				<radio-group default-checked="none">
+					<display-property name="numeroDoCartao" display-name="Número do cartão"/>
+					<display-property name="pessoaFisica.nome" display-name="Nome"/>
+					<display-property name="tipoDeSegurado" display-name="Tipo"/>					
+				</radio-group>
+			</select-param>
+			
+			<session-param name="prestador" operation="reload" />
+			<session-param name="usuario"/>
+			
+			<select-param name="profissionais" 
+				display-name="Profissional" 
+				type="br.com.infowaypi.ecarebc.associados.Profissional" 
+				session-property-ref="prestador" 
+				operation="none" 
+				display-label-head="false" required="true">
+				
+				<combo display-property="crmNome" display-name="Médico"/>	
+			</select-param>	
+			
+			<select-param display-name="Especialidade" name="especialidades" type="br.com.infowaypi.ecarebc.associados.Especialidade" display-label-head="false" required="true">
+				<dropdown display-property="descricao" display-name="Especialidade" service-class="br.com.infowaypi.ecarebc.associados.Profissional">
+					<depends-property name="profissionais" search-property="profissionais" type="br.com.infowaypi.ecarebc.associados.Profissional"/>
+				</dropdown>
+				<restrictions>
+					<restriction property-value="true" property-name="ativa" type="equals"/>
+				</restrictions> 
+			</select-param>	
+			
+			<step-param name="dataAtendimento" type="java.lang.String" display-name="Data atendimento" input-type="date" mask-detail="Ex: DD/MM/AAAA" required="true"/>
+			<step-return name="guia" type="br.com.infowaypi.ecarebc.atendimentos.GuiaConsulta" display-name="" scope="session"/>
+		</step-method> 
+		
+        <step-method name="salvarGuia" display-name="Conferir Dados" committed="true" title="Conferir Dados">
+			<session-param name="guia" display-name="Informações da Guia" operation="none" />
+				<html>
+					<![CDATA[
+					<infoway:GuiaApresentacao guiaApresentacao="${guia}"/>
+					]]>
+				</html>
+		</step-method>
+		
+		<step-method name="finalizar" display-name="Imprimir Comprovante de Confirmação" title="Imprimir Comprovante">
+			<html>
+				<![CDATA[ <infoway:mensagemSucessoMarcacoes mensagem="Consulta agendada com sucesso!" autorizacao="${guia.autorizacao}"/> ]]>
+			</html>
+			
+			<html>
+				<![CDATA[
+					<infoway:GuiaApresentacao guiaApresentacao="${guia}"/>
+				]]>
+			</html>
+			
+			<session-param name="guia"/>
+
+		</step-method>
+	</flow>	
+	
+</jheat-mapping>

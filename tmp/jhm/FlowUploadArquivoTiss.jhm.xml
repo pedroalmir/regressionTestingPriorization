@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+<flow 
+	name="flowUploadArquivoTiss" 
+	class="br.com.infowaypi.ecarebc.portalTiss.FlowUploadArquivoTiss"
+	display-name="Importar Tiss" section="portalTissSistema">
+		
+		<step-method name="importarArquivo" display-name="Importar Arquivo Tiss" title="Importar Arquivo Tiss" buttons-position="bottom" committed="true">
+			<step-param display-name="Arquivo TISS" mask-detail="Lote de Guias"  name="arquivo" required="true"  input-type="file" type="[B"/>
+				
+			<!-- campo temporario para armazenamento do nome do arquivo importado -->	
+			<html><![CDATA[<div id="campoOculto" style="display: none;"> ]]></html>	
+			<step-param name="nomeArquivo" display-name="" />
+			<html><![CDATA[</div>]]></html>	
+			
+			<!-- JS para validacao de formato do arquivo. Deve ser XML -->
+			<html><![CDATA[
+					<script type="text/javascript">
+						var isValidacaoXMLPreparada = false;
+						function prepararValidacaoXML() {
+							var els = document.getElementsByTagName("button");
+							for (var i = 0; i < els.length; i++) {
+								if (els[i].name === "submit") {
+									var submitBtn = els[i];
+									submitBtn.onclick = function() {
+										try{
+											var arquivo = document.getElementsByName("flowUploadArquivoTissimportarArquivo_arquivo");
+											extensao = ((arquivo.item(0).value).substring((arquivo.item(0).value).lastIndexOf("."))).toLowerCase(); 
+											if (extensao != '' && extensao != '.xml'){ 
+												alert("O arquivo informado está em um formato inválido. \nO arquivo a ser importando deve ter o formato XML.");
+												arquivo.item(0).focus();
+												return false;
+											}
+											document.getElementById("nomeArquivo").value = arquivo.item(0).value;
+										}catch(err){
+											alert(err);
+										}
+									};
+								}
+								
+							}
+						}
+						
+						/* Código Mágico e Feliz para executar um código ao carregar a página */
+						if (document.addEventListener) {
+							document.addEventListener("DOMContentLoaded", function () { isValidacaoXMLPreparada = true; prepararValidacaoXML(); }, false);
+						}
+						else if (document.all && !window.opera) {
+							document.write("<script type=\"text/javascript\" id=\"contentloadtag\" defer=\"defer\" src=\"javascript:void(0)\"><\/script>");
+							var contentloadtag = document.getElementById("contentloadtag");
+							contentloadtag.onreadystatechange = function() {
+								if (this.readyState === "complete") {
+									isValidacaoXMLPreparada = true;
+									prepararValidacaoXML();
+								}
+							}
+						}
+						var originalOnLoad = window.onload;
+						window.load = function () {
+							setTimeout("if (!isValidacaoXMLPreparada) { prepararValidacaoXML(); }", 0);
+						};
+					</script>
+			]]></html>			
+			
+			<session-param name="usuario"/>
+			
+			<step-return display-name="" name="resumo" scope="session" type="br.com.infowaypi.ecarebc.portalTiss.ResumoUploadArquivoTiss"/>
+		</step-method>
+
+		<step-method name="visualizar" display-name="Visualizar Arquivo" title="Visualizar Arquivo">
+			<html><![CDATA[<infoway:mensagemSucesso mensagem="Arquivo importado com sucesso!"/>]]></html>
+			<session-param name="resumo" display-name="Confimação de Importação do Arquivo Tiss">
+				<display-property name="prestador" display-name="Prestador"/>
+				<display-property name="nome" display-name="Nome Arquivo"/>
+				<display-property name="tipoArquivo" display-name="Tipo de Arquivo"/>
+				<display-property name="numeroLote" display-name="Nº Lote"/>
+				<display-property name="qtdeGuias" display-name="Qtde. Guias"/>
+				<display-property name="numeroProtocolo" display-name="Nº Protocolo"/>
+				<display-property name="dataEnvio" display-name="Data "/>
+				<display-property name="status" display-name="Situação"/>
+				<display-property name="arquivoProtocoloRetorno.arquivo" name-file="arquivoProtocoloRetorno.tituloArquivo" display-name="Protocolo de Recebimento" type="file" type-file="xml"/>
+			</session-param>
+		</step-method>
+		
+	</flow>
+</jheat-mapping>		

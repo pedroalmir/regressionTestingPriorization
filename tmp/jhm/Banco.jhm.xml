@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+	
+	<class-mapping class="br.com.infowaypi.msr.financeiro.Banco" name="Banco" display-name="Bancos" 
+		id-name="idBanco" link-for-detail="descricao" type="simple" section="cadastros">
+		
+		<description>Bancos cadastrados no sistema</description>
+		
+		<property name="descricao" type="string" not-null="true">
+			<display name="Descrição" options="listing,search"/>
+	    </property>
+	    
+	    
+	    <property name="codigoFebraban" type="string" not-null="true" >
+	    	<display name="Código Febraban" mask="999" options="listing,search" maxlength="3" size="3"/>
+	    </property>
+	    
+		<!-- cadastros -->
+		<role name="root" exec="true" insert="true" read="true" update="true" write="true"/>
+		<role name="atendente" exec="false" insert="false" read="true" update="false" write="false"/>
+	    	
+	</class-mapping>
+
+</jheat-mapping>

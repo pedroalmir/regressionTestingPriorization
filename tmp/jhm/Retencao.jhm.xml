@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+	
+	<class-mapping class="br.com.infowaypi.ecarebc.financeiro.faturamento.retencao.Retencao" name="Retencao" display-name="Retenções" 
+		id-name="idRetencao" link-for-detail="descricao" type="readonly" section="cadastros">
+		
+		<description>Retenções cadastradas no sistema</description>
+		
+		<property name="descricao" type="string" not-null="true">
+			<display name="Descrição" options="listing,search"/>
+	    </property>
+	    	
+		<property name="valorBaseDoCalculo" type="money" not-null="true">
+			<display name="Valor Base" options="listing"/>
+	    </property>
+
+		<property name="valorDeducaoBaseDoCalculo" type="money" not-null="true">
+			<display name="Dedução Base" options=""/>
+	    </property>
+
+		<property name="percentualDoCalculo" type="percentage" not-null="true">
+			<display name="Percentual" options="listing"/>
+	    </property>
+
+		<property name="valorDeducao" type="money" not-null="true">
+			<display name="Dedução" options="listing"/>
+	    </property>
+
+		<property name="valor" type="money" not-null="true">
+			<display name="Valor" options="listing"/>
+	    </property>
+
+		<select-property name="tipoDeRetencao" display-name="Tipo" options="">
+			<entry display-name="Imposto de Renda" key-value="IMPOSTO_DE_RENDA"/>
+			<entry display-name="ISS" key-value="ISS"/>
+			<entry display-name="INSS" key-value="INSS"/>
+		</select-property>
+
+		<many-to-one class="br.com.infowaypi.ecarebc.financeiro.faturamento.Faturamento" 
+			name="faturamento"
+			not-null="true"
+			autocomplete="true"
+	    	display-name="Faturamento" options="">
+			<display-property name="competenciaFormatada" type="date"/>
+		</many-to-one>		
+
+	</class-mapping>
+
+</jheat-mapping>

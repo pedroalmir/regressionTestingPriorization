@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+
+<jheat-mapping>
+	<flow 
+		name="solicitarProcedimentos" 
+		class="br.com.infowaypi.ecare.services.SolicitarProcedimentos"
+		display-name="Solicitar Exames/Procedimentos/Pacotes/OPMEs" section="urgenciaInternacao">
+			
+		<description>Inclusão de novos exames</description>	
+		<step-method name="buscarGuia" display-name="Informar Número de Autorização" title="Informar Número de Autorização" buttons-position="bottom">
+			<step-param name="autorizacao" input-type="string" size="12" type="java.lang.String" display-name="Autorização"/>
+			<session-param name="prestador" operation="none"/>
+			<step-return name="guia" type="br.com.infowaypi.ecarebc.atendimentos.GuiaCompleta" display-name="Guia de Internacao Eletiva" scope="session" />		
+		</step-method>
+		
+		<step-method name="adicionarProcedimentos" display-name="Exames Especiais" title="Exames Especiais/Procedimentos">
+			
+			<select-param display-name="Tipo da Solicitação" name="tipoSolicitacao" type="java.lang.Integer" display-label-head="false" null-option="true" null-description="Nenhum" required="true">
+				<constants-group name="Tipo da Solicitação" class="br.com.infowaypi.ecarebc.service.SolicitarExamesEspeciaisService">
+					<entry display-name="Realização Externa" key-value="TIPO_EXTERNO" />
+					<entry display-name="Realização Interna" key-value="TIPO_INTERNO" />
+				</constants-group>
+			</select-param>
+			
+			<collection-param  
+				name="exames" required="false"
+				display-name="Adicionar os Exames"
+				type="br.com.infowaypi.ecarebc.procedimentos.Procedimento">
+			    <insert>
+				    <display-property name="procedimentoDaTabelaCBHPM.codigo" display-name="Código"/>
+  			        <display-property name="procedimentoDaTabelaCBHPM.descricao" display-name="Descrição"/>
+  			        <display-property name="bilateral" display-name="Bilateral" type="boolean"/>
+  			        <display-property name="procedimentoDaTabelaCBHPM.nivel" display-name="Nível"/>
+  			        <display-property name="quantidade" display-name="Quantidade" type="int"/>
+  			        <display-property name="valorAtualDoProcedimento" display-name="Valor Unitário" type="money"/>
+  			        <display-property name="valorTotal" display-name="Valor Total" type="money"/>
+			    </insert>
+			    <restrictions>
+					<restriction property-value="1" property-name="procedimentoDaTabelaCBHPM.nivel" type="greaterequals"/>
+					<restriction property-value="3" property-name="procedimentoDaTabelaCBHPM.grupo" type="notequals"/>
+			    </restrictions>
+			</collection-param>
+			
+			<step-param display-name="Solicitar acompanhamento anestésico" type="java.lang.Boolean" name="acompanhamentoAnestesico" input-type="boolean"/>
+						
+			<collection-param  
+				name="pacotes" required="false"
+				display-name="Escolha os Pacotes"
+				type="br.com.infowaypi.ecarebc.atendimentos.acordos.itensAcordos.ItemPacote">
+			    <insert>
+					<display-property name="pacote.codigo" display-name="Código" />
+				    <display-property name="pacote.descricao" display-name="Descrição"/>
+  			        <display-property name="pacote.valorTotal" display-name="Valor" type="money"/>
+			    </insert>
+			</collection-param>
+
+			<update-param display-name="" name="guia" type="br.com.infowaypi.ecarebc.atendimentos.GuiaCompleta">
+				<update-collection 
+					name="SP_procedimentosCirurgicosDaSolicitacao" 
+					field-name="procedimentosCirurgicosDaSolicitacao"
+					display-name="Procedimentos Cirúrgicos"
+					type="br.com.infowaypi.ecare.procedimentos.ProcedimentoCirurgicoSR">
+
+					<update-insert>
+					    <update-property name="procedimentoDaTabelaCBHPM.codigo" display-name="Código" editable="false"/>
+	  			        <update-property name="procedimentoDaTabelaCBHPM.descricao" display-name="Descrição" editable="false"/>
+	  			        <update-property name="valorTotal" display-name="Valor Bruto" type="java.math.BigDecimal" input-type="money" editable="false"/>
+						<update-property name="porcentagem" display-name="Porcentagem" editable="false"/>
+						<update-property name="profissionalResponsavel.pessoaFisica.nome" display-name="Profissional*" editable="false"/>
+						<update-property name="dataRealizacao" input-type="date" type="java.util.Date" display-name="Data de Realização*"  editable="false" mask="99/99/9999" width-percentage="5"/>
+					</update-insert>
+					<restrictions>
+						<restriction property-value="3" property-name="procedimentoDaTabelaCBHPM.grupo" type="equals"/>
+				    </restrictions>
+					<methods-collection>
+						<method-collection display-name="Insert" name="addProcedimentoDaSolicitacao" option-method="insert"/>
+						<method-collection display-name="Excluir" name="removeProcedimentoDaSolicitacao" option-method="listing"/>
+					</methods-collection>
+				</update-collection>
+				
+				<update-collection 
+				    display-name="OPMEs" 
+				    name="itensOpme"
+				    field-name="itensOpme"
+				    type="br.com.infowaypi.ecarebc.opme.ItemOpme">
+					
+					<update-insert>
+						<update-property name="opme.codigo" display-name="Código" editable="false"/>
+						<update-property name="opme.descricao" display-name="Descrição" editable="false"/>
+						<update-property name="situacao.descricao" display-name="Situação" editable="false" />
+						<update-property name="quantidadeSolicitada" display-name="Quantidade" editable="false" />
+						<update-property name="observacaoSolicitacao" display-name="Motivo da Solicitação" input-type="text" editable="true"/>
+					</update-insert> 
+					<methods-collection>
+						<method-collection display-name="Insert" name="addItemOpme" option-method="insert"/>
+						<method-collection display-name="Excluir" name="removeItemOpme" option-method="listing"/>
+					</methods-collection>
+				</update-collection>
+			</update-param>
+			
+			<!-- if[INFORMAR_JUSTIFICATIVA_NO_ATENDIMENTO_URGENCIA]
+			
+			<html>
+				<![CDATA[
+					<br/>
+				]]>
+			</html>
+			
+			<step-param name="justificativa"  type="java.lang.String" input-type="text" display-name="Quadro Clínico" required="false" />
+			end[INFORMAR_JUSTIFICATIVA_NO_ATENDIMENTO_URGENCIA] -->
+			
+			<session-param name="usuario"/>
+
+			<html>
+				<![CDATA[
+					<infoway:GuiaApresentacao guiaApresentacao="${guia}"/>
+				]]>
+			</html>
+
+			<step-return name="resumoGuiaComAcompanhamento" type="br.com.infowaypi.ecarebc.atendimentos.ResumoGuiasComAcompanhamentoAnestesico"
+			 display-name="Conferir Dados" scope="session"/>
+		</step-method>
+
+		<step-method name="salvarGuia" display-name="Conferir Dados" title="Conferir Dados" committed="true">
+			<session-param name="resumoGuiaComAcompanhamento" operation="none"/>
+
+			<html>
+				<![CDATA[
+					<infoway:GuiaApresentacao guiaApresentacao="${resumoGuiaComAcompanhamento.guiaOrigem}"/>
+				]]>
+			</html>
+
+		</step-method>
+
+		<step-method name="finalizar" display-name="Imprimir Comprovante" title="Imprimir Comprovante">
+			<html>
+				<![CDATA[ 
+					<c:choose>
+						<c:when test="${resumoGuiaComAcompanhamento.guiaAcompanhamentoAnestesico ne null}">
+							<infoway:mesagemSucessoGuiaAcompanhamento mensagem="Procedimentos solicitados com sucesso!" guiaCompleta="${resumoGuiaComAcompanhamento.guiaOrigem}" autorizacaoGuiaAcompanhamento="${resumoGuiaComAcompanhamento.guiaAcompanhamentoAnestesico.autorizacao}"/>
+						</c:when>
+						<c:otherwise>
+							<infoway:mensagemSucessoMarcacoes mensagem="Procedimentos solicitados com sucesso!" autorizacao="${resumoGuiaComAcompanhamento.guiaOrigem.autorizacao}"/>
+						</c:otherwise>
+					</c:choose>	
+				]]>
+			</html>
+			<html>
+				<![CDATA[
+					<span class="not-for-print">
+						<button type="button" name="imprimir" class="actionButton" onclick="window.print();">Imprimir</button>
+					</span>
+				]]>
+			</html>
+			<html>
+				<![CDATA[
+					<infoway:GuiaApresentacao guiaApresentacao="${resumoGuiaComAcompanhamento.guiaOrigem}"/>
+				]]>
+			</html>
+			<html>
+				<![CDATA[ 
+					<c:choose>
+						<c:when test="${resumoGuiaComAcompanhamento.guiaAcompanhamentoAnestesico ne null}">
+							<infoway:imprimirGuiaExameEAcompanhamentoAnestesico titulo="AUTORIZAÇÃO DE EXAMES" guiaCompleta="${resumoGuiaComAcompanhamento.guiaOrigem}" guiaAcompanhamentoAnestesico="${resumoGuiaComAcompanhamento.guiaAcompanhamentoAnestesico}"/> 
+						</c:when>
+						<c:when test="${resumoGuiaComAcompanhamento.guiaOrigem.exame}">
+							<infoway:imprimirGuia titulo="AUTORIZAÇÃO DE EXAMES" guia="${resumoGuiaComAcompanhamento.guiaOrigem}"/>
+						</c:when>
+						<c:otherwise>
+							<infoway:imprimirGuia titulo="&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GUIA DE INTERNAÇÃO"/>
+						</c:otherwise>
+					</c:choose>
+					<span class="not-for-print">
+						<button type="button" name="imprimir" class="actionButton" onclick="window.print();">Imprimir</button>
+					</span>
+				]]>
+			</html>
+		</step-method>
+	</flow>
+</jheat-mapping>

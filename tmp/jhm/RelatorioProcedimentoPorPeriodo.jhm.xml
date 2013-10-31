@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<report
+		name="relatorioProcedimentoPorPeriodo"
+		method-name="gerarRelatorio"
+		class="br.com.infowaypi.ecare.relatorio.RelatorioProcedimentoPorPeriodo"
+		display-name="Procedimento por periodo" section="relatoriosAuditor,relatorioFaturista" response-by-ajax="true">
+		
+		<description>Relatório de faturamento do prestador por procedimentos</description>
+		
+		<select-param
+				name="tabelaCBHPM"
+				display-name="Escolha o Procedimento"
+				type="br.com.infowaypi.ecarebc.procedimentos.TabelaCBHPM">
+				<autocomplete style-class="autocomplete" minimum-characters="3" force-selection="true">
+					<search-property name="codigoEDescricao" display-name="Procedimento"/>
+					<name-property name="codigoEDescricao" display-name="Procedimento"/>
+				</autocomplete>	
+		</select-param>
+		
+		<report-param name="dataInicial" type="java.util.Date" display-name="Data Inicial" mask="99/99/9999" input-type="date"/>
+		<report-param name="dataFinal" type="java.util.Date" display-name="Data Final" mask="99/99/9999" input-type="date"/>
+		
+		
+		<select-param
+				name="prestador"
+				display-name="Escolha o Prestador"
+				type="br.com.infowaypi.ecarebc.associados.Prestador">
+				<autocomplete style-class="autocomplete" minimum-characters="3" force-selection="true">
+					<search-property name="pessoaJuridica.fantasia" display-name="Prestador"/>
+					<name-property name="pessoaJuridica.fantasia" display-name="Prestador"/>
+				</autocomplete>	
+		</select-param>
+
+		<report-return name="resumo" type="br.com.infowaypi.ecare.resumos.ResumoProcedimentosSR" 
+			 display-name="Resultado Encontrado">
+		
+		  	<!-- html>
+				<![CDATA[ <infoway:tableSeparator titulo="Informações Gerais" colspan="2"/> ]]>
+			</html>			
+				<display-property name="prestador.pessoaJuridica.fantasia" display-name="Prestador"/>
+				<display-property name="Data Inicial" display-name="Data Inicial"/>
+				<display-property name="Data Final" display-name="Data Final"/-->
+
+			<html>
+				<![CDATA[ <infoway:tableSeparator titulo="Informações sobre Procedimentos" colspan="2"/> ]]>
+			</html>			
+			
+				<display-property name="quantidadeTotalProcedimentos" display-name="Total Proc."/>
+				<display-property name="valorTotalProcedimentos" display-name="Total Geral" type="money"/>			
+				<display-property name="valorMedioPorProcedimento" display-name="Valor Médio Por Proc." type="money"/>			
+		
+			 <html>
+				<![CDATA[ 
+					<c:if test="${param.exibirProcedimentos}"> 
+					<infoway:tableSeparator titulo="Listagem de Procedimentos Ambulatoriais" colspan="2"/> ]]>
+			</html>
+	
+			<collection-display name="resumoProcedimentos.resumoExame" display-name="Procedimentos Encontrados">
+				
+				<display-property name="procedimento.codigo" display-name="Código"/>
+				<display-property name="procedimento.descricao" display-name="Descrição"/>				
+				<display-property name="quantidade" display-name="Quantidade"/>
+				<display-property name="procedimento.bilateral" display-name="Bilateral" type="boolean"/>
+				<display-property name="procedimento.especial" display-name="Especial" type="boolean"/>	
+				<!-- display-property name="procedimento.tipoFormatado" display-name="Tipo de Proc." type="string"/-->	
+				<display-property name="valorUnitario" display-name="Valor Unitário" type="money"/>
+				<display-property name="valorTotal" display-name="Valor Total" type="money"/>
+
+			</collection-display>
+			
+			
+			<html>
+				<![CDATA[ 
+					</c:if>
+					
+					<c:if test="${param.exibirProcedimentos}"> 
+					<infoway:tableSeparator titulo="Listagem de Procedimentos Hospitalares" colspan="2"/> ]]>
+			</html>	
+			
+			<collection-display name="resumoProcedimentos.resumoCirurgico" display-name="Procedimentos Encontrados">
+				
+				<display-property name="procedimento.codigo" display-name="Código"/>
+				<display-property name="procedimento.descricao" display-name="Descrição"/>				
+				<display-property name="quantidade" display-name="Quantidade"/>
+				<display-property name="procedimento.bilateral" display-name="Bilateral" type="boolean"/>
+				<display-property name="procedimento.especial" display-name="Especial" type="boolean"/>	
+				<!-- display-property name="procedimento.tipoFormatado" display-name="Tipo de Proc." type="string"/-->	
+				<display-property name="valorUnitario" display-name="Valor Unitário" type="money"/>
+				<display-property name="valorTotal" display-name="Valor Total" type="money"/>
+
+			</collection-display>
+			
+			<html>
+				<![CDATA[ 
+					</c:if>
+					
+					<c:if test="${param.exibirProcedimentos}"> 
+					<infoway:tableSeparator titulo="Listagem de Procedimentos Odontológicos" colspan="2"/> ]]>
+			</html>
+			
+			<collection-display name="resumoProcedimentos.resumoOdontologico" display-name="Procedimentos Encontrados">
+				
+				<display-property name="procedimento.codigo" display-name="Código"/>
+				<display-property name="procedimento.descricao" display-name="Descrição"/>				
+				<display-property name="quantidade" display-name="Quantidade"/>
+				<display-property name="procedimento.bilateral" display-name="Bilateral" type="boolean"/>
+				<display-property name="procedimento.especial" display-name="Especial" type="boolean"/>	
+				<!-- display-property name="procedimento.tipoFormatado" display-name="Tipo de Proc." type="string"/-->	
+				<display-property name="valorUnitario" display-name="Valor Unitário" type="money"/>
+				<display-property name="valorTotal" display-name="Valor Total" type="money"/>
+
+			</collection-display>
+			
+			<html>
+					<![CDATA[ </c:if> ]]>
+			</html>	
+			
+			 
+		</report-return>
+		
+	</report>
+	
+</jheat-mapping>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+
+<jheat-mapping>
+
+	<class-mapping
+		class="br.com.infowaypi.ecare.programaPrevencao.fluxos.ResumoBeneficiarioMpps"
+		name="resumoGeralMpps" display-name="Resumo Beneficiário Mpps" type="readonly"
+		id-name="idResumoGeralMpps" link-for-detail="segurado.pessoaFisica.nome"
+		section="pps">
+		
+		<many-to-one options="listing,detail-only"
+			class="br.com.infowaypi.ecarebc.segurados.AbstractSegurado" name="segurado" 	display-name="Nome" autocomplete="true" minimum-characters="7">
+			<display-property  name="pessoaFisica.nome"/>
+		</many-to-one>
+
+		<property name="resumoSegurado.nConcultasRealizadasPeloPrograma" type="bigdecimal"
+			not-null="false">
+			<display name="Número de consultas realizadas pelo programa"
+				size="10" options="detail-only" />
+		</property>
+
+		<property name="resumoSegurado.nConsultasDeUrgencia" type="bigdecimal"
+			not-null="false">
+			<display name="Número de consultas de urgência"
+				size="10" options="detail-only" />
+		</property>
+
+		<property name="resumoSegurado.nInteracoes" type="bigdecimal"
+			not-null="false">
+			<display name="Número de internações"
+				size="10" options="detail-only" />
+		</property>
+
+		<property name="resumoSegurado.nCoparticipacoesLiberadas" type="bigdecimal"
+			not-null="false">
+			<display name="Número de co-participações liberadas"
+				size="10" options="detail-only" />
+		</property>
+
+		<property name="resumoSegurado.nLimitesUltrapassadosDePacientesInscritosEmProgramas" type="bigdecimal"
+			not-null="false">
+			<display name="Número de limites ultrapassados em programas"
+				size="10" options="detail-only" />
+		</property>
+
+
+	</class-mapping>
+
+</jheat-mapping>

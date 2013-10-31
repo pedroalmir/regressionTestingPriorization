@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<flow
+		name="marcarConsultaUrgencia" 
+		class="br.com.infowaypi.ecare.services.urgencias.MarcacaoUrgencias"
+		display-name="Atender Urgência" section="urgenciaInternacao">
+		
+		<description>Registrar uma Urgência</description>
+
+		<step-method name="buscarSegurado" display-name="Buscar Beneficiário" title="Buscar Beneficiário" buttons-position="bottom">
+			<step-param name="cpfDoTitular" size="24" mask="999.999.999-99" input-type="string" type="java.lang.String" display-name="CPF do Titular"/>
+			<step-param name="numeroDoCartao" size="24" mask="99.9999999999.99.9-9" input-type="string" type="java.lang.String" display-name="Número do cartão do beneficiário"/>
+
+			<step-return name="seguradosEncontrados" type="br.com.infowaypi.ecare.segurados.ResumoSegurados" 
+		         display-name="Segurados Encontrados" scope="session"/>
+		</step-method>
+		
+		<step-method name="criarGuiaUrgencia" display-name="Informar Dados" title="Informar Dados">
+		
+			<session-param name="seguradosEncontrados" display-name="Consultas Promocionais Liberadas">
+				<collection-display display-name="Consultas Promocionais Liberadas" name="consultasPromocionaisUrgencia">
+					<display-property name="segurado.numeroDoCartao" display-name="Beneficiário"/>
+					<display-property name="segurado.pessoaFisica.nome" display-name="Beneficiário"/>
+					<display-property name="dataDeVencimento" display-name="Data de vencimento" type="date"/>
+					<display-property name="especialidade.descricao" display-name="Especialidade"/>
+				</collection-display>
+			</session-param>
+			
+			<select-param
+					name="segurados"
+					type="br.com.infowaypi.ecare.segurados.Segurado"
+					display-name="Selecione o Beneficiário"
+					session-property-ref="seguradosEncontrados" operation="reload">
+				<radio-group>
+					<display-property name="numeroDoCartao" display-name="Número do cartão"/>
+					<display-property name="pessoaFisica.nome" display-name="Nome"/>
+					<display-property name="tipoDeSegurado" display-name="Tipo"/>					
+				</radio-group>
+			</select-param>
+			
+			<select-param display-name="Tipo de Urgência" name="tipoDeGuia" type="java.lang.Integer" display-label-head="false">
+				<constants-group class="br.com.infowaypi.ecarebc.service.urgencia.MarcacaoUrgenciasService" name="Tipo de Urgência">
+					<entry display-name="Consulta de Urgência" key-value="GUIA_CONSULTA_URGENCIA"/>
+					<entry display-name="Atendimento Subsequente" key-value="GUIA_ATENDIMENTO_SUBSEQUENTE"/>
+					<!--entry display-name="Internação de Urgência" key-value="GUIA_INTERNACAO_URGENCIA"/-->
+				</constants-group>
+			</select-param>
+			
+			<select-param
+				name="profissionaisCRM"
+				display-name="Médico(Conselho)"
+				type="br.com.infowaypi.ecarebc.associados.Profissional" display-label-head="false" required="false">
+				<autocomplete mask-detail="Os 3 números iniciais" style-class="autocomplete" minimum-characters="3" force-selection="true">
+					<search-property name="crm" display-name="Médico(Conselho)" search-type="likerigth"/>
+					<name-property name="crmNome" display-name="Médico(Conselho)"/>
+				</autocomplete>				
+			</select-param>	
+			
+			<html>
+				<![CDATA[
+					ou
+				]]>
+			</html>
+			
+			<select-param
+				name="profissionaisNOME"
+				display-name="Médico(Nome)"
+				type="br.com.infowaypi.ecarebc.associados.Profissional" display-label-head="false" required="false">
+				<autocomplete mask-detail="As 7 letras iniciais" style-class="autocomplete" minimum-characters="7" force-selection="true">
+					<search-property name="crmNome" display-name="Médico(Nome)" search-type="likerigth"/>
+					<name-property name="crmNome" display-name="Médico(Nome)"/>
+				</autocomplete>				
+			</select-param>		
+			
+			<select-param
+				name="especialidades"
+				display-name="Especialidade"
+				type="br.com.infowaypi.ecarebc.associados.Especialidade" session-property-ref="prestador" operation="reload" display-label-head="false">	
+				<combo display-property="descricao" /> 
+				<restrictions>
+					<restriction property-value="true" property-name="ativa" type="equals"/>
+				</restrictions> 	
+			</select-param>	
+			
+			<session-param name="prestador" operation="reload" />
+			<session-param name="usuario"/>
+			
+			<!-- if[INFORMAR_DATA_NO_ATENDIMENTO_URGENCIA]
+				<step-param name="dataDeAtendimento" display-name="Data de Atendimento"	required="true" type="java.util.Date" input-type="date"/>
+			end[INFORMAR_DATA_NO_ATENDIMENTO_URGENCIA] -->
+			
+			
+			<collection-param name="cids" type="br.com.infowaypi.ecarebc.procedimentos.CID" display-name="Adicionar CID (Hipóteses Diagnósticas)">
+					<autocomplete style-class="autocomplete" minimum-characters="4" force-selection="true">
+					<search-property name="codigoEDescricaoDaDoenca" display-name="Descrição"/>
+					<name-property name="codigoEDescricaoDaDoenca" display-name="Descrição"/>
+				</autocomplete>
+			</collection-param>
+			
+			
+			<!-- if[INFORMAR_JUSTIFICATIVA_NO_ATENDIMENTO_URGENCIA]
+			<step-param name="justificativa"  type="java.lang.String" input-type="text" display-name="Quadro Clínico" required="true" />
+			end[INFORMAR_JUSTIFICATIVA_NO_ATENDIMENTO_URGENCIA] -->
+			
+			<step-return name="guia" type="br.com.infowaypi.ecarebc.atendimentos.GuiaCompleta" display-name="" scope="session"/>
+		</step-method> 
+		
+				
+        <step-method name="salvarGuia" display-name="Conferir Dados" committed="true" title="Conferir Dados">
+			<session-param name="guia" operation="none"/>
+			<html>
+				<![CDATA[
+					<infoway:GuiaApresentacao guiaApresentacao="${guia}"/>
+				]]>
+			</html>
+		</step-method>
+		
+		<step-method name="finalizar" display-name="Imprimir Comprovante de Confirmação" title="Imprimir Comprovante">
+			<html>
+				<![CDATA[ <infoway:mensagemSucessoMarcacoes mensagem="Urgência confirmada com sucesso!" autorizacao="${guia.autorizacao}"/> ]]>
+			</html>
+		
+			<html>
+			<![CDATA[ 
+				<span class="not-for-print">
+					<button type="button" name="imprimir" class="actionButton" onclick="window.print();">Imprimir</button>
+				</span>
+			]]>
+			</html>
+						
+			<session-param name="guia" />
+				  
+			<html>
+				<![CDATA[
+					<infoway:GuiaApresentacao guiaApresentacao="${guia}"/>
+				]]>
+			</html>
+				  
+			<html>
+				<![CDATA[ 
+					<c:if test="${guia.consultaUrgencia}">				
+						<infoway:imprimirGuia titulo="CONSULTA DE URGÃŠNCIA"/>
+					</c:if>
+					
+					<c:if test="${guia.atendimentoUrgencia}">
+						<infoway:imprimirGuia titulo="ATENDIMENTO SUBSEQUENTE"/>
+					</c:if>
+						 
+					<span class="not-for-print">
+						<button type="button" name="imprimir" class="actionButton" onclick="window.print();">Imprimir</button>
+					</span>
+					]]>
+			</html>
+			
+
+		</step-method>
+	</flow>	
+	
+</jheat-mapping>

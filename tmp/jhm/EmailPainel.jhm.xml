@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+	<class-mapping class="br.com.infowaypi.ecarebc.painelDeControle.EmailPainel" name="EmailPainel" 
+		display-name="Email do Painel" id-name="idEmail" link-for-detail="idEmail" 
+        type="simple" section="cadastros">
+
+		<description>Email do Painel De Controle</description>
+
+		<property name="email" type="string" not-null="true">
+			<display name="E-mail" options="listing, search"   />
+	    </property>
+
+	</class-mapping>		
+</jheat-mapping>

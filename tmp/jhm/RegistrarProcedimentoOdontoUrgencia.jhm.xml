@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+
+<jheat-mapping>
+<flow 
+	name="registrarProcedimentoOdontoUrgencia" 
+	class="br.com.infowaypi.ecare.odonto.RegistrarProcedimentoOdontoUrgencia"
+	display-name="Registrar Procedimentos de Urgência" section="odontoUrgenciaPrestador">
+		
+	<description>Inclusão de novos exames</description>	
+	 
+	<step-method name="buscarGuias" display-name="Informar Número de Autorização" title="Informar Número de Autorização" buttons-position="bottom">
+		<step-param name="autorizacao" input-type="string" size="12" type="java.lang.String" display-name="Autorização" />
+		
+		<html><![CDATA[<br/>]]></html>
+		
+		<step-param name="cpfDoTitular" size="24" mask="999.999.999-99" input-type="string" type="java.lang.String" display-name="CPF do Titular"/>
+		<step-param name="numeroDoCartao" size="24" mask="99.9999999999.99.9-9" input-type="string" type="java.lang.String" display-name="Número do cartão do beneficiário"/>
+			
+		<session-param name="prestador" operation="reload"/>
+		
+		<step-return name="resumoGuias" display-name="Guia de Consulta Odonto de Urgência" type="br.com.infowaypi.ecare.segurados.ResumoSegurados" scope="session" >
+			<step-forward-choose>
+				<step-forward-condition test="resumoGuias.guiaUnica">
+					<param display-name="" name="resumoGuias" type="br.com.infowaypi.ecare.segurados.ResumoSegurados"/>				
+					<step-forward step-name="criarGuiaExameOdonto"/>
+				</step-forward-condition>
+				<step-forward-otherwise>
+					<step-forward step-name="selecionarGuia" />
+				</step-forward-otherwise>			
+			</step-forward-choose>
+		</step-return>		
+	</step-method>
+	
+	<step-method display-name="Atendimento" name="selecionarGuia" buttons-position="both">
+		
+		<session-param name="resumoGuias" />
+		
+		<select-param name="guias" display-name="Atendimentos" type="br.com.infowaypi.ecarebc.atendimentos.GuiaConsultaOdontoUrgencia" 
+			required="true" session-property-ref="resumoGuias" >
+			<radio-group default-checked="first">
+				<display-property name="autorizacao" display-name="Autorização" />
+				<display-property name="tipo" display-name="Tipo da Guia" />
+				<display-property name="dataAtendimento" display-name="Atendimento" type="date" />				
+				<display-property name="segurado.pessoaFisica.nome" display-name="Beneficiário" />
+				<display-property name="situacao.descricao" display-name="Situação" />
+				<display-property name="situacao.dataSituacao" display-name="Data" type="date" />				
+				<display-property name="valorTotal" display-name="Valor Apresentado" type="money" />
+			</radio-group>
+		</select-param>
+		
+		<step-return name="resumoGuias" display-name="Guia de Consulta Odonto de Urgência" type="br.com.infowaypi.ecare.segurados.ResumoSegurados" scope="session" />		
+	</step-method>
+	
+	<step-method name="criarGuiaExameOdonto" display-name="Procedimentos Odonto de Urgência" title="Exames">
+
+		<session-param name="prestador" operation="reload"/>	
+
+		<collection-param  
+			name="procedimentosOD"
+			display-name="Escolha os Tratamentos"
+			type="br.com.infowaypi.ecarebc.procedimentos.ProcedimentoOdonto">
+
+		    <insert>
+		    	<display-property name="procedimentoDaTabelaCBHPM.codigo" display-name="Código"/>
+				<display-property name="procedimentoDaTabelaCBHPM.descricao" display-name="Descrição"/>
+				<display-property name="procedimentoDaTabelaCBHPM.tipoEstrutura" display-name="Aplicação"/>
+				<display-property name="descricaoEstruturas" display-name="Estrutura(s)"/>
+  			    <display-property name="valorTotal" display-name="Valor Bruto" type="money"/>		
+		    </insert>
+		    
+		    <restrictions>
+		    	<restriction property-name="procedimentoDaTabelaCBHPM.ativo" property-value="true"/>
+		    	<restriction property-name="procedimentoDaTabelaCBHPM.liberadoParaUrgencia" property-value="true" />
+		    	<restriction property-name="procedimentoDaTabelaCBHPM.visibilidade" type="greaterequals" property-value="1"/>
+		    </restrictions>
+		</collection-param>
+		
+		<html><![CDATA[<br/>]]></html>
+			
+		<step-param name="justificativa"  type="java.lang.String" input-type="text" display-name="Quadro Clínico"/>
+			
+		<session-param name="resumoGuias" operation="none"/>
+			
+		<session-param name="usuario"/>
+			
+		<html>
+			<![CDATA[
+				<infoway:GuiaApresentacao guiaApresentacao="${resumoGuias.guiaSimples}"/>
+			]]>
+		</html>
+		
+		<step-return name="guia" type="br.com.infowaypi.ecarebc.atendimentos.GuiaExameOdonto" display-name="Conferir Dados" scope="session"/>
+	</step-method>
+	
+	<step-method name="salvarGuia" display-name="Conferir Dados" title="Conferir Dados" committed="true">
+			<html>
+				<![CDATA[
+					<c:if test="${not empty guia.criticas}">
+						<infoway:mensagemAlerta mensagem="${guia.criticasFormatado}"/>
+					</c:if>	 
+				]]>
+			</html>
+	
+			<session-param name="guia" operation="none"/>
+			<html>
+				<![CDATA[
+					<infoway:GuiaApresentacao guiaApresentacao="${guia}"/>
+				]]>
+			</html>
+					
+		</step-method>
+		
+		<step-method name="finalizar" display-name="Imprimir Comprovante" title="Imprimir Comprovante">
+			
+			<html>
+				<![CDATA[ <infoway:mensagemSucessoMarcacoes mensagem="Exames/Procedimentos incluídos com sucesso!" autorizacao="${guia.autorizacao}"/> ]]>
+			</html>
+			
+			<html>
+			<![CDATA[ 
+				<span class="not-for-print">
+					<button type="button" name="imprimir" class="actionButton" onclick="window.print();">Imprimir</button>
+				</span>
+			]]>
+			</html>
+			
+			<session-param name="guia" operation="none"/>
+			<html>
+				<![CDATA[
+					<infoway:GuiaApresentacao guiaApresentacao="${guia}"/>
+				]]>
+			</html>
+			<html>
+				<![CDATA[ <infoway:imprimirGuia titulo="&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GUIA DE INTERNAÃ‡ÃƒO"/> 
+					<span class="not-for-print">
+						<button type="button" name="imprimir" class="actionButton" onclick="window.print();">Imprimir</button>
+					</span>
+				]]>
+			</html>
+					
+		</step-method>
+</flow>
+</jheat-mapping>

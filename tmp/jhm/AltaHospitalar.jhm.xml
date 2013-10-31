@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+	
+	<class-mapping class="br.com.infowaypi.ecarebc.atendimentos.alta.AltaHospitalar" name="AltaHospitalar" display-name="Alta Hospitalar" 
+		id-name="idMotivoAlta" link-for-detail="descricao" type="simple" section="" roles="root">
+
+		<property name="dataDeAlta" type="date" not-null="true">
+			<display name="Data de Alta" mask="99/99/9999" options="listing"/>
+	    </property>
+
+		<property name="descricao" type="string" not-null="true" search-type="likefull">
+			<display name="Descrição" options="listing"  maxlength="255"/>
+	    </property>
+	    
+	    <many-to-one class="br.com.infowaypi.msr.user.Usuario" display-name="Usuario" name="usuario" options="listing">
+			<display-property name="nome"/>
+		</many-to-one>		
+		
+		<many-to-one class="br.com.infowaypi.ecarebc.atendimentos.alta.MotivoAlta" display-name="Motivo"
+		 name="motivo" options="listing" autocomplete="true">
+			<display-property name="descricao"/>
+		</many-to-one>		
+	    
+	    <many-to-one class="br.com.infowaypi.ecarebc.atendimentos.GuiaInternacao" display-name="Guia Internacão" name="guiaInternacao" options="listing">
+			<display-property name="autorizacao"/>
+		</many-to-one>	
+	    
+	   	
+	</class-mapping>    
+	
+</jheat-mapping>

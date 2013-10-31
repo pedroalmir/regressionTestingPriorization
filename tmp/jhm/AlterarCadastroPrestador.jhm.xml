@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+<flow 
+	name="alterarDadosPrestador" 
+	class="br.com.infowaypi.ecare.flows.AlterarCadastroPrestador"
+	display-name="Alterar Cadastro" section="meuCadastroPrestador">
+		
+	<description>Alteração dos seus dados cadastrais no sistema</description>		
+	
+	<step-method name="alterarDadosCadastrais" display-name="Alteração de Cadastro" committed="true" buttons-position="bottom">
+		<session-param name="prestador" operation="none" display-name="Prestador"/>
+		
+		<step-param name="fantasia" size="80" type="java.lang.String" display-name="Fantasia"/>
+		<step-param name="telefone" type="java.lang.String" display-name="Telefone"/>
+		<step-param name="celular" type="java.lang.String" display-name="Celular"/>
+		<step-param name="email" size="80" type="java.lang.String" display-name="E-mail"/>
+		
+		<step-param name="bairro" type="java.lang.String" display-name="Bairro"/>
+		<step-param name="numero" type="java.lang.String" display-name="Número"/>
+		<step-param name="logradouro" size="80" type="java.lang.String" display-name="Logradouro"/>
+		<step-param name="complemento" size="80" type="java.lang.String" display-name="Complemento"/>
+		<step-param name="cep" type="java.lang.String" display-name="CEP" mask="99.999-999"/>
+		<step-param name="pontoDeReferencia" size="80" type="java.lang.String" display-name="P. de Referência"/>
+		
+		<select-param
+			name="municipios"
+			display-name="Escolha o Município"
+			type="br.com.infowaypi.msr.address.Municipio">
+
+			<autocomplete style-class="autocomplete" minimum-characters="3" force-selection="true">
+				<search-property name="descricao" display-name="Município"/>
+				<name-property name="descricao" display-name="Município"/>
+			</autocomplete>	
+		</select-param>	
+		
+	</step-method>
+	
+	<step-method name="finalizar" display-name="Concluído">
+		<html>
+			<![CDATA[
+				<div class="alert confirmation not-for-print" style="margin-left:0;margin-right:0;">
+					Cadastro alterado com sucesso!
+				</div>					
+			]]>
+		</html>
+		<session-param name="prestador" display-name="Prestador">
+			<html>
+				<![CDATA[ <infoway:tableSeparator titulo="Informações do Prestador" colspan="2"/> ]]>
+			</html>	
+				
+			<display-property name="pessoaJuridica.fantasia" display-name="Fantasia"/>				
+			<display-property name="pessoaJuridica.telefone" display-name="Telefone"/>
+			<display-property name="pessoaJuridica.celular" display-name="Celular"/>			
+			<display-property name="pessoaJuridica.email" display-name="Email"/>
+
+			<html>
+				<![CDATA[ <infoway:tableSeparator titulo="Endereço" colspan="2"/> ]]>
+			</html>	
+
+			<display-property name="pessoaJuridica.endereco.bairro" display-name="Bairro"/>
+			<display-property name="pessoaJuridica.endereco.numero" display-name="Numero"/>
+			<display-property name="pessoaJuridica.endereco.logradouro" display-name="Logradouro"/>
+			<display-property name="pessoaJuridica.endereco.complemento" display-name="Complemento"/>
+			<display-property name="pessoaJuridica.endereco.cep" display-name="CEP"/>
+			<display-property name="pessoaJuridica.endereco.pontoDeReferencia" display-name="P. de Referência"/>
+			<display-property name="pessoaJuridica.endereco.municipio.descricao" display-name="Município"/>
+		</session-param>	
+	</step-method>
+
+</flow>	
+</jheat-mapping>

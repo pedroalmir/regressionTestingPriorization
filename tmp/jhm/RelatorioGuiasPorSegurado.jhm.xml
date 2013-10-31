@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<report
+		name="relatorioGuiasPorSegurado" method-name="buscarGuias" class="br.com.infowaypi.ecare.services.RelatorioGuiasPorSegurado"
+		display-name="Consumo Beneficiário" section="relatoriosAuditor,relatorioCentral,consultasCentralDeRelacionamento,aloSaudeSection" 
+		response-by-ajax="true" roles="root,gestor,auditor,relacionamento,centralDeServico">
+		
+		<html>
+			<![CDATA[
+				<div class="alert information not-for-print" style="margin-left:0;margin-right:0;">
+					Os dados deste relatório são relacionados a guias que encontram-se nas seguintes situações: <br/>
+					CONFIRMADA, FECHADA, SOLICITADO PRORROGACAO, PRORROGADA, AUDITADA, FATURADA ou PAGA.
+				</div>					
+			]]>
+		</html>
+		<report-param name="cpf" display-name="CPF" size="24" mask="999.999.999-99"/>
+		<report-param name="numeroDoCartao" display-name="Número do Cartão" size="24" mask="99.9999999999.99.9-9" />
+		<report-param name="dataInicial" display-name="Data inicial" input-type="date"/>
+		<report-param name="dataFinal" display-name="Data final" input-type="date"/>
+		<report-param name="exibirGuias" display-name="Exibir Guias" input-type="boolean" type="java.lang.Boolean"/>
+
+		<report-return name="resumo" type="br.com.infowaypi.ecare.services.ResumoGuiasPorSegurado" display-name="Resultado Encontrado">
+			<html>
+				<![CDATA[ <infoway:tableSeparator titulo="Informações do Beneficiário" colspan="2"/> ]]>
+			</html>	
+			<display-property name="segurado.pessoaFisica.nome" display-name="Nome"/>
+			<display-property name="segurado.pessoaFisica.cpf" display-name="CPF"/>
+			<display-property name="segurado.numeroDoCartao" display-name="Número do Cartão"/>
+			
+			<html>
+				<![CDATA[ <infoway:tableSeparator titulo="Valores das Guias" colspan="2"/> ]]>
+			</html>	
+					
+			<collection-display name="detalhesDeGuias" display-name="Detalhamento das Guias">
+				<display-property name="quantidadeConsultas" display-name="Consultas" type="int"/>
+				<display-property name="valorConsultas" display-name="(R$)" align="right" type="bigdecimal"/>
+				<display-property name="quantidadeExames" display-name="Exames" type="int"/>
+				<display-property name="valorExames" display-name="(R$)" align="right" type="bigdecimal"/>
+				<display-property name="quantidadeConsultasOdonto" display-name="Cons. Odonto" type="int"/>
+				<display-property name="valorConsultasOdonto" display-name="(R$)" align="right" type="bigdecimal"/>
+				<display-property name="quantidadeExamesOdonto" display-name="Ex. Odonto" type="int"/>
+				<display-property name="valorExamesOdonto" display-name="(R$)" align="right" type="bigdecimal"/>
+				<display-property name="quantidadeAtendimentosUrgencia" display-name="Atend. Urgências" type="int"/>
+				<display-property name="valorAtendimentosUrgencia" display-name="(R$)" align="right" type="bigdecimal"/>
+				<display-property name="quantidadeInternacoes" display-name="Internações" type="int"/>
+				<display-property name="valorInternacoes" display-name="(R$)" align="right" type="bigdecimal"/>
+				<display-property name="quantidadeTotal" display-name="Total" type="int"/>
+				<display-property name="valorTotal" display-name="(R$)" align="right" type="bigdecimal"/>
+				<display-property name="valorTotalCoParticipacao" display-name="Co-Participação" align="right" type="bigdecimal"/>
+			</collection-display>
+			<html>
+				<![CDATA[<%@ include file="/view/jsp/includes/RelatorioGuiasPorSegurado.jsp" %>]]>
+			</html>
+		</report-return>
+	</report>	
+</jheat-mapping>

@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	    
+<jheat-mapping>
+
+	<flow 
+		name="callCenter" 
+		class="br.com.infowaypi.ecare.services.CallCenterService"
+		display-name="Realizar Atendimento" section="callCenter">
+		
+		<description>Checar Contrato e registrar ocorrências</description>
+		
+		<step-method name="buscarSegurado" display-name="Buscar Beneficiário" title="Buscar Beneficiário" buttons-position="bottom">
+			<step-param name="cpfDoTitular" size="24" mask="999.999.999-99" input-type="string" type="java.lang.String" display-name="CPF do Titular"/>
+			<step-param name="numeroDoCartao" size="24" mask="99.9999999999.99.9-9" input-type="string" type="java.lang.String" display-name="Número do cartão do beneficiário"/>
+			
+			<step-return name="seguradosEncontrados" type="br.com.infowaypi.ecare.segurados.ResumoSegurados" 
+		         display-name="Segurados Encontrados" scope="session"/>
+		</step-method>
+		
+		<step-method name="escolherSegurado" display-name="Escolha o beneficiário" title="Escolha o beneficiário">
+			<select-param
+					name="segurados"
+					type="br.com.infowaypi.ecare.segurados.Segurado"
+					display-name="Selecione o Beneficiário"
+					session-property-ref="seguradosEncontrados" operation="reload">
+				<radio-group>
+					<display-property name="numeroDoCartao" display-name="Número do cartão"/>
+					<display-property name="pessoaFisica.nome" display-name="Nome"/>
+					<display-property name="tipoDeSegurado" display-name="Tipo"/>					
+				</radio-group>
+			</select-param>
+			
+			<step-return name="segurado" type="br.com.infowaypi.ecare.segurados.Segurado" 
+		         display-name="Segurado Escolhido" scope="session"/>	
+		</step-method>
+		
+		<step-method name="verContrato" display-name="Visualizar o contrato" title="Visualizar o Contrato" committed="true">
+			<session-param name="segurado" type="br.com.infowaypi.ecare.segurados.Segurado" display-name="Dados Cadastrais do Segurado" operation="reload">
+				<display-property name="numeroDoCartao" display-name="Número do cartão"/>
+				<display-property name="tipoDeSegurado" display-name="Tipo de segurado"/>
+				<display-property name="ativo" type="boolean" display-name="Ativo(a)"/>
+				<html>
+					<![CDATA[
+						<c:if test="${segurado.tipoDeSegurado eq 'Titular'}">
+					]]>
+				</html>
+				<display-property name="beneficiario" type="boolean" display-name="Beneficiário"/>
+				<display-property name="diaBase" display-name="Dia Base"/>
+				<display-property name="detalhePagamento.banco.descricao" display-name="Banco"/>
+				<display-property name="detalhePagamento.descricaoTipoPagamento" display-name="Forma de Pagamento"/>
+				<display-property name="plano.descricao" display-name="Plano"/>				
+				<html>
+					<![CDATA[ </c:if>
+				]]>	
+				</html>
+				<display-property name="carenciaAtual"  display-name="Carencia cumprida adicional"/>
+				<display-property name="dataDeAdmissao" type="date" display-name="Data de Admissão"/>			
+				<display-property name="dataVencimentoCarteira" type="date" display-name="Vencimento da Carteira"/>
+				<display-property name="pessoaFisica.nome" display-name="Nome do Segurado"/>
+				<display-property name="pessoaFisica.descricaoDoSexo" display-name="Sexo"/>
+				<display-property name="pessoaFisica.dataNascimento" type="date" display-name="Data de nascimento"/>
+				<display-property name="pessoaFisica.nomeDaMae" display-name="Nome da mãe"/>
+				<display-property name="pessoaFisica.telefoneResidencial" display-name="Telefone residencial"/>
+				<display-property name="pessoaFisica.telefoneDoTrabalho" display-name="Telefone do Trabalho"/>
+				<display-property name="pessoaFisica.celular" display-name="Telefone celular"/>
+				<display-property name="pessoaFisica.cpf" display-name="CPF"/>
+				<display-property name="pessoaFisica.identidade" display-name="identidade"/>
+				<display-property name="pessoaFisica.endereco.logradouro" display-name="Logradouro"/>
+				<display-property name="pessoaFisica.endereco.numero" display-name="Número"/>
+				<display-property name="pessoaFisica.endereco.bairro" display-name="Bairro"/>
+				<display-property name="pessoaFisica.endereco.complemento" display-name="Complemento"/>
+				<display-property name="pessoaFisica.endereco.municipio.descricao" display-name="Município"/>
+				<display-property name="carenciaRestanteExamesConsultas" display-name="Carencia Restantes para Exames e Consultas Simples(Dias)"/>				
+				<display-property name="carenciaRestanteExamesComplexosInternacoes" display-name="Carencia restante para Exames Complexos e internaçoes(Dias)"/>				
+				<html>
+					<![CDATA[ <br/> <infoway:tableSeparator titulo="Situações" colspan="2"/> ]]>
+				</html>	
+				
+				<collection-display display-name="Histórico de Situações" name="situacoes">
+					<display-property name="descricao" display-name="descricao"/>					
+					<display-property name="dataSituacao" type="date" display-name="Data da situação"/>
+				</collection-display>
+				
+				<html>
+					<![CDATA[
+					<c:if test="${segurado.tipoDeSegurado eq 'Titular'}">
+						<br/> <infoway:tableSeparator titulo="Cobranças" colspan="2"/>]]>	
+				</html>
+						<collection-display display-name="Cobranças" name="cobrancas">
+							<display-property name="situacao.descricao" display-name="Situação"/>
+							<display-property name="dataVencimento" type="date" display-name="Data de vencimento"/>
+							<display-property name="dataPagamento" type="date" display-name="Data de Pagamento"/>
+							<display-property name="valorCobrado" type="money" display-name="Valor"/>
+						</collection-display>
+				<html>
+					<![CDATA[ </c:if>
+				]]>	
+				</html>
+
+				
+				<html>
+					<![CDATA[ <br/> <infoway:tableSeparator titulo="Guias" colspan="2"/> ]]>
+				</html>	
+				
+				<collection-display display-name="Guias do segurado" name="guias">
+					<display-property name="prestador" display-name="Prestador"/>					
+					<display-property name="dataAtendimento" type="date" display-name="Data de Atendimento"/>					
+					<display-property name="valorTotal" display-name="Valor Total"/>					
+				</collection-display>
+				
+				<html>
+					<![CDATA[
+						<c:if test="${segurado.tipoDeSegurado eq 'Titular'}">
+					]]>
+				</html>
+				
+					<html>
+						<![CDATA[ <br/> <infoway:tableSeparator titulo="Dependentes" colspan="2"/> ]]>
+					</html>	
+				
+						<collection-display display-name="Dependentes do Segurado" name="dependentes">
+							<display-property name="pessoaFisica.nome" display-name="Nome"/>
+							<display-property name="pessoaFisica.descricaoDoSexo" display-name="Sexo"/>
+							<display-property name="pessoaFisica.dataNascimento" type="date" display-name="Data de Nascimento"/>																			
+						</collection-display>
+				<html>
+					<![CDATA[ </c:if>
+				]]>	
+				</html>
+				
+				<html>
+					<![CDATA[ <br/> <infoway:tableSeparator titulo="Ocorrências" colspan="2"/> ]]>
+				</html>	
+				
+				<collection-display display-name="Ocorrencias Registradas" name="ocorrencias">
+					<display-property name="dataAtendimento" type="date" display-name="Data do Atendimento"/>
+					<display-property name="resumo" display-name="Resumo"/>
+					<display-property name="usuario.nome" display-name="Usuario"/>					
+				</collection-display>
+		
+			</session-param>
+			
+			
+			<html>
+				<![CDATA[
+				<%@ page import="java.util.Date"%>
+				  <fieldset name="Dados da Ocorrência" class="" >
+				  	<legend>Registrar Ocorrência</legend>
+
+				  	<table class="yellowTable">
+						<tr class="even">
+							<td style="color: rgb(153, 51, 0); text-align: right;" width="100">
+								<span>Nome do segurado: </span></td>
+							<td style="text-align:left;">
+								<span class="valuesColumn">${segurado.pessoaFisica.nome}</span></td>
+						</tr>
+						
+						<tr class="even">
+							<td style="color: rgb(153, 51, 0); text-align: right;" width="100">
+								<span>Data de Atendimento: </span></td>
+							<td style="text-align:left;">
+								<span class="valuesColumn"><fmt:formatDate value="<%= new Date()%>" pattern="dd/MM/yyyy"/> </span></td>
+						</tr>
+						
+						<tr class="even">
+							<td style="color: rgb(153, 51, 0); text-align: right;" width="100">
+								<span>Usuario: </span></td>
+							<td style="text-align:left;">
+								<span class="valuesColumn">${usuario.nome}</span></td>
+						</tr>
+					</table>
+				  </fieldset>
+				  <br/>
+				]]>
+			</html>
+				
+		    <step-param name="resumo" display-name="Resumo" type="java.lang.String" input-type="text"/>
+			
+			<session-param name="usuario" operation="reload"/>
+							
+			<step-return display-name="seguradoVisualizado" name="segurado" type="br.com.infowaypi.ecare.segurados.Segurado" scope="session"/>
+		</step-method>
+		
+		<step-method display-name="Finalizar" name="finalizar" title="Finalizar">
+		
+			<html>
+				<![CDATA[ <infoway:mensagemSucesso mensagem="Ocorrencia Registrada com sucesso!"/> ]]>
+			</html>		
+		
+			<session-param name="segurado" type="br.com.infowaypi.ecare.segurados.Segurado" display-name="Dados Cadastrais do Beneficiário">
+				<display-property name="numeroDoCartao" display-name="Número do cartão"/>
+				<display-property name="tipoDeSegurado" display-name="Tipo de segurado"/>
+				<display-property name="ativo" type="boolean" display-name="Ativo(a)"/>
+				<html>
+					<![CDATA[
+						<c:if test="${segurado.tipoDeSegurado eq 'Titular'}">
+					]]>
+				</html>
+				<display-property name="beneficiario" type="boolean" display-name="Beneficiário"/>
+				<display-property name="diaBase" display-name="Dia Base"/>
+				<display-property name="detalhePagamento.banco.descricao" display-name="Banco"/>
+				<display-property name="detalhePagamento.descricaoTipoPagamento" display-name="Forma de Pagamento"/>
+				<display-property name="plano.descricao" display-name="Plano"/>				
+				<html>
+					<![CDATA[ </c:if>
+				]]>	
+				</html>
+				<display-property name="carenciaAtual"  display-name="Carencia cumprida adicional"/>
+				<display-property name="dataDeAdmissao" type="date" display-name="Data de Admissão"/>			
+				<display-property name="dataVencimentoCarteira"  type="date" display-name="Vencimento da Carteira"/>
+				<display-property name="pessoaFisica.nome" display-name="Nome do Segurado"/>
+				<display-property name="pessoaFisica.descricaoDoSexo" display-name="Sexo"/>
+				<display-property name="pessoaFisica.dataNascimento" display-name="Data de nascimento"/>
+				<display-property name="pessoaFisica.nomeDaMae" display-name="Nome da mãe"/>
+				<display-property name="pessoaFisica.telefoneResidencial" display-name="Telefone residencial"/>
+				<display-property name="pessoaFisica.telefoneDoTrabalho" display-name="Telefone do Trabalho"/>
+				<display-property name="pessoaFisica.celular" display-name="Telefone celular"/>
+				<display-property name="pessoaFisica.cpf" display-name="CPF"/>
+				<display-property name="pessoaFisica.identidade" display-name="identidade"/>
+				<display-property name="pessoaFisica.endereco.logradouro" display-name="Logradouro"/>
+				<display-property name="pessoaFisica.endereco.numero" display-name="Número"/>
+				<display-property name="pessoaFisica.endereco.bairro" display-name="Bairro"/>
+				<display-property name="pessoaFisica.endereco.complemento" display-name="Complemento"/>
+				<display-property name="pessoaFisica.endereco.municipio.descricao" display-name="Município"/>
+				<html>
+					<![CDATA[ <br/> <infoway:tableSeparator titulo="Situações" colspan="2"/> ]]>
+				</html>	
+				
+				<collection-display display-name="Histórico de Situações" name="situacoes">
+					<display-property name="descricao" display-name="descricao"/>
+					<display-property name="dataSituacao" type="date" display-name="Data da situação"/>
+
+				</collection-display>
+				<html>
+					<![CDATA[
+					<c:if test="${segurado.tipoDeSegurado eq 'Titular'}">
+						<br/> <infoway:tableSeparator titulo="Cobranças" colspan="2"/>]]>	
+				</html>
+						<collection-display display-name="Cobranças" name="cobrancas">
+							<display-property name="situacao.descricao" display-name="Situação"/>
+							<display-property name="dataVencimento" type="date" display-name="Data de vencimento"/>
+							<display-property name="dataPagamento" type="date" display-name="Data de Pagamento"/>
+							<display-property name="valorCobrado" type="money" display-name="Valor"/>
+						</collection-display>
+				<html>
+					<![CDATA[ </c:if>
+				]]>	
+				</html>
+				
+				<html>
+					<![CDATA[ <br/> <infoway:tableSeparator titulo="Guias" colspan="2"/> ]]>
+				</html>	
+				
+				<collection-display display-name="Guias do segurado" name="guias">
+					<display-property name="prestador" display-name="Prestador"/>					
+					<display-property name="dataAtendimento" display-name="Data de Atendimento"/>					
+					<display-property name="valorTotal" display-name="Valor Total"/>					
+				</collection-display>
+				
+				<html>
+					<![CDATA[
+						<c:if test="${segurado.tipoDeSegurado eq 'Titular'}">
+					]]>
+				</html>
+				
+					<html>
+						<![CDATA[ <br/> <infoway:tableSeparator titulo="Dependentes" colspan="2"/> ]]>
+					</html>	
+				
+						<collection-display display-name="Dependentes do Segurado" name="dependentes">
+							<display-property name="pessoaFisica.nome" display-name="Nome"/>
+							<display-property name="pessoaFisica.descricaoDoSexo" display-name="Sexo"/>
+							<display-property name="pessoaFisica.dataNascimento" display-name="Data de Nascimento"/>																			
+						</collection-display>
+				<html>
+					<![CDATA[ </c:if>
+				]]>	
+				</html>
+				
+				<html>
+					<![CDATA[ <br/> <infoway:tableSeparator titulo="Ocorrências" colspan="2"/> ]]>
+				</html>	
+				
+				<collection-display display-name="Ocorrencias Registradas" name="ocorrencias">
+					<display-property name="dataAtendimento" display-name="Data do Atendimento" type="date"/>
+					<display-property name="resumo" display-name="Resumo"/>
+					<display-property name="usuario.nome" display-name="Usuario"/>					
+				</collection-display>
+				
+			</session-param>
+								
+		</step-method>
+		
+	</flow>	
+	
+</jheat-mapping>		

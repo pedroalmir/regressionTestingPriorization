@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+
+<jheat-mapping>
+
+	<flow name="limitesBeneficiarios" class="br.com.infowaypi.ecare.services.RelatorioLimitesDoBeneficiario"
+		display-name="Limite de Utilização do Plano" section="relatoriosAuditor, relatorioCentral, relatorioRelacionamento, portalBeneficiarioTitular, portalBeneficiarioDependente,aloSaudeSection">
+
+		<step-method display-name="Buscar Segurados" name="buscarSegurados" buttons-position="bottom">
+			
+			<html>
+				<![CDATA[
+					<c:if test="${not empty sessionScope.segurado}">
+						<infoway:mensagemInformacao mensagem="Caro usuário, click em avançar para vizualizar seus limites de utilização do plano."/>
+					</c:if>	 
+				]]>
+			</html>		
+			
+			<step-param name="cpf" display-name="CPF" size="24" mask="999.999.999-99" type="java.lang.String">
+				<access-restriction name="CPFSeguradoLogado" type="edit">
+					<session-restriction name="usuario" property="role" value="dependente" operation="notequals"/>
+					<session-restriction name="usuario" property="role" value="titular" operation="notequals"/>
+				</access-restriction>
+			</step-param>
+			
+			<step-param name="numeroDoCartao" display-name="Número do Cartão" size="24" mask="99.9999999999.99.9-9" input-type="string">
+				<access-restriction name="CartaoSeguradoLogado" type="edit">
+					<session-restriction name="usuario" property="role" value="dependente" operation="notequals"/>
+					<session-restriction name="usuario" property="role" value="titular" operation="notequals"/>
+				</access-restriction>
+			</step-param>
+
+			<session-param name="segurado" operation="none">
+				<access-restriction name="ParametroCartaoSeguradoLogado" type="edit">
+					<session-restriction name="usuario" property="role" value="dependente" operation="equals" logic-operation="or"/>
+					<session-restriction name="usuario" property="role" value="titular" operation="equals"/>
+				</access-restriction>
+			</session-param>	
+			
+			<step-return name="resumoSegurados" display-name="resumoSeg" type="br.com.infowaypi.ecare.segurados.ResumoSegurados" scope="session" />
+		</step-method>
+
+		<step-method display-name="Selecionar Segurado" name="selecionarSegurado">
+			<select-param name="segurados" type="br.com.infowaypi.ecare.segurados.Segurado" display-name="Selecione o Beneficiário" session-property-ref="resumoSegurados" required="true">
+				<radio-group default-checked="first">
+					<display-property name="numeroDoCartao" display-name="Número do cartão" />
+					<display-property name="pessoaFisica.nome" display-name="Nome" />
+					<display-property name="tipoDeSegurado" display-name="Tipo" />
+				</radio-group>
+			</select-param>
+
+			<select-param name="tipoDeLimite" display-name="Tipo de limite" type="br.com.infowaypi.ecare.services.enuns.TipoLimiteEnum" required="true">
+				<enum-combo class="br.com.infowaypi.ecare.services.enuns.TipoLimiteEnum" input-type="combo" display="getTipoGuia" name="getTipoGuia" value="getTipoLimiteEnum" />
+			</select-param>
+
+			<step-return name="resumoLimites" display-name="resumoLim" type="br.com.infowaypi.ecare.services.ResumoLimitesBeneficiario" scope="session"/>
+		</step-method>
+
+
+		<step-method display-name="Resultados" name="resultados">
+			<html>
+				<![CDATA[<%@ include file="/view/jsp/includes/RelatorioLimitesBeneficiario.jsp" %>]]>
+			</html>
+		</step-method>
+	</flow>
+</jheat-mapping>

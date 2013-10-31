@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+
+<jheat-mapping>
+<flow 
+	name="autorizarMatMed" 
+	class="br.com.infowaypi.ecare.services.AutorizarMatMedEspeciais"
+	display-name="Autorizar MatMed Especiais" section="auditor">
+		
+	<description>Autorizar Materiais e Medicamentos Especiais</description>
+	
+	<step-method name="buscarGuias" display-name="Buscar Internações" buttons-position="bottom" >
+			<step-param name="autorizacao" type="java.lang.String" display-name="Autorização"/>
+			<step-param name="dataInicial" type="java.lang.String" display-name="Data inicial" input-type="date"/>
+			<step-param name="dataFinal" type="java.lang.String" display-name="Data final" input-type="date"/>
+			
+			<select-param
+				name="prestador"
+				display-name="Escolha o Prestador"
+				type="br.com.infowaypi.ecarebc.associados.Prestador">
+				<autocomplete style-class="autocomplete" minimum-characters="3" force-selection="true">
+					<search-property name="pessoaJuridica.fantasia" display-name="Prestador"/>
+					<name-property name="pessoaJuridica.fantasia" display-name="Prestador"/>
+				</autocomplete>
+				<restrictions>
+					<restriction property-value="Ativo(a)" property-name="situacao.descricao" type="equals" />
+				</restrictions>	
+			</select-param>
+			
+			<step-return name="resumo" type="br.com.infowaypi.ecarebc.atendimentos.ResumoGuias" 
+		         display-name="Resumo" scope="session"/>
+	</step-method>
+	
+	<step-method name="selecionarGuia" display-name="Selecionar Guia">
+			<select-param
+			name="guiasComMatMedPendentes"
+			type="br.com.infowaypi.ecarebc.atendimentos.GuiaSimples"
+			display-name="Selecione a Guia"
+			session-property-ref="resumo" operation="reload">
+			<radio-group>
+				<display-property name="idGuia" display-name="Autorização"/>				
+				<display-property name="segurado.pessoaFisica.nome" display-name="Beneficiário"/>
+				<display-property name="situacao.descricao" display-name="Situação"/>
+				<display-property name="situacao.dataSituacao" display-name="Data" type="date"/>				
+				<display-property name="valorTotal" display-name="Valor total" type="money"/>								
+			</radio-group>
+		</select-param>				
+			<step-return name="guia" type="br.com.infowaypi.ecarebc.atendimentos.GuiaCompleta" 
+		         display-name="GuiaSelecionada" scope="session"/>
+	</step-method>
+	
+	<step-method name="autorizarMatMed" display-name="Autorizar Guia">
+			<session-param name="guia" />		
+			
+			<step-param name="valorTotalMateriaisAuditado" type="java.lang.String" display-name="Valor Total Materiais" />
+			<step-param name="valorTotalMedicamentosAuditado" type="java.lang.String" display-name="Valor Total Medicamentos"/>
+	
+			<step-param name="autorizar" type="java.lang.Boolean" display-name="Autorizar" input-type="boolean"/>
+			<session-param name="usuario"/>
+			<step-param name="observacao" type="java.lang.String" display-name="Observação" input-type="text"/>
+			
+			<html>
+				<![CDATA[
+					<infoway:GuiaApresentacao guiaApresentacao="${guia}"/>
+				]]>
+			</html>
+						
+			<step-return name="guia" type="br.com.infowaypi.ecarebc.atendimentos.GuiaCompleta" 
+		         display-name="GuiaSelecionada" scope="session"/>
+	</step-method>
+	
+	<step-method name="conferirDados" display-name="Conferir Dados" committed="true">
+			<session-param name="guia" operation="none">
+				<display-property name="autorizacao" display-name="Autorização"/>				
+				<display-property name="segurado.pessoaFisica.nome" display-name="Segurado"/>
+				<display-property name="situacao.descricao" display-name="Situação"/>
+				
+				
+				<display-property name="valoresMatMed.valorTotalMateriais" display-name="Valor total cobrado para Materiais" />
+				<display-property name="valoresMatMed.valorTotalMateriaisAuditado" display-name="Valor total para Materiais auditado" />
+				
+				<display-property name="valoresMatMed.valorTotalMedicamentos"  display-name="Valor total cobrado para Medicamentos"/>
+				<display-property name="valoresMatMed.valorTotalMedicamentosAuditado"  display-name="Valor total auditado para medicamentos"/>
+				
+				
+				<display-property name="valoresMatMed.valorTotal" display-name="Valor Mat/Med total cobrado" type="money"/>
+				<!--display-property name="valoresMatMed.valorTotalAuditado" display-name="Valor Mat/Med total auditado" type="money"/-->
+				
+			</session-param>
+			<step-return name="guia" type="br.com.infowaypi.ecarebc.atendimentos.GuiaCompleta" 
+		         display-name="GuiaSelecionada" scope="session"/>
+	</step-method>
+	
+	<step-method name="finalizar" display-name="Finalizar">
+	
+			<html>
+				<![CDATA[ <infoway:mensagemSucessoMarcacoes mensagem="Guia autorizada com sucesso!" autorizacao="${guia.autorizacao}"/> ]]>
+			</html>
+			
+			<session-param name="guia">
+				<display-property name="autorizacao" display-name="Autorização"/>				
+				<display-property name="segurado.pessoaFisica.nome" display-name="Segurado"/>
+				<display-property name="situacao.descricao" display-name="Situação"/>
+				
+				<display-property name="valoresMatMed.valorTotalMateriais" display-name="Valor total cobrado para Materiais" />
+				<display-property name="valoresMatMed.valorTotalMateriaisAuditado" display-name="Valor total para Materiais auditado" />
+				
+				<display-property name="valoresMatMed.valorTotalMedicamentos"  display-name="Valor total cobrado para Medicamentos"/>
+				<display-property name="valoresMatMed.valorTotalMedicamentosAuditado"  display-name="Valor total auditado para medicamentos"/>
+				
+				<display-property name="valoresMatMed.valorTotal" display-name="Valor Mat/Med total cobrado" type="money"/>
+				<!--display-property name="valoresMatMed.valorTotalAuditado" display-name="Valor Mat/Med total auditado" type="money"/-->
+				
+			</session-param>		
+	</step-method>
+	
+</flow>
+</jheat-mapping>	

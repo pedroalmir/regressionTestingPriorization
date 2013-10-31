@@ -1,0 +1,94 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+<jheat-mapping>
+	<class-mapping class="br.com.infowaypi.ecarebc.produto.Produto" name="Produto" display-name="Produtos" id-name="idProduto" link-for-detail="descricao" type="simple" section="produto">
+	
+		<description>Produtos do Uniplam</description>
+	
+		<property name="descricao" not-null="true">
+			<display name="Descrição" options="search,listing" />
+		</property>
+		
+		<property name="nomeComercial" not-null="true">
+			<display name="Nome comercial" options="search,listing" />
+		</property>
+		
+		<property name="registroANS" not-null="false">
+			<display name="Registro ANS" options="search,listing" size="25" />
+		</property>
+		
+		<property name="dataAutorizacao" type="date" not-null="false">
+			<display name="Data de autorização" options="listing,search" align="center" size="15"/>
+		</property>
+		
+		<property name="sigla" not-null="true">
+			<display options="listing" name="Sigla" />
+		</property>
+		
+		<property name="codProposta" not-null="true">
+			<display name="Código das propostas" options="listing" />
+		</property>
+	
+		<enum-property 
+			name="tipoProdutoEnum"
+			display="getDescricao" 
+			input-type="combo"
+			display-name="Cobertura"
+			class="br.com.infowaypi.ecarebc.produto.TipoProdutoEnum" 
+			options="listing" not-null="true" null-option="true" null-description="Informe a cobertura">
+		</enum-property>	    
+
+		<enum-property name="modalidadeContratacao" 
+			display-name="Modalidade de Contratação" 
+			display="getDescricao" 
+			class="br.com.infowaypi.ecarebc.produto.ModalidadeContratacao" 
+			options="search,listing" />
+		
+		<enum-property name="tipoSegmentacao" 
+			display-name="Tipo de Segmentação" 
+			display="getDescricao" 
+			class="br.com.infowaypi.ecarebc.produto.TipoSegmentacao" 
+			options="search,listing" />
+
+		<enum-property name="tipoAcomodacao" 
+			display-name="Tipo de Acomodação" 
+			display="getDescricao" 
+			class="br.com.infowaypi.ecarebc.produto.TipoAcomodacao" 
+			options="search,listing" />
+			
+		<enum-property name="abrangenciaGeografica" 
+			display-name="Abrangência Geográfica" 
+			display="getDescricao" 
+			class="br.com.infowaypi.ecarebc.produto.AbrangenciaGeografica" 
+			options="search,listing" />
+		<enum-property name="acessoRede" 
+			display-name="Tipo de Acesso à Rede" 
+			display="getDescricao" 
+			class="br.com.infowaypi.ecarebc.produto.AcessoRede" 
+			options="search,listing" />
+		
+		<property name="ativo" type="boolean">
+			<display options="listing, search" name="Produto ativo?" />
+		</property>
+		
+		<many-to-many 
+	    	name="segmentacoesAssistenciais" 
+	    	display-name="Segmentações assistenciais" 
+	    	class="br.com.infowaypi.ecarebc.produto.SegmentacaoAssistencial">
+    		<autocomplete style-class="autocomplete" minimum-characters="1">
+				<search-property name="descricao" display-name="Descricao" search-type="likefull"/>
+				<name-property name="descricao" display-name="Descricao"/>
+			</autocomplete>	
+		</many-to-many>
+		
+		<collection class="br.com.infowaypi.ecarebc.produto.Tabela" display-name="Tabelas"  name="tabelas" options="insert" />
+		
+<!-- 		<collection name="questionario.perguntas" display-name="Questionário" class="br.com.infowaypi.ecarebc.produto.Pergunta"  -->
+<!-- 			page-size="100" default-sort="1" /> -->
+		
+		<collection class="br.com.infowaypi.ecarebc.produto.Tabela" display-name="Tabelas"  name="tabelas" options="insert" />
+	</class-mapping>
+</jheat-mapping>

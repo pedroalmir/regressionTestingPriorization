@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+	
+	<class-mapping class="br.com.infowaypi.ecare.segurados.Segurado" name="Segurado" display-name="Beneficiários" 
+		id-name="idSegurado" type="readonly" link-for-detail="pessoaFisica.nome" section="cadastros">
+
+		<property name="numeroDoCartao" type="string" not-null="true">
+			<display name="Número do Cartão" options="listing,detail-only" mask="99.9999999999.99.9-9" maxlength="6" align="center" size="24"/>
+	    </property>
+	    
+	    <property name="cartaoNacionalSaude" type="string" not-null="false">
+			<display name="Cartão Nacional de Saúde" options="listing,detail-only" mask="999999999999999" maxlength="15" align="center" size="24"/>
+	    </property>
+		
+		<property name="pessoaFisica.nome" type="string" not-null="true">
+			<display name="Nome" options="listing,search"/>
+	    </property>  
+	    
+		<property name="pessoaFisica.dataNascimento" type="date" not-null="true">
+			<display name="Nascimento" options="" mask="99/99/9999" maxlength="10" size="20"/>
+	    </property> 
+
+	    <select-property name="pessoaFisica.sexo" display-name="Sexo" options="listing">
+			<entry display-name="Masculino" key-value="SEXO_MASCULINO"/>
+			<entry display-name="Feminino" key-value="SEXO_FEMININO"/>
+		</select-property>
+
+		<property name="tipoDeSegurado" type="string" not-null="false">
+			<display name="Tipo" options="detail-only"/>
+	    </property>  
+
+		<property name="situacao.descricao" type="string" not-null="false">
+			<display name="Situação (Sistema)" options="listing,detail-only"/>
+	    </property>
+	    
+		<property name="recadastrado" type="boolean" not-null="true">
+			<display name="Recadastrado" options=""/>
+	    </property>
+	    
+	    <property name="dataGeracaoDoCartao" type="date" not-null="true">
+			<display name="Recadastrado" options=""/>
+	    </property>
+	    
+	    <property name="aplicacaoQuestionario" type="date" not-null="false">
+			<display name="Data de aplicação do questionário" options="" mask="99/99/9999" maxlength="10" size="10"/>
+		</property>
+		
+		<property name="dataPenultimaAtualizacao" type="timestamp" not-null="false" next-field-inline="true">
+			<display name="Penúltima Alteração" options="detail-only" />
+		</property>
+		
+		<property name="usuarioPenultimaAtualizacao.nome" not-null="false">
+			<display name="Usuário que realizou a penúltima alteração" options="detail-only" />
+		</property>
+		
+		<property name="dataUltimaAtualizacao" type="timestamp" not-null="false" next-field-inline="true">
+			<display name="Última Alteração" options="detail-only" />
+		</property>
+		
+		<property name="usuarioUltimaAtualizacao.nome" not-null="false">
+			<display name="Usuário que realizou a última alteração" options="detail-only" />
+		</property>
+		
+		<collection 
+			class="br.com.infowaypi.msr.situations.Situacao" 
+			name="situacoes" display-name="Histórico de Situações" 
+	    	options="" master-detail="false"/>
+
+	    <collection 
+			class="br.com.infowaypi.ecarebc.atendimentos.GuiaSimples" 
+			name="guias" display-name="Guias" 
+	    	master-detail="false"/>
+	    	
+	    <collection 
+			class="br.com.infowaypi.ecarebc.promocao.PromocaoConsulta" 
+			name="consultasPromocionais" display-name="Consultas Promocionais" 
+	    	master-detail="false"/>	
+	    	
+		<collection 
+			class="br.com.infowaypi.ecare.segurados.Matricula" 
+			name="matriculas" display-name="Matrículas" 
+	    	options="insert" master-detail="false"/>
+	</class-mapping>
+
+</jheat-mapping>

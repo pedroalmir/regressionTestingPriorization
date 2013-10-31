@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+
+<jheat-mapping>
+<flow 
+	name="examesComplementares" 
+	class="br.com.infowaypi.ecare.services.AutorizarExamesProcedimentosEspeciais"
+	display-name="Exames Complementares" section="autorizacoesCentral">
+		
+	<description>Inserir Exames e Procedimentos Especiais</description>
+	
+	<step-method name="buscarGuias" display-name="Buscar Guias">
+			<step-param name="autorizacao" type="java.lang.String" display-name="Autorização"/>
+			<step-param name="dataInicial" type="java.util.Date" display-name="Data inicial" input-type="date"/>
+			<step-param name="dataFinal" type="java.util.Date" display-name="Data final" input-type="date"/>
+			
+			<select-param
+				name="prestador"
+				display-name="Escolha o Prestador"
+				type="br.com.infowaypi.ecarebc.associados.Prestador">
+				<autocomplete style-class="autocomplete" minimum-characters="3" force-selection="true">
+					<search-property name="pessoaJuridica.fantasia" display-name="Prestador"/>
+					<name-property name="pessoaJuridica.fantasia" display-name="Prestador"/>
+				</autocomplete>	
+			</select-param>
+			
+			<step-return name="resumo" type="br.com.infowaypi.ecarebc.atendimentos.ResumoGuias" 
+		         display-name="Resumo" scope="session"/>
+	</step-method>
+	
+	<step-method name="selecionarGuia" display-name="Selecionar Guia">
+			<select-param
+			name="guiasParaAuditoria"
+			type="br.com.infowaypi.ecarebc.atendimentos.GuiaSimples"
+			display-name="Selecione a Guia"
+			session-property-ref="resumo" operation="reload">
+			<radio-group>
+				<display-property name="idGuia" display-name="Autorização"/>
+				<display-property name="tipo" display-name="Tipo de Guia"/>			
+				<display-property name="segurado.pessoaFisica.nome" display-name="Beneficiário"/>
+				<display-property name="situacao.descricao" display-name="Situação"/>
+				<display-property name="situacao.dataSituacao" display-name="Data" type="date"/>				
+				<display-property name="valorTotal" display-name="Valor total" type="money"/>								
+			</radio-group>
+		</select-param>				
+			<step-return name="guia" type="br.com.infowaypi.ecarebc.atendimentos.GuiaCompleta" 
+		         display-name="GuiaSelecionada" scope="session"/>
+	</step-method>
+	
+	<step-method name="autorizarExamesProcedimentosEspeciais" display-name="Inserir Exames/Procedimentos">
+			
+			<session-param name="guia" operation="reload"/>		
+			
+			<step-param name="ignorarValidacao" type="java.lang.Boolean" display-name="Ignorar Validação" input-type="boolean"/>
+			
+			<collection-param  
+				name="procedimentos"
+				display-name="Adicionar os Exames"
+				type="br.com.infowaypi.ecarebc.procedimentos.Procedimento">
+			    <insert>
+				    <display-property name="procedimentoDaTabelaCBHPM.codigo" display-name="Código"/>
+  			        <display-property name="procedimentoDaTabelaCBHPM.descricao" display-name="Descrição"/>
+  			        <display-property name="bilateral" display-name="Bilateral" type="boolean"/>
+  			        <display-property name="quantidade" display-name="Quantidade" type="int"/>
+  			        <display-property name="valorAtualDoProcedimento" display-name="Valor Unitário" type="money"/>
+  			        <display-property name="valorTotal" display-name="Valor Total" type="money"/>
+			    </insert>
+			</collection-param>
+			
+			<collection-param
+				name="procedimentosCirurgicos"
+				display-name="Adicionar Procedimentos cirúrgicos"
+				type="br.com.infowaypi.ecare.procedimentos.ProcedimentoCirurgicoSR">
+			    <insert>
+				    <display-property name="procedimentoDaTabelaCBHPM.codigo" display-name="Código"/>
+  			        <display-property name="procedimentoDaTabelaCBHPM.descricao" display-name="Descrição"/>
+  			        <display-property name="profissionalResponsavel.pessoaFisica.nome" display-name="Profissional"/>
+  			        <display-property name="bilateral" display-name="Bilateral" type="boolean"/>
+  			        <display-property name="valorTotal" display-name="Valor Bruto" type="money"/>
+
+			    </insert>
+			</collection-param>
+			
+			<step-param name="observacao" type="java.lang.String" display-name="Observação" input-type="text"/>	
+			<session-param name="usuario"/>
+			<html>
+				<![CDATA[
+					<infoway:GuiaApresentacao guiaApresentacao="${guia}"/>
+				]]>
+			</html>			
+			<step-return name="guia" type="br.com.infowaypi.ecarebc.atendimentos.GuiaCompleta" 
+		         display-name="GuiaSelecionada" scope="session"/>
+	</step-method>
+	
+	<step-method name="conferirDados" display-name="Conferir Dados" committed="true">
+			<session-param name="guia" operation="none"/>
+			<html>
+				<![CDATA[
+					<infoway:GuiaApresentacao guiaApresentacao="${guia}"/>
+				]]>
+			</html>	
+	
+			<step-return name="guia" type="br.com.infowaypi.ecarebc.atendimentos.GuiaCompleta" 
+		         display-name="GuiaSelecionada" scope="session"/>
+	</step-method>
+	
+	<step-method name="finalizar" display-name="Finalizar" committed="true">
+			<session-param name="guia" operation="none"/>
+			
+			<html>
+				<![CDATA[ <infoway:mensagemSucessoMarcacoes mensagem="Exames Inseridos com sucesso!" autorizacao="${guia.autorizacao}"/> ]]>
+			</html>
+			
+			<html>
+				<![CDATA[
+					<infoway:GuiaApresentacao guiaApresentacao="${guia}"/>
+				]]>
+			</html>	
+	</step-method>
+	
+</flow>
+</jheat-mapping>	

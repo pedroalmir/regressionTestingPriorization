@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<flow 
+		name="alteracaoDeFaturamento" 
+		class="br.com.infowaypi.ecarebc.service.financeiro.AlteracaoDeFaturamento"
+		display-name="Alterar Faturamento" section="faturamento">
+		
+		<description>Alteração de Faturamento</description>
+		
+		<step-method name="buscarFaturamento" display-name="Escolha de faturamento" buttons-position="bottom">
+		
+			<step-param name="competencia" required="true" type="java.lang.String" display-name="Competência" mask="99/9999" input-type="string"/>
+
+			<select-param
+				name="prestadores"
+				display-name="Escolha o Prestador"
+				type="br.com.infowaypi.ecarebc.associados.Prestador">
+				<autocomplete style-class="autocomplete" minimum-characters="3" force-selection="true">
+					<search-property name="pessoaJuridica.fantasia" display-name="Prestador"/>
+					<name-property name="pessoaJuridica.fantasia" display-name="Prestador"/>
+				</autocomplete>
+				<restrictions>
+					<restriction property-value="Ativo(a)" property-name="situacao.descricao" type="equals" />
+				</restrictions>	
+			</select-param>	
+
+			<step-return name="faturamento" type="br.com.infowaypi.ecarebc.financeiro.faturamento.Faturamento" 
+				 display-name="Faturamento" scope="session"/>
+
+		</step-method>
+		
+		<step-method name="alterarValor" display-name="Alterar Dados">
+			<html>
+				<![CDATA[  <infoway:mensagemAlerta mensagem="Os valores informados afetarão o valor bruto."/> ]]>
+			</html>
+			<session-param name="faturamento" display-name="Alterar Dados" operation="none" >
+				<display-property name="competenciaFormatada" display-name="Competência" type="string"/>
+				<display-property name="prestador.pessoaJuridica.fantasia" display-name="Prestador"/>
+				<display-property name="prestador.pessoaJuridica.cnpj" display-name="CPF/CNPJ"/>
+				<display-property name="descricaoCategoria" display-name="Categoria"/>				
+			
+				<display-property name="valorTotalAlteracaoIncremento" display-name="Valor Total de Alterações de Incremento" type="money"/>
+				<display-property name="valorTotalAlteracaoDecremento" display-name="Valor Total de Alterações de Decremento" type="money"/>
+				<display-property name="valorSaldoAlteracoes" display-name="Saldo de Alterações" type="money"/>
+				<display-property name="valorBrutoSemAlteracoes" display-name="Valor Bruto sem Alterações" type="money"/>
+				<display-property name="valorBruto" display-name="Valor Bruto" type="money"/>
+				
+				<html>
+					<![CDATA[ <infoway:tableSeparator titulo="Alterações do Faturamento" colspan="2"/> ]]>
+				</html>				
+				<collection-display name="alteracoesFaturamentoAtivos" display-name="Alterações do Faturamento">
+					<display-property name="data" display-name="Data" type="date" />
+					<display-property name="valorIncremento" display-name="Valor Incluído" type="money" />
+					<display-property name="valorDecremento" display-name="Valor Excluído" type="money" />
+					<display-property name="motivo" display-name="Motivo" />
+					<display-property name="usuario.nome" display-name="Usuário" />
+				</collection-display>
+
+			</session-param>
+			
+			<step-param name="valorIncremento" type="java.math.BigDecimal" display-name="Valor a Incluir (+)" input-type="bigdecimal"/>
+			<step-param name="valorDecremento" type="java.math.BigDecimal" display-name="Valor a Excluir (-)" input-type="bigdecimal"/>
+			<step-param name="motivo" type="java.lang.String" display-name="Motivo" input-type="text"/>
+			<session-param name="usuario" />
+
+		</step-method>
+
+		<step-method name="conferirDados" display-name="Conferir Dados" committed="true" >
+
+			<session-param name="faturamento" display-name="Conferir Dados" operation="none">
+				<display-property name="competenciaFormatada" display-name="Competência" type="string"/>
+				<display-property name="prestador.pessoaJuridica.fantasia" display-name="Prestador"/>
+				<display-property name="prestador.pessoaJuridica.cnpj" display-name="CPF/CNPJ"/>
+				<display-property name="descricaoCategoria" display-name="Categoria"/>				
+			
+				<display-property name="valorTotalAlteracaoIncremento" display-name="Valor Total de Alterações de Incremento" type="money"/>
+				<display-property name="valorTotalAlteracaoDecremento" display-name="Valor Total de Alterações de Decremento" type="money"/>
+				<display-property name="valorSaldoAlteracoes" display-name="Saldo de Alterações" type="money"/>
+				<display-property name="valorBrutoSemAlteracoes" display-name="Valor Bruto sem Alterações" type="money"/>
+				<display-property name="valorBruto" display-name="Valor Bruto" type="money"/>
+	
+				<!-- html>
+					<![CDATA[ <infoway:tableSeparator titulo="Glosas" colspan="2"/> ]]>
+				</html>
+				<collection-display name="guiasComProcedimenosGlosados" display-name="Guias com Glosas">
+					<display-property name="autorizacao" display-name="Autorização"/>
+					<display-property name="segurado.pessoaFisica.nome" display-name="Segurado" />
+					<display-property name="prestador.pessoaJuridica.fantasia" display-name="Prestador" />
+					<display-property name="situacao.descricao" display-name="Situação"/>
+					<display-property name="tipo" display-name="Tipo"/>
+					<display-property name="valorProcedimentosGlosados" display-name="Valor da Glosa" type="money"/>
+					<display-property name="valorTotal" display-name="Valor da Guia" type="money"/>
+				</collection-display-->
+				
+				<html>
+					<![CDATA[ <infoway:tableSeparator titulo="Alterações do Faturamento" colspan="2"/> ]]>
+				</html>				
+				<collection-display name="alteracoesFaturamentoAtivos" display-name="Alterações do Faturamento">
+					<display-property name="data" display-name="Data" type="date" />
+					<display-property name="valorIncremento" display-name="Valor Incluído" type="money" />
+					<display-property name="valorDecremento" display-name="Valor Excluído" type="money" />
+					<display-property name="motivo" display-name="Motivo" />
+					<display-property name="usuario.nome" display-name="Usuário" />
+				</collection-display>				
+				
+			</session-param>
+
+		</step-method>
+
+		<step-method name="finalizar" display-name="Informações do Faturamento">
+
+			<html>
+				<![CDATA[
+					<div class="alert confirmation not-for-print" style="margin-left:0;margin-right:0;">
+						Faturamento alterado com sucesso!
+					</div>					
+				]]>
+			</html>
+
+			<session-param name="faturamento" display-name="Alterar Dados" operation="none">
+				<display-property name="competenciaFormatada" display-name="Competência" type="string"/>
+				<display-property name="prestador.pessoaJuridica.fantasia" display-name="Prestador"/>
+				<display-property name="prestador.pessoaJuridica.cnpj" display-name="CPF/CNPJ"/>
+				<display-property name="descricaoCategoria" display-name="Categoria"/>				
+			
+				<display-property name="valorTotalAlteracaoIncremento" display-name="Valor Total de Alterações de Incremento" type="money"/>
+				<display-property name="valorTotalAlteracaoDecremento" display-name="Valor Total de Alterações de Decremento" type="money"/>
+				<display-property name="valorSaldoAlteracoes" display-name="Saldo de Alterações" type="money"/>
+				<display-property name="valorBrutoSemAlteracoes" display-name="Valor Bruto sem Alterações" type="money"/>
+				<display-property name="valorBruto" display-name="Valor Bruto" type="money"/>
+					
+				<!-- html>
+					<![CDATA[ <infoway:tableSeparator titulo="Glosas" colspan="2"/> ]]>
+				</html>
+				<collection-display name="guiasComProcedimenosGlosados" display-name="Guias com Glosas">
+					<display-property name="autorizacao" display-name="Autorização"/>
+					<display-property name="segurado.pessoaFisica.nome" display-name="Segurado" />
+					<display-property name="prestador.pessoaJuridica.fantasia" display-name="Prestador" />
+					<display-property name="situacao.descricao" display-name="Situação"/>
+					<display-property name="tipo" display-name="Tipo"/>
+					<display-property name="valorProcedimentosGlosados" display-name="Valor da Glosa" type="money"/>
+					<display-property name="valorTotal" display-name="Valor da Guia" type="money"/>
+				</collection-display-->
+				
+				<html>
+					<![CDATA[ <infoway:tableSeparator titulo="Alterações do Faturamento" colspan="2"/> ]]>
+				</html>				
+				<collection-display name="alteracoesFaturamentoAtivos" display-name="Alterações do Faturamento">
+					<display-property name="data" display-name="Data" type="date" />
+					<display-property name="valorIncremento" display-name="Valor Incluído" type="money" />
+					<display-property name="valorDecremento" display-name="Valor Excluído" type="money" />
+					<display-property name="motivo" display-name="Motivo" />
+					<display-property name="usuario.nome" display-name="Usuário" />
+				</collection-display>				
+				
+			</session-param>
+
+		</step-method>
+	</flow>	
+</jheat-mapping>

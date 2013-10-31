@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+
+<jheat-mapping>
+	<class-mapping class="br.com.infowaypi.ecarebc.financeiro.faturamento.ordenador.InformacaoOrdenador" name="informacaoOrdenador" display-name="Informação Ordenador"
+		id-name="idInformacaoOrdenador" link-for-detail="prestador.pessoaJuridica.fantasia" type="simple" section="">
+		
+	<property name="valorNormal" type="bigdecimal">
+		<display name="Valor Normal (R$)" options=""/>
+	</property>
+	
+	<property name="tetoNormal" type="bigdecimal">
+		<display name="Teto Normal (R$)" options=""/>
+	</property>
+	
+	<property name="valorPassivo" type="bigdecimal">
+		<display name="Valor Passivo (R$)" options=""/>
+	</property>
+	
+	<property name="tetoPassivo" type="bigdecimal">
+		<display name="Teto Passivo (R$)" options=""/>
+	</property>
+	
+	<property name="competencia" type="date">
+		<display name="Competência" options="" mask="MM/yyyy"/>
+	</property>
+	
+	<many-to-one name="prestador" display-name="Prestador" class="br.com.infowaypi.ecarebc.associados.Prestador" options="">
+		<display-property name="pessoaJuridica.fantasia" />
+	</many-to-one>
+	
+	<many-to-one name="ordenador" display-name="Ordenador" class="br.com.infowaypi.ecarebc.financeiro.faturamento.ordenador.Ordenador" options="">
+		<display-property name="identificador" />
+		
+	</many-to-one>
+				
+	</class-mapping>
+</jheat-mapping>

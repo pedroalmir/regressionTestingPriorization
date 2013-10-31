@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+	
+	<class-mapping class="br.com.infowaypi.ecarebc.atendimentos.Observacao" name="Observacao" 
+		display-name="Observações" id-name="idObservacao" link-for-detail="dataCriacao" type="simple" section="">
+		
+		<description>Observações do sistema</description>		
+		
+		<property name="texto" type="text" not-null="false">
+			<display name="Texto" options="listing,search"/>
+	    </property>
+	    
+	    <property name="dataDeCriacao" type="date">
+	    	<display name="Data" options="listing, detail-only"/>
+	    </property>
+	    
+		<validate-method name="validate"/>
+	</class-mapping>
+
+</jheat-mapping>

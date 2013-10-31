@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+	<flow 
+		name="geracaoIndividualDeBoletos" 
+		class="br.com.infowaypi.ecare.financeiro.boletos.GeracaoIndividualDeBoletosService"
+		display-name="Geracão Individual" 
+		section="boletos">
+		
+		<step-method name="gerarCobranca" display-name="Gerar Boletos" buttons-position="bottom">
+			<step-param name="cpf" size="24" mask="999.999.999-99" input-type="string" type="java.lang.String" display-name="CPF do Beneficiário" required="false"/>
+			<step-param name="numeroDoCartao" size="24" mask="99.9999999999.99.9-9" input-type="string" type="java.lang.String" display-name="Número do cartão" required="false"/>
+			<step-param name="competencia" required="true" type="java.util.Date" display-name="Competência" input-type="month-year"/>
+			<step-param name="dataVencimento" required="true" type="java.util.Date" display-name="Data Vencimento" input-type="date"/>
+			<session-param name="usuario"/>
+			
+			<step-return name="cobranca" type="br.com.infowaypi.ecare.financeiro.Cobranca" display-name="Boleto" scope="session"/>
+		</step-method>
+		
+		<step-method display-name="Conferir Dados" name="salvarCobranca" committed="true">
+				<session-param name="cobranca" display-name="Boleto">
+			
+				<html> <![CDATA[
+					<infoway:tableSeparator titulo="Novo Boleto" colspan="2" />
+					]]>
+				</html>
+				
+					<display-property name="titular.pessoaFisica.nome" display-name="Beneficiário"/>
+					<display-property name="titular.tipoDeSegurado" display-name="Tipo"/>
+					<display-property name="titular.pessoaFisica.cpf" display-name="CPF"/>
+					<display-property name="titular.numeroDoCartao" display-name="Número do Cartão"/>
+					<display-property name="competenciaFormatada" display-name="Competência"/>
+					<display-property name="dataVencimento" display-name="Vencimento" type="date"/>
+					<display-property name="valorCobrado" display-name="Valor sem acréscimos" type="money" align="right"/>
+					<display-property name="valorJurosMultaEncargosCobrado" display-name="Juros/Multas" type="money" align="right"/>
+					<display-property name="valorCobradoComMultasEJuros" display-name="Valor Cobrado" type="money" align="right" />
+					<display-property name="situacao.descricao" display-name="Situação" />
+			</session-param>
+			<step-return display-name="Boleto Gerado" name="cobranca" scope="session" type="br.com.infowaypi.ecare.financeiro.Cobranca" />
+		</step-method>
+
+		<step-method name="baixarRemessa" display-name="Finalizar" >
+			<html>
+				<![CDATA[
+					<infoway:mensagemSucesso mensagem="Boleto gerado com sucesso!"/>
+				]]>
+			</html>
+			<session-param name="cobranca" display-name="Boleto">
+				<html> <![CDATA[
+					<infoway:tableSeparator titulo="Novo Boleto" colspan="2" />
+					]]>
+				</html>
+				<display-property name="titular.pessoaFisica.nome" display-name="Beneficiário"/>
+				<display-property name="titular.tipoDeSegurado" display-name="Tipo"/>
+				<display-property name="titular.pessoaFisica.cpf" display-name="CPF"/>
+				<display-property name="titular.numeroDoCartao" display-name="Número do Cartão"/>
+				<display-property name="competenciaFormatada" display-name="Competência"/>
+				<display-property name="dataVencimento" display-name="Vencimento" type="date"/>
+				<display-property name="valorCobrado" display-name="Valor sem acréscimos" type="money" align="right"/>
+				<display-property name="valorJurosMultaEncargosCobrado" display-name="Juros/Multas" type="money" align="right"/>
+				<display-property name="valorCobradoComMultasEJuros" display-name="Valor Cobrado" type="money" align="right" />
+				<display-property name="situacao.descricao" display-name="Situação" />
+			</session-param>
+			<html>
+				<![CDATA[  
+					<%@ include file="/view/jsp/includes/ReimpressaoBoleto.jsp" %>				
+				]]>
+			</html>
+			
+		</step-method>
+		
+	</flow>	
+</jheat-mapping>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+	<class-mapping class="br.com.infowaypi.ecare.cadastros.ItemAplicavel" name="ItemAplicavel" display-name="Item Guia Aplicável" 
+		id-name="idItemAplicavel" link-for-detail="descricao" type="readonly" section="cadastros">
+		
+		<description>Item da Guia Aplicável à Glosa</description>
+		
+		<property name="descricao" type="string">
+			<display name="Descrição" options="listing,search"/>
+		</property>
+		
+		<!-- cadastros -->
+		<role name="root" exec="true" insert="true" read="true" update="true" write="true"/>
+		
+	</class-mapping>
+</jheat-mapping>

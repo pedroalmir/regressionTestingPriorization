@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<flow name="gerenciarMensagens" global-link="true"
+		class="br.com.infowaypi.ecare.mensagem.alerta.GerenciarMensagensFlow"
+		display-name="Caixa de Mensagens" section="cadastros">
+		
+		<description>Caixa de mensagens recebidas do Usuário do sistema</description>
+		
+		<!-- Permissão de Usuários -->
+		<role name="root" write="true" read="true" exec="true" insert="true" update="true"/>
+		
+		
+		<step-method display-name="Buscar Mensagens"  title="Buscar Mensagens" name="buscarMensagens" buttons-position="bottom">
+			
+			<session-param name="usuario" type="br.com.infowaypi.msr.user.Usuario"/>
+			
+			<html><![CDATA[<fieldset><legend>Visualização de Mensagens</fieldset><br/>]]></html>
+			
+			<select-param name="categoriaMensagem" display-name="Local" next-field-inline="false" display-label-head="false"
+				type="br.com.infowaypi.ecare.mensagem.alerta.CategoriaMensagemEnum">
+				
+				<enum-combo class="br.com.infowaypi.ecare.mensagem.alerta.CategoriaMensagemEnum" name="categoriaMensagemCombo" 
+					display="getDescricao" >
+					<remove-entry key-value="ENVIADAS"/>
+					<remove-entry key-value="APAGADAS"/>
+				</enum-combo>
+			</select-param>
+			
+<!-- 			<select-param name="tipoMensagem" display-name="Tipo" display-label-head="false" null-option="true" null-description="Todas" -->
+<!-- 				type="br.com.infowaypi.ecare.mensagem.alerta.TipoMensagemEnum" > -->
+				
+<!-- 				<enum-combo class="br.com.infowaypi.ecare.mensagem.alerta.TipoMensagemEnum" name="tipoMensagemCombo"  -->
+<!-- 					display="getDescricao" > -->
+					
+<!-- 					<remove-entry key-value="SUCESSO"/> -->
+<!-- 					<remove-entry key-value="ERRO"/> -->
+<!-- 				</enum-combo> -->
+<!-- 			</select-param> -->
+			
+			<step-param name="data" display-name="Data" type="java.util.Date" input-type="date" size="10" mask-detail="dd/mm/aaaa"/>
+			
+			<step-return name="resumo" type="br.com.infowaypi.ecare.mensagem.alerta.ResumoMensagens" display-name="Resumo" scope="session"/>
+		</step-method>
+		
+		
+		
+		<step-method display-name="Selecionar Mensagem"  title="Selecionar Mensagem" name="lerMensagem" committed="true"
+			buttons-position="bottom" >
+		      
+	        <update-param display-name="" name="resumo" type="br.com.infowaypi.ecare.mensagem.alerta.ResumoMensagens">
+	        	
+	        	<update-collection display-name="${resumo.categoria.descricao}" name="mensagens" type="br.com.infowaypi.msr.msg.Mensagem">
+	        		<update-insert>
+	        			<update-property name="idMensagem" display-name="Código" type="java.lang.Long" input-type="long" editable="false"/>
+	        		
+	        			<update-property name="dataMensagem" display-name="Data/Hora" type="java.util.Date" input-type="timestamp" 
+	        				editable="false"/>
+	        			
+	        			<update-property name="remetente.nome" display-name="Remetente" type="java.lang.String" input-type="string" 
+	        				editable="false" align="left"/>
+	        				
+	        			<update-property name="destinatario.nome" display-name="Destinatário" type="java.lang.String" input-type="string" 
+	        				editable="false" align="left"/>
+	        			
+	        			<update-property name="tipoMensagem" display-name="Tipo" type="java.lang.String" input-type="string" 
+	        				editable="false" align="left"/>
+	        			
+	        			<update-property name="assunto" display-name="Assunto" type="java.lang.String" input-type="string" 
+	        				editable="false" align="left"/>
+	        			
+	        			<update-property name="ler" display-name="Abrir?" type="java.lang.Boolean" input-type="boolean"/>
+	        		</update-insert>
+	        	</update-collection>
+	        </update-param>
+	        
+	       <step-return name="resumo" type="br.com.infowaypi.ecare.mensagem.alerta.ResumoMensagens" display-name="Resumo" scope="session"/>
+		</step-method>		
+		
+		
+		<step-method name="finalizar" display-name="Ler Mensagem" title="Ler Mensagem" >
+			
+			<session-param name="resumo"/>
+			
+			 <include-tag name="visualizarMensagem">	
+				<arg name="msg" value="resumo.mensagemLida" param-request="true"/>
+			 </include-tag>
+			
+		   <html><![CDATA[
+		   		<br/>
+		   		<c:if test="${resumo.categoria.descricao eq 'Mensagens Recebidas'}">
+		   ]]></html>
+		   
+			<html><![CDATA[</c:if>]]></html>
+			
+		</step-method>
+		
+	</flow>	
+</jheat-mapping>
+

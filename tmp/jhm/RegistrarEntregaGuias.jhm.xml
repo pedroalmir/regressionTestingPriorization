@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+
+<jheat-mapping>
+<flow 
+	name="registrarEntregaGuia" 
+	class="br.com.infowaypi.ecare.services.internacao.RegistrarEntregaGuiaService"
+	display-name="Registrar Entrega de Guia" section="abaOperador">
+		
+	<description>Registrar Entrega</description>	
+	
+	<step-method name="buscarGuias" display-name="Buscar Guias" buttons-position="bottom">
+		<step-param name="autorizacao" display-name="Autorização" type="java.lang.String"/>
+		<select-param
+				name="prestador"
+				display-name="Escolha o Prestador"
+				type="br.com.infowaypi.ecarebc.associados.Prestador">
+				<autocomplete style-class="autocomplete" minimum-characters="3" force-selection="true">
+					<search-property name="pessoaJuridica.fantasia" display-name="Prestador"/>
+					<name-property name="pessoaJuridica.fantasia" display-name="Prestador"/>
+				</autocomplete>
+				<restrictions>
+					<restriction property-value="Ativo(a)" property-name="situacao.descricao" type="equals" />
+				</restrictions>
+			</select-param>
+		
+		<step-return display-name="" name="resumo" type="br.com.infowaypi.ecarebc.atendimentos.ResumoGuias" scope="session"/>
+	</step-method>
+	
+	<step-method name="selecionarGuias" display-name="Selecionar Guias" title="Selecionar Guias">
+		<!--ÚTIL PARA GUIAS QUE FORAM RECEBIDAS NA MESMA DATA	-->
+		<step-param name="dataEntregaGuiaFisica" input-type="date" type="java.util.Date" display-name="Data de entrega da Guia Física" required="true"/>
+		<collection-param
+			name="guias"
+			type="br.com.infowaypi.ecarebc.atendimentos.GuiaCompleta"
+			display-name="Selecione as guias para receber">
+			<checklist session-property-ref="resumo" operation="none">
+				<display-property name="autorizacao" display-name="Autorização" />
+				<display-property name="tipo"  display-name="Tipo de Guia"/>
+				<display-property name="segurado.pessoaFisica.nome" display-name="Beneficiário" />
+				<display-property name="situacao.descricao" display-name="Situação" />
+				<display-property name="situacao.dataSituacao" display-name="Dt. Situação" type="date" />
+				<display-property name="dataAtendimento" display-name="Dt. Atendimento" type="date" />
+				<display-property name="dataTerminoAtendimento" display-name="Dt. Termino Atendimento" type="date" />
+				<display-property name="valorTotal" display-name="Valor total" type="money" />
+			</checklist>
+		</collection-param>
+		<session-param name="resumo"/>
+		<session-param name="usuario"/>
+	
+		<step-return display-name="" name="resumo" type="br.com.infowaypi.ecarebc.atendimentos.ResumoGuias" scope="session"/>
+	</step-method>
+	
+	<step-method name="salvarGuia" display-name="Conferir Dados" committed="true" title="Conferir Dados">
+			
+			<session-param name="resumo" operation="none">
+				<collection-display display-name="" name="guias">
+					<display-property name="autorizacao" display-name="Autorização" />
+					<display-property name="tipo"  display-name="Tipo de Guia"/>
+					<display-property name="segurado.pessoaFisica.nome" display-name="Beneficiário" />
+					<display-property name="situacao.descricao" display-name="Situação" />
+					<display-property name="situacao.dataSituacao" display-name="Dt. Situação" type="date" />
+					<display-property name="dataAtendimento" display-name="Dt. Atendimento" type="date" />
+					<display-property name="dataTerminoAtendimento" display-name="Dt. Termino Atendimento" type="date" />
+					<display-property name="dataEntregaGuiaFisica" display-name="Dt. Entrega" type="date" />
+					<display-property name="valorTotal" display-name="Valor total" type="money" />
+				</collection-display>
+			</session-param>
+			
+	</step-method>
+
+	<step-method name="finalizar" display-name="Finalizar" title="Finalizar">
+		<html>
+			<![CDATA[  <infoway:mensagemSucesso mensagem="Operação realizada com sucesso!"/> ]]>
+		</html>
+
+		<session-param name="resumo" operation="none">
+				<collection-display display-name="" name="guias">
+					<display-property name="autorizacao" display-name="Autorização" />
+					<display-property name="tipo"  display-name="Tipo de Guia"/>
+					<display-property name="segurado.pessoaFisica.nome" display-name="Beneficiário" />
+					<display-property name="situacao.descricao" display-name="Situação" />
+					<display-property name="situacao.dataSituacao" display-name="Dt. Situação" type="date" />
+					<display-property name="dataAtendimento" display-name="Dt. Atendimento" type="date" />
+					<display-property name="dataTerminoAtendimento" display-name="Dt. Termino Atendimento" type="date" />
+					<display-property name="dataEntregaGuiaFisica" display-name="Dt. Entrega" type="date" />
+					<display-property name="valorTotal" display-name="Valor total" type="money" />
+				</collection-display>
+			</session-param>
+		
+	</step-method>
+</flow>
+</jheat-mapping>

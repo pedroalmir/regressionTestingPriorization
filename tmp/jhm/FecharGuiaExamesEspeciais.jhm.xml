@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+	<flow 
+		name="fecharGuiaExamesEspeciais" 
+		class="br.com.infowaypi.ecare.services.exame.FecharGuiaExameEspecial"
+		display-name="Fechar Guia de Exames Especiais" section="examesPrestador">
+			
+		<description>Fechar Guia de Exames Especiais</description>		
+
+		<step-method name="buscarGuiasFechamento" display-name="Informar Número de Autorização" title="Informar Número de Autorização" buttons-position="bottom">
+			<step-param name="autorizacao" input-type="string" size="12" type="java.lang.String" display-name="Autorização"/>
+			<session-param name="prestador" operation="none"/>			
+			<step-return name="guia" type="br.com.infowaypi.ecarebc.atendimentos.GuiaExame" display-name="Guia Encontrada" scope="session" />		
+		</step-method>
+		
+		<step-method name="fecharGuia" display-name="Informar Valores" title="Informar Valores" buttons-position="both">
+			
+			<step-param name="valorMedicamento" input-type="money" type="java.math.BigDecimal" display-name="Valor Total de Medicamentos"/>
+			<step-param name="valorMaterial" input-type="money" type="java.math.BigDecimal" display-name="Valor Total de Materiais"/>
+			<step-param name="observacao" type="java.lang.String" display-name="Observação" input-type="text"/>
+			
+			<session-param name="usuario" />
+			<session-param name="guia" operation="none"/>
+			
+			<html>
+				<![CDATA[
+					<infoway:GuiaApresentacao guiaApresentacao="${guia}"/>
+				]]>
+			</html>
+						
+			<step-return name="guia" type="br.com.infowaypi.ecarebc.atendimentos.GuiaExame" display-name="Guia Encontrada" scope="session" />		
+		</step-method>
+		
+		<step-method name="salvarGuia" display-name="Conferir Dados" title="Conferir Dados" buttons-position="bottom" committed="true">
+			<session-param name="guia" operation="none"/>
+			<html>
+				<![CDATA[
+					<infoway:GuiaApresentacao guiaApresentacao="${guia}"/>
+				]]>
+			</html>
+		</step-method>
+		
+		<step-method name="finalizar" display-name="Imprimir" title="Imprimir" buttons-position="both">
+			<html>
+				<![CDATA[ 
+					<span class="not-for-print">
+						<button type="button" name="imprimir" class="actionButton" onclick="window.print();">Imprimir</button>
+					</span>
+					
+					<infoway:mensagemSucessoMarcacoes mensagem="Exames fechados com sucesso!" autorizacao="${guia.autorizacao}"/>
+					
+					<infoway:GuiaApresentacao guiaApresentacao="${guia}"/>
+					
+					<c:choose> 
+					  <c:when test="${guia.guiaImpressaoNova}"> 
+					  		<infoway:imprimirGuiaExame titulo="REIMPRESSAO DE GUIA"/>
+					  </c:when> 
+					  <c:otherwise> 
+					    <infoway:imprimirGuia titulo="REIMPRESSAO DE GUIA"/> 
+					  </c:otherwise> 
+					</c:choose> 
+					
+					<span class="not-for-print">
+						<button type="button" name="imprimir" class="actionButton" onclick="window.print();">Imprimir</button>
+					</span>
+				]]>
+			</html>
+		</step-method>
+		
+	</flow>
+</jheat-mapping>		

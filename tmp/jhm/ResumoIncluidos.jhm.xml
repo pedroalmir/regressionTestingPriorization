@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+	
+	<class-mapping class="br.com.infowaypi.ecare.services.ResumoIncluidos" name="Inclusao" display-name="" 
+		id-name="idade" type="readonly" section="">
+		
+		<description>Simulação de Inclusão Titular/ Dependente</description>
+		 
+	    <html>
+			<![CDATA[
+				<table class="yellowTable">
+					<tr><td colspan="2">
+					<fieldset>
+						<legend>Dados do Titular:</legend>
+					</fieldset>
+					</td></tr>
+				</table>
+				<br/>
+			]]>
+		</html>
+		
+		<property name="valorBruto" type="bigdecimal" not-null="true">
+	    	<display name="Salário Bruto" options="fixed" size="10" maxlength="10" align="right"/>
+	    </property>
+	    
+	    <property name="numeroDoCartao" type="string" not-null="false">
+			<display name="Número do cartão do beneficiário" options="fixed" mask="99.9999999999.99.9-9" maxlength="6" align="center" size="24"/>
+	    </property>  
+	    
+	    <property name="cpf" type="string" not-null="false">
+			<display name="CPF do Titular" options="fixed" mask="999.999.999-99" maxlength="14" size="24"/>
+	    </property>  
+	    
+	    
+	    <html>
+			<![CDATA[
+				<table class="yellowTable">
+					<tr><td colspan="2">
+					<fieldset>
+						<legend>Idade do Dependente a ser incluído:</legend>
+					</fieldset>
+					</td></tr>
+				</table>
+				<br/>
+			]]>
+		</html>
+		<property name="descricao" type="string" not-null="true">
+			<display name="Ordem" options="detail-only"/>
+	    </property>
+	    
+	    <property name="valorTotal" type="money">
+			<display name="Valor Total" options="detail-only"/>
+	    </property>
+	    
+	    <property name="idade" type="int" not-null="true" >
+	    	<display name="Idade do Dependente" mask="999" options=""/>
+	    </property>
+	    
+	    <property name="valorIndividual" type="money" not-null="true">
+	    	<display name="Valor p/ Dependente" options="listing,detail-only" />
+	    </property>
+	    
+	    <!-- validate-method name="validate" /-->
+	    	
+	</class-mapping>
+
+</jheat-mapping>

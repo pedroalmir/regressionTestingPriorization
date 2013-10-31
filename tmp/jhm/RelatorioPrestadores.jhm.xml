@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<report
+		name="relatorioPrestadores"
+		method-name="buscarPrestadores"
+		class="br.com.infowaypi.ecare.services.RelatorioPrestadores"
+		display-name="Rede Credenciada" section="aloSaudeSection,relatorioCentral,consultasCentralDeRelacionamento,relatoriosAuditor,relatorioFaturista" response-by-ajax="true">
+
+		<description>Prestadores Credenciados</description>
+		
+		<report-param display-name="Prestador" name="prestadorParam" size="50" input-type="string"/>
+		
+		<!--select-param
+				name="prestador"
+				display-name="Escolha o prestador"
+				type="br.com.infowaypi.ecarebc.associados.Prestador" display-label-head="false">
+				<autocomplete style-class="autocomplete" minimum-characters="3" force-selection="true">
+					<search-property name="pessoaJuridica.fantasia" display-name="Prestador"/>
+					<name-property name="pessoaJuridica.fantasia" display-name="Prestador"/>
+				</autocomplete>	
+		</select-param-->
+		
+		<select-param
+			display-name="Escolha a especialidade" 
+			name="especialidade" 
+			type="br.com.infowaypi.ecarebc.associados.Especialidade" display-label-head="false">
+				<autocomplete style-class="autocomplete" minimum-characters="3" force-selection="true">
+					<search-property name="descricao" display-name="Especialidade"/>
+					<name-property name="descricao" display-name="Especialidade"/>
+				</autocomplete>
+		</select-param>
+		
+		<select-param
+			display-name="Escolha o profissional" 
+			name="profissional" 
+			type="br.com.infowaypi.ecarebc.associados.Profissional" display-label-head="false" >
+				<autocomplete mask-detail="As 7 letras iniciais" style-class="autocomplete" minimum-characters="7" force-selection="true">
+					<search-property name="crmNome" display-name="Profissional"/>
+					<name-property name="crmNome" display-name="Profissional"/>
+				</autocomplete>
+		</select-param>
+
+		<!--report-param display-name="Profissional" name="profissionalCitado" input-type="string"/-->
+		<report-param display-name="Bairro" name="bairroCitado" input-type="string" size="35"/>
+		
+		<select-param
+				name="municipio"
+				display-name="Escolha o Municipio"
+				type="br.com.infowaypi.msr.address.Municipio" display-label-head="false">
+				<autocomplete style-class="autocomplete" minimum-characters="3" force-selection="true">
+					<search-property name="descricao" display-name="Município"/>
+					<name-property name="descricao" display-name="Município"/>
+				</autocomplete>	
+		</select-param>
+		
+		<select-param display-name="Tipo de Resultado" name="tipoResultado" type="java.lang.Integer" display-label-head="false">
+			<constants-group name="Tipo do resultado" class="br.com.infowaypi.ecarebc.associados.ResumoPrestadores">
+				<entry display-name="Listar Prestadores" key-value="TIPO_RESULTADO_PRESTADORES"/>
+				<entry display-name="Listar Profissionais" key-value="TIPO_RESULTADO_PROFISSIONAIS"/>
+			</constants-group>
+		</select-param>
+		
+		
+		<report-return name="resumo" type="br.com.infowaypi.ecarebc.associados.ResumoPrestadores" 
+			 display-name="Resultado Encontrado">
+					
+			<html>
+			<![CDATA[
+				<%@ include file="/view/jsp/includes/PrestadorDetalhe.jsp" %>
+				]]>
+			</html>	
+		</report-return>
+		
+		
+	</report>	
+	
+</jheat-mapping>

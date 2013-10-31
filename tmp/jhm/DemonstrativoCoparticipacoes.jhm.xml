@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+	<flow 
+		name="demonstrativoCoparticipacoes" 
+		class="br.com.infowaypi.ecare.relatorio.portalBeneficiario.extratoCoparticipacao.RelatorioDemonstrativoCoparticipacao"
+		display-name="Extrato de Co-participações" 
+		section="portalBeneficiarioTitular">
+		
+		<step-method name="buscarCoparticipacao" display-name="Gerar Demonstrativo de Coparticipações" buttons-position="bottom" >
+			<session-param name="segurado" operation="none"/>
+			<step-param name="competencia" required="true" type="java.util.Date" display-name="Mês/Ano" mask-detail="mm/aaaa" input-type="month-year" size="8"/>
+			
+			<step-return name="resumo" type="br.com.infowaypi.ecare.relatorio.portalBeneficiario.extratoCoparticipacao.ResumoDemonstrativoCoparticipacao" display-name="Coparticipação" scope="session"/>
+		</step-method>
+		
+		<step-method name="baixarRelatorio" display-name="Download Demostrativo" >
+			<html>
+				<![CDATA[
+					<infoway:mensagemSucesso mensagem="Extrato de coparticipação gerado com sucesso!"/>
+					<%@ include file="/view/jsp/includes/DownloadPDFCoparticipacao.jsp" %>				
+				]]>
+			</html>
+			
+		</step-method>
+		
+	</flow>	
+</jheat-mapping>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+	
+	<class-mapping class="br.com.infowaypi.ecarebc.financeiro.faturamento.retencao.ImpostoDeRenda" name="ImpostoDeRenda" display-name="Imposto de Renda" 
+		id-name="idImpostoDeRenda" link-for-detail="descricao" type="simple" section="cadastrosFinanceiro" roles="financeiro">
+
+		<property name="competencia" not-null="true" type="month-year">
+			<display name="Competência" options="listing,search" maxlength="7" size="10"/>
+	    </property>
+	    
+	    <property name="aliquota" not-null="true" type="percentage">
+			<display name="Alíquota" options="listing" size="7"/>
+	    </property>	
+	    
+		<property name="valorFaixaDe" not-null="true" type="bigdecimal">
+			<display name="Valor Faixa De" options="listing"/>
+	    </property>
+	    
+	    <property name="valorFaixaAte" not-null="true" type="bigdecimal">
+			<display name="Valor Faixa Até" options="listing"/>
+	    </property>
+	    
+		<property name="valorDeducao" not-null="true" type="bigdecimal">
+			<display name="Valor Dedução" options="listing"/>
+	    </property>
+	    
+	    <select-property display-name="Tipo de Pessoa" options="listing,search" name="tipoDePessoa">
+			<entry display-name="Jurídica" key-value="PESSOA_JURIDICA"/>
+			<entry display-name="Física" key-value="PESSOA_FISICA"/>
+	    </select-property>
+	    
+	    <validate-method name="validate" />
+	    
+	</class-mapping>    
+	
+</jheat-mapping>

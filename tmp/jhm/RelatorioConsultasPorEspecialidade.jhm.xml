@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<report 
+		name="relatorioConsultasPorEspecialidade" 
+		display-name="Consultas por Especialidade" 
+		class="br.com.infowaypi.ecare.services.RelatorioConsultasPorEspecialidade" 
+		method-name="gerarRelatorio" 
+		section="relatoriosAuditor" 
+		response-by-ajax="true">
+
+		<description>Relatório de consultas (eletivas e de urgência) realizadas em um determinado mês, agrupadas por suas respectivas especialidades.</description>
+		
+		<report-param name="mes" required="true" type="java.util.Date" display-name="Mês" mask="99/9999" input-type="month-year"/>
+		
+		<select-param name="ordem" display-name="Selecione a Ordem de Classificação" type="java.lang.String">
+			<constants-group class="br.com.infowaypi.ecare.services.RelatorioConsultasPorEspecialidade" name="Ordem de Classificação">
+				<entry display-name="Especialidades" key-value="POR_ESPECIALIDADE"/>
+				<entry display-name="Vlr. Consultas Eletivas" key-value="POR_ELETIVAS"/>
+				<entry display-name="Vlr. Consultas Urgência" key-value="POR_URGENCIA"/>
+			</constants-group>
+		</select-param>
+
+		<report-return name="relatorio" type="br.com.infowaypi.ecare.services.RelatorioConsultasPorEspecialidade" display-name="Especialidades com Produção">
+			<html>
+				<![CDATA[ <infoway:tableSeparator titulo="Resumo" colspan="2"/> ]]>
+			</html>
+			<display-property name="mes" align="left" display-name="Mês" type="month-year"/>
+			<display-property name="qtdeEspecialidades" align="left" display-name="Qtde. Especialidades"/>
+			<display-property name="qtdeConsultasEletivas" align="left" display-name="Qtde. Consultas Eletivas"/>
+			<display-property name="vlrConsultasEletivas" type="bigdecimal" align="left" display-name="Vlr. Consultas Eletivas"/>
+			<display-property name="qtdeConsultasUrgencia" align="left" display-name="Qtde. Consultas Urgência"/>
+			<display-property name="vlrConsultasUrgencia" type="bigdecimal" align="left" display-name="Vlr. Consultas Urgência"/>
+			<display-property name="qtdeTotalGeral" align="left" display-name="Qtde. Total Geral"/>
+			<display-property name="vlrTotalGeral" type="bigdecimal" align="left" display-name="Vlr. Total Geral"/>
+			
+			<html>
+				<![CDATA[ <infoway:tableSeparator titulo="Detalhamento" colspan="2"/> ]]>
+			</html>
+			<collection-display name="resumoEspecialidadeGuia" display-name="Detalhamento de Consultas por Especialidade">
+				<display-property name="especialidadeDescricao" align="left" display-name="Especialidades"/>
+				<display-property name="qtdeConsultasEletivas" align="right" display-name="Qtde. Consultas Eletivas"/>
+				<display-property name="vlrConsultasEletivas" align="right" display-name="Vlr. Consultas Eletivas (R$)" type="decimal"/>
+				<display-property name="qtdeConsultasUrgencia" align="right" display-name="Qtde. Consultas Urgência"/>
+				<display-property name="vlrConsultasUrgencia" align="right" display-name="Vlr. Consultas Urgência (R$)" type="decimal"/>
+				<display-property name="qtdeTotalConsultas" align="right" display-name="Qtde. Total Consultas"/>
+				<display-property name="vlrTotalConsultas" align="right" display-name="Vlr. Total Consultas (R$)" type="decimal"/>
+			</collection-display>
+		</report-return>		
+	</report>
+</jheat-mapping>

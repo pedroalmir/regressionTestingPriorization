@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<report class="br.com.infowaypi.ecare.relatorio.ReportSeguradosPorSituacao" 
+		method-name="gerarRelatorio" display-name="Quantidade de Segurados" 
+		section="relatoriosAuditor" name="reportSeguradosSituacao" response-by-ajax="true">
+		
+		<select-param name="situacao" display-name="" >
+			<constants-group class="br.com.infowaypi.ecare.relatorio.ReportSeguradosPorSituacao" input-type="combo" name="Situação" >
+				<entry display-name="Ativo(a)" key-value="ATIVO"/>
+				<entry display-name="Suspenso(a)" key-value="SUSPENSO"/>
+				<entry display-name="Cancelado(a)" key-value="CANCELADO"/>
+			</constants-group>
+		</select-param>
+		
+		<report-return name="resultado" type="br.com.infowaypi.ecare.relatorio.ReportSeguradosPorSituacao" display-name="Resultado Encontrado">
+			<display-property name="situacao" display-name="Situação"/>
+			<display-property name="quantidadeSegurados" display-name="Qtde. Segurados"/>
+			<display-property name="quantidadeTitulares" display-name="Qtde. Titulares"/>
+			<display-property name="quantidadeDependentes" display-name="Qtde. Dependentes"/>
+			<display-property name="quantidadeDependentesSuplementares" display-name="Qtde. Dep. Suplementares"/>
+			<display-property name="quantidadePensionistas" display-name="Qtde. Pensionistas"/>
+		</report-return>
+	</report>
+
+</jheat-mapping>

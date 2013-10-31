@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+	<class-mapping class="br.com.infowaypi.ecare.cadastros.GrupoMotivoGlosa" name="GrupoMotivoGlosa" display-name="Grupo Motivo De Glosa" 
+		id-name="idGrupo" type="simple" section="cadastros" roles="root">
+		
+		<description>Grupo Motivo Glosa</description>
+		
+		<property name="descricao" type="string" not-null="true">
+			<display name="Descrição" options="listing,search"/>
+		</property>
+		
+		<role name="root" exec="true" insert="true" read="true" update="true" write="true"/>
+		
+	</class-mapping>
+</jheat-mapping>

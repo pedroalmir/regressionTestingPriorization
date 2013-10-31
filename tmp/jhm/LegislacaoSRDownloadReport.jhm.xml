@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<report
+		name="legislacaoSRDownloadReport"
+		method-name="buscarLegislacao"
+		class="br.com.infowaypi.ecare.relatorio.LegislacaoSRDownload"
+		display-name="Informações Legislação" section="portalBeneficiarioTitular, portalBeneficiarioDependente" response-by-ajax="true" auto-update="true" update-freq="0" >
+		
+	  <html>
+				<![CDATA[
+					<script type="text/javascript"> 
+						document.getElementById('title').style.display = 'none';
+						document.getElementsByName('JHeatFormBean')[0].style.display = 'none';
+						document.getElementsByName('sessionParam')[0].style.display = 'none';
+					</script>
+				]]>
+		</html>	
+			
+			
+		<report-return name="resumoLegislacaoSR" type="br.com.infowaypi.ecare.resumos.ResumoGeral" 
+			 display-name="Arquivos disponíveis para download">
+			<html>
+				<![CDATA[
+				<div id="download-image" style="padding-bottom: 80px;">
+					<c:forEach var="element" items="${resumoLegislacaoSR.lista}">
+							<a href="/" onclick="window.location='${pageContext.request.contextPath}/JHeatAction.do?action=download&sectionName=${sectionName}&className=br.com.infowaypi.ecare.legislacaosr.LegislacaoSR&id=${element.idArquivoBase}&propertyName=arquivo&nameFile=${element.tituloArquivo}&fileType=${element.tipoArquivo}';
+ 							return false;">
+								<b>Download</b> (${element.tituloArquivo})
+							</a><br/>
+					</c:forEach>
+				</div><br/><br/><br/>	
+				]]>
+			</html>
+		</report-return>	
+		
+	</report>
+	
+</jheat-mapping>

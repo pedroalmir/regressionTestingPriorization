@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+
+<jheat-mapping>
+	<flow
+		name="receberLote"
+		display-name="Recebimento de guias"
+		class="br.com.infowaypi.ecare.services.ReceberLote"
+		section="autorizacoesCentral">
+		
+		<description>Responsável por registrar o recebimento de um lote de um determinado prestador.</description>
+	
+		<step-method display-name="Informar Dados" name="buscarLote">			 
+			<step-param name="identificador" required="true" input-type="string" type="java.lang.String" display-name="Identificador do lote"/>
+			
+			<html><![CDATA[
+				<script>
+					window.onload = function () {
+						var identificador = document.getElementById("identificador");
+						var buttons = document.getElementsByClassName('actionButton');
+						for(var i = 0; i < buttons.length; i++){
+							buttons[i].onclick = function(e){
+								var context = document.location.href.match(/^.*?\/\/.*?\/.*?\//)[0];
+								var params = "servletLote/?funcao=receberLote&identificador=" + identificador.value;
+								var url = context + params;
+								var http = new XMLHttpRequest();
+								http.open("GET", url, true);
+							
+								http.onreadystatechange = function() {
+									
+									if(http.readyState == 4 && http.status == 200) {
+										
+										var redirecionar = http.responseText;
+										
+										if(redirecionar == "true"){
+											/* Redireciona para o fluxo de entregar lote de GRG */
+											document.location = "JHeatFlowAction.do?action=process&sectionName=sectionOculta&flowName=receberLoteGRG&step=buscarLote&identificador=" + identificador.value;
+										}else{
+											/* Chama o fluxo de entregar lote normal fazendo com que a validação de guia não encontrada seja exibida na tela (recurso técnico :-|) */
+											document.location = "JHeatFlowAction.do?action=process&sectionName=autorizacoesCentral&flowName=receberLote&step=buscarLote&identificador=" + identificador.value;
+										}
+										
+									}
+								
+								};
+								
+								http.send();
+								return false;
+							}
+						}
+					}
+				</script>
+			]]></html>
+			
+			<step-return name="lote" type="br.com.infowaypi.ecarebc.atendimentos.LoteDeGuias" display-name="" scope="session"/>		
+		</step-method>
+
+	
+		<step-method name="mostrarLote" display-name="Mostrar Lote">
+			
+			<update-param name="lote" display-name="Lote" type="br.com.infowaypi.ecarebc.atendimentos.LoteDeGuias" operation="none">
+				
+				<!-- update-property name="entregador" display-name="Entregador" editable="true"/-->
+
+				<update-property name="identificador" display-name="Identificador" editable="false"/>			
+				<update-property name="prestador.pessoaJuridica.fantasia" display-name="Prestador" editable="false"/>
+				<update-property name="competencia" display-name="Competência" type="java.util.Date" input-type="month-year" editable="false"/>
+				<update-property name="descricaoTipoGuia" display-name="Tipo de Guia" editable="false"/>
+				<update-property name="numeroDeGuias" display-name="Número de Guias" editable="false"/>
+				<update-property name="valorTotal" display-name="Valor Apresentado" type="java.math.BigDecimal" input-type="money" editable="false"/>
+				
+				<update-collection display-name="Selecionar Guias" name="guiasEnviadas" type="br.com.infowaypi.ecarebc.atendimentos.GuiaSimples">
+					<update-insert>
+						<update-property name="autorizacao" display-name="Autorização" editable="false" input-type="string"/>
+						<update-property name="tipo"  display-name="Tipo de Guia" editable="false" input-type="string"/>
+						<update-property name="segurado.pessoaFisica.nome" display-name="Beneficiário" editable="false" input-type="string"/>
+						<update-property name="situacao.descricao" display-name="Situação" editable="false" input-type="string"/>
+						<update-property name="dataAtendimento" display-name="Data de Início de Atendimento" editable="false" input-type="date"/>
+						<update-property name="dataTerminoAtendimento" display-name="Data de Término de Atendimento" editable="false" input-type="date"/>
+						<update-property name="valorTotal" display-name="Valor Apresentado" editable="false" input-type="money"/>
+						<update-property-boolean name="receberGuias" display-name="Receber" width-percentage="11" field-name="recebido" false-description="Não" true-description="Sim" type="java.lang.Boolean" />
+						<!-- update-property name="motivo" display-name="Motivo" editable="true" input-type="string" /-->
+						<update-select-property name="motivo" display-name="Motivo" type="br.com.infowaypi.ecarebc.atendimentos.MotivoDevolucaoDeLote" null-option="true">
+							<combo display-property="descricao"/>
+						</update-select-property>
+					</update-insert>
+				</update-collection>
+			</update-param>
+			
+			<session-param name="usuario"/>
+		
+			<step-return name="lote" type="br.com.infowaypi.ecarebc.atendimentos.LoteDeGuias" display-name="" scope="session" />
+		</step-method>
+		
+		<step-method name="salvarLote" display-name="Conferir Dados" committed="true">
+			<session-param name="lote" display-name="Dados do Lote" operation="none"/>
+			<html>
+				<![CDATA[ 
+					<infoway:loteApresentacao loteAtual="${lote}"/>
+				 ]]>
+			</html>
+			
+			<step-return name="lote" type="br.com.infowaypi.ecarebc.atendimentos.LoteDeGuias" display-name="" scope="session" />
+		</step-method>
+		
+		<step-method name="finalizar" display-name="Imprimir">
+			<html>
+				<![CDATA[ 
+					<span class="not-for-print">
+						<button type="button" name="imprimir" class="actionButton" onclick="window.print();">Imprimir</button>
+					</span>
+					<infoway:mensagemSucesso mensagem="Lote de identificador ${lote.identificador} recebido com sucesso."/>
+					<infoway:capaDeLoteDeRecebimento lote="${lote}"/>
+				 ]]>
+			</html>
+		
+			<session-param name="lote" display-name="Conferir Dados" style-class="not-for-print"/>
+			<html>
+				<![CDATA[ 
+					<infoway:loteApresentacao loteAtual="${lote}"/>
+					
+					<span class="not-for-print">
+						<button type="button" name="imprimir" class="actionButton" onclick="window.print();">Imprimir</button>
+					</span>
+				 ]]>
+			</html>
+		</step-method>			
+	
+	</flow>
+</jheat-mapping>

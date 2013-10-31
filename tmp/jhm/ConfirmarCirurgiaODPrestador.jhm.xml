@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+<flow 
+	name="confirmarCirurgiaOdonto" 
+	class="br.com.infowaypi.ecare.services.odonto.ConfirmacaoCirurgiaOdonto"
+	display-name="Confirmar Cirurgia Odontológica" section="odontoPrestador">
+		
+	<description>Admissão de Cirurgia Odontológica</description>
+		
+		<step-method name="buscarGuiasConfirmacao" display-name="Informar Número de Autorização" title="Informar Número de Autorização" buttons-position="bottom">
+			<step-param name="autorizacao" input-type="string" size="12" type="java.lang.String" display-name="Autorização" />
+			<session-param name="prestador" operation="none"/>
+			<step-return name="guia" type="br.com.infowaypi.ecarebc.atendimentos.GuiaCirurgiaOdonto" display-name="Guia de Cirurgia Odontológica" scope="session" />		
+		</step-method>
+	
+		<step-method name="salvarGuia" display-name="Conferir Dados" title="Conferir Dados" committed="true">
+			<session-param name="guia" operation="none"/>
+			<html>
+				<![CDATA[
+					<infoway:GuiaApresentacao guiaApresentacao="${guia}"/>
+				]]>
+			</html>
+			<session-param name="usuario"/>
+		</step-method>
+		
+		<step-method name="finalizar" display-name="Imprimir Comprovante" title="Imprimir Comprovante">
+			
+			<html>
+				<![CDATA[ <infoway:mensagemSucessoMarcacoes mensagem="Cirurgia Odontológica confirmada com sucesso!" autorizacao="${guia.autorizacao}"/> ]]>
+			</html>
+			
+			<html>
+			<![CDATA[ 
+				<span class="not-for-print">
+					<button type="button" name="imprimir" class="actionButton" onclick="window.print();">Imprimir</button>
+				</span>
+			]]>
+			</html>
+			
+			<session-param name="guia"/>
+			<html>
+				<![CDATA[
+					<infoway:GuiaApresentacao guiaApresentacao="${guia}"/>
+				]]>
+			</html>
+			
+			<html>
+				<![CDATA[ <infoway:imprimirGuia titulo="GUIA DE CONFIRMACAO DE CIRURGIA ODONTOLÓGICA"/> 
+					<span class="not-for-print">
+						<button type="button" name="imprimir" class="actionButton" onclick="window.print();">Imprimir</button>
+					</span>
+					]]>
+			</html>
+					
+		</step-method>
+
+	</flow>	
+</jheat-mapping>

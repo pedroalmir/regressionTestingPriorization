@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<class-mapping class="br.com.infowaypi.ecarebc.procedimentos.ProcedimentoOdontoRestauracaoLayer" name="ProcedimentoOdontoRestLayer" 
+		display-name="Procedimento Odontológico" id-name="idProcedimentoOD" type="readonly" section="cadastros" global-link="true"
+		roles="auditor, prestadorOdonto, centralDeServico, prestadorCompleto, auditorOdonto">
+
+		<many-to-one options="listing,search"
+			class="br.com.infowaypi.ecarebc.procedimentos.TabelaCBHPM"
+			name="procedimentoDaTabelaCBHPM" display-name="Tratamento" autocomplete="true">
+			<display-property name="codigoEDescricao"/>
+			<restrictions>
+		    	<restriction property-name="codigo" type="notequals" property-value="90000001"/>
+		    	<restriction property-name="codigo" type="notequals" property-value="90000002"/>
+		    	<restriction property-name="codigo" type="notequals" property-value="90000003"/>
+		    	<restriction property-name="codigo" type="notequals" property-value="90000004"/>
+			</restrictions>
+		</many-to-one>
+			
+		<collection 
+			class="br.com.infowaypi.ecarebc.odonto.EstruturaOdontoEFLayer" 
+			name="estruturas" display-name="Estruturas Odontológicas" indexed="true" 
+	    	master-detail="true"/>
+	    
+	    <validate-method name="validate">
+			<session-param name="usuario"/>
+		</validate-method>
+	</class-mapping>
+
+</jheat-mapping>

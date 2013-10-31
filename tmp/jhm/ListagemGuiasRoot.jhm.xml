@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<report
+		name="relatorioGuias"
+		method-name="buscarGuias"
+		class="br.com.infowaypi.ecare.services.RelatorioGuias"
+		display-name="Listagem de Guias" section="relatoriosAuditor,relatorioCentral,relatorioFaturista,relatoriosRedeCredenciada" response-by-ajax="false"
+		roles="root,gestor,auditor,centralDeServico,gerenciaRedeCredenciada">
+
+		<description>Relatório financeiro de guias para o usuário root</description>
+
+		<report-param name="dataInicial" required="true" scope="user" type="java.lang.String" display-name="Data inicial" input-type="date"/>
+		<report-param name="dataFinal" required="true" type="java.lang.String" display-name="Data final" input-type="date"/>
+		<report-param name="exibirGuias" type="java.lang.Boolean" display-name="Exibir Guias" input-type="boolean"/>
+
+		<select-param
+			name="prestadores"
+			display-name="Escolha o Prestador"
+			type="br.com.infowaypi.ecarebc.associados.Prestador">
+			<autocomplete style-class="autocomplete" minimum-characters="3" force-selection="true">
+				<search-property name="pessoaJuridica.fantasia" display-name="Prestador"/>
+				<name-property name="pessoaJuridica.fantasia" display-name="Prestador"/>
+			</autocomplete>	
+		</select-param>	
+		
+		<select-param
+			name="profissionaisCRM"
+			display-name="Escolha o Médico"
+			type="br.com.infowaypi.ecarebc.associados.Profissional">
+			<autocomplete style-class="autocomplete" minimum-characters="3" force-selection="true">
+				<search-property name="crm" display-name="Médico(Conselho)" search-type="likerigth"/>
+				<name-property name="crmNome" display-name="Médico(Conselho)"/>
+			</autocomplete>				
+		</select-param>
+		
+		
+		<report-param name="responsavel" type="java.lang.Boolean" display-name="Responsável" input-type="boolean" />
+		<report-param name="solicitante" type="java.lang.Boolean" display-name="Solicitante" input-type="boolean" />	
+
+		<select-param
+			name="procedimento"
+			display-name="Escolha o Procedimento Da Tabela CBHPM"
+			type="br.com.infowaypi.ecarebc.procedimentos.TabelaCBHPM">
+			
+			<autocomplete style-class="autocomplete" minimum-characters="3" force-selection="true">
+				<search-property name="codigoEDescricao" display-name="Descrição"/>
+				<name-property name="codigoEDescricao" display-name="Descrição"/>
+			</autocomplete>	
+			
+			<restrictions>
+				<restriction property-value="Ativo(a)" property-name="situacao.descricao" />
+			</restrictions>
+			
+		</select-param>	
+		
+		<select-param
+			name="tipoDeGuia"
+			display-name="Escolha o Tipo de Guia" type="java.lang.Integer">
+			<constants-group name="Tipo" class="br.com.infowaypi.ecarebc.constantes.Constantes">
+				<entry display-name="Todas" key-value="TIPO_GUIA_TODAS"/>	
+				<entry display-name="Exame" key-value="TIPO_GUIA_EXAME"/>	
+				<entry display-name="Consulta" key-value="TIPO_GUIA_CONSULTA"/>
+				<entry display-name="Consulta Urgência" key-value="TIPO_GUIA_CONSULTA_URGENCIA"/>
+				<entry display-name="Consulta Odontológica" key-value="TIPO_GUIA_CONSULTA_ODONTO"/>
+				<entry display-name="Consulta Odontológica Urgência" key-value="TIPO_GUIA_CONSULTA_ODONTO_URGENCIA"/>
+				<entry display-name="Tratamento Odontológico" key-value="TIPO_GUIA_TRATAMENTO_ODONTO"/>
+				<entry display-name="Cirurgia Odontológica" key-value="TIPO_GUIA_CIRURGIA_ODONTO"/>
+				<entry display-name="Atendimento Subsequente" key-value="TIPO_GUIA_ATENDIMENTO_SUBSEQUENTE"/>
+				<entry display-name="Internação Eletiva" key-value="TIPO_GUIA_INTERNACAO_ELETIVA"/>					
+				<entry display-name="Internação Urgência" key-value="TIPO_GUIA_INTERNACAO_URGENCIA"/>
+				<entry display-name="Internações" key-value="TIPO_GUIA_TODAS_INTERNACAO"/>
+				<entry display-name="Honorários Médicos" key-value="TIPO_GUIA_HONORARIO_MEDICO"/>
+				<entry display-name="Acompanhamento Anestésico" key-value="TIPO_GUIA_ACOMPANHAMENTO_ANESTESICO"/>
+				<entry display-name="Recursos de Glosa" key-value="TIPO_GUIA_RECURSO_GLOSA"/>
+			</constants-group>	
+		</select-param>
+		
+		<select-param
+			name="situacao" 
+			display-name="Escolha a Situação" type="java.lang.String">
+			<dropdown display-property="tipoDeGuia" display-name="" service-class="br.com.infowaypi.ecarebc.atendimentos.ResumoGuias" >
+				<depends-property  search-property="tipoDeGuia"  name="tipoDeGuia" type="java.lang.Integer" />
+			</dropdown>	
+		</select-param>
+
+		<select-param display-name="Tipo da data" name="tipoDeData" type="java.lang.Integer">
+			<constants-group name="Tipo da data" class="br.com.infowaypi.ecarebc.atendimentos.GuiaSimples">
+				<entry display-name="Criação" key-value="DATA_DE_MARCACAO"/>
+				<entry display-name="Situação" key-value="DATA_DE_SITUACAO"/>
+				<entry display-name="Início do Atendimento" key-value="DATA_DE_ATENDIMENTO"/>
+				<entry display-name="Termino de Atendimento" key-value="DATA_DE_TERMINO"/>
+				<entry display-name="Recebimento" key-value="DATA_DE_RECEBIMENTO"/>
+			</constants-group>
+		</select-param>
+			
+		<report-return name="resumo" type="br.com.infowaypi.ecarebc.atendimentos.ResumoGuias" display-name="Resultado Encontrado">
+			<html><![CDATA[
+					<%@ include file="/view/jsp/includes/RelatorioGuias.jsp" %>
+					<c:if test="${false == true}">	
+			]]></html>
+			
+			<collection-display display-name="Listagem das Guias" name="guiasFiltradas" page-size="50">
+				<display-property name="idGuia" display-name="Autorização" />
+				<display-property name="dataMarcacao" display-name="Criação" type="date"/>
+				<display-property name="dataAtendimento" display-name="Atendimento" type="date"/>
+				<display-property name="segurado.pessoaFisica.nome" display-name="Segurado" />
+				<display-property name="prestador.pessoaJuridica.fantasia" display-name="Prest." />
+				<display-property name="situacao.descricao" display-name="Sit." />
+				<display-property name="situacao.dataSituacao" display-name="Dt. Sit." type="date"/>
+				<display-property name="tipo" display-name="Tipo" />
+				<display-property name="permanencia" display-name="Permanência (Dias)" />
+				<display-property name="valorPagoPrestadorApresentacao" display-name="Valor para Pgto" type="money"/>
+				<display-property name="valorTotal" display-name="Total" type="bigdecimal"/>
+			</collection-display>
+			<html><![CDATA[
+				  </c:if>	
+			]]></html>
+
+		</report-return>
+	</report>	
+</jheat-mapping>

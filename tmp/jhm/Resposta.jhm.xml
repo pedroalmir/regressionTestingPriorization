@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<class-mapping class="br.com.infowaypi.ecare.questionarioqualificado.Resposta" name="Resposta"
+		display-name="Resposta" id-name="idResposta" section="" type="readonly">
+
+		<property name="pergunta.numeroItem" type="int" not-null="true">
+			<display options="listing" name="ITEM" />
+		</property>
+
+		<property name="pergunta.descricao" type="string" not-null="true">
+			<display options="listing" name="Pergunta" align="left"/>
+		</property>
+
+		<property name="assertiva" type="boolean" not-null="true">
+			<display options="listing" name="Assertiva" />
+		</property>
+
+		<property name="observacoes" type="string" not-null="true">
+			<display options="listing" name="Observacoes" />
+		</property>
+		
+	</class-mapping>
+</jheat-mapping>

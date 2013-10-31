@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+
+<jheat-mapping>
+
+	<class-mapping class="br.com.infowaypi.ecarebc.associados.PrestadorEspecialidadeTabelaCBHPM"
+	    type="dependent" depends="prestador" link-for-detail="tabelaCBHPM.codigo"  section="cadastros,cadastrosRedeCredenciada" 
+	    global-link="true"	name="PrestadorEspecialidadeTabelaCBHPM" display-name="Consulta por especialidade" 
+	    id-name="idPrestadorEspecialidadeTabelaCBHPM" roles="root,auditor,atendente,prestador,gerenciaRedeCredenciada">
+
+		<description>Especialidades da tabela do Saúde Recife</description>
+
+		<many-to-one
+			class="br.com.infowaypi.ecarebc.associados.Prestador"
+			name="prestador"
+			display-name="Prestador" autocomplete="true" options="search">
+			<display-property name="pessoaJuridica.fantasia"/>
+		</many-to-one>	
+		
+		<property name="tabelaCBHPM.codigo" calculated="true">
+			<display name="Código" options="listing"/>
+		</property>
+			
+		<property name="tabelaCBHPM.descricao" calculated="true">
+			<display name="Descrição" options="listing"/>
+		</property>
+		
+		<many-to-one name="tabelaCBHPM" display-name="Código ou descrição do Procedimento CBHPM"
+			options="search" class="br.com.infowaypi.ecarebc.procedimentos.TabelaCBHPM"
+			autocomplete="true">
+			<display-property name="codigoEDescricao" display-name="Código ou descrição do Procedimento CBHPM" />
+		</many-to-one>
+
+		<property name="liberarCoParticipacao" type="boolean" not-null="true">
+			<display name="Liberar Copaticipação" options="" />
+		</property>
+
+		<property name="urgencia" type="boolean" not-null="true">
+			<display name="Urgência" options="listing" />
+		</property>
+
+		<property name="eletivo" type="boolean" not-null="true">
+			<display name="Eletivo" options="listing" />
+		</property>
+		
+		<many-to-one name="especialidade" display-name="Especialidade"
+			options="listing" class="br.com.infowaypi.ecarebc.associados.Especialidade"
+			autocomplete="true">
+			<display-property name="descricao" display-name="Especialidade" />
+			<restrictions>
+					<restriction property-value="true" property-name="ativa" type="equals"/>
+			</restrictions> 
+		</many-to-one>
+		
+		<property name="tabelaCBHPM.valorModerado" calculated="true">
+			<display name="Valor(R$)" options="listing"/>
+		</property>
+		
+<!-- 		<property name="tabelaCBHPM.situacao.descricao" calculated="true"> -->
+<!-- 			<display name="Situação" options="listing"/> -->
+<!-- 		</property> -->
+		
+		<property name="situacao.descricao" type="string" not-null="true">
+			<display name="Situação" options="listing, detail-only"/>
+		</property>
+		
+		<collection class="br.com.infowaypi.msr.situations.Situacao"
+			name="situacoes"
+			display-name="Histórico de Situações"
+			master-detail="false"/>
+		
+		<validate-method name="validate">
+			<session-param name="usuario"/>
+		</validate-method>
+		
+		<methods>
+	    	<method display-name="Inativar" name="inativar" validate="false">
+	    		<step-param name="motivo" display-name="Motivo" size="100" input-type="string" type="java.lang.String"/>
+	    		<session-param name="usuario"/>
+				<messages>
+                    <question>Deseja realmante inativar este acordo?</question>
+                    <success>Situação alterada com sucesso. Acordo Inativo.</success>
+                    <error>Ocorreu um erro ao alterar a situação do Acordo. Tente novamente.</error>
+				</messages>		
+	    	</method>
+	    	<method display-name="Ativar" name="ativar" validate="false">
+	    		<step-param name="motivo" display-name="Motivo" size="100" input-type="string" type="java.lang.String"/>
+	    		<session-param name="usuario"/>
+				<messages>
+                    <question>Deseja realmante ativar este acordo?</question>
+                    <success>Situação alterada com sucesso. Acordo Ativo.</success>
+                    <error>Ocorreu um erro ao alterar a situação do Acordo. Tente novamente.</error>
+				</messages>		
+	    	</method>
+	    </methods>
+
+	</class-mapping>
+
+</jheat-mapping>

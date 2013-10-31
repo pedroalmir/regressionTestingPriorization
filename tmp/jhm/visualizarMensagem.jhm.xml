@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+<jheat-mapping>
+	<jheat-tag name="visualizarMensagem">
+	
+		<description>Visualização de mensagem</description>
+		<attribute name="msg" type="br.com.infowaypi.msr.msg.Mensagem" display-name="">
+			
+			<html><![CDATA[<infoway:tableSeparator titulo="Detalhamento da Mensagem" colspan="2" />]]>	</html>
+			
+			<display-property name="idMensagem" 		display-name="Código" 		type="long" />
+       		<display-property name="dataMensagem" 		display-name="Data/Hora" 	type="timestamp"/>
+       		<display-property name="tipoMensagem" 		display-name="Tipo" 		type="string" />
+       		<display-property name="remetente.nome" 	display-name="Remetente" 	type="string" />
+       		<display-property name="destinatario.nome" display-name="Destinatário" type="string" />
+       		<display-property name="assunto" 			display-name="Assunto" 		type="string" />
+       		<display-property name="mensagem" 			display-name="Conteúdo" 	type="text" />
+			
+		</attribute>
+		
+	</jheat-tag>
+</jheat-mapping>

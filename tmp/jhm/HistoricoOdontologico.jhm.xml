@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+<flow 
+	name="historicoOdontologico" 
+	class="br.com.infowaypi.ecare.services.odonto.GerarHistoricoOdontologico"
+	display-name="Histórico Odontológico" section="relatoriosAuditor"> 
+			
+	<description>Histórico Odontológico do beneficiário</description>		
+	
+	<step-method name="buscarSegurados" display-name="Buscar Segurado">
+		<step-param name="cpfTitular" size="24" mask="999.999.999-99" input-type="string" type="java.lang.String" display-name="CPF do Titular"/>
+		<step-param name="numeroDoCartao" size="24" mask="99.9999999999.99.9-9" input-type="string" type="java.lang.String" display-name="Número do cartão do Beneficiário"/>
+		 
+		<step-return name="segurados" type="br.com.infowaypi.ecare.segurados.ResumoSegurados" 
+	         display-name="Segurados" scope="session"/>
+	</step-method>
+	
+	<step-method name="gerarHistorico" display-name="Gerar Histórico">
+		<select-param
+				name="segurados"
+				type="br.com.infowaypi.ecare.segurados.Segurado"
+				display-name="Selecione o Beneficiário"
+				session-property-ref="segurados">
+			<radio-group>
+				<display-property name="numeroDoCartao" display-name="Número do Cartão"/>
+				<display-property name="pessoaFisica.nome" display-name="Nome"/>
+				<display-property name="tipoDeSegurado" display-name="Tipo"/>
+			</radio-group>
+		</select-param>
+			
+		<step-return name="historico" type="br.com.infowaypi.ecarebc.odonto.HistoricoOdontologico" 
+	         display-name="Histórico Odontológico" scope="session"/>
+	</step-method>
+	
+	<step-method display-name="Visualizar Histórico" name="finalizar">
+		<session-param name="historico">
+			<html>
+				<![CDATA[ <infoway:tableSeparator titulo="Informações do Beneficiário" colspan="2"/> ]]>
+			</html>
+			
+			<display-property name="odontograma.beneficiario.pessoaFisica.nome" display-name="Nome"/>
+			<display-property name="odontograma.beneficiario.numeroDoCartao" display-name="Cartão"/>
+			<display-property name="odontograma.beneficiario.pessoaFisica.descricaoDoSexo" display-name="Sexo"/>
+			<display-property name="odontograma.beneficiario.pessoaFisica.idade" display-name="Idade"/>
+
+			<html>
+			<![CDATA[
+					<infoway:Odontograma odontograma="${historico.odontograma}"/>
+				]]>
+			</html>
+			
+			<collection-display display-name="Listagem de Guias de Consulta" name="guias">
+				<display-property name="autorizacao" display-name="Autorização" />
+				<display-property name="dataAtendimento" display-name="Dt. Atendimento" type="date"/>
+				<display-property name="prestador.pessoaJuridica.fantasia" display-name="Prestador" />
+				<display-property name="profissional.nome" display-name="Profissional" />
+				<display-property name="situacao.descricao" display-name="Situação" />
+				<display-property name="situacao.dataSituacao" display-name="Dt. Sit." type="date"/>
+				<display-property name="tipo" display-name="Tipo" />
+				<display-property name="valorTotal" display-name="Total(R$)" type="money"/>
+			</collection-display>
+		</session-param>
+	</step-method>
+
+</flow>
+	
+</jheat-mapping>

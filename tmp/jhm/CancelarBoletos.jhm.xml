@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<flow 
+		name="cancelarBoletos" 
+		class="br.com.infowaypi.ecare.financeiro.boletos.CancelarBoletosService"
+		display-name="Cancelar Boletos" 
+		section="boletos">
+
+		<step-method name="buscarBoletos" display-name="Buscar Boleto" title="Buscar Boleto" buttons-position="bottom">
+			<step-param name="cpf" size="24" mask="999.999.999-99" input-type="string" type="java.lang.String" display-name="CPF do Beneficiário" required="false"/>
+			<step-param name="numeroDoCartao" size="24" mask="99.9999999999.99.9-9" input-type="string" type="java.lang.String" display-name="Número do cartão" required="false"/>			
+			<step-param name="competencia" display-name="Competência" input-type="month-year" required="true" type="java.util.Date"/>
+			<step-return 
+				name="resumo" 
+				type="br.com.infowaypi.ecare.financeiro.ResumoCobrancas" 
+		        display-name="Cobrancas Encontradas" 
+		        scope="session"/>
+		</step-method>
+		
+		<step-method name="informarValores" display-name="Informar Valores" buttons-position="both">
+		
+			<step-param name="motivoCancelamento" display-name="Motivo de Cancelamento" type="java.lang.String" size="50" />
+					
+			<collection-param display-name="Boletos" name="cobrancas" type="br.com.infowaypi.ecare.financeiro.Cobranca">
+				<checklist session-property-ref="resumo">
+					<display-property name="titular.numeroDoCartao" display-name="Número do Cartão"/>
+					<display-property name="titular.pessoaFisica.nome" display-name="Nome"/>
+					<display-property name="titular.tipoDeSegurado" display-name="Tipo"/>
+					<display-property name="competencia" display-name="Competência" type="month-year"/>
+					<display-property name="situacao.descricao" display-name="Situação" />
+					<display-property name="situacao.usuario.login" display-name="Usuário" />
+					<display-property name="dataPagamento" display-name="Data de Pagamento" type="date"/>
+					<display-property name="dataVencimento" display-name="Data de Vencimento" type="date"/>
+					<display-property name="valorCobradoComMultasEJuros" display-name="Valor Cobrado" type="money"/>
+					<display-property name="valorPago" display-name="Valor Pago" type="money"/>
+				</checklist>
+			</collection-param>
+			
+			<session-param name="resumo"/>
+			
+			<step-return 
+				name="resumo" 
+				type="br.com.infowaypi.ecare.financeiro.ResumoCobrancas" 
+		        display-name="Cobrancas Encontradas" 
+		        scope="session"/>
+		</step-method>
+		
+		<step-method name="conferirDados" display-name="Conferir Dados" buttons-position="both" committed="true">
+		
+			<session-param name="resumo" display-name="" operation="lock" >
+				<display-property display-name="Motivo de cancelamento informado" name="motivo"/>
+				<collection-display display-name="Boleto(s) Selecionado(s)" name="cobrancas">
+					<display-property name="titular.numeroDoCartao" display-name="Número do Cartão"/>
+					<display-property name="titular.pessoaFisica.nome" display-name="Nome"/>
+					<display-property name="titular.tipoDeSegurado" display-name="Tipo"/>
+					<display-property name="competencia" display-name="Competência" type="month-year" />
+					<display-property name="situacao.descricao" display-name="Situação" />
+					<display-property name="situacao.usuario.login" display-name="Usuário" />
+					<display-property name="dataPagamento" display-name="Data de Pagamento" type="date"/>
+					<display-property name="dataVencimento" display-name="Data de Vencimento" type="date"/>
+					<display-property name="valorCobradoComMultasEJuros" display-name="Valor Cobrado" type="money"/>
+					<display-property name="valorPago" display-name="Valor Pago" type="money"/>
+				</collection-display>			
+			</session-param>
+			
+			<session-param name="usuario" />
+			
+			<step-return 
+				name="resumo" 
+				type="br.com.infowaypi.ecare.financeiro.ResumoCobrancas" 
+		        display-name="Cobrancas Encontradas" 
+		        scope="session"/>
+		</step-method>
+		
+		<step-method name="finalizar" display-name="Cancelamento Efetuado" buttons-position="bottom" >
+			<html>
+				<![CDATA[
+					 <infoway:mensagemSucesso mensagem = "Boleto(s) Cancelado(s) com sucesso!"/>
+				]]>
+			</html>
+			<session-param name="resumo" display-name="Boleto(s) Encontrado(s)" operation="lock" >
+				<collection-display display-name="Boleto(s)" name="cobrancas">
+					<display-property name="titular.numeroDoCartao" display-name="Número do Cartão"/>
+					<display-property name="titular.pessoaFisica.nome" display-name="Nome"/>
+					<display-property name="titular.tipoDeSegurado" display-name="Tipo"/>
+					<display-property name="competencia" display-name="Competência" type="month-year"/>
+					<display-property name="situacao.descricao" display-name="Situação" />
+					<display-property name="situacao.usuario.login" display-name="Usuário" />
+					<display-property name="dataPagamento" display-name="Data de Pagamento" type="date"/>
+					<display-property name="dataVencimento" display-name="Data de Vencimento" type="date"/>
+					<display-property name="valorCobradoComMultasEJuros" display-name="Valor Cobrado" type="money"/>
+					<display-property name="valorPago" display-name="Valor Pago" type="money"/>
+				</collection-display>			
+			</session-param>			
+		</step-method>
+				
+	</flow>	
+</jheat-mapping>

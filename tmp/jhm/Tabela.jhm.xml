@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+	
+	<class-mapping class="br.com.infowaypi.ecarebc.planos.Tabela" name="Tabela" 
+		display-name="Tabelas" id-name="idTabela" 
+		link-for-detail="dataAtivacao" type="dependent" depends="plano"  section="">
+		
+		<description>Tabelas cadastradas no sistema</description>
+
+		<many-to-one options="" display-name="Plano"  name="plano" class="br.com.infowaypi.ecarebc.planos.Plano">
+			<display-property name="descricao"/>
+		</many-to-one>
+		
+		<property name="dataAtivacao" type="date" not-null="true">
+			<display name="Data de Ativação" options="search,listing" mask="99/99/9999" maxlength="10" size="12"/>
+		</property>
+
+		<property name="faixa01" type="money" not-null="true">
+			<display name="Faixa 01" options="listing" size="10"/>
+		</property>
+		
+		<property name="faixa02" type="money" not-null="true">
+			<display name="Faixa 02" options="listing" size="10"/>
+		</property>
+
+		<property name="faixa03" type="money" not-null="true">
+			<display name="Faixa 03" options="listing" size="10"/>
+		</property>
+
+		<property name="faixa04" type="money" not-null="true">
+			<display name="Faixa 04" options="listing" size="10"/>
+		</property>
+
+		<property name="faixa05" type="money" not-null="true">
+			<display name="Faixa 05" options="listing" size="10"/>
+		</property>
+
+		<property name="faixa06" type="money" not-null="true">
+			<display name="Faixa 06" options="listing" size="10"/>
+		</property>
+
+		<property name="faixa07" type="money" not-null="true">
+			<display name="Faixa 07" options="listing" size="10"/>
+		</property>
+
+		<property name="faixa08" type="money" not-null="true">
+			<display name="Faixa 08" options="listing" size="10"/>
+		</property>
+
+		<property name="faixa09" type="money" not-null="true">
+			<display name="Faixa 09" options="listing" size="10"/>
+		</property>
+
+		<property name="faixa10" type="money" not-null="true">
+			<display name="Faixa 10" options="listing" size="10"/>
+		</property>
+	
+	</class-mapping>
+
+</jheat-mapping>

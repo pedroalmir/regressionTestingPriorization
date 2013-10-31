@@ -1,104 +1,176 @@
-package com.pedroalmir.testPriorization.flow.antSystem.model.graph;
-
-import com.pedroalmir.testPriorization.flow.antSystem.model.graph.base.Link;
-
 /**
  * 
- * @author Pedro Almir
- * 
  */
-public class Edge implements Link {
-	
-	public int edgeId;
+package com.pedroalmir.testPriorization.flow.antSystem.model.graph;
+
+/**
+ * @author Pedro Almir
+ *
+ */
+public class Edge {
 	/**
-	 * Origem (Ponto de partida da formiga)
+	 * ID
 	 */
-	public Vertex origin;
+	private Long id;
 	/**
-	 * Destino (Vertice de chegada da formiga)
+	 * information
 	 */
-	public Vertex destiny;
+	private String information;
 	/**
-	 * Intensidade de feromonio na aresta ("Edge")
+	 * pheromone
 	 */
-	public double pheromone;
-	/**
-	 * Custo ou distância
-	 */
-	public double distance;
+	private double pheromone;
 	/**
 	 * Essa informação é usada apenas no ACS, pois o deposito usa o valor
 	 * do primeiro deposito de feromônio.
 	 */
-	public double pheromoneInicial;
-
+	public double pheromoneInitial;
 	/**
-	 * @param vertex1
-	 * @param vertex2
+	 * Custo ou distância
 	 */
-	public Edge(Vertex vertex1, Vertex vertex2) {
-		this.origin = vertex1;
-		this.destiny = vertex2;
-	}
-
+	private double distance; 
 	/**
-	 * @param origin
-	 * @param destiny
-	 * @param edgeId
+	 * begin
 	 */
-	public Edge(Vertex origin, Vertex destiny, int edgeId) {
-		this.origin = origin;
-		this.destiny = destiny;
-		this.edgeId = edgeId;
-	}
-
+	private Node begin;
 	/**
-	 * Este contrutor, foi modificado para operar de acordo com o ACS
-	 * 
-	 * @param vertex1
-	 * @param vertex2
-	 * @param edgeId
+	 * end
+	 */
+	private Node end;
+	
+	/**
+	 * @param information
 	 * @param pheromone
-	 * @param distance
+	 * @param begin
+	 * @param end
 	 */
-	public Edge(Vertex vertex1, Vertex vertex2, int edgeId, double pheromone, double distance) {
-		this(vertex1, vertex2, edgeId);
+	public Edge(String information, double pheromone, Node begin, Node end) {
+		this.information = information;
 		this.pheromone = pheromone;
-		this.pheromoneInicial = pheromone;
+		this.begin = begin;
+		this.end = end;
+		this.distance = 0.0;
+	}
+	/**
+	 * @param information
+	 * @param pheromone
+	 * @param begin
+	 * @param end
+	 * @param value
+	 */
+	public Edge(Long id, Node begin, Node end, double pheromone, double distance) {
+		this.id = id;
+		this.information = "Edge[" + begin.getId() + "-" + end.getId() + "], Pheromone: " + pheromone + ", Distance: " + distance;
+		this.pheromone = pheromone;
+		this.begin = begin;
+		this.end = end;
 		this.distance = distance;
 	}
-
-	public int getEdgeId() {
-		return edgeId;
+	/**
+	 * @param information
+	 * @param pheromone
+	 * @param begin
+	 * @param end
+	 */
+	public Edge(String information, Node begin, Node end) {
+		this.information = information;
+		this.pheromone = 0.0;
+		this.begin = begin;
+		this.end = end;
 	}
-	
+
+	/**
+	 * @return the id
+	 */
+	public Long getId() {
+		return id;
+	}
+
+	/**
+	 * @param id the id to set
+	 */
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	/**
+	 * @return the information
+	 */
+	public String getInformation() {
+		return information;
+	}
+
+	/**
+	 * @param information the information to set
+	 */
+	public void setInformation(String information) {
+		this.information = information;
+	}
+
+	/**
+	 * @return the pheromone
+	 */
 	public double getPheromone() {
 		return pheromone;
 	}
 
-	@Override
-	public double transitionProbability() {
-		return 0;
-	}
-
-	@Override
-	public double evaporation() {
-		return 0;
-	}
-
+	/**
+	 * @param pheromone the pheromone to set
+	 */
 	public void setPheromone(double pheromone) {
 		this.pheromone = pheromone;
 	}
 
-	public Vertex getOrigin() {
-		return origin;
+	/**
+	 * @return the begin
+	 */
+	public Node getBegin() {
+		return begin;
 	}
 
-	public Vertex getDestiny() {
-		return destiny;
+	/**
+	 * @param begin the begin to set
+	 */
+	public void setBegin(Node begin) {
+		this.begin = begin;
 	}
 
+	/**
+	 * @return the end
+	 */
+	public Node getEnd() {
+		return end;
+	}
+
+	/**
+	 * @param end the end to set
+	 */
+	public void setEnd(Node end) {
+		this.end = end;
+	}
+	
+	/**
+	 * @return the distance
+	 */
 	public double getDistance() {
 		return distance;
+	}
+	/**
+	 * @param distance the distance to set
+	 */
+	public void setDistance(double distance) {
+		this.distance = distance;
+	}
+	/**
+	 * @return the pheromoneInitial
+	 */
+	public double getPheromoneInitial() {
+		return pheromoneInitial;
+	}
+	/**
+	 * @param pheromoneInitial the pheromoneInitial to set
+	 */
+	public void setPheromoneInitial(double pheromoneInitial) {
+		this.pheromoneInitial = pheromoneInitial;
 	}
 }

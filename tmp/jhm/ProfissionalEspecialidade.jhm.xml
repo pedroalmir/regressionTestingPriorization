@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+	
+	<class-mapping class="br.com.infowaypi.ecare.programaPrevencao.ProfissionalEspecialidade" 
+		name="profissionalEspecialidade" display-name="Profissional Especialidade" 
+		id-name="idProfissionalEspecialidade">
+
+		<many-to-one
+			class="br.com.infowaypi.ecarebc.associados.Profissional"
+			name="profissional"
+			display-name="Profissional" autocomplete="true" options="listing">
+			<display-property name="pessoaFisica.nome"/>
+		</many-to-one>	
+
+		<many-to-one
+			class="br.com.infowaypi.ecarebc.associados.Especialidade"
+			name="especialidade"
+			display-name="Especialidade" autocomplete="true" options="listing">
+			<display-property name="descricao"/>
+		</many-to-one>	
+		
+		<role name="auditor" insert="false" exec="false" update="false" read="true" write="false"/>
+		
+		<validate-method name="validate"/>
+	</class-mapping>
+
+</jheat-mapping>

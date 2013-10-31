@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+	
+	<class-mapping class="br.com.infowaypi.ecare.financeiro.Cobranca" name="Cobranca" 
+		display-name="Cobrancas" id-name="idFluxoFinanceiro" link-for-detail="competencia" 
+        type="dependent" depends="titular" section="" roles="cobranca" global-link="true">
+
+		<description>Cobrancas Vinculadas ao Titular</description>
+
+		<many-to-one
+			options=""
+			class="br.com.infowaypi.ecare.segurados.TitularFinanceiroSR"
+			name="titular"
+			display-name="Titular">
+			<display-property name="pessoaFisica.nome"/>
+		</many-to-one>
+		
+		
+		<property name="competencia" type="date" not-null="true">
+			<display name="Competência" options="listing,detail-only" mask="99/99/9999" maxlength="10" size="20"/>
+	    </property>
+	    
+		<property name="dataVencimento" type="date" not-null="true">
+			<display name="Vencimento" options="detail-only" mask="99/99/9999" maxlength="10" size="20"/>
+	    </property>
+	    
+		<property name="dataPagamento" type="date" not-null="true">
+			<display name="Pagamento" options="listing" mask="99/99/9999" maxlength="10" size="20"/>
+	    </property>
+		
+		<property name="valorCobrado" not-null="true" type="money">
+			<display name="Valor Cobrado" options="listing,detail-only" size="20"/>
+	    </property>
+	    
+		<property name="valorPago" not-null="true" type="money" real-class="java.math.BigDecimal">
+			<display name="Valor Pago" options="listing" size="20" />
+	    </property>
+	    
+	    <property name="situacao.descricao" type="string" not-null="false" calculated="true" >
+			<display name="Situação" options="listing" />
+	    </property>
+	    
+	    <collection 
+			class="br.com.infowaypi.msr.situations.Situacao" 
+			name="situacoes" display-name="Histórico de Situações" 
+	    	master-detail="false"/>
+	    	
+	    <properties-order>
+			<property-order name="competencia" mode="desc"/>
+			<property-order name="dataVencimento" mode="desc"/>
+		</properties-order>
+	    	
+	    <validate-method name="validate"/>
+	   
+	</class-mapping>		
+
+		
+</jheat-mapping>

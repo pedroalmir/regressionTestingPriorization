@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+	
+	<class-mapping class="br.com.infowaypi.ecarebc.odonto.EstruturaOdontoEF" name="EstruturaOdontoEF" display-name="Estrutura Odontológica" 
+		id-name="idEstrutura" type="readonly" link-for-detail="idEstrutura" section="cadastros" global-link="true" roles="auditor, prestadorOdonto, centralDeServico, prestadorCompleto">
+
+		<many-to-one options="listing,search"
+			class="br.com.infowaypi.ecarebc.odonto.Dente" null-option="true" null-description="Selecione o Dente" disable-message="Selecione o Quadrante"
+			name="denteEF" display-name="Elemento" not-null="false">
+			<display-property name="descricao"/>
+		</many-to-one>
+		
+		<many-to-one options="listing,search"
+			class="br.com.infowaypi.ecarebc.odonto.Face" null-option="true" null-description="Selecione a Face" disable-message="Selecione o Dente"
+			name="faceEF" display-name="Face" not-null="false" service-class="br.com.infowaypi.ecarebc.odonto.Dente" target="faces">
+			<display-property name="descricao"/>
+			<depends-property name="denteEF" search-property="dente" type="br.com.infowaypi.ecarebc.odonto.Dente"/>
+		</many-to-one>
+		
+	    <collection 
+			class="br.com.infowaypi.ecarebc.procedimentos.ProcedimentoOdontoRestauracao" 
+			name="procedimentosRealizadosPorEstrutura" display-name="Tratamentos Odontológicos Realizados" 
+	    	master-detail="false"/>
+	    
+	     <collection 
+			class="br.com.infowaypi.ecarebc.procedimentos.ProcedimentoOdontoRestauracao" 
+			name="procedimentosSolicitadosPorEstrutura" display-name="Tratamentos Odontológicos Solicitados/Autorizados" 
+	    	master-detail="false"/>
+	    
+	    <collection 
+			class="br.com.infowaypi.ecarebc.procedimentos.ProcedimentoOdontoRestauracao" 
+			name="procedimentosNaoAutorizadosPorEstrutura" display-name="Tratamentos Odontológicos Não Autorizados" 
+	    	master-detail="false"/>
+	    	
+	    <validate-method name="validate"/>
+	    
+	</class-mapping>
+</jheat-mapping>

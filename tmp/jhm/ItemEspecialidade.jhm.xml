@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+
+<jheat-mapping>
+
+	<class-mapping class="br.com.infowaypi.ecarebc.associados.ItemEspecialidade"
+	    type="dependent" depends="prestador" link-for-detail="especialidade.descricao"  section="cadastros, cadastrosRedeCredenciada" 
+	    global-link="true"	name="ItemEspecialidade" display-name="Especialidades Associadas" 
+	    id-name="idItemEspecialidade" roles="root,auditor,atendente,prestador,gerenciaRedeCredenciada">
+
+		<description>Especialidades Associadas</description>
+
+		<many-to-one
+			class="br.com.infowaypi.ecarebc.associados.Prestador"
+			name="prestador"
+			display-name="Prestador" autocomplete="true" options="search">
+			<display-property name="pessoaJuridica.fantasia"/>
+		</many-to-one>	
+
+		<many-to-one name="especialidade" display-name="Especialidade"
+			options="listing,search" class="br.com.infowaypi.ecarebc.associados.Especialidade"
+			autocomplete="true">
+			<display-property name="descricao" display-name="Especialidade" />
+			<restrictions>
+					<restriction property-value="true" property-name="ativa" type="equals"/>
+			</restrictions> 
+		</many-to-one>
+		
+		
+		<property name="urgencia" type="boolean" not-null="true">
+			<display name="Urgência" options="listing" />
+		</property>
+
+		<property name="eletivo" type="boolean" not-null="true">
+			<display name="Eletivo" options="listing" />
+		</property>
+		
+		<property name="situacao.descricao" type="string" not-null="true">
+			<display name="Situação" options="listing, detail-only"/>
+		</property>
+		
+		<collection class="br.com.infowaypi.msr.situations.Situacao"
+			name="situacoes"
+			display-name="Histórico de Situações"
+			master-detail="false"/>
+			
+		<!-- Restrição para exibição do cadastro aos prestadores -->
+		<role name="prestador" update="false" insert="false" read="true" exec="false" write="false" />
+		<role name="prestadorCompleto" update="false" insert="false" read="true" exec="false" write="false" />
+		<role name="prestadorConsExmIntUrg" update="false" insert="false" read="true" exec="false" write="false" />
+		<role name="prestadorConsIntUrg" update="false" insert="false" read="true" exec="false" write="false" />
+		<role name="prestadorInternacaoExameUrgencia" update="false" insert="false" read="true" exec="false" write="false" />
+		<role name="prestadorConsulta" update="false" insert="false" read="true" exec="false" write="false" />
+		<role name="prestadorExame" update="false" insert="false" read="true" exec="false" write="false" />
+		<role name="prestadorConsultaExame" update="false" insert="false" read="true" exec="false" write="false" />
+		<role name="prestadorInternacaoUrgencia" update="false" insert="false" read="true" exec="false" write="false" />
+		<role name="prestadorOdonto" update="false" insert="false" read="true" exec="false" write="false" />
+		
+		<validate-method name="validate">
+			<session-param name="usuario"/>
+		</validate-method>
+		
+		<methods>
+	    	<method display-name="Inativar" name="inativar" validate="false">
+	    		<step-param name="motivo" display-name="Motivo" size="100" input-type="string" type="java.lang.String"/>
+	    		<session-param name="usuario"/>
+				<messages>
+                    <question>Deseja realmante inativar este acordo?</question>
+                    <success>Situação alterada com sucesso. Acordo Inativo.</success>
+                    <error>Ocorreu um erro ao alterar a situação do Acordo. Tente novamente.</error>
+				</messages>		
+	    	</method>
+	    	<method display-name="Ativar" name="ativar" validate="false">
+	    		<step-param name="motivo" display-name="Motivo" size="100" input-type="string" type="java.lang.String"/>
+	    		<session-param name="usuario"/>
+				<messages>
+                    <question>Deseja realmante ativar este acordo?</question>
+                    <success>Situação alterada com sucesso. Acordo Ativo.</success>
+                    <error>Ocorreu um erro ao alterar a situação do Acordo. Tente novamente.</error>
+				</messages>		
+	    	</method>
+	    </methods>
+
+	</class-mapping>
+
+</jheat-mapping>

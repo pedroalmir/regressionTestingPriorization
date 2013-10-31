@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<flow 
+		name="alteracaoDeImpostos" 
+		class="br.com.infowaypi.ecarebc.service.financeiro.AlteracaoDeFaturamento"
+		display-name="Alterar Impostos" section="financeiro">
+
+		
+		<description>Alteração de Impostos</description>
+		
+		<step-method name="buscarFaturamento" display-name="Escolha de faturamento" buttons-position="bottom">
+		
+			<step-param name="competencia" required="true" type="java.lang.String" display-name="Competï¿½ncia" mask="99/9999" input-type="string"/>
+
+			<select-param
+				name="prestadores"
+				display-name="Escolha o Prestador"
+				type="br.com.infowaypi.ecarebc.associados.Prestador">
+				<autocomplete style-class="autocomplete" minimum-characters="3" force-selection="true">
+					<search-property name="pessoaJuridica.fantasia" display-name="Prestador"/>
+					<name-property name="pessoaJuridica.fantasia" display-name="Prestador"/>
+				</autocomplete>
+				<restrictions>
+					<restriction property-value="Ativo(a)" property-name="situacao.descricao" type="equals" />
+				</restrictions>
+			</select-param>	
+
+			<step-return name="faturamento" type="br.com.infowaypi.ecarebc.financeiro.faturamento.Faturamento" 
+				 display-name="Faturamento" scope="session"/>
+
+		</step-method>
+		
+		<step-method name="alterarValor" display-name="Alterar Dados" committed="true">
+
+			<session-param name="faturamento" display-name="Alterar Dados">
+				<display-property name="competencia" display-name="Competï¿½ncia" type="date"/>
+				<display-property name="prestador.pessoaJuridica.fantasia" display-name="Prestador"/>
+				<display-property name="prestador.pessoaJuridica.pispasep" display-name="PisPasep"/>				
+				
+				<display-property name="prestador.pessoaJuridica.inscricaoMunicipal" display-name="Insc. Estadual"/>
+				<display-property name="prestador.informacaoFinanceira.banco.descricao" display-name="Banco"/>
+				<display-property name="prestador.informacaoFinanceira.agencia" display-name="Agï¿½ncia"/>
+				<display-property name="prestador.informacaoFinanceira.conta" display-name="Conta"/>
+				
+				<display-property name="valorBruto" display-name="Valor Bruto" type="money"/>
+				<display-property name="valorOutros" display-name="Valor Outros" type="money"/>
+				<display-property name="valorLiquido" display-name="Valor Lï¿½quidos" type="money"/>		
+				<display-property name="motivoValorOutros" display-name="Motivo"/>
+				
+				<html>
+					<![CDATA[ <infoway:tableSeparator titulo="Retenï¿½ï¿½es" colspan="2"/> ]]>
+				</html>
+
+				<collection-display name="retencoes" display-name="Retenï¿½ï¿½es">
+					<display-property name="descricao" display-name="Descriï¿½ï¿½o"/>
+					<display-property name="valorBaseDoCalculo" display-name="Valor Base" type="money"/>
+					<display-property name="percentualDoCalculo" display-name="Percentual" type="percentage"/>					
+					<display-property name="valorDeducaoBaseDoCalculo" display-name="Deduï¿½ï¿½o Base" type="money"/>
+					<display-property name="valorDeducao" display-name="Deduï¿½ï¿½o" type="money"/>
+					<display-property name="valorTotal" display-name="Valor" type="money"/>
+				</collection-display>
+				
+				<html>
+					<![CDATA[ <infoway:tableSeparator titulo="Glosas" colspan="2"/> ]]>
+				</html>
+				
+				<collection-display name="guiasComProcedimenosGlosados" display-name="Guias com Glosas">
+					<display-property name="autorizacao" display-name="Autorizaï¿½ï¿½o"/>
+					<display-property name="segurado.pessoaFisica.nome" display-name="Segurado" />
+					<display-property name="prestador.pessoaJuridica.fantasia" display-name="Prestador" />
+					<display-property name="situacao.descricao" display-name="Situaï¿½ï¿½o"/>
+					<display-property name="tipo" display-name="Tipo"/>
+					<display-property name="valorProcedimentosGlosados" display-name="Valor da Glosa" type="money"/>
+					<display-property name="valorTotal" display-name="Valor da Guia" type="money"/>
+				</collection-display>
+
+			</session-param>
+			
+			<step-param name="valorOutros" type="java.lang.String" display-name="Valor Outros" input-type="money"/>
+			<step-param name="motivoValorOutros" type="java.lang.String" display-name="Motivo" input-type="text"/>
+
+		</step-method>
+
+		<step-method name="finalizar" display-name="Informaï¿½ï¿½es do Faturamento">
+
+			<html>
+				<![CDATA[
+					<div class="alert confirmation not-for-print" style="margin-left:0;margin-right:0;">
+						Faturamento alterado com sucesso!
+					</div>					
+				]]>
+			</html>
+
+			<session-param name="faturamento" display-name="Alterar Dados">
+				<display-property name="competencia" display-name="Competï¿½ncia" type="date"/>
+				<display-property name="prestador.pessoaJuridica.fantasia" display-name="Prestador"/>
+				<display-property name="prestador.pessoaJuridica.pispasep" display-name="PisPasep"/>				
+				
+				<display-property name="prestador.pessoaJuridica.inscricaoMunicipal" display-name="Insc. Estadual"/>
+				<display-property name="prestador.informacaoFinanceira.banco.descricao" display-name="Banco"/>
+				<display-property name="prestador.informacaoFinanceira.agencia" display-name="Agï¿½ncia"/>
+				<display-property name="prestador.informacaoFinanceira.conta" display-name="Conta"/>
+				
+				<display-property name="valorBruto" display-name="Valor Bruto" type="money"/>
+				<display-property name="valorOutros" display-name="Valor Outros" type="money"/>
+				<display-property name="valorLiquido" display-name="Valor Lï¿½quidos" type="money"/>		
+				<display-property name="motivoValorOutros" display-name="Descriï¿½ï¿½o" type="text"/>
+				<html>
+					<![CDATA[ <infoway:tableSeparator titulo="Retenï¿½ï¿½es" colspan="2"/> ]]>
+				</html>
+
+				<collection-display name="retencoes" display-name="Retenï¿½ï¿½es">
+					<display-property name="descricao" display-name="Descriï¿½ï¿½o"/>
+					<display-property name="valorBaseDoCalculo" display-name="Valor Base" type="money"/>
+					<display-property name="percentualDoCalculo" display-name="Percentual" type="percentage"/>					
+					<display-property name="valorDeducaoBaseDoCalculo" display-name="Deduï¿½ï¿½o Base" type="money"/>
+					<display-property name="valorDeducao" display-name="Deduï¿½ï¿½o" type="money"/>
+					<display-property name="valorTotal" display-name="Valor" type="money"/>
+				</collection-display>
+	
+				<html>
+					<![CDATA[ <infoway:tableSeparator titulo="Glosas" colspan="2"/> ]]>
+				</html>
+				
+				<collection-display name="guiasComProcedimenosGlosados" display-name="Guias com Glosas">
+					<display-property name="autorizacao" display-name="Autorizaï¿½ï¿½o"/>
+					<display-property name="segurado.pessoaFisica.nome" display-name="Segurado" />
+					<display-property name="prestador.pessoaJuridica.fantasia" display-name="Prestador" />
+					<display-property name="situacao.descricao" display-name="Situaï¿½ï¿½o"/>
+					<display-property name="tipo" display-name="Tipo"/>
+					<display-property name="valorProcedimentosGlosados" display-name="Valor da Glosa" type="money"/>
+					<display-property name="valorTotal" display-name="Valor da Guia" type="money"/>
+				</collection-display>
+				
+			</session-param>
+
+		</step-method>
+	</flow>	
+</jheat-mapping>

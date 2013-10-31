@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+	<report
+		name="relatorioDemonstrativoPagamento"
+		method-name="buscarFluxoFinanceiro"
+		class="br.com.infowaypi.ecare.relatorio.portalBeneficiario.demostrativoIR.RelatorioDemonstrativoPagamento"
+		display-name="Demonstrativo de Pagt. para Imposto de Renda" section="relatoriosAuditor,portalBeneficiarioTitular" response-by-ajax="false"
+		roles="root,titular">
+
+		<description> Demonstrativo de Pagt. para Imposto de Renda </description>
+       	
+       		<html>
+				<![CDATA[
+				<style type="text/css">
+				<!--
+					.actionButtonPrint {
+					background: none repeat scroll 0 0 #E4E4FF;
+   					border-color: #F4F4FF #C4C4FF #C4C4FF #F4F4FF;
+   					border-style: solid;
+   					border-width: 1px;
+    				color: #333355;
+    				margin-top:10px;
+    				float: right;
+				}
+				-->
+			  </style>
+				
+				]]>
+			</html>
+       	
+		<session-param name="segurado" operation="reload">
+			<display-property name="nomeFormatado" display-name="Beneficiário"/>
+		
+			<access-restriction name="usuarioSegurado" type="edit">
+				<session-restriction name="usuario" property="role" operation="equals" value="titular" type="string" />
+			</access-restriction>
+			<access-restriction name="usuarioSegurado1" type="read">
+				<session-restriction name="usuario" property="role" operation="equals" value="titular" type="string" />
+			</access-restriction>
+		</session-param>
+
+		<report-param name="numeroDoCartao" size="24" mask="99.9999999999.99.9-9" input-type="string" type="java.lang.String" display-name="Número do cartão do beneficiário">
+			<access-restriction name="usuarioNaoSegurado" type="edit">
+				<session-restriction name="usuario" property="role" operation="notequals" value="titular" type="string" />
+			</access-restriction>		
+		</report-param>
+
+		<report-param name="ano" required="true" scope="user" display-name="Ano" type="java.lang.Integer" input-type="int" mask-detail="ex: 2011" maxlength="4" size="5"/>
+		
+		<report-return name="resumo" type="br.com.infowaypi.ecare.relatorio.portalBeneficiario.demostrativoIR.ResumoDemonstrativoPagamento">
+			
+			<display-property name="file" display-name="Download Demontrativo IR" type="file" type-file="pdf" name-file="fileName" />
+		
+		    <html>
+			<![CDATA[
+				<%@ include file="/view/jsp/includes/RelatorioCobrancasIR.jsp" %>
+				]]>
+			</html>	
+		
+					
+		<collection-display display-name="" name="compFluxosSeg" field-name="compFluxos" indexed="false" page-size="0" >
+				<display-property name="competencia" display-name="Competência" type="month-year"/>
+				<display-property name="dataPagamento" display-name="Pagamento" type="date" />
+				<display-property name="valorFinancimento" display-name="Financimento" type="money" />
+				<display-property name="valorCoparticipacao" display-name="Co-participação" type="money" />
+				<display-property name="valorSegundaViaCartao" display-name="2ª Via de Cartao" type="money" />
+				<display-property name="valorTotal" display-name="Total Pago" type="money" />
+				
+				<access-restriction name="usuarioSegurado2" type="read">
+					<session-restriction name="usuario" property="role" operation="equals" value="titular" type="string" />
+				</access-restriction>
+			</collection-display>
+
+			<collection-display display-name="" name="compFluxosNotSeg" field-name="compFluxos">
+				<display-property name="titular.nome" display-name="Titular" />
+				<display-property name="competencia" display-name="Competência" type="month-year"/>
+				<display-property name="dataPagamento" display-name="Pagamento" type="date" />
+				<display-property name="valorFinancimento" display-name="Financimento" type="money" />
+				<display-property name="valorCoparticipacao" display-name="Co-participação" type="money" />
+				<display-property name="valorSegundaViaCartao" display-name="2ª Via de Cartao" type="money" />
+				<display-property name="valorTotal" display-name="Total Pago" type="money" />				
+				<access-restriction name="usuarioNaoSegurado2" type="read">
+					<session-restriction name="usuario" property="role" operation="notequals" value="titular" type="string" />
+				</access-restriction>
+			</collection-display>
+
+		</report-return>
+	</report>	
+	
+</jheat-mapping>

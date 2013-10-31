@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+
+<jheat-mapping>
+<flow 
+	name="registrarEvolucao" 
+	class="br.com.infowaypi.ecarebc.service.internacao.RegistrarEvolucaoService"
+	display-name="Registrar Alta/Evolução" section="auditor, urgenciaInternacao">
+		
+	<description>Registrar Evolução</description>	
+	
+	<step-method name="buscarGuias" display-name="Buscar Guias" buttons-position="bottom">
+		<step-param name="autorizacao" display-name="Autorização da Guia" type="java.lang.String"/>
+		<step-param name="cartao" display-name="Número do Cartão" type="java.lang.String" mask="99.9999999999.99.9-9"/>
+		<step-return name="resumo" type="br.com.infowaypi.ecarebc.atendimentos.ResumoGuias" display-name="Guias de Internações" scope="session"/>
+	</step-method>
+
+	<step-method name="selecionarGuiaEvolucao" display-name="Selecionar Guia">
+		<select-param
+			name="guias"
+			type="br.com.infowaypi.ecarebc.atendimentos.GuiaInternacao"
+			display-name="Selecione a Guia"
+			session-property-ref="resumo" >
+			<radio-group>
+				<display-property name="autorizacao" display-name="Autorização"/>
+				<display-property name="tipo" display-name="Tipo de Guia"/>			
+				<display-property name="segurado.pessoaFisica.nome" display-name="Beneficiário"/>
+				<display-property name="situacao.descricao" display-name="Situação"/>
+				<display-property name="situacao.dataSituacao" display-name="Data" type="date"/>				
+				<display-property name="valorTotal" display-name="Valor total" type="money"/>								
+			</radio-group>
+		</select-param>	
+				
+		<step-return name="guia" type="br.com.infowaypi.ecarebc.atendimentos.GuiaInternacao" 
+		     display-name="guiaSelecionada" scope="session"/>
+	</step-method>
+	
+	<step-method display-name="Registrar Evolução" name="registrarEvolucao" buttons-position="bottom">
+
+		<session-param name="usuario"/>
+
+		<session-param name="guia" operation="none"/>
+
+		<step-param name="descricao" input-type="text" type="java.lang.String" display-name="Quadro Clínico"/>
+
+		<step-param name="isRegistrarAlta" input-type="boolean" type="java.lang.Boolean" display-name="Registrar Alta"/>
+
+		<step-param name="dataAlta" input-type="date" type="java.util.Date" display-name="Data da Alta"/>
+
+		<select-param name="motivo" display-name="" type="br.com.infowaypi.ecarebc.atendimentos.alta.MotivoAlta" null-option="true">
+			<combo display-property="descricaoCompleta" display-name="Motivo de Alta" />
+			<!-- autocomplete minimum-characters="3" style-class="autocomplete" force-selection="true">
+				<search-property display-name="Motivo de Alta" name="descricao"/>
+				<name-property display-name="Motivo de alta" name="descricao"/>
+			</autocomplete-->
+		</select-param>
+		
+		<html>
+			<![CDATA[
+				<infoway:tableSeparator titulo="Hist&oacute;rico da Guia" colspan="2" />
+				<tr>
+					<td colspan="2"><display:table id="item"
+						name="${guia.situacoes}" export="false"
+						class="yellowTable">
+			
+						<display:column title="Data" sortable="false">
+							<fmt:formatDate value="${item.dataSituacao}"
+								pattern="dd/MM/yyyy HH:mm" />
+						</display:column>
+						<display:column property="descricao" decorator=""
+							title="Situa&ccedil;&atilde;o" sortable="false" />
+						<display:setProperty name="basic.empty.showtable" value="true" />
+						<display:column property="motivo" decorator=""
+							title="Descri&ccedil;&atilde;o" sortable="false" />
+						<display:column property="usuario.login" decorator=""
+							title="Usu&aacute;rio" sortable="false" />
+						<display:setProperty name="basic.empty.showtable" value="true" />
+			
+					</display:table></td>
+				</tr>
+				
+				
+				<infoway:tableSeparator
+				titulo="Evolu&ccedil;&atilde;o" colspan="2" />
+				<tr>
+					<td colspan="2"><display:table id="itemQuadro"
+						name="${guia.quadrosClinicos}" export="false"
+						class="yellowTable">
+						<display:column title="Data" sortable="false">
+							<fmt:formatDate value="${itemQuadro.dataJustificativa}" pattern="dd/MM/yyyy HH:mm" />
+						</display:column>
+						<display:column property="justificativa"
+						decorator="" title="Quadro cl&iacute;nico" sortable="false" />
+						<display:setProperty name="basic.empty.showtable" value="true" />
+					</display:table></td>
+				</tr>
+				<br/>
+				<br/>
+			]]>
+		</html>
+		
+		<step-return name="guia" type="br.com.infowaypi.ecarebc.atendimentos.GuiaInternacao" display-name="guiaEvoluida" scope="session"/>
+	</step-method>
+
+	<step-method name="salvarGuia" display-name="Conferir Dados" committed="true" title="Conferir Dados">
+			
+			<session-param name="guia" operation="none"/>
+				
+			<html>
+				<![CDATA[
+					<infoway:GuiaApresentacao guiaApresentacao="${guia}"/>
+				]]>
+			</html>
+			
+	</step-method>
+
+	<step-method name="finalizar" display-name="Finalizar" title="Finalizar">
+		<html>
+			<![CDATA[  <infoway:mensagemSucessoMarcacoes mensagem="Operação realizada com sucesso!" autorizacao="${guia.autorizacao}"/> ]]>
+		</html>
+
+		<session-param name="guia"/>
+			
+		<html>
+			<![CDATA[
+				<infoway:GuiaApresentacao guiaApresentacao="${guia}"/>
+			]]>
+		</html>
+		
+	</step-method>
+</flow>
+</jheat-mapping>

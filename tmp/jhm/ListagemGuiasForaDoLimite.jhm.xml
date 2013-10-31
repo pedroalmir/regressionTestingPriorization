@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<report
+		name="relatorioGuiasForaDoLimite"
+		method-name="buscarGuias"
+		class="br.com.infowaypi.ecare.services.RelatorioGuiasExameForaDoLimiteService"
+		display-name="Listagem de Guias Fora do Limite" section="relatoriosAuditor,relatorioCentral" response-by-ajax="true" 
+		roles="root,gestor">
+
+		<description>Relatório de guias fora do limite para o usuário root</description>
+		
+		<!--html>
+			<![CDATA[
+				<c:set var="mensagemInformacao" value="Não serão mostradas as guias agendadas no Proteção que não estão Confirmadas." scope="request"/>
+				<%@ include file="/view/jsp/includes/MensagemDeInformacaoAtencao.jsp" %>
+			]]>
+		</html-->
+
+		<report-param name="dataInicial" required="true" scope="user" type="java.lang.String" display-name="Data inicial" input-type="date"/>
+		<report-param name="dataFinal" required="true" type="java.lang.String" display-name="Data final" input-type="date"/>
+		<!--report-param name="exibirGuias" type="java.lang.Boolean" display-name="Exibir Guias" input-type="boolean"/-->
+
+		<!--select-param
+			name="prestadores"
+			display-name="Escolha o Prestador"
+			type="br.com.infowaypi.ecarebc.associados.Prestador">
+			<autocomplete style-class="autocomplete" minimum-characters="3" force-selection="true">
+				<search-property name="pessoaJuridica.fantasia" display-name="Prestador"/>
+				<name-property name="pessoaJuridica.fantasia" display-name="Prestador"/>
+			</autocomplete>	
+		</select-param -->	
+
+		<!--select-param
+			name="tipoDeGuia"
+			display-name="Escolha o Tipo de Guia" type="java.lang.Integer">
+			<constants-group name="Tipo" class="br.com.infowaypi.ecarebc.constantes.Constantes">
+				<entry display-name="Todas" key-value="TIPO_GUIA_TODAS"/>	
+				<entry display-name="Exame" key-value="TIPO_GUIA_EXAME"/>	
+				<entry display-name="Consulta" key-value="TIPO_GUIA_CONSULTA"/>
+				<entry display-name="Consulta Urgência" key-value="TIPO_GUIA_CONSULTA_URGENCIA"/>
+				<entry display-name="Consulta Odontológica" key-value="TIPO_GUIA_CONSULTA_ODONTO"/>
+				<entry display-name="Consulta Odontológica Urgência" key-value="TIPO_GUIA_CONSULTA_ODONTO_URGENCIA"/>
+				<entry display-name="Tratamento Odontológico" key-value="TIPO_GUIA_TRATAMENTO_ODONTO"/>
+				<entry display-name="Atendimento Subsequente" key-value="TIPO_GUIA_ATENDIMENTO_SUBSEQUENTE"/>
+				<entry display-name="Internação Eletiva" key-value="TIPO_GUIA_INTERNACAO_ELETIVA"/>					
+				<entry display-name="Internação Urgência" key-value="TIPO_GUIA_INTERNACAO_URGENCIA"/>
+			</constants-group>	
+		</select-param -->	
+			
+		<!--select-param
+			name="situacao" 
+			display-name="Escolha a Situação" type="java.lang.String" >
+			<dropdown display-property="tipoDeGuia" display-name="" service-class="br.com.infowaypi.ecarebc.atendimentos.ResumoGuias" >
+				<depends-property  search-property="tipoDeGuia"  name="tipoDeGuia" type="java.lang.Integer" />
+			</dropdown>	
+		</select-param -->
+
+		<select-param display-name="Tipo da data" name="tipoDeData" type="java.lang.Integer">
+			<constants-group name="Tipo da data" class="br.com.infowaypi.ecarebc.atendimentos.GuiaSimples">
+				<entry display-name="Criação" key-value="DATA_DE_MARCACAO"/>
+				<entry display-name="Atendimento" key-value="DATA_DE_ATENDIMENTO"/>
+			</constants-group>
+		</select-param>
+			
+		<report-return name="resumo" type="br.com.infowaypi.ecare.services.ResumoGuiasForaDoLimite" 
+			 display-name="Resultado Encontrado">
+
+			<html>
+			<![CDATA[
+				<%@ include file="/view/jsp/includes/RelatorioGuiasForaDoLimite.jsp" %>
+				]]>
+			</html>		
+
+		</report-return>
+		
+	</report>	
+	
+</jheat-mapping>

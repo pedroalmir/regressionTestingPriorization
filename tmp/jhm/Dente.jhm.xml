@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+	
+	<class-mapping class="br.com.infowaypi.ecarebc.odonto.Dente" name="Dente" display-name="Dentes" 
+		id-name="idDente" link-for-detail="numero" type="simple" section="cadastros, cadastrosAuditor">
+		
+		<description>Dentes</description>
+		
+		<property name="descricao" type="string" not-null="true">
+			<display name="Descrição" options="search,detail-only"/>
+	    </property>
+	    
+	    <many-to-one options="listing"
+			class="br.com.infowaypi.ecarebc.odonto.Quadrante" 
+			name="quadrante" display-name="Quadrante" 
+			autocomplete="false" not-null="false">
+			<display-property name="descricao"/>
+		</many-to-one>
+	    
+	    <many-to-one options="none"
+			class="br.com.infowaypi.ecarebc.odonto.TipoDente" 
+			name="tipoDente" display-name="Tipo de Dente" autocomplete="false">
+			<display-property name="tipo"/>
+		</many-to-one>
+	    
+	    <select-property display-name="Número" options="listing" name="numero">
+	    	<entry display-name="Nenhum" key-value="NENHUM"/>
+	    	<entry display-name="11" key-value="DENTE_11"/>
+	    	<entry display-name="12" key-value="DENTE_12"/>
+	    	<entry display-name="13" key-value="DENTE_13"/>
+	    	<entry display-name="14" key-value="DENTE_14"/>
+	    	<entry display-name="15" key-value="DENTE_15"/>
+	    	<entry display-name="16" key-value="DENTE_16"/>
+	    	<entry display-name="17" key-value="DENTE_17"/>
+	    	<entry display-name="18" key-value="DENTE_18"/>
+	    	
+	    	<entry display-name="21" key-value="DENTE_21"/>
+	    	<entry display-name="22" key-value="DENTE_22"/>
+	    	<entry display-name="23" key-value="DENTE_23"/>
+	    	<entry display-name="24" key-value="DENTE_24"/>
+	    	<entry display-name="25" key-value="DENTE_25"/>
+	    	<entry display-name="26" key-value="DENTE_26"/>
+	    	<entry display-name="27" key-value="DENTE_27"/>
+	    	<entry display-name="28" key-value="DENTE_28"/>
+	    	
+	    	<entry display-name="31" key-value="DENTE_31"/>
+	    	<entry display-name="32" key-value="DENTE_32"/>
+	    	<entry display-name="33" key-value="DENTE_33"/>
+	    	<entry display-name="34" key-value="DENTE_34"/>
+	    	<entry display-name="35" key-value="DENTE_35"/>
+	    	<entry display-name="36" key-value="DENTE_36"/>
+	    	<entry display-name="37" key-value="DENTE_37"/>
+	    	<entry display-name="38" key-value="DENTE_38"/>
+	    	
+	    	<entry display-name="41" key-value="DENTE_41"/>
+	    	<entry display-name="42" key-value="DENTE_42"/>
+	    	<entry display-name="43" key-value="DENTE_43"/>
+	    	<entry display-name="44" key-value="DENTE_44"/>
+	    	<entry display-name="45" key-value="DENTE_45"/>
+	    	<entry display-name="46" key-value="DENTE_46"/>
+	    	<entry display-name="47" key-value="DENTE_47"/>
+	    	<entry display-name="48" key-value="DENTE_48"/>
+	    	
+	    	<entry display-name="51" key-value="DENTE_51"/>
+	    	<entry display-name="52" key-value="DENTE_52"/>
+	    	<entry display-name="53" key-value="DENTE_53"/>
+	    	<entry display-name="54" key-value="DENTE_54"/>
+	    	<entry display-name="55" key-value="DENTE_55"/>
+	    	<entry display-name="56" key-value="DENTE_56"/>
+	    	
+	    	<entry display-name="61" key-value="DENTE_61"/>
+	    	<entry display-name="62" key-value="DENTE_62"/>
+	    	<entry display-name="63" key-value="DENTE_63"/>
+	    	<entry display-name="64" key-value="DENTE_64"/>
+	    	<entry display-name="65" key-value="DENTE_65"/>
+	    	<entry display-name="66" key-value="DENTE_66"/>
+	    	
+	    	<entry display-name="71" key-value="DENTE_71"/>
+	    	<entry display-name="72" key-value="DENTE_72"/>
+	    	<entry display-name="73" key-value="DENTE_73"/>
+	    	<entry display-name="74" key-value="DENTE_74"/>
+	    	<entry display-name="75" key-value="DENTE_75"/>
+	    	<entry display-name="76" key-value="DENTE_76"/>
+	    	
+	    	<entry display-name="81" key-value="DENTE_81"/>
+	    	<entry display-name="82" key-value="DENTE_82"/>
+	    	<entry display-name="83" key-value="DENTE_83"/>
+	    	<entry display-name="84" key-value="DENTE_84"/>
+	    	<entry display-name="85" key-value="DENTE_85"/>
+	    	<entry display-name="86" key-value="DENTE_86"/>
+	    </select-property>
+		
+		<many-to-one options="none"
+			class="br.com.infowaypi.ecarebc.odonto.Face" 
+			name="mesial" display-name="Mesial" autocomplete="false">
+			<display-property name="descricao"/>
+		</many-to-one>
+		
+		<many-to-one options="none"
+			class="br.com.infowaypi.ecarebc.odonto.Face" 
+			name="oclusal_Incisiva" display-name="Oclusal/Incisiva" autocomplete="false">
+			<display-property name="descricao"/>
+		</many-to-one>
+		
+		<many-to-one options="none"
+			class="br.com.infowaypi.ecarebc.odonto.Face" 
+			name="lingual_Palatina" display-name="Lingual/Palatina" autocomplete="false">
+			<display-property name="descricao"/>
+		</many-to-one>
+		
+		<many-to-one options="none"
+			class="br.com.infowaypi.ecarebc.odonto.Face" 
+			name="vestibular" display-name="Vestibular" autocomplete="false">
+			<display-property name="descricao"/>
+		</many-to-one>
+		
+		<many-to-one options="none"
+			class="br.com.infowaypi.ecarebc.odonto.Face" 
+			name="distal" display-name="Distal" autocomplete="false">
+			<display-property name="descricao"/>
+		</many-to-one>
+		
+		<!-- cadastros -->
+		<role name="root" insert="true" exec="true" update="true" read="true" write="true"/>
+		<role name="atendente" insert="false" exec="false" update="false" read="true" write="false"/>
+		
+		<!-- cadastrosAuditor -->
+		<role name="auditor" insert="false" exec="false" update="false" read="true" write="false"/>
+		<role name="regulador" insert="false" exec="false" update="false" read="true" write="false"/>
+		<role name="faturista" insert="false" exec="false" update="false" read="true" write="false"/>
+		<role name="auditorOdonto" insert="false" exec="false" update="false" read="true" write="false"/>
+		<role name="diretoriaMedica" insert="false" exec="false" update="false" read="true" write="false"/>
+
+		<validate-method name="validate"/>
+
+	</class-mapping>
+
+</jheat-mapping>

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<flow
+	name="GeradorAdHoc" 
+	class="report.CreateCriteria"
+	display-name="Gerador Ad hoc" section="relatoriosCadernoSR">
+		
+	<step-method name="escolherTabela" display-name="Escolher Tabela" title="Escolher Tabela" buttons-position="bottom" >
+		<collection-param display-name="" name="">
+			<checklist>
+				<display-property name="" display-name="Teste1" type="string"/>
+			</checklist>
+		</collection-param>
+	</step-method>
+	
+	<step-method name="escolherCampo" display-name="Escolher Campos">
+		<select-param
+			name="guias"
+			type="br.com.infowaypi.ecarebc.atendimentos.GuiaSimples"
+			display-name="Selecione a Guia"
+			session-property-ref="resumoGuias" operation="none">
+			<radio-group default-checked="none">
+				<display-property name="autorizacao" display-name="Autorização"/>
+				<display-property name="tipo" display-name="Tipo da Guia"/>
+				<display-property name="dataAtendimento" display-name="Atendimento" type="date"/>				
+				<display-property name="segurado.pessoaFisica.nome" display-name="Beneficiário"/>
+				<display-property name="situacao.descricao" display-name="Situação"/>
+				<display-property name="situacao.dataSituacao" display-name="Data" type="date"/>				
+				<display-property name="valorTotal" display-name="Valor total" type="money"/>		
+			</radio-group>
+		</select-param>
+		<step-return name="guia" type="br.com.infowaypi.ecarebc.atendimentos.GuiaSimples" 
+			 display-name="" scope="session"/>
+	</step-method>
+	
+	<step-method name="finalizar" display-name="Imprimir Comprovante de Confirmação" title="Imprimir Comprovante">
+			
+		<session-param name="guia" operation="none"/>
+		
+		<html>
+			<![CDATA[ 
+				<span class="not-for-print">
+					<button type="button" name="imprimir" class="actionButton" onclick="window.print();">Imprimir</button>
+				</span>
+			]]>
+		</html>
+			
+		<html>
+			<![CDATA[
+				<infoway:GuiaApresentacao guiaApresentacao="${guia}"/>
+			]]>
+		</html>
+
+		
+		<html>
+			<![CDATA[
+					<infoway:imprimirGuia titulo="REIMPRESSAO DE GUIA"/> 
+					<span class="not-for-print">
+						<button type="button" name="imprimir" class="actionButton" onclick="window.print();">Imprimir</button>
+					</span>
+			]]>
+			</html>
+			
+
+	</step-method>
+</flow>	
+	
+</jheat-mapping>

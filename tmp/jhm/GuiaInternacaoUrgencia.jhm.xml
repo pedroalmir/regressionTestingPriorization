@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<class-mapping class="br.com.infowaypi.ecarebc.atendimentos.GuiaInternacaoUrgencia" name="GuiaInternacaoUrgencia" display-name="Internação de Urgência" 
+		id-name="idGuia" link-for-detail="autorizacao" type="readonly" section="" roles="root,auditor,atendente,prestador,prestadorCompleto,
+		prestadorConsulta,prestadorExame,prestadorConsultaExame,prestadorInternacaoUrgencia,prestadorOdonto,prestadorAnestesista,
+		prestadorConsExmIntUrg,prestadorInternacaoExameUrgencia,gestor">
+
+		<property name="autorizacao" type="string" not-null="true">
+			<display name="Autorização" options="listing,search,detail-only" maxlength="6" align="center" size="20"/>
+	    </property>  
+	    
+		<property name="tipo" type="string" not-null="true">
+			<display name="Tipo de Guia" options="listing,detail-only" maxlength="6" align="center" size="20"/>
+	    </property>  
+
+		<property name="dataMarcacao" type="date" not-null="true">
+			<display name="Dta. Marcação" options="" mask="99/99/9999" maxlength="10" size="20"/>
+	    </property>
+		
+		<property name="dataAtendimento" type="date" not-null="true">
+			<display name="Dta. Atendimento" options="" mask="99/99/9999" maxlength="10" size="20"/>
+	    </property>
+		
+		<many-to-one options="listing,search"
+			class="br.com.infowaypi.ecare.segurados.Segurado" 
+			name="segurado" display-name="Segurado" autocomplete="true">
+			<display-property name="pessoaFisica.nome"/>
+		</many-to-one>		
+		
+		<many-to-one options=""
+			class="br.com.infowaypi.ecarebc.associados.Profissional" 
+			name="profissional" display-name="Profissional" autocomplete="true" mask-detail="As 7 letras iniciais" minimum-characters="7">
+			<display-property name="pessoaFisica.nome"/>
+		</many-to-one>
+		
+		<many-to-one options=""
+			class="br.com.infowaypi.ecarebc.associados.Profissional" 
+			name="solicitante" display-name="Solicitante" autocomplete="true">
+			<display-property name="pessoaFisica.nome"/>
+		</many-to-one>
+		
+		<many-to-one options="listing,search"
+			class="br.com.infowaypi.ecarebc.associados.Prestador" 
+			name="prestador" display-name="Prestador" autocomplete="true">
+			<display-property name="pessoaJuridica.fantasia"/>
+		</many-to-one>		
+		
+		<many-to-one options=""
+			class="br.com.infowaypi.ecarebc.associados.Especialidade" 
+			name="especialidade" display-name="Especialidade" autocomplete="true">
+			<display-property name="descricao"/>
+		</many-to-one>
+
+		<property name="valoresMatMed.valorTotalInformado" not-null="true" type="money">
+			<display name="Valores Complementares Solicitado" options="listing,detail-only"/>
+	    </property>
+	    
+		<property name="valoresMatMed.valorTotalAuditado" not-null="true" type="money">
+			<display name="Valores Complementares Auditado" options="listing,detail-only"/>
+	    </property>
+	    
+		<property name="valorTotal" not-null="true" type="money">
+			<display name="Valor Total" options="listing,detail-only"/>
+	    </property>  
+			
+		<collection 
+			class="br.com.infowaypi.ecarebc.procedimentos.Procedimento" 
+			name="procedimentosSimples" display-name="Consulta/Exames" 
+	    	master-detail="false" order="asc" />
+
+		<collection 
+			class="br.com.infowaypi.ecare.procedimentos.ProcedimentoCirurgicoSR" 
+			name="procedimentosCirurgicos" display-name="Procedimentos Cirúrgicos" 
+	    	master-detail="false" />
+		
+		<collection 
+			class="br.com.infowaypi.ecarebc.atendimentos.acordos.itensAcordos.ItemPacote" 
+			name="itensPacote" display-name="Pacotes" 
+	    	master-detail="false"  />
+	    	
+	    <collection 
+			class="br.com.infowaypi.ecarebc.atendimentos.acordos.itensAcordos.ItemTaxa" 
+			name="itensTaxa" display-name="Taxas"
+	    	master-detail="false"/>
+	    
+	    <collection 
+			class="br.com.infowaypi.ecarebc.atendimentos.acordos.itensAcordos.ItemDiaria" 
+			name="itensDiaria" display-name="Diárias"
+	    	master-detail="false"/>
+	    	
+	    <collection 
+			class="br.com.infowaypi.ecarebc.atendimentos.acordos.itensAcordos.ItemGasoterapia" 
+			name="itensGasoterapia" display-name="Gasoterapias"
+	    	master-detail="false"/>
+
+		<collection 
+			class="br.com.infowaypi.ecarebc.procedimentos.CID" 
+			name="cids" display-name="CID" 
+	    	master-detail="false"/>
+
+	    <collection 
+			class="br.com.infowaypi.msr.situations.Situacao" 
+			name="situacoes" display-name="Histórico de Operações" 
+	    	master-detail="false"/>
+		
+	</class-mapping>    
+	
+</jheat-mapping>

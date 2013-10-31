@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+	
+	<class-mapping class="br.com.infowaypi.ecarebc.atendimentos.acordos.AcordoTaxa" name="AcordoTaxa" display-name="Acordo Taxa" 
+		id-name="idAcordo" link-for-detail="taxa.codigo" type="dependent" depends="prestador" section="cadastros,cadastrosRedeCredenciada,cadastrosConvidado"  global-link="true"
+		roles="root,auditor,atendente,prestador,gerenciaRedeCredenciada">
+
+		<property name="idAcordo" calculated="true">
+			<display name="Código Acordo"  options=""/>
+		</property>
+		
+		<property name="taxa.codigo" calculated="true">
+			<display name="Código" options="listing"/>
+		</property>
+
+		<many-to-one class="br.com.infowaypi.ecarebc.atendimentos.Taxa" name="taxa" not-null="true"
+	    	display-name="Código ou descrição da taxa" autocomplete="true" options="search" >
+			<display-property name="codigoDescricao"/>
+		</many-to-one>
+		
+		<property name="taxa.descricao" calculated="true" >
+			<display options="listing" name="Descrição Taxa"/>
+		</property>
+
+		<many-to-one
+			class="br.com.infowaypi.ecarebc.associados.Prestador"
+			name="prestador"
+			display-name="Prestador" autocomplete="true"  options="listing,search">
+			<display-property name="pessoaJuridica.fantasia"/>
+		</many-to-one>		
+		
+		<property name="valor" not-null="false" type="money" real-class="java.math.BigDecimal">
+			<display name="Valor (R$)" options="listing"/>
+	    </property>  		
+	    
+		<property name="situacao.descricao" type="string" not-null="true">
+			<display name="Situação" options="listing, detail-only"/>
+		</property>
+		
+		<collection class="br.com.infowaypi.msr.situations.Situacao"
+			name="situacoes"
+			display-name="Histórico de Situações"
+			master-detail="false"/> 
+		
+		<!-- cadastros -->
+		<role name="root" exec="true" insert="true" read="true" update="true" write="true"/>
+		<role name="atendente" read="true" exec="false" insert="false" update="false" write="false"/>
+		
+		<!-- outros -->
+		<role name="gerenciaRedeCredenciada" exec="true" insert="true" read="true" update="true" write="true"/>
+		<role name="auditor" read="true" exec="false" insert="false" update="false" write="false"/>
+		<role name="prestador" read="true" exec="false" insert="false" update="false" write="false"/>
+		
+		<validate-method name="validate">
+			<session-param name="usuario"/>
+		</validate-method>
+	    
+  		<methods>
+	    	<method display-name="Inativar" name="inativar" validate="false">
+	    		<step-param name="motivo" display-name="Motivo" size="100"/>
+	    		<session-param name="usuario"/>
+				<messages>
+                    <question>Deseja realmante inativar este acordo?</question>
+                    <success>Situação alterada com sucesso. Acordo Inativo.</success>
+                    <error>Ocorreu um erro ao alterar a situação do Acordo. Tente novamente.</error>
+				</messages>		
+	    	</method>
+	    	<method display-name="Ativar" name="ativar" validate="false">
+	    		<step-param name="motivo" display-name="Motivo" size="100"/>
+	    		<session-param name="usuario"/>
+				<messages>
+                    <question>Deseja realmante ativar este acordo?</question>
+                    <success>Situação alterada com sucesso. Acordo Ativo.</success>
+                    <error>Ocorreu um erro ao alterar a situação do Acordo. Tente novamente.</error>
+				</messages>		
+	    	</method>
+	    </methods>
+		
+	</class-mapping>    
+	
+</jheat-mapping>

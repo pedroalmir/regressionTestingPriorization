@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+	
+	<class-mapping class="br.com.infowaypi.ecarebc.financeiro.faturamento.Faturamento" name="Faturamento" 
+		display-name="Faturamentos" id-name="idFluxoFinanceiro" link-for-detail="competencia" type="readonly" section="cadastros">
+		
+		
+		<property name="capitacao" type="string" not-null="true">
+			<display name="Possui Contrato de Capitação" options="listing"/>
+	    </property>
+		
+		<property name="competenciaFormatada" type="string" not-null="true">
+			<display name="Competência" options="listing"/>
+	    </property>  
+		
+		<property name="nome" type="string" not-null="false">
+			<display name="Nome" options="listing,detail-only"/>
+	    </property>  
+
+ 		<select-property name="tipoPessoa" display-name="Tp. Pessoa" options="listing">
+			<entry display-name="Física" key-value="PESSOA_FISICA"/>
+			<entry display-name="Jurídica" key-value="PESSOA_JURIDICA"/>
+		</select-property>
+
+		<property name="pisPasep" type="string" not-null="false">
+			<display name="PIS/PASEP" options=""/>
+	    </property>  
+
+   		<property name="motivoValorOutros" type="text" not-null="false">
+			<display name="Descr. Outros" options="detail-only"/>
+	    </property>  
+
+		<select-property name="categoria" display-name="Categoria" options="listing">
+			<entry display-name="Clínicas/Hospitais da Capital" key-value="CATEGORIA_CLINICAS_HOSPITAIS_CAPITAL"/>
+			<entry display-name="Clínicas/Hospitais do Interior" key-value="CATEGORIA_CLINICAS_HOSPITAIS_LABORATORIOS_INTERIOR"/>
+			<entry display-name="Médicos do Interior" key-value="CATEGORIA_MEDICOS_INTERIOR"/>	
+			<entry display-name="Dentistas da Capital" key-value="CATEGORIA_ODONTOLOGIA_CAPITAL"/>	
+			<entry display-name="Dentistas do Interior" key-value="CATEGORIA_ODONTOLOGIA_INTERIOR"/>	
+			<entry display-name="Radiologista" key-value="CATEGORIA_RADIOLOGIA"/>	
+			<entry display-name="Supervisores" key-value="CATEGORIA_SUPERVISORES"/>	
+			<entry display-name="Consultas Médicas na Capital" key-value="CATEGORIA_CONSULTAS_MEDICAS_CAPITAL"/>	
+			<entry display-name="Clínicas/Laboratórios para Exames na Capital" key-value="CATEGORIA_CLINICAS_LABORATORIOS_EXAMES_CAPITAL"/>	
+			<entry display-name="Médicos da Capital, para procedimentos hospitalares" key-value="CATEGORIA_MEDICOS_CAPITAL_PROCEDIMENTO_HOSPITALAR"/>	
+			<entry display-name="Perítos" key-value="CATEGORIA_PERITOS"/>	
+			<entry display-name="Pensionistas" key-value="CATEGORIA_PENSIONISTAS"/>	
+			<entry display-name="Bioquímicos" key-value="CATEGORIA_BIOQUIMICOS"/>	
+		</select-property>
+		
+		<property name="valorBruto" not-null="true" type="bigdecimal">
+			<display name="V. Bruto" options="listing,detail-only" size="20"/>
+	    </property>  
+
+		<property name="valorOutros" not-null="true" type="bigdecimal">
+			<display name="Valor Outros" options="detail-only" size="20"/>
+	    </property>  
+
+		<property name="valorIss" not-null="true" type="bigdecimal">
+			<display name="Valor ISS" options="detail-only" size="20"/>
+	    </property>  
+
+		<property name="valorInss" not-null="true" type="bigdecimal">
+			<display name="Valor INSS" options="detail-only" size="20"/>
+	    </property>  
+
+		<property name="valorImpostoDeRenda" not-null="true" type="bigdecimal">
+			<display name="Valor I.R." options="detail-only" size="20"/>
+	    </property>  
+
+		<property name="valorLiquido" not-null="true" type="bigdecimal">
+			<display name="V. Líquido" options="listing,detail-only" size="20"/>
+	    </property>  
+	    
+	    <property name="valorConsultas" not-null="true" type="bigdecimal">
+			<display name="V. Consultas" options="listing,detail-only" size="20"/>
+	    </property>
+	    
+	    <property name="valorConsultasOdonto" not-null="true" type="bigdecimal">
+			<display name="V. Consultas Odonto" options="listing,detail-only" size="20"/>
+	    </property>  
+	    
+	    <property name="valorExames" not-null="true" type="bigdecimal">
+			<display name="V. Exames" options="listing,detail-only" size="20"/>
+	    </property>  
+	    
+	    <property name="valorExamesOdonto" not-null="true" type="bigdecimal">
+			<display name="V. Exames Odonto" options="listing,detail-only" size="20"/>
+	    </property>  
+	    
+	    <property name="valorAtendimentosUrgencia" not-null="true" type="bigdecimal">
+			<display name="V. Atendimento Urgências" options="listing,detail-only" size="20"/>
+	    </property>  
+	    
+	    <property name="valorInternacoes" not-null="true" type="bigdecimal">
+			<display name="V. Internações" options="listing,detail-only" size="20"/>
+	    </property>    
+ 
+ 		<property name="quantidadeConsultas" not-null="true" type="bigdecimal">
+			<display name="Qtd.Consultas" options="listing,detail-only" size="20"/>
+	    </property>
+	    
+	    <property name="quantidadeConsultasOdonto" not-null="true" type="bigdecimal">
+			<display name="Qtd.Consultas Odonto" options="listing,detail-only" size="20"/>
+	    </property>  
+	    
+	    <property name="quantidadeExames" not-null="true" type="bigdecimal">
+			<display name="Qtd.Exames" options="listing,detail-only" size="20"/>
+	    </property>  
+	    
+	    <property name="quantidadeExamesOdonto" not-null="true" type="bigdecimal">
+			<display name="Qtd.Exames Odonto" options="listing,detail-only" size="20"/>
+	    </property>  
+	    
+	    <property name="quantidadeAtendimentosUrgencia" not-null="true" type="bigdecimal">
+			<display name="Qtd.Atendimento Urgências" options="listing,detail-only" size="20"/>
+	    </property>  
+	    
+	    <property name="quantidadeInternacoes" not-null="true" type="bigdecimal">
+			<display name="Qtd.Internações" options="listing,detail-only" size="20"/>
+	    </property>  
+	    
+ 		<select-property name="status" display-name="Status" options="listing,detail-only">
+			<entry display-name="Aberto" key-value="FATURAMENTO_ABERTO"/>
+			<entry display-name="Fechado" key-value="FATURAMENTO_FECHADO"/>
+		</select-property>
+
+		<many-to-one class="br.com.infowaypi.ecarebc.associados.Prestador" 
+			name="prestador" 
+			not-null="true"
+			autocomplete="true"
+	    	display-name="Prestador" options="listing">
+			<display-property name="pessoaJuridica.fantasia"/>
+		</many-to-one>	
+	    
+	    <collection 
+			class="br.com.infowaypi.ecarebc.financeiro.faturamento.retencao.Retencao" 
+			name="retencoes" display-name="Retenções" 
+	    	options="" master-detail="false"/>
+	    	
+	    <collection 
+			class="br.com.infowaypi.ecarebc.financeiro.faturamento.AlteracaoFaturamento" 
+			name="alteracoesFaturamento" display-name="Alterações de Faturamentos" 
+	    	options="" master-detail="false"/>	    	
+	    
+	</class-mapping>
+
+</jheat-mapping>

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<flow 
+		name="cancelarFaturamento" 
+		class="br.com.infowaypi.ecare.financeiro.faturamento.CancelarFaturamento"
+		display-name="Cancelar Faturamento" section="faturamento,flowSuporte">
+		
+		<description>Geração de Faturamentos</description>
+		
+		<step-method name="buscarFaturamentos" display-name="Informar Dados" buttons-position="bottom">
+			<step-param name="competencia" display-name="Competência" input-type="month-year" type="java.util.Date" required="true"/>
+			
+			<session-param name="usuario" />
+			
+			<step-return
+				display-name=""
+				name="resumoFaturamento"
+				type="br.com.infowaypi.ecarebc.financeiro.faturamento.ResumoFaturamentos"
+				scope="session"/>
+		</step-method>
+		
+		<step-method display-name="Conferir Dados" name="conferirDados" buttons-position="bottom" committed="true">
+			<session-param name="resumoFaturamento" operation="none">
+				<display-property name="competencia" display-name="Competência" type="month-year"/>
+				<collection-display display-name="Faturamentos" name="faturamentos">
+					<display-property name="nome" display-name="Prestador"/>
+					<display-property name="statusFaturamento.descricao" display-name="Situação"/>
+					<display-property name="valorBruto" display-name="Valor" type="bigdecimal"/>
+				</collection-display>
+			</session-param>
+			<session-param name="usuario"/>
+			
+			<step-return
+				display-name=""
+				name="resumoFaturamento"
+				type="br.com.infowaypi.ecarebc.financeiro.faturamento.ResumoFaturamentos"
+				scope="session"/>
+		</step-method>
+		
+		<step-method display-name="Finalizar" name="finalizar">
+			<html>
+				<![CDATA[  
+					<infoway:mensagemSucesso mensagem="Faturamento cancelado com sucesso!"/> 
+				]]>
+			</html>
+			<session-param name="resumoFaturamento">
+				<display-property name="competencia" display-name="Competência" type="month-year"/>
+				<collection-display display-name="Faturamentos" name="faturamentos">
+					<display-property name="nome" display-name="Prestador"/>
+					<display-property name="statusFaturamento.descricao" display-name="Situação"/>
+					<display-property name="valorBruto" display-name="Valor" type="bigdecimal"/>
+				</collection-display>
+			</session-param>
+		</step-method>
+		
+	</flow>
+</jheat-mapping>

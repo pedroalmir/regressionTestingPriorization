@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+
+<jheat-mapping>
+<flow 
+	name="marcarExamesExternos" 
+	class="br.com.infowaypi.ecare.services.exame.MarcacaoExamesExternos"
+	display-name="Exames Externos" section="examesPrestador">
+		
+	<description>Exames Externos</description>	
+	
+	<step-method name="buscarGuiasExternas" display-name="Informar Número de Autorização" title="Informar Número de Autorização" buttons-position="bottom">
+		<step-param name="autorizacao" input-type="string" size="12" type="java.lang.String" display-name="Autorização"/>
+		<session-param name="prestador" operation="none"/>
+		<step-return name="guiaOrigem" type="br.com.infowaypi.ecarebc.atendimentos.GuiaSimples" display-name="Guia de Internacao Eletiva" scope="session" />		
+	</step-method>
+	
+	<step-method name="criarGuiaExterna" display-name="Exames Clínicos" title="Exames">
+			
+			<session-param name="prestador" operation="reload"/>
+	
+			<collection-param  
+				name="procedimentosGss"
+				display-name="Adicionar os Exames"
+				type="br.com.infowaypi.ecarebc.procedimentos.Procedimento">
+			    <insert>
+				    <display-property name="procedimentoDaTabelaCBHPM.codigo" display-name="Código"/>
+  			        <display-property name="procedimentoDaTabelaCBHPM.descricao" display-name="Descrição"/>
+  			        <display-property name="bilateral" display-name="Bilateral" type="boolean"/>
+  			        <display-property name="quantidade" display-name="Quantidade" type="int"/>
+  			        <display-property name="valorAtualDoProcedimento" display-name="Valor Unitário" type="money"/>
+  			        <display-property name="valorTotal" display-name="Valor Total" type="money"/>
+			    </insert>
+			</collection-param>
+			
+			<session-param name="guiaOrigem" operation="none"/>
+			<session-param name="usuario"/>			
+			<!-- html>
+				<![CDATA[
+					<infoway:GuiaApresentacao guiaApresentacao="${guiaCompleta}"/>
+				]]>
+			</html-->
+
+			<step-return name="guia" type="br.com.infowaypi.ecarebc.atendimentos.GuiaSimples" 
+		         display-name="Conferir Dados" scope="session"/>
+			
+		</step-method>
+	
+	<step-method name="salvarGuia" display-name="Conferir Dados" title="Conferir Dados" committed="true">
+			<session-param name="guia" operation="none"/>
+			<html>
+				<![CDATA[
+					<infoway:GuiaApresentacao guiaApresentacao="${guia}"/>
+				]]>
+			</html>
+					
+		</step-method>
+		
+	<step-method name="finalizar" display-name="Imprimir Comprovante" title="Imprimir Comprovante">
+			
+			<session-param name="guia"/>
+			<html>
+				<![CDATA[ 
+					<infoway:mensagemSucessoMarcacoes mensagem="Exame(s) confirmado(s) com sucesso!" autorizacao="${guia.autorizacao}"/>
+					<span class="not-for-print">
+						<button type="button" name="imprimir" class="actionButton" onclick="window.print();">Imprimir</button>
+					</span>
+					<infoway:GuiaApresentacao guiaApresentacao="${guia}"/>
+					<infoway:imprimirGuia titulo="COMPROVANTE DE CONFIRMAÇÃO DE EXAME"/> 
+					<span class="not-for-print">
+						<button type="button" name="imprimir" class="actionButton" onclick="window.print();">Imprimir</button>
+					</span>
+				]]>
+			</html>
+					
+		</step-method>
+
+</flow>
+</jheat-mapping>

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<flow 
+		name="reimpressaoBoletos" 
+		class="br.com.infowaypi.ecare.financeiro.boletos.BoletosService"
+		display-name="2º Via de Boleto" 
+		section="boletos, portalBeneficiarioTitular">
+		
+		<step-method name="buscarBoletos" display-name="Buscar Boletos" title="Buscar Boletos" buttons-position="bottom">
+		
+			<html>
+				<![CDATA[
+					<c:if test="${not empty sessionScope.segurado}">
+						<infoway:mensagemInformacao mensagem="Caro usuário, click em avançar para obter a segunda via do boleto."/>
+					</c:if>	 
+				]]>
+			</html>
+			
+			<step-param name="cpfDoTitular" size="24" mask="999.999.999-99" input-type="string" type="java.lang.String" display-name="CPF do Titular">
+				<access-restriction name="CPFSeguradoLogado" type="edit">
+					<session-restriction name="usuario" property="role" value="titular" operation="notequals"/>
+				</access-restriction>
+			</step-param>
+			
+			<step-param name="numeroDoCartao" size="24" mask="99.9999999999.99.9-9" input-type="string" type="java.lang.String" display-name="Número do cartão do beneficiário">
+				<access-restriction name="CartaoSeguradoLogado" type="edit">
+					<session-restriction name="usuario" property="role" value="titular" operation="notequals"/>
+				</access-restriction>
+			</step-param>
+			
+			<session-param name="segurado" operation="reload">
+				<access-restriction name="ParametroCartaoSeguradoLogado" type="edit">
+					<session-restriction name="usuario" property="role" value="titular" operation="equals"/>
+				</access-restriction>
+			</session-param>
+			
+			<step-return name="boletosEncontrados" type="br.com.infowaypi.ecare.financeiro.ResumoCobrancas" display-name="Boletos Encontrados" scope="session"/>
+		</step-method>
+
+		<step-method name="gerarBoleto" display-name="Selecionar Boletos" buttons-position="bottom">
+			<select-param
+					name="cobrancas"
+					type="br.com.infowaypi.ecare.financeiro.Cobranca"
+					display-name="Selecione o Boleto" 
+					session-property-ref="boletosEncontrados" 
+					required="true"
+					message-null-property="Algum boleto deve ser selecionado" 
+					operation="none">
+				<radio-group default-checked="first">
+					<display-property name="titular.pessoaFisica.nome" display-name="Beneficiário"/>
+					<display-property name="titular.tipoDeSegurado" display-name="Tipo"/>
+					<display-property name="competenciaFormatada" display-name="Competência"/>
+					<display-property name="valorCobradoComMultasEJuros" display-name="Valor Cobrado" type="money" align="right" />
+					<display-property name="situacao.descricao" display-name="Situação" />
+				</radio-group>
+			</select-param>
+			<step-return display-name="Boleto para reimpressão" name="cobranca" scope="session" type="br.com.infowaypi.ecare.financeiro.Cobranca" />
+		</step-method>
+		
+		<step-method name="finalizar" display-name="Reimpressão Boleto" buttons-position="bottom">
+			
+			<html>
+				<![CDATA[  
+					<infoway:mensagemSucesso mensagem="Boleto regerado com sucesso!"/>				
+				]]>
+			</html>
+			<session-param name="cobranca" display-name="Boleto">
+				<display-property name="titular.pessoaFisica.nome" display-name="Beneficiário"/>
+				<display-property name="titular.tipoDeSegurado" display-name="Tipo"/>
+				<display-property name="titular.pessoaFisica.cpf" display-name="CPF"/>
+				<display-property name="competenciaFormatada" display-name="Competência"/>
+				<display-property name="dataVencimento" display-name="Vencimento" type="date"/>
+				<display-property name="dataPagamento" display-name="Pagamento" type="date"/>
+				<display-property name="valorCobradoComMultasEJuros" display-name="Valor Cobrado" type="money" align="right" />
+				<display-property name="situacao.descricao" display-name="Situação" />
+			</session-param>
+			<html>
+				<![CDATA[  
+					<%@ include file="/view/jsp/includes/ReimpressaoBoleto.jsp" %>				
+				]]>
+			</html>
+		</step-method>
+				
+	</flow>	
+</jheat-mapping>

@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<class-mapping class="br.com.infowaypi.ecarebc.procedimentos.ProcedimentoSimplesFecharGuia" name="Procedimento" display-name="Procedimento"
+		id-name="idProcedimento" link-for-detail="" type="readonly" depends="guia" section="cadastros">
+	    
+		<many-to-one options="listing,search"
+			class="br.com.infowaypi.ecarebc.procedimentos.TabelaCBHPM"
+  			name="procedimentoDaTabelaCBHPM" display-name="Procedimento" autocomplete="true">
+			<display-property name="codigoEDescricao"/>
+
+		    <restrictions>
+				<restriction property-name="situacao.descricao" property-value="Ativo(a)"/>
+		    	<restriction property-name="tipo" type="notequals" property-value="2"/>
+		    	<restriction property-name="grupo" type="notequals" property-value="1"/>
+		    	<!-- Procedimentos Anestesicos. -->
+		    	<restriction property-name="codigo" type="notequals" property-value="90000001"/>
+		    	<restriction property-name="codigo" type="notequals" property-value="90000002"/>
+		    	<restriction property-name="codigo" type="notequals" property-value="90000003"/>
+		    	<restriction property-name="codigo" type="notequals" property-value="90000004"/>
+		    	
+		    	<!-- Restrictions para evitar que no fluxo de fechamento de guia procedimenntos de nível 2 sejam  adicionados -->
+		    	<restriction property-name="nivel" type="equals" property-value="1" />
+		    	
+			</restrictions>
+		</many-to-one>
+		
+		<many-to-one options="detail-only"
+			class="br.com.infowaypi.ecarebc.atendimentos.GuiaSimples" 
+			name="guia" display-name="Guia">
+			<display-property name="segurado.pessoaFisica.nome"/>
+		</many-to-one>
+
+		<many-to-one options="listing,search,detail-only"
+			class="br.com.infowaypi.ecarebc.associados.Profissional"
+			name="profissionalResponsavel" display-name="Profissional"
+			minimum-characters="7" search-type="likerigth" not-null="false"
+			autocomplete="true" mask-detail="As 7 letras iniciais">
+			<display-property name="pessoaFisica.nome" type="string" />
+		</many-to-one>
+
+		<property name="bilateral" type="boolean">
+			<display name="Bilateral" options="listing" align="center"/>
+	    </property>
+		
+		<property name="quantidade" type="int" >
+			<display options="" name="Quantidade" mask="9999" size="4" maxlength="4"/>
+			<access-restriction name="quantidadeNormalEdit" type="edit">
+				<request-restriction name="flowName" value="autorizarTratamentoSeriado" operation="notequals"  logic-operation="and"/>
+				<request-restriction name="step" value="autorizarTratamento" operation="notequals" logic-operation="or"/>
+			</access-restriction>
+			
+			<access-restriction name="quantidadeComboInsert" type="insert">
+				<request-restriction name="flowName" value="autorizarTratamentoSeriado" operation="notequals"  logic-operation="and"/>
+				<request-restriction name="step" value="autorizarTratamento" operation="notequals" logic-operation="or"/>
+			</access-restriction>
+			
+			<access-restriction name="quantidadeComboRead" type="read">
+				<request-restriction name="flowName" value="autorizarTratamentoSeriado" operation="notequals"  logic-operation="and"/>
+				<request-restriction name="step" value="autorizarTratamento" operation="notequals" logic-operation="or"/>
+			</access-restriction>
+		</property>
+		
+		<select-property name="quantidade" display-name="Quantidade" options="listing">
+			<entry display-name="1" key-value="QUANTIDADE_1"/>
+			<entry display-name="2" key-value="QUANTIDADE_2"/>
+			<entry display-name="3" key-value="QUANTIDADE_3"/>
+			<entry display-name="4" key-value="QUANTIDADE_4"/>
+			<entry display-name="5" key-value="QUANTIDADE_5"/>
+			<entry display-name="6" key-value="QUANTIDADE_6"/>
+			<entry display-name="7" key-value="QUANTIDADE_7"/>
+			<entry display-name="8" key-value="QUANTIDADE_8"/>
+			<entry display-name="9" key-value="QUANTIDADE_9"/>
+			<entry display-name="10" key-value="QUANTIDADE_10"/>
+			
+			<access-restriction name="quantidadeComboEdit" type="edit">
+				<request-restriction name="flowName" value="autorizarTratamentoSeriado" operation="equals"  logic-operation="and"/>
+				<request-restriction name="step" value="autorizarTratamento" operation="equals" logic-operation="or"/>
+			</access-restriction>
+			
+			<access-restriction name="quantidadeComboInsert" type="insert">
+				<request-restriction name="flowName" value="autorizarTratamentoSeriado" operation="equals"  logic-operation="and"/>
+				<request-restriction name="step" value="autorizarTratamento" operation="equals" logic-operation="or"/>
+			</access-restriction>
+			
+			<access-restriction name="quantidadeComboRead" type="read">
+				<request-restriction name="flowName" value="autorizarTratamentoSeriado" operation="equals"  logic-operation="and"/>
+				<request-restriction name="step" value="autorizarTratamento" operation="equals" logic-operation="or"/>
+			</access-restriction>
+			
+		</select-property>
+		
+		<property name="valorAtualDoProcedimento" type="bigdecimal">
+			<display name="Valor Unitário" options="listing,detail-only"/>
+	    </property>
+		
+		<property name="valorAtualDaModeracao" type="percentage">
+			<display name="Moderação" options="detail-only"/>
+	    </property>
+		
+		<property name="valorTotal" calculated="true" type="bigdecimal">
+			<display name="Valor Total" options="listing,detail-only"/>
+	    </property>
+	    
+		<property name="situacao.descricao" type="string">
+			<display name="Situação" options="listing,detail-only"/>
+	    </property>
+
+		<validate-method name="validate">
+			<session-param name="usuario"/>
+		</validate-method>
+		
+	</class-mapping>
+
+</jheat-mapping>

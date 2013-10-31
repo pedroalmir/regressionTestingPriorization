@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<flow 
+		name="atualizacaoBaseSalarial" 
+		class="br.com.infowaypi.ecare.financeiro.consignacao.AtualizaBaseSalarialService"
+		display-name="Atualização de Base Salarial" 
+		section="consignacoes">
+		
+		<step-method display-name="Informar Arquivo" name="informaArquivo" buttons-position="bottom" title="Informar Arquivo" committed="true">
+			<step-param display-name="Arquivo Salário" name="arquivo" required="true" input-type="file" type="[B"/>
+			<step-param display-name="Competência" name="competencia" required="true" input-type="month-year" type="java.util.Date"/>
+			
+			<step-return display-name="resumo" name="resumo" type="br.com.infowaypi.ecare.financeiro.consignacao.ResumoBaseSalarial" scope="session"/>
+		</step-method>
+		
+		<step-method display-name="Conferir dados" name="conferirDados">
+			
+			<html>
+				<![CDATA[ <infoway:mensagemSucesso mensagem="Atualização efetuada com sucesso!"/> ]]>
+			</html>
+			
+			<session-param name="resumo" display-name="Dados sobre o processo">
+				<display-property name="numeroTitulares" display-name="Titulares processados"/>
+				<display-property name="numeroMatriculas" display-name="Matriculas alteradas"/>
+				<display-property name="numeroMatriculasInseridas" display-name="Novas Matriculas"/>
+				<html>
+					<![CDATA[  
+						<%@ include file="/view/jsp/includes/RegistrosErradosBaseSalarial.jsp" %>				
+					]]>
+				</html>
+			</session-param>
+		</step-method>
+		
+	</flow>
+</jheat-mapping>		

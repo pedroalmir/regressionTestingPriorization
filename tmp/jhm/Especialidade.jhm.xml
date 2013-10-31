@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+	
+	<class-mapping class="br.com.infowaypi.ecarebc.associados.Especialidade" name="EspecialidadeSR" 
+		display-name="Especialidades" id-name="idEspecialidade" link-for-detail="descricao" type="simple" section="cadastros,cadastrosAuditor,cadastrosRedeCredenciada">
+		
+		<description>Especialidades que participam dos cadastros de procedimentos e profissionais</description>		
+		
+		<select-property name="classe" display-name="Classe" options="listing,search">
+			<entry display-name="Medicina" key-value="CLASSE_MEDICINA"/>
+			<entry display-name="Odontologia" key-value="CLASSE_ODONTOLOGIA"/>
+			<entry display-name="Fisioterapia" key-value="CLASSE_FISIOTERAPIA"/>
+			<entry display-name="Psicologia" key-value="CLASSE_PSICOLOGIA"/>
+		</select-property>
+		
+		<property name="descricao" type="string" not-null="true">
+			<display name="Descrição" options="listing,search"/>
+	    </property>
+	    
+		<select-property name="sexo" display-name="Sexo" options="listing,search">
+			<entry display-name="Masculino" key-value="SEXO_MASCULINO"/>
+			<entry display-name="Feminino" key-value="SEXO_FEMININO"/>
+			<entry display-name="Ambos" key-value="SEXO_AMBOS"/>				
+		</select-property>
+
+		<!-- Limite de idade permitido para utilização de atendimento por especialidade. -->
+		<property name="idadeLimiteInicio" type="int" not-null="true">
+			<display name="Idade Limite(Início)" size="3" options="" mask="999" maxlength="3"/>
+	    </property>
+		<property name="idadeLimiteFim" type="int" not-null="true">
+			<display name="Idade Limite(Fim)" size="3" options="" mask="999" maxlength="3"/>
+	    </property>
+		
+		<property name="ativa" type="boolean" not-null="true">
+			<display name="Ativa" options="listing,search"/>
+	    </property>
+		
+		<!--collection 
+			class="br.com.infowaypi.ecarebc.associados.Prestador" 
+			name="prestadores" display-name="Prestadores Associados" 
+	    	master-detail="false"/>
+
+	    <collection 
+			class="br.com.infowaypi.ecarebc.associados.Profissional" 
+			name="profissionais" display-name="Profissionais Associados" 
+	    	master-detail="false"/-->
+	
+	    <collection 
+			class="br.com.infowaypi.ecarebc.procedimentos.TabelaCBHPM" 
+			name="procedimentosDaTabelaCBHPM" display-name="Procedimentos Associados" 
+	    	master-detail="false"/>
+
+		<!-- cadastros -->
+		<role name="root" exec="true" insert="true" read="true" update="true" write="true"/>
+		<role name="atendente" exec="false" insert="false" read="true" update="false" write="false"/>
+		
+		<!-- cadastrosAuditor -->
+		<role name="auditor" insert="false" exec="false" update="false" read="true" write="false"/>
+		<role name="regulador" insert="false" exec="false" update="false" read="true" write="false"/>
+		<role name="faturista" insert="false" exec="false" update="false" read="true" write="false"/>
+		<role name="auditorOdonto" insert="false" exec="false" update="false" read="true" write="false"/>
+		<role name="diretoriaMedica" insert="false" exec="false" update="false" read="true" write="false"/>
+
+		<validate-method name="validate"/>
+		
+	</class-mapping>
+
+</jheat-mapping>

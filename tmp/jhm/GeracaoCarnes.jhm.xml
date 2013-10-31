@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<flow
+		name="geracaoCarnes" 
+		class="br.com.infowaypi.ecare.flows.GeracaoCarnes"
+		display-name="Geracão de Carnês" section="relacionamento">
+		
+		<description>Geracão de Carne</description>
+		
+		<step-method name="buscarSegurado" display-name="Informe o numero de contrato" buttons-position="bottom">
+			
+			<step-param name="proposta" type="java.lang.String" display-name="Matrícula" mask="99999999999" />
+			
+			<step-return name="segurado" type="br.com.infowaypi.ecare.segurados.Titular" 
+				 display-name="Segurado" scope="session"/>
+
+		</step-method>
+		
+		<step-method name="visualizaDados" display-name="Dados do Beneficiário" buttons-position="bottom" committed="true">
+			
+			<session-param name="segurado" display-name="Beneficiário" style-class="not-for-print">
+				<display-property name="numeroDoCartao" display-name="Número do Cartão"/>
+				<display-property name="pessoaFisica.nome" display-name="Nome"/>		
+			</session-param>
+			
+			<step-return name="carne" type="br.com.infowaypi.ecare.financeiro.ResumoBoletos" 
+				 display-name="Carne" scope="session"/>
+				
+		</step-method>
+		
+		<step-method name="finalizar" display-name="Finalizar" buttons-position="bottom" >
+			
+			<html>
+				<![CDATA[ <infoway:mensagemSucesso mensagem="Carnês gerados com Sucesso."/> ]]>
+			</html>	
+				
+			<session-param name="carne" display-name="Lista de Carnês Gerados" style-class="not-for-print">
+				<collection-display name="boletos" display-name="Carnês">
+					<display-property name="nomeDoSacado" display-name="Segurado"/>
+					<display-property name="valorDoTitulo" display-name="Valor Cobrado"/>
+					<display-property name="vencimento" display-name="Data vencimento"/>
+				</collection-display>
+			</session-param>
+										
+			<html>
+				<![CDATA[
+					<%@ include file="/view/jsp/includes/ImpressaoCarne.jsp" %>
+				]]>
+			</html>
+				
+		</step-method>
+				
+	</flow>	
+</jheat-mapping>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+
+<jheat-mapping>
+	<class-mapping class="br.com.infowaypi.msr.address.Municipio" name="Municipio" display-name="Municípios"
+		id-name="idMunicipio" link-for-detail="descricao" type="simple" section="cadastros,cadastrosCentral,cadastrosGerenciaAdesao">
+
+		<description>Cidades cadastradas no sistema</description>
+		
+		<property name="descricao" type="string" not-null="true">
+			<display name="Descrição" options="listing,search"/>
+	    </property>
+	    
+	    <property name="codigoIBGE" type="string" not-null="false">
+			<display name="IBGE" options="" maxlength="6" size="20"/>
+	    </property>
+	    
+	    <property name="codigoSIAFI" type="string" not-null="false">
+			<display name="SIAFI" options="" maxlength="6" size="20"/>
+	    </property>
+	    
+	    <many-to-one class="br.com.infowaypi.msr.address.Estado" name="estado" not-null="true"
+	    	display-name="Estado" options="listing,search">
+			<display-property name="descricao"/>
+		</many-to-one>		
+				
+		<!-- cadastros -->
+		<role name="root" exec="true" insert="true" read="true" update="true" write="true"/>
+		<role name="atendente" exec="false" insert="false" read="true" update="false" write="false"/>
+		
+		<!-- cadastrosCentral -->
+		<role name="centralDeServico" exec="false" insert="false" read="true" update="false" write="false"/>
+				
+	</class-mapping>
+
+</jheat-mapping>

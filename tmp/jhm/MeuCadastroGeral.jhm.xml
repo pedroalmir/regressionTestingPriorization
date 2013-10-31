@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+<flow 
+	name="alterarSenha" 
+	class="br.com.infowaypi.msr.user.AlterarSenhaUsuario"
+	display-name="Alterar Senha" section="meuCadastro">
+		
+	<description>Alteração da sua senha para entrada no sistema</description>		
+	
+	<step-method name="alteraSenha" display-name="Alteração de Senha" committed="true" buttons-position="bottom">
+		<session-param name="usuario" display-name="Usuário">
+			<display-property name="nome" display-name="Nome"/>
+			<display-property name="login" display-name="Login"/>
+		</session-param>	
+		<step-param name="senhaAntiga" type="java.lang.String" display-name="Senha Atual" input-type="password"/>
+		<step-param name="senhaNova"  type="java.lang.String" display-name="Nova Senha" input-type="password"/>
+		<step-param name="senhaConfirmacao" type="java.lang.String" display-name="Confirme a Senha" input-type="password"/>
+		<step-return name="usuario" type="br.com.infowaypi.msr.user.UsuarioInterface" 
+	         display-name="Usuario" scope="session"/>
+	</step-method>
+	
+	<step-method name="finalizar" display-name="Concluído">
+		<html>
+			<![CDATA[
+				<div class="alert confirmation not-for-print" style="margin-left:0;margin-right:0;">
+					Senha alterada com sucesso!
+				</div>					
+			]]>
+		</html>
+		<session-param name="usuario" display-name="Usuário">
+			<display-property name="nome" display-name="Nome"/>
+			<display-property name="login" display-name="Login"/>
+		</session-param>	
+	</step-method>
+
+</flow>	
+</jheat-mapping>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<class-mapping class="br.com.infowaypi.ecarebc.produto.RespostaDeclarada" name="respostaDeclarada"
+		display-name="Resposta Declarada" id-name="idRespostaDeclarada" global-link="true" section="produto" type="dependent">
+		<property name="pergunta.ordem" type="int" not-null="true">
+			<display options="listing, detail-only" name="ITEM" />
+		</property>
+		
+		<html><![CDATA[
+		<c:if test="${param.action == 'updateObject'}">	
+			<label id="pergunta_label" for="pergunta">Pergunta:</label>
+			${object.pergunta.descricao}
+			<br/>
+		</c:if>
+		]]></html>
+		
+		<property name="pergunta.descricao" type="string" not-null="true">
+			<display options="listing, detail-only" name="Pergunta" align="left"/>
+		</property>
+
+		<property name="valor" type="boolean" not-null="true">
+			<display options="listing" name="Assertiva" />
+		</property>
+
+		<property name="observacoes" type="string" not-null="true">
+			<display options="listing" name="Observacões" />
+		</property>
+		
+	</class-mapping>
+</jheat-mapping>

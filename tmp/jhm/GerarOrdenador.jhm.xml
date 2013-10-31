@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<flow name="geracaoDeOrdenador" 
+		class="br.com.infowaypi.ecare.financeiro.ordenador.GerarOrdenadorService"
+		display-name="Geração do Ordenador" 
+		section="faturamento">
+		
+		<step-method display-name="Gerar Ordenador" name="verificarGeracao" buttons-position="bottom">
+			<step-param display-name="Identificador" name="idOrdenador" type="java.lang.Integer" mask="99999999"/>
+			<step-param display-name="Competência" name="competencia" input-type="month-year" type="java.util.Date"/>
+			<step-param display-name="Data de Recebimento das Contas" name="dataRecebimento" input-type="date" type="java.util.Date"/>
+			<session-param name="usuario" />
+			
+			<step-return display-name="ordenador" name="ordenador" type="br.com.infowaypi.ecarebc.financeiro.faturamento.ordenador.Ordenador" scope="session"/>
+			<html><![CDATA[
+				<script type="text/javascript">
+					
+					var isBotoesPreparados = false;
+					var isFormSubmit = false;
+					
+					function prepararBotoes() {
+						var els = document.getElementsByTagName("button");
+						
+						for (var i = 0; i < els.length; i++) {
+							if (els[i].name === "submit") {
+								var submitBtn = els[i];
+								var pbar = null;
+								submitBtn.onclick = function() {
+									var idOrdenador = document.getElementById('idOrdenador').value;
+									var competencia = document.getElementById('competencia').value;
+									var dataRecebimento = document.getElementById('dataRecebimento').value;
+									if (pbar == null) {
+										pbar = new ProgressBar("progressBarFinanceiro", true, {
+											"competencia": competencia,
+											"idOrdenador": idOrdenador,
+											"dataRecebimento": dataRecebimento
+										});
+										pbar.onfinished = function () {
+											isFormSubmit = true;
+											var formulario = document.getElementsByTagName("form")[0].submit.click();
+											formulario.submit.click();
+											return true;
+										};
+										pbar.onexception = pbar.onfinished;
+										pbar.start();
+									}
+									
+									return isFormSubmit;
+								};
+							}
+						}
+					}
+					
+					/* Código Mágico e Feliz para executar um código ao carregar a página */
+					if (document.addEventListener) {
+						document.addEventListener("DOMContentLoaded", function () { isBotoesPreparados = true; prepararBotoes(); }, false);
+					}
+					else if (document.all && !window.opera) {
+						document.write("<script type=\"text/javascript\" id=\"contentloadtag\" defer=\"defer\" src=\"javascript:void(0)\"><\/script>");
+						var contentloadtag = document.getElementById("contentloadtag");
+						contentloadtag.onreadystatechange = function() {
+							if (this.readyState === "complete") {
+								isBotoesPreparados = true;
+								prepararBotoes();
+							}
+						}
+					}
+					var originalOnLoad = window.onload;
+					window.load = function () {
+						setTimeout("if (!isBotoesPreparados) { prepararBotoes(); }", 0);
+					};
+				</script>
+			]]></html>
+		</step-method>
+		
+		<step-method display-name="Informar Dados" name="informarDados">
+			
+			<update-param display-name="Informações do Ordenador" name="ordenador" type="br.com.infowaypi.ecarebc.financeiro.faturamento.ordenador.Ordenador">
+				<update-property display-name="Limite a Faturar Normal(R$)" name="limiteAFaturarNormal" input-type="money" type="java.math.BigDecimal"/>
+				<update-property display-name="Limite a Faturar Passivo(R$)" name="limiteAFaturarPassivo" input-type="money" type="java.math.BigDecimal"/>
+				
+				<html>
+					<![CDATA[<infoway:OrdenadorResumosApresentacao ordenador="${ordenador}"/>]]>
+				</html>
+				
+				<update-collection display-name="Informações por Prestador Pessoa Física" name="informacoesOrdenadorPessoaFisica" type="br.com.infowaypi.ecarebc.financeiro.faturamento.ordenador.InformacaoOrdenador">
+					<update-insert>
+						<update-property name="fantasiaPF" display-name="Prestador" editable="false" field-name="prestador.pessoaJuridica.fantasia" align="left"/>
+						<update-property name="valorNormalPF" display-name="Valor Normal (R$)" editable="false" field-name="valorNormalFormatado" align="right" type="java.math.BigDecimal"/>
+						<update-property name="tetoNormalPF" display-name="Teto Normal (R$)" input-type="money" type="java.math.BigDecimal" field-name="tetoNormal" align="right"/>
+						<update-property name="valorAFaturarNormal" display-name="Vlr. a Faturar Normal (R$)" editable="false" field-name="valorAFaturarNormalFormatado" align="right" type="java.math.BigDecimal"/>
+						<update-property name="valorPassivoPF" display-name="Valor Passivo (R$)" editable="false" field-name="valorPassivoFormatado" align="right"  type="java.math.BigDecimal"/>
+						<update-property name="tetoPassivoPF" display-name="Teto Passivo (R$)" input-type="money" type="java.math.BigDecimal" field-name="tetoPassivo" align="right"/>
+						<update-property name="valorAFaturarPassivo" display-name="Vlr. a Faturar Passivo (R$)" editable="false" field-name="valorAFaturarPassivoFormatado" align="right" type="java.math.BigDecimal"/>
+						<update-property name="valorTotalPF" display-name="Valor a faturar (R$)" editable="false" field-name="valorTotalFormatado" align="right" type="java.math.BigDecimal"/>
+					</update-insert>
+				</update-collection>
+				
+				<update-collection display-name="Informações por Prestador Pessoa Jurídica" name="informacoesOrdenadorPessoaJuridica" type="br.com.infowaypi.ecarebc.financeiro.faturamento.ordenador.InformacaoOrdenador">
+					<update-insert>
+						<update-property name="fantasiaPJ" display-name="Prestador" editable="false" field-name="prestador.pessoaJuridica.fantasia" align="left"/>
+						<update-property name="valorNormalPJ" display-name="Valor Normal (R$)" editable="false" field-name="valorNormalFormatado" align="right"  type="java.math.BigDecimal"/>
+						<update-property name="tetoNormalPJ" display-name="Teto Normal (R$)" input-type="money" type="java.math.BigDecimal" field-name="tetoNormal" align="right"/>
+						<update-property name="valorAFaturarNormal" display-name="Vlr. a Faturar Normal (R$)" editable="false" field-name="valorAFaturarNormalFormatado" align="right"  type="java.math.BigDecimal"/>
+						<update-property name="valorPassivoPJ" display-name="Valor Passivo (R$)" editable="false" field-name="valorPassivoFormatado" align="right"  type="java.math.BigDecimal"/>
+						<update-property name="tetoPassivoPJ" display-name="Teto Passivo (R$)" input-type="money" type="java.math.BigDecimal" field-name="tetoPassivo" align="right" />
+						<update-property name="valorAFaturarPassivo" display-name="Vlr. a Faturar Passivo (R$)" editable="false" field-name="valorAFaturarPassivoFormatado" align="right"  type="java.math.BigDecimal"/>
+						<update-property name="valorTotalPJ" display-name="Valor a faturar (R$)" editable="false" field-name="valorTotalFormatado" align="right"  type="java.math.BigDecimal"/>
+					</update-insert>
+				</update-collection>
+
+			</update-param>
+			
+			<html>
+				<![CDATA[<div style="display:none">]]>
+			</html>
+			
+			<step-param name="isAvancar" display-name="" input-type="boolean" type="java.lang.Boolean" />
+			
+			<html>
+				<![CDATA[
+					</div>
+					<br/>
+					<script type="text/javascript">
+						var o = document.getElementById('isAvancar');
+						if (!o.checked) {
+							o.click();
+						}
+						function onAtualizarClick() {
+							document.getElementById('isAvancar').click();
+							document.getElementsByName('submit')[0].click();
+						}
+					</script>
+					<span>
+						<button name="Atualizar" type="button" class="actionButton" onclick="onAtualizarClick();">
+							Atualizar
+						</button>
+					</span>
+					<br/>
+				]]>
+			</html>
+			
+			<html>
+				<![CDATA[<infoway:OrdenadorResumoPorTipoPrestador informacoesOrdenador="${ordenador.tabelaSubTotal}"/>]]>
+			</html>
+			
+			<step-return display-name="ordenador" name="ordenador" type="br.com.infowaypi.ecarebc.financeiro.faturamento.ordenador.Ordenador">
+				<step-forward-choose>
+					<step-forward-condition test="ordenador.flag">
+						<param  display-name="" name="ordenador" type="br.com.infowaypi.ecarebc.financeiro.faturamento.ordenador.Ordenador" />
+						<step-forward step-name="save"/>
+					</step-forward-condition>
+					<step-forward-otherwise>
+						<step-forward step-name="informarDados"/>
+					</step-forward-otherwise>
+				</step-forward-choose>
+			</step-return>
+			
+		</step-method>
+		
+		
+		<step-method display-name="Confirmar" name="save" committed="true">
+		
+			<html>
+				<![CDATA[ 
+					<infoway:OrdenadorApresentacao ordenador="${ordenador}"/>
+				]]>
+			</html>
+			<session-param name="ordenador"/>
+			<step-return display-name="ordenador" name="ordenador" type="br.com.infowaypi.ecarebc.financeiro.faturamento.ordenador.Ordenador"/>
+		</step-method>
+		
+		<step-method display-name="Finalizar" name="finalizar">
+		
+			<session-param name="ordenador">
+			<html>
+				<![CDATA[ 
+				<infoway:mensagemSucessoOrdenador mensagem="Ordenador criado com sucesso!" identificador="${ordenador.identificador}"/>
+				<span class="not-for-print">
+					<button type="button" name="imprimir" class="actionButton" onclick="window.print();">Imprimir</button>
+				</span>
+				<infoway:OrdenadorApresentacao ordenador="${ordenador}"/>
+				<infoway:OrdenadorImpressao ordenador="${ordenador}"/>
+				<c:remove var="ordenador"/>
+				]]>
+			</html>
+			
+			
+			</session-param>
+		</step-method>
+	</flow>
+</jheat-mapping>		

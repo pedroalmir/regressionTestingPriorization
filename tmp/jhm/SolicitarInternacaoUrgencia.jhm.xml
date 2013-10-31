@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+	<flow 
+		name="solicitarInternacaoUrgencia" 
+		class="br.com.infowaypi.ecare.services.internacao.MarcacaoInternacaoUrgencia"
+		display-name="Solicitar Internação de Urgência" section="urgenciaInternacao">
+			
+		<description>Solicitação de Internação de Urgência</description>		
+		<step-method name="buscarGuiaUrgencia" display-name="Informar Número de Autorização" title="Informar Número de Autorização" buttons-position="bottom">
+			<step-param name="autorizacao" required="true" input-type="string" size="12" type="java.lang.String" display-name="Autorização"/>	
+			<step-return name="guiaUrgencia" type="br.com.infowaypi.ecarebc.atendimentos.GuiaCompleta" display-name="Guia de Consulta" scope="session"/>
+		</step-method>
+			
+		<step-method name="criarGuiaUrgencia" display-name="Informar Dados" title="Informar Dados">
+	
+			<!-- if[INTERNACAO_OBSERVACAO_SEGURADO_CUMPRINDO_CARENCIA]
+			
+			<html>
+				<![CDATA[
+					<c:if test="${guiaUrgencia.segurado.registraInternacaoDeObcervacaoParaDependenteEmCarencia eq true}">
+						<infoway:mensagemAlerta mensagem="Beneficiário em cumprimento de carência. Assegurado somente consulta de urgência e observação em PS.
+						</br> O atendimento foi autorizado apenas para observação, e é válido por 12hs."/>
+			 		</c:if>
+				]]>
+			</html>
+        	
+			end[INTERNACAO_OBSERVACAO_SEGURADO_CUMPRINDO_CARENCIA] -->
+			
+			<html><![CDATA[
+						<span class="spacer"></span>
+						<span class="spacer"></span>
+						<fieldset>
+						<legend>Guia de Urgência</legend>
+			
+						<table class="yellowTable">
+						<thead><tr>
+							<th>Autorização</th>
+							<th>Profissional </th>
+							<th>Prestador </th>
+							<th>Data de Atendimento </th>
+						</tr></thead>
+						
+						<tbody>
+						
+						<tr class="even">
+							<td>${guiaUrgencia.idGuia}</td>
+							<td>${guiaUrgencia.profissional.pessoaFisica.nome}</td>
+							<td>${guiaUrgencia.prestador.pessoaJuridica.fantasia}</td>
+							<td><fmt:formatDate value="${guiaUrgencia.dataAtendimento}" pattern="dd/MM/yyyy" /></td>
+						</tr>
+						
+						</tbody>
+						</table>				
+						</fieldset>
+						<span class="spacer"></span>
+						<span class="spacer"></span>
+
+						<fieldset>
+						<legend>Benefici&aacute;rio</legend>
+						
+						<table class="yellowTable">
+						<thead><tr>
+							<th>Número do Cartão</th>
+							<th>Nome </th>
+							<th>Tipo </th>
+						</tr></thead>
+						<tbody>
+						
+						<tr class="even">
+							<td>${guiaUrgencia.segurado.numeroDoCartao}</td>
+							<td>${guiaUrgencia.segurado.pessoaFisica.nome}</td>
+							<td>${guiaUrgencia.segurado.tipoDeSegurado}</td>
+						</tr>
+						
+						</tbody>
+						</table>
+						</fieldset>
+						<span class="spacer"></span>
+						<span class="spacer"></span>
+										
+			]]>
+							
+			</html>
+			<session-param name="guiaUrgencia" operation="none"/>
+			<html>
+				<![CDATA[
+					<br/>
+				]]>
+			</html>
+			<step-param name="dataDeAtendimento" display-name="Data de Atendimento" 
+				required="false" type="java.util.Date" input-type="date"/>
+
+			<select-param display-name="Tipo de Tratamento" name="tipoTratamento" type="java.lang.Integer" display-label-head="false">
+				<constants-group class="br.com.infowaypi.ecarebc.atendimentos.GuiaInternacaoUrgencia" name="Tipo de Tratamento">
+					<entry display-name="Clínico" key-value="TRATAMENTO_CLINICO"/>
+					<entry display-name="Cirúrgico" key-value="TRATAMENTO_CIRURGICO"/>
+					<entry display-name="Obstétrico" key-value="TRATAMENTO_OBSTETRICO"/>
+				</constants-group>
+			</select-param>
+
+			<session-param name="prestador" operation="reload"/>
+			<session-param name="usuario"/>
+			
+			<select-param
+				name="solicitanteCRM"
+				display-name="Médico(Conselho)"
+				type="br.com.infowaypi.ecarebc.associados.Profissional" display-label-head="false" required="false">
+				<autocomplete mask-detail="Os 3 números iniciais" style-class="autocomplete" minimum-characters="3" force-selection="true">
+					<search-property name="crm" display-name="Médico(Conselho)" search-type="likerigth"/>
+					<name-property name="crmNome" display-name="Médico(Conselho)"/>
+				</autocomplete>				
+			</select-param>	
+			
+			<html>
+				<![CDATA[
+					ou
+				]]>
+			</html>
+			
+			<select-param
+				name="profissionaisNOME"
+				display-name="Médico(Nome)"
+				type="br.com.infowaypi.ecarebc.associados.Profissional" display-label-head="false" required="false">
+				<autocomplete mask-detail="As 7 letras iniciais" style-class="autocomplete" minimum-characters="7" force-selection="true">
+					<search-property name="crmNome" display-name="Médico(Nome)" search-type="likerigth"/>
+					<name-property name="crmNome" display-name="Médico(Nome)"/>
+				</autocomplete>				
+			</select-param>		
+			
+			<!-- if[INFORMAR_ESPECIALIDADE_INTERNACAO] -->
+			<select-param
+				name="especialidades"
+				display-name="Especialidade"
+				type="br.com.infowaypi.ecarebc.associados.Especialidade" session-property-ref="prestador" operation="reload" display-label-head="false">	
+				<combo display-property="descricao" />
+				<restrictions>
+					<restriction property-value="true" property-name="ativa" type="equals"/>
+				</restrictions>
+			</select-param>
+			<!-- end[INFORMAR_ESPECIALIDADE_INTERNACAO] -->
+			
+			<collection-param name="cids" type="br.com.infowaypi.ecarebc.procedimentos.CID" display-name="CID (Hipóteses Diagnósticas)">
+				<autocomplete style-class="autocomplete" minimum-characters="4" force-selection="true">
+					<search-property name="codigoEDescricaoDaDoenca" display-name="Descrição"/>
+					<name-property name="codigoEDescricaoDaDoenca" display-name="Descrição"/>
+				</autocomplete>
+			</collection-param>
+			
+			<step-param name="justificativa"  type="java.lang.String" input-type="text" display-name="Quadro Clínico"/>
+
+			<input-validator display-name="ValidaData" name="validaData" 
+				class="br.com.infowaypi.ecare.validacao.services.ValidatorDataAtendimento">
+				<method-validator name="validaDataAtendimento" display-name="Valida Atendimento">
+					<param name="dataDeAtendimento" display-name="Valida Atendimento" type="java.util.Date"/>
+					<session-param name="guiaUrgencia" display-name="Guia de Urgência"/>
+				</method-validator>
+			</input-validator>
+
+			
+			<!-- if[INTERNACAO_OBSERVACAO_SEGURADO_CUMPRINDO_CARENCIA]
+			
+			<step-return name="guia" type="br.com.infowaypi.ecarebc.atendimentos.GuiaInternacaoUrgencia" display-name="Conferir Dados" scope="session">
+				<step-forward-choose>
+					<step-forward-condition test="guia.segurado.registraInternacaoDeObcervacaoParaDependenteEmCarencia">
+						<param  display-name="" name="guia" type="br.com.infowaypi.ecarebc.atendimentos.GuiaInternacaoUrgencia" />
+						<step-forward step-name="salvarGuia"/>
+					</step-forward-condition>
+					<step-forward-otherwise>
+						<step-forward step-name="addProcedimentos"/>
+					</step-forward-otherwise>
+				</step-forward-choose>
+			</step-return>
+		
+			else[INTERNACAO_OBSERVACAO_SEGURADO_CUMPRINDO_CARENCIA] -->
+			
+			<step-return name="guia" type="br.com.infowaypi.ecarebc.atendimentos.GuiaInternacaoUrgencia" display-name="Conferir Dados" scope="session"/>
+			
+			<!-- end[INTERNACAO_OBSERVACAO_SEGURADO_CUMPRINDO_CARENCIA] -->
+			
+		</step-method>
+		
+		<step-method name="addProcedimentos" display-name="Adicionar Procedimentos" title="Adicionar Procedimentos">
+
+			<collection-param  
+				name="diarias"
+				display-name=""
+				type="br.com.infowaypi.ecarebc.atendimentos.acordos.itensAcordos.ItemDiaria">
+			    <insert>
+				    <display-property name="diaria.descricao" display-name="Acomodação"/>
+				    <display-property name="valor.quantidade" display-name="Permanência(dias)" type="int"/>
+  			        <display-property name="valor.valor" display-name="Valor Unitário (24hs)" type="money"/>				    
+			    </insert>
+			</collection-param>
+			
+			<update-param display-name="" name="guia" type="br.com.infowaypi.ecarebc.atendimentos.GuiaInternacaoUrgencia">
+				<update-collection 
+					name="procedimentosCirurgicosDaSolicitacao" 
+					field-name="procedimentosCirurgicosDaSolicitacao"
+					display-name="Procedimentos Cirúrgicos"
+					type="br.com.infowaypi.ecare.procedimentos.ProcedimentoCirurgicoSR">
+
+					<update-insert>
+					    <update-property name="procedimentoDaTabelaCBHPM.codigo" display-name="Código" editable="false"/>
+	  			        <update-property name="procedimentoDaTabelaCBHPM.descricao" display-name="Descrição" editable="false"/>
+	  			        <update-property name="bilateral" display-name="Bilateral" input-type="boolean" type="java.lang.Boolean" editable="false"/>
+	  			        <update-property name="valorTotal" display-name="Valor Bruto" type="java.math.BigDecimal" input-type="money" editable="false"/>
+						<update-property name="porcentagem" display-name="Porcentagem" editable="false"/>
+						<update-property name="profissionalResponsavel.pessoaFisica.nome" display-name="Profissional" editable="false"/>
+					</update-insert>
+					<methods-collection>
+						<method-collection display-name="Insert" name="addProcedimentoDaSolicitacao" option-method="insert"/>
+						<method-collection display-name="Excluir" name="removeProcedimentoDaSolicitacao" option-method="listing"/>
+					</methods-collection>
+				</update-collection>
+				
+				<update-collection 
+				    display-name="OPMEs" 
+				    name="itensOpme"
+				    field-name="itensOpme"
+				    type="br.com.infowaypi.ecarebc.opme.ItemOpme">
+					
+					<update-insert>
+						<update-property name="opme.codigo" display-name="Código" editable="false"/>
+						<update-property name="opme.descricao" display-name="Descrição" editable="false"/>
+						<update-property name="situacao.descricao" display-name="Situação" editable="false" />
+						<update-property name="quantidadeSolicitada" display-name="Quantidade" editable="false" />
+						<update-property name="observacaoSolicitacao" display-name="Motivo da Solicitação" input-type="text" editable="true"/>
+					</update-insert> 
+					<methods-collection>
+						<method-collection display-name="Insert" name="addItemOpme" option-method="insert"/>
+						<method-collection display-name="Excluir" name="removeItemOpme" option-method="listing"/>
+					</methods-collection>
+				</update-collection>
+			</update-param>
+			
+			<collection-param  
+				name="pacotes"
+				display-name="Escolha os Pacotes"
+				type="br.com.infowaypi.ecarebc.atendimentos.acordos.itensAcordos.ItemPacote">
+			    <insert>
+				    <display-property name="pacote.descricao" display-name="Descrição"/>
+  			        <display-property name="pacote.valorTotal" display-name="Valor" type="money"/>
+  			        <display-property name="profissionalResponsavel.pessoaFisica.nome" display-name="Profissional Responsável"/>
+			    </insert>
+			</collection-param>			
+			
+			<html>
+				<![CDATA[
+					<infoway:GuiaApresentacao guiaApresentacao="${guia}"/>
+				]]>
+			</html>
+
+			<step-return name="guia" type="br.com.infowaypi.ecarebc.atendimentos.GuiaInternacaoUrgencia" 
+		         display-name="Conferir Dados" scope="session"/>
+			
+		</step-method>
+		
+		
+		<step-method name="salvarGuia" display-name="Conferir Dados" title="Conferir Dados" committed="true">
+			<session-param name="guia"/>
+			<html>
+				<![CDATA[
+					<infoway:GuiaApresentacao guiaApresentacao="${guia}"/>
+				]]>
+			</html>
+					
+		</step-method>
+		
+		<step-method name="finalizar" display-name="Imprimir Comprovante" title="Imprimir Comprovante">
+			
+			<session-param name="guia"/>
+			<html>
+				<![CDATA[ 
+				
+				<infoway:mensagemSucessoMarcacoes mensagem="Internação solicitada com sucesso!" autorizacao="${guia.autorizacao}"/> 
+				
+				<span class="not-for-print">
+					<button type="button" name="imprimir" class="actionButton" onclick="window.print();">Imprimir</button>
+				</span>
+			
+				<infoway:GuiaApresentacao guiaApresentacao="${guia}"/>
+				
+				<infoway:imprimirGuia titulo="GUIA DE SOLICITAÇÃƒO DE INTERNAÇ‡ÃƒO DE URGÊŠNCIA"/> 
+				
+				<span class="not-for-print">
+					<button type="button" name="imprimir" class="actionButton" onclick="window.print();">Imprimir</button>
+				</span>
+				
+				]]>
+			</html>
+					
+		</step-method>
+		
+	</flow>	
+</jheat-mapping>

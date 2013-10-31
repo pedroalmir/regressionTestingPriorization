@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+	
+	<class-mapping class="br.com.infowaypi.ecarebc.financeiro.faturamento.retencao.Inss" name="Inss" display-name="INSS" 
+		id-name="idInss" link-for-detail="descricao" type="simple" section="cadastrosFinanceiro" roles="financeiro">
+
+		<property name="competencia" not-null="true" type="month-year">
+			<display name="Competência" options="listing,search" maxlength="7" size="10"/>
+	    </property>	
+	    
+		<property name="aliquota" not-null="true" type="percentage">
+			<display name="Alíquota" options="listing" size="7"/>
+	    </property>
+	    
+	    <property name="valorDescontoMinimo" not-null="true" type="bigdecimal">
+			<display name="Valor Desconto Mínimo" options="listing"/>
+	    </property>
+	    
+		<property name="valorDescontoMaximo" not-null="true" type="bigdecimal">
+			<display name="Valor Desconto Máximo" options="listing"/>
+	    </property>
+	    	    
+	   	<validate-method name="validate" />
+	   	
+	</class-mapping>    
+	
+</jheat-mapping>

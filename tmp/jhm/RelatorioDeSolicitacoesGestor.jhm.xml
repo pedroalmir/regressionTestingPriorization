@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<report
+		name="relatorioDeSolicitacoesCentralGestor"
+		method-name="processar"
+		class="br.com.infowaypi.ecare.services.RelatorioSolicitacoesExamesCentralService"
+		display-name="Relatório de Solicitações" section="relatoriosAuditor" response-by-ajax="false">
+		
+		<description>Relatório de solicitações por Usuario</description>
+		
+		<report-param name="dataInicial" type="java.util.Date" display-name="Data inicial" input-type="date"/>
+		<report-param name="dataFinal" type="java.util.Date" display-name="Data final" input-type="date"/>
+		<select-param name="tipoRelatorio" display-name="Tipo de relatorio" type="java.lang.Integer">
+			<constants-group class="br.com.infowaypi.ecare.services.RelatorioSolicitacoesExamesCentralService" name="Tipo">
+				<entry display-name="Exames/Procedimentos" key-value="TIPO_RELATORIO_EXAMES"/>
+				<entry display-name="Internações" key-value="TIPO_RELATORIO_INTERNACOES"/>
+			</constants-group>
+		</select-param>
+		<select-param name="usuario" display-name="Atendente" type="br.com.infowaypi.msr.user.Usuario" null-option="true" null-description="Todos">
+			<combo display-property="nome"/>
+			<restrictions>
+				<restriction property-name="status" property-value="A" type="equals"/>
+				<restriction property-name="role" property-value="centralDeServico" type="equals"/>
+			</restrictions>
+		</select-param>
+		
+
+		<report-return name="resumo" type="br.com.infowaypi.ecare.services.ResumoSolicitacoesCentral" 
+			 display-name="Resultado Encontrado" style-class="not-for-print">
+			 
+			 <html>
+			 	<![CDATA[
+			 		<c:if test="${resumo.tipoResultado == 1}">
+			 	]]>
+			 </html>
+				 <collection-display display-name="Resultados" name="inners">
+				 	<display-property name="segurado.pessoaFisica.nome" display-name="Beneficiário"/>
+				 	<display-property name="segurado.numeroDoCartao" display-name="Nº do Cartão"/>
+				 	<display-property name="segurado.tipoDeSegurado" display-name="Tipo de Beneficiário"/>
+				 		<collection-display display-name="Procedimentos" name="procedimentos">
+				 			<display-property name="procedimentoDaTabelaCBHPM.descricao" display-name="Procedimento/Exame"/>
+				 			<display-property name="situacao.descricao" display-name="Situação"/>
+				 		</collection-display>
+				 </collection-display>
+			<html>
+			 	<![CDATA[
+			 		</c:if>
+			 	]]>
+			 </html>
+			 
+			 	 
+			  <html>
+			 	<![CDATA[
+			 		<c:if test="${resumo.tipoResultado != 1}">
+			 	]]>
+			 </html>
+				 <collection-display display-name="Resultados" name="inners">
+				 	<display-property name="segurado.pessoaFisica.nome" display-name="Beneficiário"/>
+				 	<display-property name="segurado.numeroDoCartao" display-name="Nº do Cartão"/>
+				 	<display-property name="segurado.tipoDeSegurado" display-name="Tipo de Beneficiário"/>
+				 	<display-property name="guia.tipoTratamentoFormatado" display-name="Tipo de Tratamento"/>
+				 	<display-property name="guia.situacao.descricao" display-name="Situacao"/>
+				 </collection-display>
+			<html>
+			 	<![CDATA[
+			 		</c:if>
+			 	]]>
+			 </html>
+			 
+			 
+			 <html>
+				<![CDATA[ 
+					<infoway:solicitacoesCentral titulo="LISTA DE SOLICITAÃ‡Ã•ES CENTRAL"/>
+					<span class="not-for-print">
+						<button type="button" name="imprimir" class="actionButton" onclick="window.print();">Imprimir</button>
+					</span>
+				]]>
+			</html>
+			
+		</report-return>
+		
+		
+		
+	</report>
+	
+</jheat-mapping>

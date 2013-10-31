@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<flow
+		name="listarSeguradosInternadosNoPrestador"
+		class="br.com.infowaypi.ecare.services.RelatorioSeguradosInternadosService" global-link="true" roles="centralDeServico"
+		display-name="Internações Abertas" section="relatoriosPrestador, relatorioCentral">
+
+		<description>Listagem de beneficiário internados</description>
+		
+		<step-method name="buscarGuias" display-name="Buscar Internações" buttons-position="bottom">
+
+			<step-param name="dataInicial" type="java.lang.String" display-name="Data inicial" input-type="date"/>
+			<step-param name="dataFinal" type="java.lang.String" display-name="Data final" input-type="date"/>
+			
+			<session-param name="prestador" operation="none"/>
+			
+			<step-return name="resumo" type="br.com.infowaypi.ecare.resumos.ResumoGuia" 
+		         display-name="Resumo" scope="session"/>
+		</step-method>
+		
+		<step-method name="finalizar" display-name="Visualizar Beneficiários Internados" buttons-position="bottom">
+			<session-param name="resumo" display-name="Beneficiários Internados" style-class="not-for-print">
+				<collection-display default-sort="4" order="desc" name="guiasInternacaoEmAndamento" display-name="Dados sobre os beneficiário">
+					<display-property name="autorizacao" display-name="Autorização"/>					
+					<display-property name="segurado.pessoaFisica.nome" display-name="Nome"/>
+					<display-property name="prestador.pessoaJuridica.fantasia" display-name="Prestador"/>				
+					<display-property name="dataMarcacao" display-name="Data de Marcação" type="date"/>
+					<display-property name="dataAtendimento" display-name="Data de Atendimento" type="date"/>
+					<display-property name="situacao.descricao" display-name="Situação"/>		
+				</collection-display>
+			</session-param>			
+		</step-method>	 
+		
+		<role name="centralDeServico" exec="true" insert="true" read="true" update="true" write="true"/>
+		<role name="root" exec="true" insert="true" read="true" update="true" write="true"/>
+		<role name="auditor" exec="true" insert="true" read="true" update="true" write="true"/>
+		
+	</flow>
+</jheat-mapping>		
+			

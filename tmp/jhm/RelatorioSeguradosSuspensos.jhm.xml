@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<report 
+		name="relatorioListaSeguradoSuspenso" 
+		display-name="Relatório de Segurados Suspensos" 
+		class="br.com.infowaypi.ecare.services.RelatorioSeguradosSuspensos" 
+		method-name="gerarRelatorio" 
+		section="relatoriosAuditor"
+		response-by-ajax="true">
+
+		<html>
+			<![CDATA[ <infoway:mensagemInformacao mensagem="O relatório exibirá segurados suspensos com até a quantidade de dias informada no campo abaixo."/> ]]>
+		</html>
+
+		<report-param name="intervalo" required="true" type="java.lang.Integer" display-name="Intervalo em dias" input-type="int" size="3"/>
+
+		<report-return name="relatorio" type="br.com.infowaypi.ecare.services.RelatorioSeguradosSuspensos" display-name="Segurados Suspensos">
+			<collection-display name="segurados" display-name="Lista de Segurados Suspensos">
+				<display-property name="numeroDoCartao" display-name="Nº Cartão"/>
+				<display-property name="pessoaFisica.nome" display-name="Segurado"/>
+				<display-property name="situacao.descricao" display-name="Situação"/>
+				<display-property name="situacao.data" display-name="Data da Situação" type="date"/>
+				<display-property name="situacao.motivo" align="center" display-name="Motivo da suspensão"/>
+			</collection-display>
+		</report-return>		
+	</report>
+</jheat-mapping>

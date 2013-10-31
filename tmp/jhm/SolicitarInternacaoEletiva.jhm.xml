@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+	<flow 
+		name="solicitarInternacaoEletivaCentral" 
+		class="br.com.infowaypi.ecare.services.internacao.SolicitarInternacaoEletivaCentral"
+		display-name="Solicitar Internação Eletiva" section="autorizacoesCentral">
+			
+		<description>Registro de Internação Eletiva</description>		
+			
+		<step-method name="buscarSegurado" display-name="Buscar Beneficiário" title="Buscar Beneficiário" buttons-position="bottom">
+			<step-param name="cpfDoTitular" size="24" mask="999.999.999-99" input-type="string" type="java.lang.String" display-name="CPF do Titular"/>
+			<step-param name="numeroDoCartao" size="24" mask="99.9999999999.99.9-9" input-type="string" type="java.lang.String" display-name="Número do cartão do beneficiário"/>
+			
+			<step-return name="seguradosEncontrados" type="br.com.infowaypi.ecare.segurados.ResumoSegurados" 
+		         display-name="Segurados Encontrados" scope="session"/>
+		</step-method>
+			
+		<step-method name="criarGuiaEletiva" display-name="Informar Dados" title="Informar Dados">
+			<select-param
+					name="segurados"
+					type="br.com.infowaypi.ecare.segurados.Segurado"
+					display-name="Selecione o Beneficiário"
+					session-property-ref="seguradosEncontrados" operation="reload">
+				<radio-group default-checked="none">
+					<display-property name="numeroDoCartao" display-name="Número do Cartão"/>
+					<display-property name="pessoaFisica.nome" display-name="Nome"/>
+					<display-property name="tipoDeSegurado" display-name="Tipo"/>
+				</radio-group>
+			</select-param>
+
+			<select-param display-name="Tipo de Tratamento" name="tipoTratamento" type="java.lang.Integer" display-label-head="false">
+				<constants-group class="br.com.infowaypi.ecarebc.atendimentos.GuiaInternacaoUrgencia" name="Tipo de Tratamento">
+					<entry display-name="Clínico" key-value="TRATAMENTO_CLINICO"/>
+					<entry display-name="Cirúrgico" key-value="TRATAMENTO_CIRURGICO"/>
+					<entry display-name="Obstétrico" key-value="TRATAMENTO_OBSTETRICO"/>
+				</constants-group>
+			</select-param>
+			
+			<!-- if_not[REMOVE_OBRIGATORIEDADE_DE_INFORMAR_PRESTADOR_PARA_INTERNACAO]
+				
+			<select-param name="prestador" operation="reload" type="br.com.infowaypi.ecarebc.associados.Prestador" display-name="Prestador" display-label-head="false">
+				<autocomplete style-class="autocomplete" minimum-characters="3" force-selection="true">
+					<search-property name="pessoaJuridica.fantasia" display-name="Prestador"/>
+					<name-property name="pessoaJuridica.fantasia"  display-name="Prestador"/>
+				</autocomplete>
+			</select-param>
+			
+			end[REMOVE_OBRIGATORIEDADE_DE_INFORMAR_PRESTADOR_PARA_INTERNACAO] -->
+
+			<session-param name="usuario" operation="reload"/>
+			
+			<select-param
+				name="solicitanteCRM"
+				display-name="Médico Solicitante(Conselho)"
+				type="br.com.infowaypi.ecarebc.associados.Profissional" display-label-head="false" required="false">
+				<autocomplete mask-detail="Os 3 números iniciais" style-class="autocomplete" minimum-characters="3" force-selection="true">
+					<search-property name="crm" display-name="Médico(Conselho)" search-type="likerigth"/>
+					<name-property name="crmNome" display-name="Médico(Conselho)"/>
+				</autocomplete>				
+			</select-param>	
+			
+			<html>
+				<![CDATA[
+					ou
+				]]>
+			</html>
+			
+			<select-param
+				name="solicitanteNOME"
+				display-name="Médico Solicitante(Nome)"
+				type="br.com.infowaypi.ecarebc.associados.Profissional" display-label-head="false" required="false">
+				<autocomplete mask-detail="As 7 letras iniciais" style-class="autocomplete" minimum-characters="7" force-selection="true">
+					<search-property name="crmNome" display-name="Médico(Nome)" search-type="likerigth"/>
+					<name-property name="crmNome" display-name="Médico(Nome)"/>
+				</autocomplete>				
+			</select-param>		
+
+			<select-param
+				name="especialidades"
+				display-name="Especialidade"
+				type="br.com.infowaypi.ecarebc.associados.Especialidade" operation="reload" display-label-head="false">
+				<combo display-property="descricao" display-name="Especialidade"/>
+				<restrictions>
+					<restriction property-value="true" property-name="ativa" type="equals"/>
+				</restrictions> 
+			</select-param>	
+			
+			<collection-param name="cids" type="br.com.infowaypi.ecarebc.procedimentos.CID" display-name="">
+				<autocomplete style-class="autocomplete" minimum-characters="4" force-selection="true">
+					<search-property name="codigoEDescricaoDaDoenca" display-name="CID"/>
+					<name-property name="codigoEDescricaoDaDoenca" display-name="CID"/>
+				</autocomplete>
+			</collection-param>
+			
+			<step-param name="justificativa"  type="java.lang.String" input-type="text" display-name="Quadro Clínico"/>
+				
+			<step-return name="guia" type="br.com.infowaypi.ecarebc.atendimentos.GuiaInternacaoEletiva" 
+		         display-name="Conferir Dados" scope="session"/>
+		</step-method>
+		
+		<step-method name="addProcedimentos" display-name="Adicionar Procedimentos" title="Adicionar Procedimentos">
+
+			<session-param name="usuario" operation="none" />
+			
+			<collection-param  
+				name="diariasSolicitacao"
+				display-name="Acomodação"
+				type="br.com.infowaypi.ecarebc.atendimentos.acordos.itensAcordos.ItemDiaria"  >
+			    <insert>
+				    <display-property name="diaria.descricao" display-name="Tipo de acomodação"/>
+  			        <display-property name="valor.valor" display-name="Valor Unitário" type="money"/>				    
+  			        <display-property name="valor.quantidade" display-name="Quantidade(Dias)" type="int"/>
+			    </insert>
+			</collection-param>
+			
+			<update-param display-name="" name="guia" type="br.com.infowaypi.ecarebc.atendimentos.GuiaInternacaoEletiva">
+				<update-collection 
+					name="procedimentosCirurgicosDaSolicitacao" 
+					field-name="procedimentosCirurgicosDaSolicitacao"
+					display-name="Procedimentos Cirúrgicos"
+					type="br.com.infowaypi.ecare.procedimentos.ProcedimentoCirurgicoSR">
+
+					<update-insert>
+					    <update-property name="procedimentoDaTabelaCBHPM.codigo" display-name="Código" editable="false"/>
+	  			        <update-property name="procedimentoDaTabelaCBHPM.descricao" display-name="Descrição" editable="false"/>
+	  			        <update-property name="bilateral" display-name="Bilateral" input-type="boolean" type="java.lang.Boolean" editable="false"/>
+	  			        <update-property name="valorTotal" display-name="Valor Bruto" type="java.math.BigDecimal" input-type="money" editable="false"/>
+						<update-property name="porcentagem" display-name="Porcentagem" editable="false"/>
+						<update-property name="profissionalResponsavel.pessoaFisica.nome" display-name="Profissional" editable="false"/>
+					</update-insert>
+					<methods-collection>
+						<method-collection display-name="Insert" name="addProcedimentoDaSolicitacao" option-method="insert"/>
+						<method-collection display-name="Excluir" name="removeProcedimentoDaSolicitacao" option-method="listing"/>
+					</methods-collection>
+				</update-collection>
+				
+				<update-collection 
+				    display-name="OPMEs" 
+				    name="itensOpme"
+				    field-name="itensOpme"
+				    type="br.com.infowaypi.ecarebc.opme.ItemOpme">
+					
+					<update-insert>
+						<update-property name="opme.codigo" display-name="Código" editable="false"/>
+						<update-property name="opme.descricao" display-name="Descrição" editable="false"/>
+						<update-property name="situacao.descricao" display-name="Situação" editable="false" />
+						<update-property name="quantidadeSolicitada" display-name="Quantidade" editable="false" />
+						<update-property name="observacaoSolicitacao" display-name="Motivo da Solicitação" input-type="text" editable="true"/>
+					</update-insert> 
+					<methods-collection>
+						<method-collection display-name="Insert" name="addItemOpme" option-method="insert"/>
+						<method-collection display-name="Excluir" name="removeItemOpme" option-method="listing"/>
+					</methods-collection>
+				</update-collection>
+			</update-param>
+				
+			<collection-param  
+				name="pacotesSolicitacao"
+				display-name="Escolha os Pacotes"
+				type="br.com.infowaypi.ecarebc.atendimentos.acordos.itensAcordos.ItemPacote">
+			    <insert>
+				    <display-property name="pacote.descricao" display-name="Descrição"/>
+  			        <display-property name="pacote.valorTotal" display-name="Valor" type="money"/>
+			    </insert>
+			</collection-param>			
+				
+			<html>
+				<![CDATA[
+					<infoway:GuiaApresentacao guiaApresentacao="${guia}"/>
+				]]>
+			</html>
+			<step-return name="guia" type="br.com.infowaypi.ecarebc.atendimentos.GuiaInternacaoEletiva" 
+		         display-name="Conferir Dados" scope="session"/>
+			
+		</step-method>
+		
+		
+		<step-method name="salvarGuia" display-name="Conferir Dados" title="Conferir Dados" committed="true">
+			<session-param name="guia"/>
+			<html>
+				<![CDATA[
+					<infoway:GuiaApresentacao guiaApresentacao="${guia}"/>
+				]]>
+			</html>
+		</step-method>
+		
+		<step-method name="finalizar" display-name="Imprimir Comprovante" title="Imprimir Comprovante">
+			
+			<session-param name="guia"/>
+			<html>
+				<![CDATA[ 
+				<infoway:mensagemSucessoMarcacoes mensagem="Internação solicitada com sucesso!" autorizacao="${guia.autorizacao}"/> 
+		
+				<span class="not-for-print">
+					<button type="button" name="imprimir" class="actionButton" onclick="window.print();">Imprimir</button>
+				</span>
+			
+				<infoway:GuiaApresentacao guiaApresentacao="${guia}"/>
+				
+				<infoway:imprimirGuiaInternacao titulo="GUIA DE AUTORIZAÇÃO DE INTERNAÃ‡ÃƒO"/> 
+				
+				<span class="not-for-print">
+					<button type="button" name="imprimir" class="actionButton" onclick="window.print();">Imprimir</button>
+				</span>
+				]]>
+			</html>
+					
+		</step-method>
+		
+	</flow>	
+</jheat-mapping>

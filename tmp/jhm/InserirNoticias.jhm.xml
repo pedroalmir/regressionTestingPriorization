@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<flow 
+		name="inserirNoticia" 
+		class="br.com.infoway.ecare.services.noticias.NoticiaServiceProxy"
+		display-name="Inserir Notícia" section="noticias">
+		
+		<description>Inserir Nova Notícia</description>
+		
+		<step-method name="inserirNova" display-name="Inserir Dados" buttons-position="bottom" committed="true">
+
+    		<select-param
+					name="tipoNoticia"
+					display-name="" type="java.lang.String">
+					<constants-group name="destaque" class="br.com.infowaypi.msr.noticia.Noticia">
+						<entry display-name="Azul (Informação)" key-value="TIPO_NOTICIA_INFORMACAO"/>	
+						<entry display-name="Amarelo (Aviso Importante)" key-value="TIPO_NOTICIA_ALERTA"/>				
+					</constants-group>	
+			</select-param>	
+				
+			<step-param name="titulo" type="java.lang.String" display-name="Título" size="80" input-type="string"/>	
+			<step-param name="corpo" type="java.lang.String" display-name="Corpo" input-type="text"/>	
+	
+    		<select-param
+				name="destino"
+				display-name="" type="java.lang.String">
+				<constants-group name="destino" class="br.com.infowaypi.msr.noticia.Noticia">
+					<entry display-name="Todos os usuários" key-value="DESTINO_TODOS"/>	
+					<entry display-name="Somente Prestadores" key-value="DESTINO_PRESTADOR"/>				
+				</constants-group>	
+			</select-param>	
+
+			<step-param name="somenteNaPaginaInicial" type="java.lang.Boolean" display-name="Só na P. Principal" input-type="boolean"/>
+			<step-param name="ativa" type="java.lang.Boolean" display-name="Ativa" input-type="boolean"/>
+			
+			<step-return name="noticia" type="br.com.infowaypi.msr.noticia.Noticia" 
+				 display-name="Noticia" scope="session"/>
+
+		</step-method>
+		
+		<step-method name="finalizar" display-name="Informações da Notícia">
+
+			<html>
+				<![CDATA[
+					<div class="alert confirmation not-for-print" style="margin-left:0;margin-right:0;">
+						Noticia cadastrada com sucesso!
+					</div>					
+				]]>
+			</html>
+
+			<session-param name="noticia" display-name="Nova Notícia">
+				<display-property name="dataInclusao" display-name="Data de Inclusão" type="date"/>
+				<display-property name="titulo" display-name="Título"/>
+				<display-property name="corpo" display-name="Corpo" type="text"/>
+				<display-property name="somenteNaPaginaInicial" display-name="Só na P. Principal" type="boolean"/>
+				<display-property name="ativa" display-name="Ativa" type="boolean"/>
+				<display-property name="descricaoTipoNoticia" display-name="Cor / Destaque"/>
+				<display-property name="destino" display-name="Destinatário(s)"/>
+			</session-param>
+
+		</step-method>
+	</flow>	
+</jheat-mapping>

@@ -1,0 +1,339 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+	<!-- if[INTEGRACAO]
+		<class-mapping class="br.com.infowaypi.ecarebc.procedimentos.TabelaCBHPM" name="TabelaCBHPM" display-name="Procedimentos TPUN" 
+			id-name="idTabelaCBHPM" link-for-detail="descricao" type="simple" section="cadastros,cadastrosAuditor,cadastrosRedeCredenciada,cadastrosConvidado">
+	else[INTEGRACAO] -->
+	<class-mapping class="br.com.infowaypi.ecarebc.procedimentos.TabelaCBHPM" name="TabelaCBHPM" display-name="Tabela Saúde Recife" 
+		id-name="idTabelaCBHPM" link-for-detail="descricao" type="simple" section="cadastros,cadastrosAuditor,cadastrosRedeCredenciada,cadastrosConvidado">
+	<!-- end[INTEGRACAO] -->
+		
+		<description>Procedimentos disponíveis para a marcação de exames</description>
+		
+		<!-- CÓDIGO -->
+		<property name="codigo" type="string" not-null="true" search-type="likerigth">
+			<display name="Código" size="20" maxlength="8" mask="99999999" options="listing,search"/>
+	    </property>
+
+		<!-- DESCRIÇÃO -->
+		<property name="descricao" type="string" not-null="true" search-type="likefull">
+			<display name="Nome do Procedimento" options="listing,search" maxlength="255" />
+	    </property>
+	    
+		<!-- SITUAÇÃO -->
+	    <property name="situacao.descricao" type="string" not-null="false" calculated="true" >
+			<display name="Situação" options="read-only,listing" />
+	    </property>
+
+		<!-- GRUPO -->
+		<many-to-one name="grupoCBHPM" display-name="Grupo" class="br.com.infowaypi.ecarebc.procedimentos.GrupoCBHPM" options="detail-only" autocomplete="false" >
+			<display-property name="codigoDescricao" options="read-only" display-name="Grupo"/>
+		</many-to-one>
+		
+		<!-- SUBGRUPO -->
+		<many-to-one name="subgrupoCBHPM" display-name="Subgrupo" class="br.com.infowaypi.ecarebc.procedimentos.SubgrupoCBHPM" options="detail-only"  autocomplete="false">
+			<display-property name="codigoDescricao" display-name="Subgrupo"/>
+			<depends-property name="grupoCBHPM" search-property="grupoCBHPM" type="br.com.infowaypi.ecarebc.procedimentos.GrupoCBHPM"/>
+		</many-to-one>
+		
+		<!-- COLEÇÃO DE ÁREAS/ESPECIALIDADES ASSOCIADAS AO PROCEDIMENTO-->
+		<many-to-many name="especialidades" display-name="Especialidades Associadas" class="br.com.infowaypi.ecarebc.associados.Especialidade">
+    		<autocomplete style-class="autocomplete" minimum-characters="3" force-selection="true">
+				<search-property name="descricao" display-name="Descrição"/>
+				<name-property name="descricao" display-name="Descrição"/>
+			</autocomplete>	
+		</many-to-many>
+		
+		<property name="verificaEspecialidade" type="boolean" not-null="true">
+			<display name="Verifica Especialidade" options="listing"/>
+	    </property>
+		
+		<!-- EXIGE PERÍCIA -->
+		<property name="exigePericia" type="boolean" not-null="false">
+			<display name="Exige Perícia" options="" />
+		</property>
+		
+		<!-- PORTE -->
+		<many-to-one options="listing,search" class="br.com.infowaypi.ecarebc.procedimentos.Porte" name="porte" display-name="Porte" autocomplete="true" not-null="false">
+			<display-property name="descricao" size="5"/>
+		</many-to-one>
+	    
+		<!-- PORTE ANESTÉSICO FORMATADO -->
+		<select-property name="porteAnestesicoFormatado"
+			display-name="Porte Anestésico" options="">
+			<entry display-name="0" key-value="QUANTIDADE_0" />
+			<entry display-name="1" key-value="QUANTIDADE_1" />
+			<entry display-name="2" key-value="QUANTIDADE_2" />
+			<entry display-name="3" key-value="QUANTIDADE_3" />
+			<entry display-name="4" key-value="QUANTIDADE_4" />
+			<entry display-name="5" key-value="QUANTIDADE_5" />
+			<entry display-name="6" key-value="QUANTIDADE_6" />
+			<entry display-name="7" key-value="QUANTIDADE_7" />
+			<entry display-name="8" key-value="QUANTIDADE_8" />
+		</select-property>
+	    		
+		<!-- Número de Auxilios -->
+		<select-property name="quantidadeDeAuxilios" display-name="Quantidade de Auxilios" options="">
+			<entry display-name="Sem Auxílio" key-value="SEM_AUXILIO"/>
+			<entry display-name="1 Auxílio" key-value="UM_AUXILIO"/>
+			<entry display-name="2 Auxílios" key-value="DOIS_AUXILIOS"/>
+			<entry display-name="3 Auxílios" key-value="TRES_AUXILIOS"/>
+		</select-property>
+	    
+		<html>
+			<![CDATA[
+				<script type="text/javascript">
+				try { document.getElementsBy		Name("valorModerado")[0].onkeypress = function(evt) { return Format.money(this, evt); } } catch (e) { }
+				</script>
+			]]>
+		</html>
+		
+		<!-- TEMPO DE PERMANÊNCIA -->
+		<property name="tempoPermanencia" type="int" not-null="true">
+			<display name="Tempo de Permanência" size="4" options="" mask="999" maxlength="3" />
+		</property>
+		
+		<!-- LOCAL DE ATENDIMENTO -->
+<!--		<select-property name="localDeAtendimento" display-name="Local de Atendimento" options="">-->
+<!--			<entry display-name="Ambulatorial" key-value="TIPO_AMBULATORIAL"/>-->
+<!--			<entry display-name="Hospitalar" key-value="TIPO_HOSPITALAR"/>-->
+<!--			<entry display-name="Ambos" key-value="TIPO_AMBOS"/>-->
+<!--		</select-property>-->
+		
+		<!--TIPO DE ACOMODAÇÃO -->
+		<many-to-many name="tiposAcomodacao" display-name="Tipo de Acomodação" class="br.com.infowaypi.ecarebc.procedimentos.TipoAcomodacao">
+			<combo display-property="descricao" display-name="Tipo de Acomodação"/>
+		</many-to-many>
+		
+		<!--COLEÇÃO DE PROCEDIMENTOS INCOMPATÍVEIS-->
+		<many-to-many name="procedimentosIncompativeis" display-name="Procedimentos Incompatí­veis" class="br.com.infowaypi.ecarebc.procedimentos.TabelaCBHPM">
+			<autocomplete style-class="autocomplete" minimum-characters="3" force-selection="true">
+				<search-property name="codigoEDescricao" display-name="Código/Descrição" />
+				<name-property name="codigoEDescricao" display-name="Código/Descrição" />
+			</autocomplete>
+		</many-to-many>
+		
+		<!-- IDADE MÍNIMA -->
+		<property name="idadeMinima" type="int" not-null="true">
+			<display name="Idade Mínima" size="4" options="" mask="99" maxlength="2"/>
+	    </property>
+	
+		<!-- IDADE MÁXIMA -->
+		<property name="idadeMaxima" type="int" not-null="true">
+			<display name="Idade Máxima" size="4" options="" mask="999" maxlength="3"/>
+	    </property>
+		
+		<!-- SEXO -->
+		<select-property name="sexo" display-name="Sexo"
+			options="listing">
+			<entry display-name="Masculino" key-value="SEXO_MASCULINO" />
+			<entry display-name="Feminino" key-value="SEXO_FEMININO" />
+			<entry display-name="Ambos" key-value="SEXO_AMBOS" />
+		</select-property>
+		
+		<!-- QUANTIDADE PERMITIDA-->
+		<property name="quantidade" type="int" >
+			<display options="" name="Quant. Máxima Permitida" size="4" maxlength="4"/>
+		</property>
+		
+		<!-- PERIODICIDADE -->
+		<property name="periodicidade" type="int" not-null="true">
+			<display name="Periodicidade" size="4" options="listing" mask="999" maxlength="3"/>
+	    </property>
+
+		<!-- UNICIDADE -->
+		<property name="unicidade" type="boolean" not-null="false">
+			<display name="Unicidade" options=""/>
+	    </property>
+	    
+	    <property name="checarEspecialidade" type="boolean" not-null="false">
+			<display name="Checar especialidade" options=""/>
+	    </property>
+	
+	    <select-property name="nivel" display-name="Nível do procedimento" options="listing,search" >
+			<entry display-name="Nível 1 (Baixa complexidade)" key-value="NIVEL_1"/>
+			<entry display-name="Nivel 2 (Media-Baixa complexidade)" key-value="NIVEL_2"/>
+			<entry display-name="Nivel 3 (Media-Alta complexidade)" key-value="NIVEL_3"/>
+			<entry display-name="Nivel 4 (Alta complexidade)" key-value="NIVEL_4"/>
+		</select-property>
+	    
+  		<!-- VALOR DO PROCEDIMENTO -->
+		<property name="valor" type="money" real-class="java.math.BigDecimal" not-null="true">
+			<display name="Porte do Procedimento" options="detail-only" size="10" maxlength="10"/>
+		</property>
+	    
+	    <!-- UCO -->
+		<property name="uco" type="bigdecimal" not-null="true">
+			<display name="UCO" options="" size="10" maxlength="10" mask="99,999"/>
+		</property>
+		
+		<!-- Valor UCO -->
+		<property name="valorUco" type="money" real-class="java.math.BigDecimal" not-null="true" calculated="true">
+			<display name="Valor UCO" options="listing" size="10" maxlength="10"/>
+		</property>
+	    
+	    <!-- VALOR CBHPM -->
+		<property name="valorCBHPM" type="money" real-class="java.math.BigDecimal" not-null="true" calculated="true">
+			<display name="Valor CBHPM" options="detail-only" size="10" maxlength="10"/>
+		</property>		
+		
+		<!-- VALOR PAGO -->
+		<property name="valorModerado" type="money" real-class="java.math.BigDecimal" not-null="true">
+			<display name="Valor Pago" options="listing" size="10" maxlength="10"/>
+		</property>
+	    
+	    <select-property name="tipo" display-name="Tipo do procedimento" options="" >
+			<entry display-name="Ambulatorial" key-value="TIPO_AMBULATORIAL"/>
+			<entry display-name="Hospitalar" key-value="TIPO_HOSPITALAR"/>
+			<entry display-name="Ambos" key-value="TIPO_AMBOS"/>
+		</select-property>
+		
+		<property name="liberadoParaUrgencia" type="boolean" not-null="false">
+			<display name="Liberado para urgência" options=""/>
+	    </property>
+	    
+	    <!-- Moderação -->
+		<property name="porcentagemModeracao" type="percentage" not-null="true" calculated="true">
+			<display name="Moderação" options="detail-only" size="4" maxlength="4" />
+		</property>
+		
+		<!-- CO-PARTICIPAÇÃO -->
+		<property name="moderacao" type="percentage" not-null="true">
+			<display name="Co-participação" options="listing" size="4" maxlength="4" />
+		</property>
+	    		
+		<!-- PERMITE USO DE MEDICAMENTO COMPLEMENTAR -->
+		<property name="permiteMedicamentoComplementar" type="boolean" not-null="false">
+			<display name="Permite uso de medicamento" options="" />
+		</property>
+		
+		<!-- PERMITE PME -->
+		<property name="permitePme" type="boolean" not-null="false"  padding-left="0">
+			<display name="Permite PME" options="" />
+	    </property>
+
+		<!-- PERMITE MATERIAL COMPLEMENTAR -->
+		<property name="permiteMaterialComplementar" type="boolean" not-null="false"  padding-left="0">
+			<display name="Permite uso de material" options="" />
+	    </property>	    		
+		
+		<!-- CARÊNCIA TEMPORAL-->
+		<property name="carencia" type="int" not-null="true">
+			<display name="Carência Temporal" size="4" maxlength="4" options="" />
+		</property>
+		
+		<!-- ELEMENTO APLICADO -->
+		<select-property name="elementoAplicado" display-name="Elemento Aplicado" options="" null-option="true" null-description="Nenhum">
+			<entry display-name="Dentição" key-value="DENTICAO" />
+			<entry display-name="Arcada" key-value="ARCADA" />
+			<entry display-name="Quadrante" key-value="QUADRANTE" />
+			<entry display-name="Dente" key-value="DENTE" />
+			<entry display-name="Face" key-value="FACE" />
+		</select-property>
+		
+		<!-- VERIFICA PERIODICIDADE NA INTERNAÇÃO -->
+		<property name="verificaPeriodicidadeNaInternacao" type="boolean" not-null="false">
+			<display name="Periodicidade Na Internação" options="" />
+	    </property>
+		
+		<!-- BILATERAL -->
+		<property name="bilateral" type="boolean" not-null="false">
+			<display name="Realização Bilateral" options="listing" />
+		</property>
+		
+		<select-property name="visibilidade" display-name="Visibilidade" options="listing">
+			<entry display-name="Médico" key-value="VISIBILIDADE_MEDICO"/>
+			<entry display-name="Odontológico" key-value="VISIBILIDADE_ODONTOLOGICA"/>
+			<entry display-name="Ambos" key-value="VISIBILIDADE_AMBOS"/>				
+		</select-property>
+		
+		<enum-property name="tipoServico" display-name="Tipo de Serviço" null-option="true" class="br.com.infowaypi.ecarebc.enums.TipoServicoCBHPM" display="descricao" value="valor" options=""/>
+
+		<collection class="br.com.infowaypi.ecarebc.procedimentos.CID"
+			name="cids" display-name="CIDs Associados"
+			master-detail="false"/>
+		
+		<collection class="br.com.infowaypi.ecarebc.procedimentos.Pacote"
+			name="pacotes" display-name="Pacotes Associados"
+			master-detail="false" default-sort="3"/>
+		
+		<restrictions>
+			<restriction property-value="Ativo(a)" property-name="situacao.descricao" type="equals" />
+		</restrictions>
+		
+		<restrictions-search-list>
+			<restriction property-value="Ativo(a)" property-name="situacao.descricao" type="equals" >
+				<access-restriction name="visualizaInativos" type="read">
+					<session-restriction name="usuario" property="role" value="root" operation="notequals" type="string" logic-operation="and" />
+					<session-restriction name="usuario" property="role" value="auditor" operation="notequals" type="string" logic-operation="and" />
+					<session-restriction name="usuario" property="role" value="gerenciaRedeCredenciada" operation="notequals" type="string" />
+				</access-restriction>
+			</restriction>
+		</restrictions-search-list>
+			
+		<properties-order>
+			<property-order name="situacao.descricao" mode="asc"/>
+			<property-order name="codigo" mode="asc"/>
+			<property-order name="descricao" mode="asc"/>
+		</properties-order>
+		
+		<!-- cadastros -->
+		<role name="root" insert="true" exec="true" update="true" read="true" write="true"/>
+		<role name="atendente" insert="false" exec="false" update="false" read="true" write="false"/>
+		
+		<!-- cadastrosAuditor -->
+		<role name="auditor" insert="false" exec="false" update="false" read="true" write="false"/>
+		<role name="regulador" insert="false" exec="false" update="false" read="true" write="false"/>
+		<role name="faturista" insert="false" exec="false" update="false" read="true" write="false"/>
+		<role name="auditorOdonto" insert="false" exec="false" update="false" read="true" write="false"/>
+		<role name="diretoriaMedica" insert="false" exec="false" update="false" read="true" write="false"/>
+		
+		<!-- cadastrosRedeCredenciada atualizado em 07/11/2012-->
+		<role name="gerenciaRedeCredenciada" insert="false" exec="true" update="true" read="true" write="false"/>
+		
+		<!-- outros -->
+		<role name="relacionamento" insert="false" exec="false" update="false" read="true" write="false"/>
+		<role name="prestador" insert="false" exec="false" update="false" read="true" write="false"/>
+		<role name="prestadorCompleto" insert="false" exec="false" update="false" read="true" write="false"/> 
+		<role name="prestadorConsExmIntUrg" insert="false" exec="false" update="false" read="true" write="false"/>
+		<role name="prestadorConsIntUrg" insert="false" exec="false" update="false" read="true" write="false"/>
+		<role name="prestadorInternacaoExameUrgencia" insert="false" exec="false" update="false" read="true" />
+		<role name="prestadorConsulta" insert="false" exec="false" update="false" read="true" write="false"/>
+		<role name="prestadorExame" insert="false" exec="false" update="false" read="true" write="false"/>
+		<role name="prestadorConsultaExame" insert="false" exec="false" update="false" read="true" write="false"/>
+		<role name="prestadorInternacaoUrgencia" insert="false" exec="false" update="false" read="true" write="false"/>
+		<role name="prestadorOdonto" insert="false" exec="false" update="false" read="true" write="false"/>
+		
+		<validate-method name="validate">
+			<session-param name="usuario"/>
+		</validate-method>
+		
+		<methods>
+			<method name="reativar" display-name="Reativar">
+				<step-param name="motivo" type="java.lang.String" display-name="Motivo"/>
+				<session-param name="usuario"/>
+				<messages>
+                    <question>Deseja reativar este Procedimento?</question>
+                    <success>Situação alterada com sucesso. Procedimento Reativado.</success>
+                    <error>Ocorreu um erro ao alterar a situação do Procedimento. Tente novamente.</error>
+				</messages>				
+			</method>
+			<method name="inativar" display-name="Inativar">
+				<step-param name="motivo" type="java.lang.String" display-name="Motivo"/>
+				<session-param name="usuario"/>
+				<messages>
+                    <question>Deseja inativar este Procedimento?</question>
+                    <success>Situação alterada com sucesso. Procedimento inativado.</success>
+                    <error>Ocorreu um erro ao alterar a situação do Procedimento. Tente novamente.</error>
+				</messages>				
+			</method>
+		</methods>
+		
+	</class-mapping>
+
+</jheat-mapping>

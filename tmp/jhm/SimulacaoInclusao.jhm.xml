@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+
+<jheat-mapping>
+<flow 
+	name="simulacaoInclusao" 
+	class="br.com.infowaypi.ecare.services.SimulacaoInclusaoService"
+	display-name="Simulação de Adesão" section="simulacaoServicoSaude">
+		
+	<description>Simulação de Inclusão de Titulares/ Dependentes</description>
+	
+    <step-method name="simular" display-name="Simulação de Inclusão" title="Simulação de Inclusão">
+		
+		<step-param name="valorBruto" display-name="" type="java.math.BigDecimal" scope="request" input-type="bigdecimal" />
+		<step-param name="numeroDoCartao" display-name="" input-type="string" scope="request"/>
+		<step-param name="cpf" display-name="" input-type="string" scope="request"/>
+		
+		<update-param name="incluido" display-name="" type="br.com.infowaypi.ecare.services.InclusaoTitularDependente" operation="reload" >
+			
+       		<update-collection 
+					name="incluidos" 
+					display-name=""
+					include-method="addDependente"
+					exclude-method="excluirDependente"
+					type="br.com.infowaypi.ecare.services.ResumoIncluidos">
+				    <update-insert>
+				    	<update-property name="descricao" display-name="Ordem" input-type="string" editable="false"/>
+				    	<update-property name="idade" display-name="Idade" input-type="int" editable="false"/>
+				    	<update-property name="valorIndividual" display-name="Valor de Custo" input-type="money" editable="false"/>
+				    </update-insert>
+        	</update-collection>
+		</update-param>
+		
+		<step-return name="incluido" type="br.com.infowaypi.ecare.services.InclusaoTitularDependente" 
+		         display-name="Incluido" scope="session"/>
+		
+		         
+	</step-method>
+
+	<step-method display-name="Resultado" name="finalizar" title="Resultado">
+		<session-param name="incluido">
+			
+			<html>
+				<![CDATA[<c:if test="${sessionScope.incluido.segurado ne null}">]]>
+			</html>
+			<display-property name="segurado.pessoaFisica.nome" display-name="Titular" align="left"/>
+			
+			<html><![CDATA[ </c:if> ]]></html>
+			
+			<html>
+				<![CDATA[<c:if test="${fn:length(sessionScope.incluido.incluidosAntigos) > 0}">
+				<infoway:tableSeparator titulo="Dependentes já existentes" colspan="2"/>]]>
+			</html>	
+
+			<collection-display display-name="Resultado" name="incluidosAntigos">
+				<display-property name="descricao" display-name="Descrição"/>
+				<display-property name="idade" display-name="Idade do Dependente"/>
+				<display-property name="valorIndividual" display-name="Valor do Dependente" type="money"/>
+			</collection-display>
+
+			<html><![CDATA[ </c:if> ]]></html>
+			
+			<html>
+				<![CDATA[<c:if test="${fn:length(sessionScope.incluido.incluidos) > 0}"> 
+					<infoway:tableSeparator titulo="Dependentes Novos" colspan="2"/>]]>
+			</html>
+			
+			<collection-display display-name="Resultado" name="incluidos">
+				<display-property name="descricao" display-name="Descrição"/>
+				<display-property name="idade" display-name="Idade do Dependente"/>
+				<display-property name="valorIndividual" display-name="Valor do Dependente" type="money"/>
+			</collection-display>
+
+			<html><![CDATA[ </c:if> ]]></html>			
+
+			<html>
+				<![CDATA[ 
+					<infoway:tableSeparator titulo="Totalização" colspan="2"/>]]>
+			</html>
+			
+			<display-property name="valorBrutoCalculado" display-name="Valor do Titular" type="money"/>
+
+			<display-property name="valorDependentesExistentes" display-name="Dependentes já cadastrados" type="money"/>
+			<display-property name="valorDependentesNovos" display-name="Novos Dependentes" type="money"/>
+			<html>
+				<![CDATA[ 
+					<infoway:tableSeparator titulo="" colspan="2"/>]]>
+			</html>
+			
+			<html>
+				<![CDATA[<c:if test="${(sessionScope.incluido.valorTotalDependentes) > 0}">]]>
+			</html>
+			<display-property name="valorTotalDependentes" display-name="Valor dos Dependentes" type="money"/>
+			<html><![CDATA[ </c:if> ]]></html>
+			
+			<html>
+				<![CDATA[ 
+					<infoway:tableSeparator titulo="" colspan="2"/>]]>
+			</html>
+			<display-property name="valorTotalCalculado" display-name="Valor Total" type="money"/>
+		</session-param>
+	</step-method>
+	
+</flow>
+</jheat-mapping>

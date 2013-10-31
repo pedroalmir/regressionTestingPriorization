@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+	
+	<class-mapping class="br.com.infowaypi.ecarebc.atendimentos.Gasoterapia" name="Gasoterapia" display-name="Gasoterapia" 
+		id-name="idAbstractTaxa" link-for-detail="descricao" type="simple" section="cadastros, cadastrosAuditor,cadastrosRedeCredenciada,cadastrosConvidado">
+		
+		<description>Cadastro de Gasoterapia</description>
+		
+		<property name="codigo" type="string" not-null="true">
+			<display name="Código" mask="99999999" maxlength="8" size="8"  options="listing,search"/>
+	    </property>
+		
+		<property name="descricao" type="string" not-null="true">
+			<display name="Descrição" options="listing,search"/>
+	    </property>
+	    
+	    <property name="codigoDescricao" type="string" not-null="false">
+			<display name="Código-Descrição" options="detail-only"/>
+		</property>
+	    
+	    <property name="situacao.descricao" type="string" not-null="false" calculated="true" >
+			<display name="Situação" options="read-only,listing" />
+	    </property>
+	    
+		<property name="valor" type="decimal" not-null="true">
+			<display name="Valor (R$) " options="listing" size="20" mask-detail="(Valor/Hora)"/>
+	    </property>
+	    
+		<html>
+		<![CDATA[
+			<script type="text/javascript">
+			try { document.getElementsByName("valor")[0].onkeypress = function(evt) { return Format.money(this, evt); } } catch (e) { }
+			</script>
+		]]>
+		</html>
+	    
+	    <restrictions>
+			<restriction property-value="Inativo(a)" property-name="situacao.descricao" type="notequals" />
+		</restrictions>
+		
+		<restrictions-search-list>
+			<restriction property-value="Inativo(a)" property-name="situacao.descricao" type="notequals" >
+				<access-restriction name="visualizaInativos" type="read">
+					<session-restriction name="usuario" property="role" value="root" operation="notequals" type="string" logic-operation="and" />
+					<session-restriction name="usuario" property="role" value="auditor" operation="notequals" type="string" />
+				</access-restriction>
+			</restriction>
+		</restrictions-search-list>
+	    
+	    <properties-order>
+	    	<property-order name="situacao.descricao" />
+	    	<property-order name="codigo" />
+	    </properties-order>
+
+		<!-- cadastros -->
+		<role name="root" exec="true" insert="true" read="true" update="true" write="true"/>
+		<role name="atendente" read="true" exec="false" insert="false" update="false" write="false"/>
+		
+		<!-- cadastrosAuditor -->
+		<role name="auditor" insert="false" exec="false" update="false" read="true" write="false"/>
+		<role name="regulador" insert="false" exec="false" update="false" read="true" write="false"/>
+		<role name="faturista" insert="false" exec="false" update="false" read="true" write="false"/>
+		<role name="auditorOdonto" insert="false" exec="false" update="false" read="true" write="false"/>
+		<role name="diretoriaMedica" insert="false" exec="false" update="false" read="true" write="false"/>
+		
+		<!-- cadastrosRedeCredenciada -->
+		<role name="gerenciaRedeCredenciada" insert="true" exec="true" read="true" update="true" />
+		
+		<!-- outros -->
+		<role name="prestador" insert="false" exec="false" update="false" read="true" />
+		<role name="prestadorCompleto" insert="false" exec="false" update="false" read="true" /> 
+		<role name="prestadorConsExmIntUrg" insert="false" exec="false" update="false" read="true" />
+		<role name="prestadorConsIntUrg" insert="false" exec="false" update="false" read="true" />
+		<role name="prestadorInternacaoExameUrgencia" insert="false" exec="false" update="false" read="true" />
+		<role name="prestadorConsulta" insert="false" exec="false" update="false" read="true" />
+		<role name="prestadorExame" insert="false" exec="false" update="false" read="true" />
+		<role name="prestadorConsultaExame" insert="false" exec="false" update="false" read="true" />
+		<role name="prestadorInternacaoUrgencia" insert="false" exec="false" update="false" read="true" />
+		<role name="prestadorOdonto" insert="false" exec="false" update="false" read="true" />
+
+		<validate-method name="validate">
+			<session-param name="usuario"/>
+		</validate-method>
+		
+		<methods>
+			<method name="reativar" display-name="Reativar">
+				<step-param name="motivo" type="java.lang.String" display-name="Motivo"/>
+				<session-param name="usuario"/>
+				<messages>
+                    <question>Deseja reativar esta Gasoterapia?</question>
+                    <success>Situação alterada com sucesso. Gasoterapia Reativada.</success>
+                    <error>Ocorreu um erro ao alterar a situação da Gasoterapia. Tente novamente.</error>
+				</messages>				
+			</method>
+			<method name="inativar" display-name="Inativar">
+				<step-param name="motivo" type="java.lang.String" display-name="Motivo"/>
+				<session-param name="usuario"/>
+				<messages>
+                    <question>Deseja inativar esta Gasoterapia?</question>
+                    <success>Situação alterada com sucesso. Gasoterapia inativada.</success>
+                    <error>Ocorreu um erro ao alterar a situação da Gasoterapia. Tente novamente.</error>
+				</messages>				
+			</method>
+		</methods>
+
+	</class-mapping>
+
+</jheat-mapping>

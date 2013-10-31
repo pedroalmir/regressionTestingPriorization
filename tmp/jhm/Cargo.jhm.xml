@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+	
+	<class-mapping class="br.com.infowaypi.ecare.segurados.Cargo" name="Cargo" display-name="Cargos" 
+		id-name="idCargo" link-for-detail="descricao" type="simple" section="cadastros">
+		
+		<description>Cargos que participam do cadastro de titulares</description>
+		
+		<property name="descricao" type="string" not-null="true">
+			<display name="Descrição" options="listing,search"/>
+	    </property>
+	    
+		<property name="tipoOrgao" type="string" not-null="true">
+			<display name="Tipo de Órgão" options="listing,search" size="20"/>
+	    </property>
+
+	</class-mapping>
+
+</jheat-mapping>

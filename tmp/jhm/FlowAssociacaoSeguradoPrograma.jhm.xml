@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-configuration PUBLIC
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd" >
+
+<jheat-mapping>
+
+	<flow 
+		name="FlowAssociacaoSeguradoPrograma" 
+		class="br.com.infowaypi.ecare.programaPrevencao.fluxos.FlowAssociacaoSeguradoPrograma"
+		display-name="Associar Beneficiários" section="pps">
+				
+		<description>Associar Beneficiários</description>
+		
+		<step-method name="informarPrograma" display-name="Informar o Programa" title="Informar Programa">
+			<select-param
+				name="programas"
+				display-name="Selecione o Programa"
+				type="br.com.infowaypi.ecare.programaPrevencao.ProgramaDePrevencao" required="true">
+	
+				<autocomplete style-class="autocomplete" minimum-characters="3" force-selection="true">
+					<search-property name="codigoENome" display-name="Nome"/>
+					<name-property name="codigoENome" display-name="Nome"/>
+				</autocomplete>
+				
+				<restrictions>
+					<restriction property-value="Cadastrado" property-name="situacao.descricao" type="equals" />
+				</restrictions>
+			</select-param>
+
+			<session-param name="usuario"/>
+			<step-return name="programa" type="br.com.infowaypi.ecare.programaPrevencao.ProgramaDePrevencao" display-name="" scope="session" />
+
+		</step-method>
+		
+        <step-method name="associarSegurado" display-name="Associar Beneficiário"  title="Associar Beneficiário" >
+   			 
+	         <update-param name="programa" display-name="" type="br.com.infowaypi.ecare.programaPrevencao.ProgramaDePrevencao" operation="none">
+	         	<update-property name="nome" display-name="Programa" editable="false" />
+	         	<update-property name="inicio" display-name="Data de inicio" type="java.util.Date" input-type="date" editable="false" />
+	         	<update-property name="fim" display-name="Data de encerramento" type="java.util.Date" input-type="date" editable="false" />
+	         	<update-property name="responsavel.pessoaFisica.nome" display-name="Profissional responsável" editable="false" />
+	         	
+	       		<update-collection 
+						name="seguradosSelecionadosTemp" 
+						display-name="Inserir Segurados"
+						type="br.com.infowaypi.ecare.programaPrevencao.SeguradoDoPrograma"
+						include-method="addSeguradoTemp"
+						exclude-method="removeSeguradoTemp">
+						
+						<update-insert>
+					    	<update-property name="numeroDoCartao" display-name="Número do cartão"  input-type="string" editable="false"/>
+					    	<update-property name="nomeSegurado" display-name="Nome do beneficiário"  input-type="string" editable="false"/>
+					    	<update-property name="cpf" display-name="CPF" editable="false"/>
+					    	<update-property name="dataInsercao" display-name="Data de inserção"  input-type="date" editable="false"/>
+					    </update-insert>
+	        	</update-collection>
+	 		</update-param>     
+	 		
+	 		<html><![CDATA[
+	 			<%@ include file="/view/jsp/includes/tabs.jsp" %>
+	 			<script type="text/javascript">
+	    			montarComponente();
+	    		</script>
+           	]]></html>
+           	
+ 			<step-return name="programa" type="br.com.infowaypi.ecare.programaPrevencao.ProgramaDePrevencao" display-name="" scope="session" />
+        	
+  		</step-method>      
+        
+		<step-method name="salvar" display-name="Visualizar"  committed="true" title="Visualizar">
+
+		<session-param name="programa" operation="none">
+			<display-property 	name="nome" display-name="Programa" />
+			<display-property name="inicio" display-name="Data de inicio" type="date" />
+			<display-property name="fim" display-name="Data de encerramento" type="date" />
+			<display-property name="responsavel.pessoaFisica.nome" display-name="Profissional resposável" />
+	
+			<collection-display display-name="Segurados Associados" name="seguradosSelecionados" default-sort="2" order="asc">
+				<display-property name="segurado.numeroDoCartao" display-name="Número do cartão" />
+				<display-property name="segurado.pessoaFisica.nome" display-name="Nome do beneficiário" />
+				<display-property name="segurado.tipoDeSegurado" display-name="Tipo de segurado" />
+				<display-property name="descricao" display-name="Situação"/>
+				<display-property name="motivo" display-name="Motivo" />
+			</collection-display>
+		</session-param>  
+		  
+		<step-return name="programa" type="br.com.infowaypi.ecare.programaPrevencao.ProgramaDePrevencao" display-name="" scope="session" />
+		        
+		</step-method>
+		
+		<step-method name="finalizar" display-name="Concluido"  title="Concluido">
+		
+			<html>
+				<![CDATA[ <infoway:mensagemSucesso mensagem="Operação efetuada com sucesso."/> ]]>
+			</html>
+		
+			        <session-param name="programa">
+		        
+		        <display-property name="nome"
+					display-name="Programa" />
+				<display-property name="inicio"
+					display-name="Data de inicio" type="date"/>
+				<display-property name="fim" 
+					display-name="Data de encerramento"  type="date" />
+				<display-property name="responsavel.pessoaFisica.nome" 
+					display-name="Profissional resposável" />	
+		 	   
+		 	<collection-display display-name="Segurados Associados" name="associacaoSeguradosRegularizados">
+				<display-property name="segurado.pessoaFisica.nome" display-name="Nome do beneficiário" />
+				<display-property name="segurado.numeroDoCartao" display-name="Número do cartão" />
+				<display-property name="segurado.tipoDeSegurado" display-name="Tipo de segurado" />
+			</collection-display>
+				 
+		  </session-param> 
+		
+		
+		</step-method>
+		
+	</flow>	
+</jheat-mapping>

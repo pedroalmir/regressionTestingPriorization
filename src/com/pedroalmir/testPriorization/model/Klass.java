@@ -14,6 +14,7 @@ public class Klass {
 	private Long id;
 	private String name;
 	private String absolutePath;
+	private String content;
 	private int coupling;
 	private Map<Requirement, Integer> correlation;
 	private Map<TestCase, Double> coverage;
@@ -21,6 +22,8 @@ public class Klass {
 	private double relevanceNormalized;
 	/* result of fuzzy */
 	private double criticality;
+	private double cyclomaticComplexity;
+	private double cyclomaticComplexityNormalized;
 	/**
 	 * Default constructor 
 	 */
@@ -32,6 +35,18 @@ public class Klass {
 		this.coupling = 0;
 		this.correlation = new LinkedHashMap<Requirement, Integer>();
 		this.coverage = new LinkedHashMap<TestCase, Double>();
+		this.cyclomaticComplexity = 0.0;
+	}
+	
+	public Klass(Long id, String name, double cyclomaticComplexity) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.absolutePath = "Not used yet!";
+		this.coupling = 0;
+		this.correlation = new LinkedHashMap<Requirement, Integer>();
+		this.coverage = new LinkedHashMap<TestCase, Double>();
+		this.cyclomaticComplexity = cyclomaticComplexity;
 	}
 	
 	/**
@@ -48,6 +63,7 @@ public class Klass {
 		this.absolutePath = absolutePath;
 		this.coupling = coupling;
 		this.correlation = correlation;
+		this.cyclomaticComplexity = 0.0;
 	}
 
 	/**
@@ -190,5 +206,78 @@ public class Klass {
 	public String toString() {
 		return "Klass [name=" + name + ", coupling=" + coupling + ", relevanceNormalized=" + relevanceNormalized
 				+ ", criticality=" + criticality + "]";
+	}
+
+	/**
+	 * @return the cyclomaticComplexity
+	 */
+	public double getCyclomaticComplexity() {
+		return cyclomaticComplexity;
+	}
+
+	/**
+	 * @param cyclomaticComplexity the cyclomaticComplexity to set
+	 */
+	public void setCyclomaticComplexity(double cyclomaticComplexity) {
+		this.cyclomaticComplexity = cyclomaticComplexity;
+	}
+
+	/**
+	 * @return the content
+	 */
+	public String getContent() {
+		return content;
+	}
+
+	/**
+	 * @param content the content to set
+	 */
+	public void setContent(String content) {
+		this.content = content;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Klass other = (Klass) obj;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
+			return false;
+		return true;
+	}
+
+	/**
+	 * @return the cyclomaticComplexityNormalized
+	 */
+	public double getCyclomaticComplexityNormalized() {
+		return cyclomaticComplexityNormalized;
+	}
+
+	/**
+	 * @param cyclomaticComplexityNormalized the cyclomaticComplexityNormalized to set
+	 */
+	public void setCyclomaticComplexityNormalized(double cyclomaticComplexityNormalized) {
+		this.cyclomaticComplexityNormalized = cyclomaticComplexityNormalized;
 	}
 }

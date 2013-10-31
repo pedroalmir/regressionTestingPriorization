@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<report
+		name="coparticipacoesLiberadas"
+		method-name="buscarGuias"
+		class="br.com.infowaypi.ecare.services.RelatorioConsultas"
+		display-name="Co-participações Liberadas" section="relatoriosAuditor,relatorioCentral,aloSaudeSection" response-by-ajax="true">
+
+		<description>Listagem de Consultas sem co-participação</description>
+		
+		<!--html>
+			<![CDATA[
+				<c:set var="mensagemInformacao" value="Não serão mostradas as guias agendadas no Proteção que não estão Confirmadas." scope="request"/>
+				<%@ include file="/view/jsp/includes/MensagemDeInformacaoAtencao.jsp" %>
+			]]>
+		</html-->
+
+		<report-param name="dataInicial" required="true" scope="user" type="java.lang.String" display-name="Data inicial" input-type="date"/>
+		<report-param name="dataFinal" required="true" type="java.lang.String" display-name="Data final" input-type="date"/>
+		<report-param name="exibirConsultasPromocionais" type="java.lang.Boolean" display-name="Exibir Guias" input-type="boolean"/>
+		
+			<select-param display-name="Tipo da consulta" name="tipo" type="java.lang.Integer" required="true" display-label-head="false">
+				<constants-group name="Tipo de consulta" class="br.com.infowaypi.ecarebc.promocao.PromocaoConsulta">
+					<entry display-name="TODAS" key-value="TIPO_TODAS"/>
+					<entry display-name="ELETIVA" key-value="TIPO_ELETIVA"/>
+					<entry display-name="URGÊNCIA" key-value="TIPO_URGENCIA"/>
+				</constants-group>
+			</select-param>
+		
+		<report-return name="resumo" type="br.com.infowaypi.ecarebc.atendimentos.ResumoConsultasPromocionais" 
+			 display-name="Resultado Encontrado">
+			
+			<html>
+				<![CDATA[ <infoway:tableSeparator titulo="Consultas Promocionais" colspan="2"/> ]]>
+			</html>	
+			
+			<display-property name="numeroTotalDeConsultasPromocionais" display-name="Total" type="int"/>
+			<display-property name="numeroConsultasLiberadas" display-name="Liberadas" type="int"/>
+			<display-property name="numeroConsultasUtilizadas" display-name="Utilizadas" type="int"/>
+			<display-property name="numeroConsultasVencidas" display-name="Vencidas" type="int"/>
+			
+			<html>
+				<![CDATA[
+					<c:if test="${param.exibirConsultasPromocionais}">
+				]]>
+			</html>
+			
+			<collection-display display-name="Consultas Promocionais" name="consultas">
+				<display-property name="guia.autorizacao" type="string" display-name="Autorização da Guia"/>
+				<display-property name="dataCriacao" type="date" display-name="Data de Liberação"/>
+				<display-property name="segurado.pessoaFisica.nome" type="string" display-name="Nome do Segurado"/>
+				<display-property name="especialidade.descricao" type="string" display-name="Especialidade"/>
+				<display-property name="situacao.descricao" type="string" display-name="Situação" />
+			</collection-display>
+			
+			
+			<html>
+			<![CDATA[
+				</c:if>
+				]]>
+			</html>	
+		</report-return>
+		
+	</report>	
+	
+</jheat-mapping>

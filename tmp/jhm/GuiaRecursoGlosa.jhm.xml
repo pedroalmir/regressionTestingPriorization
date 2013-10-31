@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<class-mapping class="br.com.infowaypi.ecare.services.recurso.GuiaRecursoGlosa"
+	 name="GuiaRecursoGlosa" display-name="GuiaRecursoGlosa" type="readonly" 
+	 link-for-detail="autorizacao" section="" id-name="idGuia" 
+	 roles="root,auditor,atendente,prestador,prestadorCompleto,prestadorConsulta,
+	        prestadorExame,prestadorConsultaExame,prestadorInternacaoUrgencia,
+	        prestadorOdonto,centralDeServico,prestadorInternacaoExameUrgencia,gestor">
+	 	
+	 	<property name="autorizacao" type="string" not-null="true">
+			<display name="Autorização" options="listing,search,detail-only" maxlength="6" align="center" size="20"/>
+	    </property>
+	 
+	 	<property name="tipo" type="string" not-null="true">
+			<display name="Tipo de Guia" options="listing,detail-only" maxlength="6" align="center" size="20"/>
+	    </property> 
+	    
+		<property name="valorTotal" not-null="true" type="money">
+			<display name="Valor Total" options="listing,detail-only"/>
+	    </property>  
+	    
+		<property name="valorPagoPrestador" not-null="true" type="money">
+			<display name="Valor Pago ao Prestador" options="detail-only"/>
+	    </property>
+	    
+	    <many-to-one options="listing,search"
+			class="br.com.infowaypi.ecarebc.associados.Prestador" 
+			name="prestador" display-name="Prestador" autocomplete="true">
+			<display-property name="pessoaJuridica.fantasia"/>
+		</many-to-one>
+	 
+	 	<many-to-one options="listing,search"
+			class="br.com.infowaypi.ecarebc.atendimentos.LoteDeGuias" 
+			name="ultimoLote" display-name="Último Lote" autocomplete="true">
+			<display-property name="identificador"/>
+		</many-to-one>	
+		
+	</class-mapping>
+
+</jheat-mapping>

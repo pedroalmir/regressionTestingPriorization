@@ -9,6 +9,8 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.pedroalmir.testPriorization.model.RegressionTestingPriorizationProblem;
+import com.pedroalmir.testPriorization.model.Solution;
 import com.pedroalmir.testPriorization.model.TestCase;
 
 /**
@@ -16,30 +18,40 @@ import com.pedroalmir.testPriorization.model.TestCase;
  * 
  */
 public class BruteForce {
+	
 	/**
 	 * @param testCases
 	 * @param capacidade
 	 */
-	public static void execute(List<TestCase> testCases, double capacidade) {
-		List<Integer[]> possibleSolutions = subconjuntos(testCases);
+	public static Solution execute(RegressionTestingPriorizationProblem problem) {
+		//System.out.println("Executando Força Bruta...");
+		/* Variables */
 		double maiorCriticidade = Double.MIN_VALUE;
 		double melhorTempo = Double.MIN_VALUE;
-		Integer[] solution = null;
+		List<TestCase> betterTestCases = new LinkedList<TestCase>();
+		List<TestCase> testCases = problem.getTestCases();
+		double capacidade = problem.getCapacidade();
 		
-		for (Integer[] possibleSolution : possibleSolutions) {
-			double tempoAcumulado = 0.0;
-			double criticidadeAcumulada = 0.0;
+		/* Creating all the possibilities */
+		BigDecimal total = calculeAllPossibilitiesValue(testCases.size());
+		BigDecimal count = new BigDecimal(0);
+		//System.out.println("Espaço de Busca: " + total);
+		
+		while(!count.equals(total)){
+			//printPercentagem(count, total);
+			String probableSolution = count.toBigInteger().toString(2);
+			double tempoAcumulado = 0.0, criticidadeAcumulada = 0.0;
 			boolean excedeuCapacidade = false;
+			List<TestCase> probableSolutionTestCases = new LinkedList<TestCase>();
 			
-			for(int i = 0; i < possibleSolution.length; i++){
-				if(tempoAcumulado > capacidade){
+			for(int i = probableSolution.length()-1; i >= 0; i--){
+				if(tempoAcumulado > capacidade || tempoAcumulado + testCases.get(i).getTime() > capacidade){
 					excedeuCapacidade = true;
 					break;
-				}else{
-					if(possibleSolution[i] != null){
-						criticidadeAcumulada += testCases.get(possibleSolution[i]-1).getCriticality();
-						tempoAcumulado += testCases.get(possibleSolution[i]-1).getTime();
-					}
+				}else if(probableSolution.charAt(i) == '1'){
+					criticidadeAcumulada += testCases.get(i).getCriticality();
+					tempoAcumulado += testCases.get(i).getTime();
+					probableSolutionTestCases.add(testCases.get(i));
 				}
 			}
 			
@@ -47,23 +59,67 @@ public class BruteForce {
 				if(criticidadeAcumulada > maiorCriticidade){
 					maiorCriticidade = criticidadeAcumulada;
 					melhorTempo = tempoAcumulado;
-					solution = possibleSolution;
+					betterTestCases = probableSolutionTestCases;
 				}
 			}
+			//System.out.println(count);
+			count = count.add(new BigDecimal(1));
 		}
 		
-		System.out.println("Maior Criticidade: " + maiorCriticidade + ", Melhor Tempo: " + melhorTempo);
-		for(int i = 0; i < solution.length; i++){
-			if(solution[i] != null){
-				System.out.print(String.format("%02d", testCases.get(solution[i]-1).getId()) + "-");
-			}
+		//System.out.println("Maior Criticidade: " + maiorCriticidade + ", Melhor Tempo: " + melhorTempo);
+		//	for(int i = betterTestCases.size()-1; i >= 0; i--){
+		//     System.out.print(String.format("%02d", betterTestCases.get(i).getId()) + "-");
+		//}
+		return new Solution("Força Bruta", betterTestCases, capacidade, problem.getKlasses().size(), problem.getRequirements().size(), 
+				testCases.size(), melhorTempo, maiorCriticidade, 0l);
+	}
+	
+	@SuppressWarnings("unused")
+	private static void printPercentagem(BigDecimal count, BigDecimal total) {
+		BigDecimal percentagem = count.divide(total).multiply(new BigDecimal(10));
+		if(percentagem.intValue() == 10){
+			System.out.println("Percentual concluído: 10%");
+		}else if(percentagem.intValue() == 20){
+			System.out.println("Percentual concluído: 20%");
+		}else if(percentagem.intValue() == 30){
+			System.out.println("Percentual concluído: 30%");
+		}else if(percentagem.intValue() == 40){
+			System.out.println("Percentual concluído: 40%");
+		}else if(percentagem.intValue() == 50){
+			System.out.println("Percentual concluído: 50%");
+		}else if(percentagem.intValue() == 60){
+			System.out.println("Percentual concluído: 60%");
+		}else if(percentagem.intValue() == 70){
+			System.out.println("Percentual concluído: 70%");
+		}else if(percentagem.intValue() == 80){
+			System.out.println("Percentual concluído: 80%");
+		}else if(percentagem.intValue() == 90){
+			System.out.println("Percentual concluído: 90%");
+		}else if(percentagem.intValue() == 100){
+			System.out.println("Percentual concluído: 100%");
 		}
+	}
+
+	/**
+	 * @param numberOfElements
+	 */
+	private static BigDecimal calculeAllPossibilitiesValue(int numberOfElements){
+		BigDecimal total = new BigDecimal(1l);
+		for(int i = 0; i < numberOfElements/30; i++){
+			total = total.multiply(new BigDecimal(1 << 30));
+		}
+		
+		if(numberOfElements % 30 != 0){
+			total =  total.multiply(new BigDecimal(1 << (numberOfElements % 30)));
+		}
+		return total;
 	}
 
 	/**
 	 * @param testCases
 	 * @return
 	 */
+	@SuppressWarnings("unused")
 	private static List<Integer[]> subconjuntos(List<TestCase> testCases) {
 		int qtdSubconjuntos = 1 << testCases.size();
 		

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+	
+	<class-mapping class="br.com.infowaypi.ecare.programaPrevencao.SeguradoDoPrograma" 
+		name="seguradoDoPrograma" display-name="Segurado do Programa" 
+		id-name="idSeguradoDoPrograma">
+
+	    <property name="nomeSegurado" type="string" not-null="false">
+			<display name="Nome do beneficiário" options="listing,detail-only"   maxlength="6" align="center" size="24"/>
+	    </property>  
+
+		<property name="numeroDoCartao" type="string" not-null="false">
+			<display name="Número do Cartão" options="" mask="99.9999999999.99.9-9"  maxlength="6" align="center" size="24"/>
+	    </property>  
+		
+         <property name="cpf" type="string" not-null="false">
+			<display name="CPF" options="" mask="999.999.999-99" maxlength="6" align="center" size="24"/>
+	    </property>  
+        
+        <property name="dataInsercao" type="date" not-null="false" >
+			<display name="Data de inserção" options=""  maxlength="10" align="center" size="10"/>
+	    </property> 
+		
+	</class-mapping>
+
+</jheat-mapping>

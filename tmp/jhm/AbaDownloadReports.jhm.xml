@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<report
+		name="abaDownloadReport"
+		method-name="getArquivosDownload"
+		class="br.com.infowaypi.ecare.relatorio.AbaDownloadReport"
+		display-name="AbaDownloadReport" section="download" response-by-ajax="true" auto-update="true" update-freq="0">
+		
+		<session-param name="usuario"/>
+		
+		<html>
+				<![CDATA[
+					<script type="text/javascript"> 
+						document.getElementById('title').style.display = 'none';
+						document.getElementById('sideMenu').style.display = 'none';
+						document.getElementsByName('JHeatFormBean')[0].style.display = 'none';
+						document.getElementsByName('sessionParam')[0].style.display = 'none';
+					</script>
+				]]>
+		</html>		
+		<report-return name="resumoDiarias" type="br.com.infowaypi.ecare.resumos.ResumoGeral" 
+			 display-name="Arquivos disponíveis para download">
+			<html>
+				<![CDATA[
+				<div id="download-image" style="padding-bottom: 80px;">
+					<c:forEach var="element" items="${resumoDiarias.lista}">
+							<a href="/" onclick="window.location='${pageContext.request.contextPath}/JHeatAction.do?action=download&sectionName=${sectionName}&className=br.com.infowaypi.ecare.arquivos.ArquivoDownload&id=${element.idArquivoDownload}&propertyName=arquivo&nameFile=${element.descricaoArquivo}&fileType=pdf';
+ 							return false;">
+								<b>Download</b> (${element.descricaoArquivo})
+							</a><br/>
+					</c:forEach>
+				</div><br/><br/><br/>	
+				]]>
+			</html>
+		</report-return>	
+		
+	</report>
+	
+</jheat-mapping>

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+
+<jheat-mapping>
+	<class-mapping
+		class="br.com.infowaypi.ecarebc.atendimentos.LoteDeGuias"
+		name="LoteDeGuias"
+		display-name="Lote de Guias"
+		id-name="idLote"
+		link-for-detail="identificador"
+		type="readonly"
+		section="examesPrestador,urgenciaInternacao"
+		roles="root,gestor,,auditor,regulador,auditorOdonto,diretoriaMedica,centralDeServico">
+
+		<property name="identificador" type="string" not-null="true">
+			<display name="Identificador" options="listing, search"/>
+		</property>
+		
+		<many-to-one class="br.com.infowaypi.ecarebc.associados.Prestador"
+			name="prestador"
+			not-null="true"
+			autocomplete="true"
+			display-name="Prestador"
+			options="listing, search">
+			<display-property name="pessoaJuridica.fantasia"/>
+		</many-to-one>
+		
+		<property name="entregador" type="string" not-null="true">
+			<display name="Entregador" options="listing, search"/>
+		</property>
+		
+		<property name="competencia" type="month-year" not-null="true">
+			<display name="Competência" options="listing, search" size="7"/>
+		</property>
+			
+		<property name="dataEnvio" type="date">
+			<display name="Data de Envio" options="listing, search" size="10"/>
+		</property>
+					
+		<property name="tipoDeGuia" type="int" not-null="true">
+			<display name="Tipo de Guia" options="listing, search"/>
+		</property>
+		
+		<collection class="br.com.infowaypi.ecarebc.atendimentos.GuiaSimples"
+			name="guiasEnviadas"
+			display-name="Guias Enviadas"
+			master-detail="false"/>
+		
+		<collection class="br.com.infowaypi.ecarebc.atendimentos.GuiaSimples"
+			name="guiasRecebidas"
+			display-name="Guias Recebidas"
+			master-detail="false"/>
+		
+		<collection class="br.com.infowaypi.ecarebc.atendimentos.GuiaSimples"
+			name="guiasDevolvidas"
+			display-name="Guias Devolvidas"
+			master-detail="false"/>
+		
+		<collection class="br.com.infowaypi.ecare.services.recurso.GuiaRecursoGlosa"
+			name="guiasDeRecursoEnviadas"
+			display-name="Guias de Recurso Enviadas"
+			master-detail="false"/>
+		
+		<collection class="br.com.infowaypi.ecare.services.recurso.GuiaRecursoGlosa"
+			name="guiasDeRecursoRecebidas"
+			display-name="Guias de Recurso Recebidas"
+			master-detail="false"/>
+		
+		<collection class="br.com.infowaypi.ecare.services.recurso.GuiaRecursoGlosa"
+			name="guiasDeRecursoDevolvidas"
+			display-name="Guias de Recurso Devolvidas"
+			master-detail="false"/>
+		
+		<property name="numeroDeGuias" type="int" not-null="true">
+			<display name="Número de Guias" options="listing, search"/>
+		</property>
+		
+		<property name="valorTotal" type="bigdecimal" not-null="true">
+			<display name="Valor Total" options="listing, search"/>
+		</property>
+		
+		<property name="situacao.descricao" type="string" not-null="true">
+			<display name="Situação" options="listing, detail-only"/>
+		</property>
+		
+		<collection class="br.com.infowaypi.msr.situations.Situacao"
+			name="situacoes"
+			display-name="Histórico de Situações"
+			master-detail="false"/>
+			
+		<validate-method name="validate">
+		</validate-method>
+		
+	</class-mapping>
+</jheat-mapping>

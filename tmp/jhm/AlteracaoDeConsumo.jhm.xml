@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<flow 
+		name="alteracaoDeConsumo" 
+		class="br.com.infowaypi.ecare.flows.AlteracaoDeConsumo"
+		display-name="Alterar Consumo" section="autorizacaoDeExamesEspeciais">
+		
+		<description>Alteração de consumos financeiros</description>
+		
+		<step-method name="buscarConsumo" display-name="Buscar Consumos" buttons-position="bottom">
+		
+			<step-param name="competencia" type="java.lang.String" display-name="Competência" mask="99/9999" input-type="date"/>
+
+			<select-param
+				name="prestadores"
+				display-name="Escolha o Prestador"
+				type="br.com.infowaypi.ecarebc.associados.Prestador">
+				<autocomplete style-class="autocomplete" minimum-characters="3" force-selection="true">
+					<search-property name="pessoaJuridica.fantasia" display-name="Prestador"/>
+					<name-property name="pessoaJuridica.fantasia" display-name="Prestador"/>
+				</autocomplete>
+				<restrictions>
+					<restriction property-value="Ativo(a)" property-name="situacao.descricao" type="equals" />
+				</restrictions>	
+			</select-param>	
+
+			<step-return name="consumo" type="br.com.infowaypi.ecare.consumos.ConsumoInterface" 
+				 display-name="Consumo" scope="session"/>
+
+		</step-method>
+		
+		<step-method name="alterarConsumo" display-name="Alterar Dados" committed="true">
+
+			<session-param name="consumo" display-name="Alterar Dados">
+				<display-property name="descricao" display-name="Prestador"/>
+				<html>
+					<![CDATA[ <infoway:tableSeparator titulo="Consultas" colspan="2"/> ]]>
+				</html>			
+				
+				<display-property name="limiteConsultas" display-name="Limite de Consultas" type="money"/>
+				<display-property name="somatorioConsultas" display-name="Cons. de Consultas" type="money"/>
+
+				<html>
+					<![CDATA[ <infoway:tableSeparator titulo="Exames" colspan="2"/> ]]>
+				</html>			
+
+				<display-property name="limiteExames" display-name="Limite de Exames" type="money"/>
+				<display-property name="somatorioExames" display-name="Cons. de Exames" type="money"/>
+			</session-param>
+			
+			<step-param name="limiteConsultas" type="java.lang.String" display-name="Consultas" input-type="money"/>
+			<step-param name="limiteExames" type="java.lang.String" display-name="Exames" input-type="money"/>			
+
+		</step-method>
+
+		<step-method name="finalizar" display-name="Informações do Consumo">
+
+			<html>
+				<![CDATA[
+					<div class="alert confirmation not-for-print" style="margin-left:0;margin-right:0;">
+						Consumo alterado com sucesso!
+					</div>					
+				]]>
+			</html>
+
+			<session-param name="consumo" display-name="Informações do Consumo">
+				<display-property name="descricao" display-name="Prestador"/>
+				<html>
+					<![CDATA[ <infoway:tableSeparator titulo="Consultas" colspan="2"/> ]]>
+				</html>			
+				
+				<display-property name="limiteConsultas" display-name="Limite de Consultas" type="money"/>
+				<display-property name="somatorioConsultas" display-name="Cons. de Consultas" type="money"/>
+
+				<html>
+					<![CDATA[ <infoway:tableSeparator titulo="Exames" colspan="2"/> ]]>
+				</html>			
+
+				<display-property name="limiteExames" display-name="Limite de Exames" type="money"/>
+				<display-property name="somatorioExames" display-name="Cons. de Exames" type="money"/>
+			</session-param>
+
+		</step-method>
+	</flow>	
+</jheat-mapping>

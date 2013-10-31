@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+	
+	<class-mapping class="br.com.infowaypi.ecarebc.financeiro.faturamento.DetalheRecursoDeferido" name="detalheRecursoDeferido" display-name="Detalhe Recurso Deferido" 
+		id-name="idDetalheRecursoDeferido" link-for-detail="" type="readonly" section="">
+		
+		<many-to-one
+			options=""
+			class="br.com.infowaypi.ecare.services.recurso.GuiaRecursoGlosa"
+			name="guia"
+			display-name="Guia">
+			<display-property name="autorizacao"/>
+		</many-to-one>
+
+	</class-mapping>
+
+</jheat-mapping>

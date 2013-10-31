@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+	<flow 
+		name="confirmarGuiasExameCoopanest2" 
+		class="br.com.infowaypi.ecare.services.exame.ConfirmacaoExame"
+		display-name="Confirmar Exame" section="honorarioAnestesita">	
+
+		<description>Confimação de guias de exame</description>		
+		
+		 <step-method name="buscarSegurados" display-name="Buscar Beneficiários" title="Buscar Beneficiários" buttons-position="bottom">
+			<step-param name="cpfTitular" size="21" mask="999.999.999-99" input-type="string" type="java.lang.String" display-name="CPF do Titular"/>
+			<step-param name="numeroDoCartao" size="24" mask="99.9999999999.99.9-9" input-type="string" type="java.lang.String" display-name="Número do cartão do beneficiário"/>
+			<step-return name="resumoSegurados" type="br.com.infowaypi.ecare.segurados.ResumoSegurados" display-name="Beneficiários" scope="session" />
+		</step-method>
+		
+		
+		<step-method display-name="Selecionar Beneficiário" name="selecionarSeguradoAnestesista">
+			<select-param display-name="Beneficiários" name="segurados" type="br.com.infowaypi.ecare.segurados.Segurado" session-property-ref="resumoSegurados">
+				<radio-group>
+					<display-property name="pessoaFisica.cpf" display-name="CPF"/>
+					<display-property name="numeroDoCartao" display-name="Número do Cartão"/>
+					<display-property name="pessoaFisica.nome" display-name="Nome"/>
+				</radio-group>
+			</select-param>
+			
+			<session-param name="prestador" operation="none"/>
+			
+			<step-return display-name="" name="resumo" type="br.com.infowaypi.ecarebc.atendimentos.ResumoGuias" scope="session"/>
+		</step-method>
+		
+
+		<step-method name="selecionarGuia" display-name="Escolher Guia" title="Escolher Guia">
+			<select-param name="guiasExamePeloPrestador" display-name="Informações da Guia" type="br.com.infowaypi.ecarebc.atendimentos.GuiaExame" 
+				session-property-ref="resumo">
+				<radio-group>
+					<display-property name="autorizacao" display-name="Autorização" />
+					<display-property name="segurado.pessoaFisica.nome" display-name="Beneficiário" />
+					<display-property name="situacao.descricao" display-name="Situação" />
+					<display-property name="situacao.dataSituacao" display-name="Data" type="date" />
+					<display-property name="dataAtendimento" display-name="Dt. de Atendimento" type="date" />
+					<display-property name="tipo" display-name="Tipo" />
+					<display-property name="especialidade.descricao" display-name="Especialidade" />
+					<display-property name="valorTotal" display-name="Valor total" type="money" />
+				</radio-group>
+			</select-param>
+			
+			<session-param name="prestador" operation="none"/>
+			
+			<step-return name="guiaAntiga" type="br.com.infowaypi.ecarebc.atendimentos.GuiaExame" display-name="" scope="session" />
+		</step-method>
+		
+		<step-method name="selecionarProcedimentos" display-name="Escolher Exames" title="Escolher Exames">
+			<collection-param
+				name="procedimentosAnestesiologia"
+				type="br.com.infowaypi.ecarebc.procedimentos.Procedimento"
+				display-name="Selecione os exames para confirmar">
+				<checklist session-property-ref="guiaAntiga" operation="none">
+					<display-property name="procedimentoDaTabelaCBHPM.codigo" display-name="Código"/>
+  			        <display-property name="procedimentoDaTabelaCBHPM.descricao" display-name="Descrição"/>
+  			        <display-property name="bilateral" display-name="Bilateral" type="boolean"/>
+  			        <display-property name="quantidade" display-name="Quantidade" type="int"/>
+  			        <display-property name="valorAtualDoProcedimento" display-name="Valor Unitário" type="money"/>
+  			        <display-property name="valorTotal" display-name="Valor Total" type="money"/>
+				</checklist>
+			</collection-param>
+			
+			<step-param name="numeroDeRegistro" display-name="Número de Registro"/>
+			<session-param name="guiaAntiga" operation="none"/>		
+			<session-param name="usuario"/>
+			<session-param name="prestador" operation="reload"/>		
+			<step-return name="guia" type="br.com.infowaypi.ecarebc.atendimentos.GuiaExame" 
+				display-name="" scope="session"/>
+		</step-method>
+	
+		<step-method name="confirmarGuiaDeExame" display-name="Conferir Dados" title="Conferir Dados" committed="true">
+			<session-param name="guiaAntiga" operation="none"/>
+			<session-param name="guia" operation="none"/>
+				
+			<html>
+				<![CDATA[
+					<infoway:GuiaApresentacao guiaApresentacao="${guia}"/>
+				]]>
+			</html>
+			
+			<session-param name="usuario"/>
+		</step-method>
+		
+		<step-method name="finalizar" display-name="Imprimir Comprovante de Confirmação" title="Impr. Comprovante">
+			
+			<html>
+				<![CDATA[ <infoway:mensagemSucessoMarcacoes mensagem="Exame(s) confirmado(s) com sucesso!" autorizacao="${guia.autorizacao}"/> ]]>
+			</html>
+			
+			<session-param name="guia"/>
+			
+			<html>
+			<![CDATA[ 
+				<span class="not-for-print">
+					<button type="button" name="imprimir" class="actionButton" onclick="window.print();">Imprimir</button>
+				</span>
+			]]>
+			</html>
+				
+			<html>
+				<![CDATA[
+					<infoway:GuiaApresentacao guiaApresentacao="${guia}"/>
+				]]>
+			</html>
+			
+			<html>
+				<![CDATA[ <infoway:imprimirGuia titulo="CONFIRMAÃ‡ÃƒO DE EXAME"/> 
+					<span class="not-for-print">
+						<button type="button" name="imprimir" class="actionButton" onclick="window.print();">Imprimir</button>
+					</span>
+				]]>
+			</html>
+			
+		</step-method>
+	</flow>	
+</jheat-mapping>

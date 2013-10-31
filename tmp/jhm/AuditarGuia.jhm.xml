@@ -1,0 +1,888 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+
+<jheat-mapping>
+<flow 
+	name="auditarGuias" 
+	class="br.com.infowaypi.ecare.services.AuditarGuias"
+	display-name="Auditar Guia" section="auditor">
+		
+	<description>Auditar Guias</description>
+	
+	<step-method name="buscarGuias" display-name="Buscar Guias" buttons-position="bottom">
+		<step-param name="autorizacao" type="java.lang.String" display-name="Autorização"/>
+		<step-param name="dataInicial" type="java.lang.String" display-name="Data inicial" input-type="date"/>
+		<step-param name="dataFinal" type="java.lang.String" display-name="Data final" input-type="date"/>
+		
+		<select-param
+			name="prestador"
+			display-name="Escolha o Prestador"
+			type="br.com.infowaypi.ecarebc.associados.Prestador">
+			<autocomplete style-class="autocomplete" minimum-characters="3" force-selection="true">
+				<search-property name="pessoaJuridica.fantasia" display-name="Prestador"/>
+				<name-property name="pessoaJuridica.fantasia" display-name="Prestador"/>
+			</autocomplete>
+			<restrictions>
+				<restriction property-value="Ativo(a)" property-name="situacao.descricao" type="equals" />
+			</restrictions>	
+		</select-param>
+		
+		<step-return name="resumo" type="br.com.infowaypi.ecarebc.atendimentos.ResumoGuias" 
+	         display-name="Resumo" scope="session"/>
+	</step-method>
+	
+	<step-method name="selecionarGuia" display-name="Selecionar Guia">
+		<select-param
+			name="guiasParaAuditoriaGeral"
+			type="br.com.infowaypi.ecarebc.atendimentos.GuiaCompleta"
+			display-name="Selecione a Guia"
+			session-property-ref="resumo" operation="reload">
+			<radio-group>
+				<display-property name="autorizacao" display-name="Autorização"/>				
+				<display-property name="segurado.pessoaFisica.nome" display-name="Beneficiário"/>
+				<display-property name="situacao.descricao" display-name="Situação"/>
+				<display-property name="situacao.dataSituacao" display-name="Data" type="date"/>				
+				<display-property name="valorTotal" display-name="Valor total" type="money"/>								
+			</radio-group>
+		</select-param>	
+		
+		<session-param name="usuario"/>
+		<step-return name="guia" type="br.com.infowaypi.ecarebc.atendimentos.GuiaCompleta" 
+		         display-name="GuiaSelecionada" scope="session"/>
+	</step-method>
+	
+    <step-method name="auditarGuia" display-name="Auditar Guia" title="Auditar Guia">
+    	
+    	<step-param display-name="Valorar atendimento de urgência" type="java.lang.Boolean" name="valorar" input-type="boolean">
+    		<access-restriction name="restricaoAUR" type="edit">
+    			<session-restriction name="guia" operation="equals" type="boolean" property="atendimentoUrgencia" value="true"/>
+    		</access-restriction>
+    	</step-param>
+    	
+    	<step-param display-name="Glosar guia" type="java.lang.Boolean" name="glosarTotalmente" input-type="boolean"/>
+
+		<select-param name="motivoGlosa" display-name="" type="br.com.infowaypi.ecare.cadastros.MotivoGlosa" null-option="true">
+			<autocomplete mask-detail="As 3 letras iniciais" minimum-characters="3" style-class="autocomplete" size="40">
+				<search-property display-name="Motivo de Glosa" name="codigoDescricao" search-type="likefull"/>
+				<name-property name="codigoDescricao" display-name="Motivo de Glosa"/>
+			</autocomplete>
+			<restrictions>
+				<restriction property-name="ativo" type="equals" property-value="true"/>
+				<restriction property-name="aplicavelGuiaCompleta" type="equals" property-value="true"/>
+			</restrictions>
+		</select-param>
+		
+    	<step-param display-name="Observação" input-type="text" name="observacaoParaMotivoGlosa" />
+    	
+    	<collection-param
+			name="registrosTecnicosDaAuditoria"
+			type="br.com.infowaypi.ecarebc.atendimentos.RegistroTecnicoDaAuditoria"
+			display-name="Dados Técnicos"  >
+			<insert>
+				<display-property name="titulo" display-name="Título"/>
+				<display-property name="texto" display-name="Nova observação"/>
+			</insert>
+		</collection-param>
+
+		 <!-- GLOSAR PROCEDIMENTOS CIRURGICOS -->
+		<update-component-collection display-name="Glosar Procedimentos Cirúrgicos" name="layerProcedimentos" session-property-ref="guia"
+				type="br.com.infowaypi.ecare.services.ProcedimentoCirurgicoLayer" field-name="procedimentosCirurgicosLayer">
+				
+				<update-property name="procedimentoCirurgico.procedimentoDaTabelaCBHPM.codigo" display-name="Código" input-type="string" editable="false"/>
+	  			<update-property name="procedimentoCirurgico.procedimentoDaTabelaCBHPM.descricao" display-name="Descrição" editable="false"/>
+				
+		        <update-property name="dataRealizacao" display-name="Data Realização" input-type="date" editable="true" type="java.util.Date" size="10"/>
+		        
+		        <update-select-property name="porcentagem" type="java.math.BigDecimal"  display-name="Porcentagem (%)" editable="true" null-option="false">
+					<constants-group input-type="combo" class="br.com.infowaypi.ecarebc.constantes.Constantes">
+						<entry key-value="PORCENTAGEM_100" display-name="100%"/>
+						<entry key-value="PORCENTAGEM_70" display-name="70%"/>
+						<entry key-value="PORCENTAGEM_50" display-name="50%"/>
+					</constants-group>
+				</update-select-property>
+
+		        <update-property name="valor" display-name="Valor Total" input-type="money" editable="false"/>
+
+				<update-property name="procedimentoCirurgico.anular" display-name="Aguardando cobrança" input-type="boolean" editable="true" type="java.lang.Boolean"/>
+		        <update-property name="glosar" display-name="Glosar" input-type="boolean" editable="true" type="java.lang.Boolean"/>
+		        <update-select-property name="motivoGlosaProcedimento" display-name="Motivo de Glosa" type="br.com.infowaypi.ecare.cadastros.MotivoGlosa" null-option="true">
+					<autocomplete mask-detail="As 3 letras iniciais" minimum-characters="3" style-class="autocomplete" size="40">
+						<search-property display-name="Motivo de Glosa" name="codigoDescricao" search-type="likefull"/>
+						<name-property name="codigoDescricao" display-name="Motivo de Glosa"/>
+ 					</autocomplete>
+					<restrictions>
+						<restriction property-name="ativo" type="equals" property-value="true"/>
+						<restriction property-name="aplicavelProcedimentos" type="equals" property-value="true"/>
+					</restrictions>
+				</update-select-property>
+				<update-property name="justificativaGlosaProcedimentoCirurgico" display-name="Justificativa" editable="true" type="java.lang.String" input-type="text" field-name="justificativaGlosa"/>
+				
+				<properties-component>
+					<update-select-property name="profissionalResponsavelTemp" display-name="Profissional Responsável" 
+						type="br.com.infowaypi.ecarebc.associados.Profissional" width-percentage="13">
+	        			<autocomplete mask-detail="Os 3 números iniciais" minimum-characters="3" style-class="autocomplete" size="40">
+							<search-property display-name="CRM" name="crmNome" search-type="likefull"/>
+							<name-property name="crmNome" display-name="Nome"/>
+   						</autocomplete>
+		        	</update-select-property>
+		        	
+					<update-select-property name="profissionalAuxiliar1" display-name="Primeiro Auxiliar" 
+						type="br.com.infowaypi.ecarebc.associados.Profissional" width-percentage="13" next-field-inline="true">
+  			        	<autocomplete mask-detail="Os 3 números iniciais" minimum-characters="3" style-class="autocomplete" size="40">
+       						<search-property display-name="CRM" name="crmNome" search-type="likefull"/>
+       						<name-property name="crmNome" display-name="Nome"/>
+       					</autocomplete>
+  			        </update-select-property>
+  			        <update-property name="valorTotalAuxiliar1" display-name="Valor Total" input-type="money" editable="false" next-field-inline="true"/>
+		        	<update-property name="glosarAuxiliar1" display-name="Glosar" input-type="boolean" type="java.lang.Boolean" next-field-inline="true"/>
+		        	<update-property name="motivoGlosaAuxiliar1" display-name="Motivo Glosa" input-type="string" type="java.lang.String" size="40"/>
+		        	
+  			        <update-select-property name="profissionalAuxiliar2" display-name="Segundo Auxiliar" 
+  			        	type="br.com.infowaypi.ecarebc.associados.Profissional" width-percentage="13" next-field-inline="true">
+  			        	<autocomplete mask-detail="Os 3 números iniciais" minimum-characters="3" style-class="autocomplete" size="40">
+       						<search-property display-name="CRM" name="crmNome" search-type="likefull"/>
+       						<name-property name="crmNome" display-name="Nome"/>	
+       					</autocomplete>
+  			        </update-select-property>
+  			        <update-property name="valorTotalAuxiliar2" display-name="Valor Total" input-type="money" editable="false" next-field-inline="true"/>
+		        	<update-property name="glosarAuxiliar2" display-name="Glosar" input-type="boolean" type="java.lang.Boolean" next-field-inline="true"/>
+		        	<update-property name="motivoGlosaAuxiliar2" display-name="Motivo Glosa" input-type="string" type="java.lang.String" size="40"/>
+		        	
+  			        <update-select-property name="profissionalAuxiliar3" display-name="Terceiro Auxiliar" 
+  			        	type="br.com.infowaypi.ecarebc.associados.Profissional"	width-percentage="13" next-field-inline="true">
+  			        	<autocomplete mask-detail="Os 3 números iniciais" minimum-characters="3" style-class="autocomplete" size="40">
+       						<search-property display-name="CRM" name="crmNome" search-type="likefull"/>
+       						<name-property name="crmNome" display-name="Nome"/>	
+       					</autocomplete>
+  			        </update-select-property>
+  			        <update-property name="valorTotalAuxiliar3" display-name="Valor Total" input-type="money" editable="false" next-field-inline="true"/>
+		        	<update-property name="glosarAuxiliar3" display-name="Glosar" input-type="boolean" type="java.lang.Boolean" next-field-inline="true"/>
+		        	<update-property name="motivoGlosaAuxiliar3" display-name="Motivo Glosa" input-type="string" type="java.lang.String" size="40"/>
+		        	
+					<html>
+						<![CDATA[
+ 							<script type="text/javascript">
+								var elems = document.getElementsByTagName("input");
+								var matches = [];
+								for (var i=0, m=elems.length; i<m; i++) {
+    								if (elems[i].id && elems[i].id.indexOf("profissionalAuxiliar") != -1) {
+        								if (elems[i].value.replace(/^\s+|\s+$/g,"") == "") {
+        									matches.push(elems[i]);
+       									}
+    								}
+								}
+								for (var i=0; i < matches.length; i++) {
+									var parent = matches[i].parentNode.parentNode;
+									while (matches[i].parentNode.nextSibling) {
+										parent.removeChild(matches[i].parentNode.nextSibling);
+									}
+								}
+							</script>
+ 						]]>
+					</html>
+			 	</properties-component>
+			 	
+			 	<access-restriction name="procedimentosCirurgicosNaoVazios" type="edit">
+				   	<session-restriction name="guia" property="procedimentosCirurgicos" operation="notempty"/>
+				</access-restriction>
+		</update-component-collection>
+		
+       	<!-- UPDATE-PARAM -->
+       	<update-param name="guia" display-name="" type="br.com.infowaypi.ecarebc.atendimentos.GuiaCompleta" operation="none" >
+       	
+	       	 <html>
+				<![CDATA[ 
+					<c:if test="${guia.procedimentoConsultaNaoCancelado != null}">
+					<legend>Alterar procedimento de consulta</legend>
+					
+					<c:choose>
+					<c:when test="${guia.procedimentoConsultaNaoCancelado.situacao.descricao ne 'Glosado(a)'}">
+				]]>
+			</html>	
+		
+			<update-select-property name="procedimentoConsultaNaoCancelado.procedimentoDaTabelaCBHPM" display-name="Procedimento de consulta" type="br.com.infowaypi.ecarebc.procedimentos.TabelaCBHPM" next-field-inline="true">
+	        	<autocomplete minimum-characters="3" style-class="autocomplete" size="70">
+					<search-property display-name="Descrição" name="codigoEDescricao" search-type="likefull"/>
+					<name-property name="codigoEDescricao" display-name="Descrição"/>
+				</autocomplete>
+				<restrictions>
+					<restriction property-name="grupo" type="equals" property-value="1"/>
+				</restrictions>
+		     </update-select-property>
+	
+			 <update-select-property name="procedimentoConsultaNaoCancelado.motivoGlosaProcedimento" display-name="Motivo de glosa" type="br.com.infowaypi.ecare.cadastros.MotivoGlosa" null-option="true" width-percentage="13" next-field-inline="true">
+					<autocomplete mask-detail="Os 3 números iniciais" minimum-characters="3" style-class="autocomplete" size="40">
+						<search-property display-name="Motivo de Glosa" name="codigoDescricao" search-type="likefull"/>
+						<name-property name="codigoDescricao" display-name="Motivo de Glosa"/>
+ 					</autocomplete>
+					<restrictions>
+						<restriction property-name="ativo" type="equals" property-value="true"/>
+						<restriction property-name="aplicavelOutrosProcedimentos" type="equals" property-value="true"/>
+					</restrictions>
+			</update-select-property>
+			<update-property name="procedimentoConsultaNaoCancelado.glosar" display-name="Glosar" input-type="boolean" editable="true" type="java.lang.Boolean" next-field-inline="false"/>
+	
+			<html>
+				<![CDATA[
+					</c:when>
+					<c:otherwise>
+				]]>
+			</html>
+			
+			<update-select-property name="procedimentoConsultaNaoCancelado.procedimentoDaTabelaCBHPM" display-name="Procedimento de consulta" type="br.com.infowaypi.ecarebc.procedimentos.TabelaCBHPM" next-field-inline="true">
+	        	<autocomplete minimum-characters="3" style-class="autocomplete" size="70">
+					<search-property display-name="Descrição" name="codigoEDescricao" search-type="likefull"/>
+					<name-property name="codigoEDescricao" display-name="Descrição"/>
+				</autocomplete>
+				<restrictions>
+					<restriction property-name="grupo" type="equals" property-value="1"/>
+				</restrictions>
+		     </update-select-property>
+			
+			<update-select-property name="procedimentoConsultaNaoCancelado.motivoGlosaProcedimento" display-name="Motivo desfazer glosa" type="br.com.infowaypi.ecare.cadastros.MotivoGlosa" null-option="true" width-percentage="13" next-field-inline="true">
+					<autocomplete mask-detail="Os 3 números iniciais" minimum-characters="3" style-class="autocomplete" size="40">
+						<search-property display-name="Motivo de Glosa" name="codigoDescricao" search-type="likefull"/>
+						<name-property name="codigoDescricao" display-name="Motivo de Glosa"/>
+ 					</autocomplete>
+					<restrictions>
+						<restriction property-name="ativo" type="equals" property-value="true"/>
+						<restriction property-name="aplicavelOutrosProcedimentos" type="equals" property-value="true"/>
+					</restrictions>
+			</update-select-property>
+			<update-property name="procedimentoConsultaNaoCancelado.desfazerGlosa" display-name="Desfazer glosa" input-type="boolean" editable="true" type="java.lang.Boolean" next-field-inline="true"/>			
+	
+			<html>
+				<![CDATA[
+					</c:otherwise>
+					</c:choose>
+					</c:if>
+				]]>
+			</html>			
+       	
+       		<update-collection 
+					name="inserirExames" 
+					display-name="Inserir Exames"
+					field-name="procedimentoTemp"
+					include-method="addProcedimento"
+					exclude-method="removeProcedimento"
+					type="br.com.infowaypi.ecarebc.procedimentos.ProcedimentoExameAuditoria">
+				    <update-insert>
+				    	<update-property name="procedimentoDaTabelaCBHPM.codigo" display-name="Código" input-type="string" editable="false"/>
+				    	<update-property name="procedimentoDaTabelaCBHPM.descricao" display-name="Descrição" editable="false"/>
+				    	<update-property name="procedimentoDaTabelaCBHPM.nivel" display-name="Nível" editable="false"/>
+						<update-property name="bilateral" display-name="Bilateral" input-type="boolean" editable="false" type="java.lang.Boolean"/>  			        
+	  			        <update-property name="quantidade" display-name="Quantidade" input-type="int" editable="false" type="java.lang.Integer"/>
+						<update-property name="valorAtualDoProcedimento" display-name="Valor Unitário" input-type="bigdecimal" editable="false" type="java.math.BigDecimal"/>
+	  			        <update-property name="valorTotal" display-name="Valor Total" input-type="bigdecimal" editable="false" type="java.math.BigDecimal"/>
+				    </update-insert>
+        	</update-collection>
+        <!-- ALTERAR EXAMES -->
+        	<update-collection 
+					name="alterarExames" 
+					display-name="Alterar Exames"
+					field-name="procedimentoLayerOrdenadosCBHPM"
+					type="br.com.infowaypi.ecarebc.procedimentos.ProcedimentoLayer">
+					<update-insert>
+						<update-select-property name="procedimentoDaTabelaCBHPM" type="br.com.infowaypi.ecarebc.procedimentos.TabelaCBHPM"
+							display-name="Descrição" width-percentage="13" editable="true">
+							<autocomplete style-class="autocomplete" minimum-characters="3" force-selection="true" size="56">
+								<search-property name="codigoEDescricao" display-name="Descrição"/>
+								<name-property name="codigoEDescricao" display-name="Descrição"/>
+							</autocomplete>
+						</update-select-property>
+						<update-property name="bilateralProcedimentoLayer" display-name="Bilateral" input-type="boolean" editable="true" type="java.lang.Boolean"/>  			        
+	  			        <update-property name="quantidadeProcedimentoLayer" display-name="Quantidade" input-type="int" editable="true" type="java.lang.Integer" size="10"/>
+	  			        <update-property name="procedimentoDaTabelaCBHPM.nivel" display-name="Nível" editable="false"/>
+						<update-property name="procedimento.valorAtualDoProcedimento" display-name="Valor Unitário" input-type="money" editable="false" type="java.math.BigDecimal"/>
+	  			        <update-property name="procedimento.valorTotal" display-name="Valor Total" input-type="money" editable="false" type="java.math.BigDecimal"/>
+						<update-property name="glosarProcedimentoExame" field-name="glosar" display-name="Glosar" input-type="boolean" editable="true" type="java.lang.Boolean"/>
+	  			        <update-select-property name="motivoGlosaProcedimentoExame" field-name="motivoGlosa" display-name="Motivo de Glosa" type="br.com.infowaypi.ecare.cadastros.MotivoGlosa" null-option="true">
+							<autocomplete mask-detail="Os 3 números iniciais" minimum-characters="3" style-class="autocomplete" size="40">
+								<search-property display-name="Motivo de Glosa" name="codigoDescricao" search-type="likefull"/>
+								<name-property name="codigoDescricao" display-name="Motivo de Glosa"/>
+		 					</autocomplete>
+							<restrictions>
+								<restriction property-name="ativo" type="equals" property-value="true"/>
+								<restriction property-name="aplicavelProcedimentosExames" type="equals" property-value="true"/>
+							</restrictions>
+						</update-select-property>
+						<update-property name="justificativaGlosaExames" display-name="Justificativa" editable="true" type="java.lang.String" input-type="text" field-name="justificativaGlosa"/>
+					</update-insert>
+        	</update-collection>
+        	
+        	<update-collection 
+					name="procedimentosCirurgicosInsert"  
+					field-name="procedimentosCirurgicosTemp"
+					display-name="Inserir Procedimentos Cirúrgicos"
+					include-method="addProcedimento"
+					exclude-method="removeProcedimento" 
+					type="br.com.infowaypi.ecare.procedimentos.ProcedimentoCirurgicoAuditoria">
+				    <update-insert>
+				    	<update-property name="procedimentoDaTabelaCBHPM.codigoEDescricao" display-name="Procedimento" input-type="string" editable="false"/>
+	  			        <update-property name="procedimentoDaTabelaCBHPM.nivel" display-name="Nível" editable="false"/>
+	  			        <update-property name="profissionalResponsavel.pessoaFisica.nome" display-name="Profissional Responsável" editable="false"/>
+	  			        <update-property name="porcentagemFormatada" display-name="Porcentagem" input-type="string" editable="false"/>
+	  			        <update-property name="valorTotal" display-name="Valor Total" input-type="bigdecimal" editable="false" type="java.math.BigDecimal"/>
+	  			        <update-property name="dataRealizacao" input-type="date" type="java.util.Date" display-name="Data de Realização"  editable="false" mask="99/99/9999" width-percentage="5"/>
+	  			    	<update-property name="motivoInsercao" display-name="Motivo da Inserção" editable="false" input-type="text" />
+				    </update-insert>
+        	</update-collection>
+        	
+        	<update-collection
+					name="inserirOutrosProcedimentos" 
+					display-name="Inserir Outros Procedimentos"
+					field-name="procedimentoOutrosTemp"
+					include-method="addProcedimento"
+					exclude-method="removeProcedimento" 
+					type="br.com.infowaypi.ecarebc.procedimentos.ProcedimentoOutros">
+				    <update-insert>
+				    	<update-property name="procedimentoDaTabelaCBHPM.codigo" display-name="Código" input-type="string" editable="false"/>
+	  			        <update-property name="procedimentoDaTabelaCBHPM.descricao" display-name="Descrição" editable="false"/>
+	  			        <update-property name="procedimentoDaTabelaCBHPM.nivel" display-name="Nível" editable="false"/>
+	  			        <update-property name="profissionalResponsavel.pessoaFisica.nome" display-name="Profissional Responsável" editable="false"/>
+	  			        <update-property name="dataRealizacao" input-type="date" type="java.util.Date" display-name="Data de Realização"  editable="false" mask="99/99/9999" width-percentage="5"/>
+	  			        <update-property name="valorTotal" display-name="Valor Total" input-type="bigdecimal" editable="false" type="java.math.BigDecimal"/>
+				    </update-insert>
+        	</update-collection>
+        
+        	<update-collection 
+					name="alterarOutrosProcedimentos" 
+					display-name="Alterar Outros Procedimentos"
+					field-name="procedimentoOutrosLayerOrdenadosData"
+					type="br.com.infowaypi.ecarebc.procedimentos.ProcedimentoOutrosLayer">
+					<update-insert>
+						<update-select-property name="procedimentoOutrosDaTabelaCBHPM" type="br.com.infowaypi.ecarebc.procedimentos.TabelaCBHPM"
+							display-name="Descrição" width-percentage="13" editable="true">
+							<autocomplete style-class="autocomplete" minimum-characters="3" force-selection="true" size="40">
+								<search-property name="descricao" display-name="Descrição"/>
+								<name-property name="descricao" display-name="Descrição"/>
+							</autocomplete>
+						</update-select-property>
+						<update-select-property name="profissionalResponsavelOutros" type="br.com.infowaypi.ecarebc.associados.Profissional"
+							display-name="Profissional Responsável" width-percentage="13" editable="true">
+							<autocomplete style-class="autocomplete" minimum-characters="3" force-selection="true" size="30">
+								<search-property name="crmNome" display-name="Profissional Responsável"/>
+								<name-property name="crmNome" display-name="Profissional Responsável"/>
+							</autocomplete>
+						</update-select-property>
+						<update-property name="quantidadeOutros" display-name="Qnt." input-type="int" editable="true" type="java.lang.Integer" size="5"/>
+	  			        <update-property name="dataRealizacaoOutros" display-name="Data Realização" input-type="date" editable="true" type="java.util.Date" size="8"/>
+	  			        <update-property name="procedimentoOutrosDaTabelaCBHPM.nivel" display-name="Nível" editable="false"/>
+	  			        <update-property name="procedimentoOutros.valorTotal" display-name="Valor Total" input-type="money" editable="false" type="java.math.BigDecimal"/>
+						<update-property name="glosarProcedimentoOutros" field-name="glosar" display-name="Glosar" input-type="boolean" editable="true" type="java.lang.Boolean"/>
+	  			        <update-select-property name="motivoGlosaProcedimentoOutros" field-name="motivoGlosa" display-name="Motivo de Glosa" type="br.com.infowaypi.ecare.cadastros.MotivoGlosa" null-option="true">
+							<autocomplete mask-detail="Os 3 números iniciais" minimum-characters="3" style-class="autocomplete" size="40">
+								<search-property display-name="Motivo de Glosa" name="codigoDescricao" search-type="likefull"/>
+								<name-property name="codigoDescricao" display-name="Motivo de Glosa"/>
+		 					</autocomplete>
+							<restrictions>
+								<restriction property-name="ativo" type="equals" property-value="true"/>
+								<restriction property-name="aplicavelOutrosProcedimentos" type="equals" property-value="true"/>
+							</restrictions>
+						</update-select-property>
+						<update-property name="justificativaGlosaOutros" display-name="Justificativa" editable="true" type="java.lang.String" input-type="text" field-name="justificativaGlosa"/>
+					</update-insert>
+        	</update-collection>
+        	
+        	<update-collection 
+					name="itensDiariaTemp" 
+					field-name="itensDiariaTemp"
+					display-name="Inserir Diárias"
+					include-method="addItemDiariaAuditoria"
+					exclude-method="removeItemDiaria"
+					type="br.com.infowaypi.ecarebc.atendimentos.acordos.itensAcordos.ItemDiaria">
+				    <update-insert>
+				    	<update-property name="descricaoDiaria" field-name="diaria.descricao" display-name="Descrição" input-type="string" editable="false"/>
+				    	<update-property name="quantidadeDiaria" field-name="valor.quantidade" display-name="Quantidade" editable="false" type="java.lang.Integer" size="10"/>
+				    	<update-property name="valorDiaria" field-name="valor.valor" display-name="Valor" input-type="bigdecimal" editable="false" type="java.math.BigDecimal"/>
+				   		<update-property name="justificativaDiaria" field-name="justificativa" display-name="Justificativa" editable="false"/>
+				    </update-insert>
+				    <access-restriction name="restricaoDeUrgencia" type="edit">
+						<session-restriction name="guia" operation="equals" type="boolean" property="urgenciaOuAtendimentoSubsequente" value="false" />
+					</access-restriction>
+        	</update-collection>
+        	
+			<update-collection 
+					name="itensDiariaAuditoriaLayer" 
+					field-name="itensDiariaAuditoriaLayer"
+					display-name="Alterar Diárias"
+					type="br.com.infowaypi.ecare.services.layer.ItemDiariaLayer">
+				    <update-insert>
+	  			        <update-select-property name="diariaLayer" field-name="diaria" display-name="Diaria" type="br.com.infowaypi.ecarebc.atendimentos.Diaria" width-percentage="35">
+	  			        	<autocomplete mask-detail="Os 3 números iniciais" minimum-characters="3" style-class="autocomplete">
+        						<search-property display-name="Descrição" name="descricao" search-type="likefull"/>
+        						<name-property display-name="Descrição" name="descricao"/>
+        					</autocomplete>
+	  			        </update-select-property>
+
+				    	<update-property name="quantidadeDiariaLayer" field-name="valor.quantidade" display-name="Quantidade" editable="true" type="java.lang.Integer"  size="10"/>
+				    	<update-property name="valorDiariaLayer" field-name="itemDiaria.valor.valor" display-name="Valor" input-type="money" editable="false" type="java.math.BigDecimal"/>
+	  			        <update-property name="glosarDiaria" field-name="glosar" display-name="Glosar" input-type="boolean" editable="true" type="java.lang.Boolean"/>
+	  			        <update-select-property name="motivoGlosaDiaria" field-name="motivoGlosa" display-name="Motivo de Glosa" type="br.com.infowaypi.ecare.cadastros.MotivoGlosa" null-option="true">
+							<autocomplete mask-detail="Os 3 números iniciais" minimum-characters="3" style-class="autocomplete" size="40">
+								<search-property display-name="Motivo de Glosa" name="codigoDescricao" search-type="likefull"/>
+								<name-property name="codigoDescricao" display-name="Motivo de Glosa"/>
+		 					</autocomplete>
+							<restrictions>
+								<restriction property-name="ativo" type="equals" property-value="true"/>
+								<restriction property-name="aplicavelDiarias" type="equals" property-value="true"/>
+							</restrictions>
+						</update-select-property>
+						<update-property name="justificativaGlosaDiarias" display-name="Justificativa" editable="true" type="java.lang.String" input-type="text" field-name="justificativaGlosa"/>
+				    </update-insert>
+        	</update-collection>
+
+        	<update-collection 
+					name="itensTaxaInsercao" 
+					field-name="itensTaxaTemp"
+					display-name="Inserir Taxas"
+					include-method="addItemTaxaAuditoria"
+					exclude-method="removeItemTaxa" 
+					type="br.com.infowaypi.ecarebc.atendimentos.acordos.itensAcordos.ItemTaxa" >
+				    <update-insert>
+				    	<update-property name="taxa.descricao" display-name="Descrição" input-type="string" editable="false"/>
+				    	<update-property name="valor.quantidade" display-name="Quantidade" editable="false" type="java.lang.Integer"/>
+				    	<update-property name="valor.valor" display-name="Valor" input-type="bigdecimal" editable="false" type="java.math.BigDecimal"/>
+				    </update-insert>
+        	</update-collection>
+        	
+        	<update-collection 
+					name="itensTaxaAlteracao" 
+					field-name="itensTaxaLayer"
+					display-name="Alterar Taxas"
+					type="br.com.infowaypi.ecarebc.atendimentos.ItemTaxaLayer">
+				    <update-insert>
+						<update-select-property name="taxa" display-name="Taxa" type="br.com.infowaypi.ecarebc.atendimentos.Taxa">
+							<autocomplete mask-detail="As 3 letras iniciais" minimum-characters="3" style-class="autocomplete">
+								<search-property display-name="Descrição" name="descricao" search-type="likefull" />
+								<name-property name="descricao" display-name="Descrição" />
+							</autocomplete>
+						</update-select-property>
+  			        	<update-property name="valor.quantidade" display-name="Quantidade" editable="true" type="java.lang.Integer" size="10"/>
+				    	<update-property name="itemTaxa.valor.valor" display-name="Valor" input-type="money" editable="false" type="java.math.BigDecimal"/>
+						<update-property name="glosarTaxa" display-name="Glosar" input-type="boolean" type="java.lang.Boolean" field-name="glosar"/>
+						<update-select-property name="motivoGlosaTaxa" field-name="motivoGlosa" display-name="Motivo de Glosa" type="br.com.infowaypi.ecare.cadastros.MotivoGlosa" null-option="true">
+							<autocomplete mask-detail="Os 3 números iniciais" minimum-characters="3" style-class="autocomplete" size="40">
+								<search-property display-name="Motivo de Glosa" name="codigoDescricao" search-type="likefull"/>
+								<name-property name="codigoDescricao" display-name="Motivo de Glosa"/>
+		 					</autocomplete>
+							<restrictions>
+								<restriction property-name="ativo" type="equals" property-value="true"/>
+								<restriction property-name="aplicavelTaxas" type="equals" property-value="true"/>
+							</restrictions>
+						</update-select-property>
+						<update-property name="justificativaGlosaTaxas" display-name="Justificativa" editable="true" type="java.lang.String" input-type="text" field-name="justificativaGlosa"/>
+				    </update-insert>
+        	</update-collection>
+        	
+        	<update-collection 
+					name="itensGasoterapiaInsercao" 
+					field-name="itensGasoterapiaTemp"
+					display-name="Inserir Gasoterapias"
+					include-method="addItemGasoterapiaAuditoria"
+					exclude-method="removeItemGasoterapia"
+					type="br.com.infowaypi.ecarebc.atendimentos.acordos.itensAcordos.ItemGasoterapia">
+				    <update-insert>
+						<update-property name="gasoterapia.descricao" display-name="Gasoterapia"  input-type="string" editable="false" />
+  			        	<update-property name="valor.valor" display-name="Valor Unitário (1h)" input-type="bigdecimal" editable="false" type="java.math.BigDecimal"/>				    
+  			        	<update-property name="quantidadeFormatada" display-name="Horas" type="java.lang.String" editable="false" />
+  			        	<update-property name="valorTotal" display-name="Valor Total" input-type="bigdecimal" editable="false" type="java.math.BigDecimal"/>
+				    </update-insert>
+        	</update-collection>
+
+        	<update-collection
+					name="itensGasoterapiaLayer" 
+					field-name="itensGasoterapiaLayer"
+					display-name="Alterar Gasoterapias"
+					type="br.com.infowaypi.ecarebc.atendimentos.ItemGasoterapiaLayer"
+					>
+				    <update-insert>
+						<update-select-property name="gasoterapia" field-name="gasoterapia" display-name="Gasoterapia" type="br.com.infowaypi.ecarebc.atendimentos.Gasoterapia">
+							<autocomplete mask-detail="As 3 letras iniciais" minimum-characters="3" style-class="autocomplete">
+								<search-property display-name="Descrição" name="codigoDescricao" search-type="likefull" />
+								<name-property name="codigoDescricao" display-name="Descrição" />
+							</autocomplete>
+						</update-select-property>
+  			        	<update-property name="quantidadeFormatada" display-name="Horas" type="java.lang.String" editable="true" mask="999:99" size="10"/>
+  			        	<update-property name="itemGasoterapia.valor.valor" display-name="Valor Unitário (1h)" input-type="money" editable="false" type="java.math.BigDecimal"/>				    
+  			        	<update-property name="itemGasoterapia.valorTotal" display-name="Valor Total" input-type="money" editable="false" type="java.math.BigDecimal"/>
+						<update-property name="glosarGasoterapia" display-name="Glosar" input-type="boolean" type="java.lang.Boolean" field-name="glosar"/>
+						<update-select-property name="motivoGlosaGasoterapia" field-name="motivoGlosa" display-name="Motivo de Glosa" type="br.com.infowaypi.ecare.cadastros.MotivoGlosa" null-option="true">
+							<autocomplete mask-detail="Os 3 números iniciais" minimum-characters="3" style-class="autocomplete" size="40">
+								<search-property display-name="Motivo de Glosa" name="codigoDescricao" search-type="likefull"/>
+								<name-property name="codigoDescricao" display-name="Motivo de Glosa"/>
+		 					</autocomplete>
+							<restrictions>
+								<restriction property-name="ativo" type="equals" property-value="true"/>
+								<restriction property-name="aplicavelGasoterapias" type="equals" property-value="true"/>
+							</restrictions>
+						</update-select-property>
+						<update-property name="justificativaGlosaGasoterapias" display-name="Justificativa" editable="true" type="java.lang.String" input-type="text" field-name="justificativaGlosa"/>
+				    </update-insert>
+        	</update-collection>
+
+        	<update-collection 
+					name="itensPacoteTemp" 
+					field-name="itensPacoteTemp"
+					display-name="Inserir Pacotes"
+					include-method="addItemPacoteAuditoria"
+					exclude-method="removeItemPacote"
+					type="br.com.infowaypi.ecarebc.atendimentos.acordos.itensAcordos.ItemPacote">
+				    <update-insert>
+						<update-property name="codigoNovo" field-name="pacote.codigo" display-name="Código" editable="false" input-type="string"/>
+						<update-property name="descricaoNovo" field-name="pacote.descricao" display-name="Descrição" editable="false" input-type="string"/>
+						<update-select-property name="porcentagemPacoteNovo" field-name="porcentagem" type="java.math.BigDecimal"  display-name="Porcentagem (%)" editable="true" null-option="false">
+							<constants-group input-type="combo" class="br.com.infowaypi.ecarebc.constantes.Constantes">
+								<entry key-value="PORCENTAGEM_100" display-name="100%"/>
+								<entry key-value="PORCENTAGEM_70" display-name="70%"/>
+								<entry key-value="PORCENTAGEM_50" display-name="50%"/>
+							</constants-group>
+						</update-select-property>
+						<update-property name="descricaoSituacao" field-name="situacao.descricao" display-name="Situação" editable="false" input-type="string"/>
+						<update-property name="valorNovo" field-name="valorTotalFormatado" display-name="Valor Total" input-type="string" editable="false"/>
+				    </update-insert>
+				    <access-restriction name="restricaoConsulta" type="edit">
+						<session-restriction name="guia" operation="equals" type="boolean" property="consulta" value="false" />
+					</access-restriction>
+        	</update-collection>
+
+        	<update-collection 
+					name="itensAuditoriaLayer" 
+					field-name="itensAuditoriaLayer"
+					display-name="Alterar Pacotes"
+					type="br.com.infowaypi.ecare.services.layer.ItemPacoteLayer" >
+				    
+				    <update-insert>
+	  			        <update-select-property name="pacote" display-name="Pacotes" type="br.com.infowaypi.ecarebc.procedimentos.Pacote" width-percentage="35">
+	  			        	<autocomplete mask-detail="Os 3 números iniciais" minimum-characters="3" style-class="autocomplete">
+        						<search-property display-name="Descrição" name="descricao" search-type="likefull"/>
+        						<name-property display-name="Descrição" name="descricao"/>
+        					</autocomplete>
+	  			        </update-select-property>
+	  			        
+						<update-select-property name="porcentagemPacote" field-name="porcentagem" type="java.math.BigDecimal"  display-name="Porcentagem (%)" editable="true" null-option="false">
+							<constants-group input-type="combo" class="br.com.infowaypi.ecarebc.constantes.Constantes">
+								<entry key-value="PORCENTAGEM_100" display-name="100%"/>
+								<entry key-value="PORCENTAGEM_70" display-name="70%"/>
+								<entry key-value="PORCENTAGEM_50" display-name="50%"/>
+							</constants-group>
+						</update-select-property>
+						
+						<update-property name="descricaoPct" field-name="itemPacote.situacao.descricao" display-name="Situação" editable="false" input-type="string"/>
+						<update-property name="valorTotalFormatadoPct" field-name="itemPacote.valorTotal" display-name="Valor Total" input-type="money" editable="false"/>
+	  			        <update-property name="glosarPct" field-name="glosar" display-name="Glosar" input-type="boolean" editable="true" type="java.lang.Boolean"/>
+	  			        <update-select-property name="motivoGlosaPct" field-name="motivoGlosa" display-name="Motivo de Glosa" type="br.com.infowaypi.ecare.cadastros.MotivoGlosa" null-option="true">
+							<autocomplete mask-detail="Os 3 números iniciais" minimum-characters="3" style-class="autocomplete" size="40">
+								<search-property display-name="Motivo de Glosa" name="codigoDescricao" search-type="likefull"/>
+								<name-property name="codigoDescricao" display-name="Motivo de Glosa"/>
+		 					</autocomplete>
+							<restrictions>
+								<restriction property-name="ativo" type="equals" property-value="true"/>
+								<restriction property-name="aplicavelPacotes" type="equals" property-value="true"/>
+							</restrictions>
+						</update-select-property>
+						<update-property name="justificativaGlosaPacotes" display-name="Justificativa" editable="true" type="java.lang.String" input-type="text" field-name="justificativaGlosa"/>
+				    </update-insert>
+				    
+				    <access-restriction name="isInternacaoConsultaUrgenciaOuAtendimentoUrgencia" type="edit">
+						<session-restriction name="guia" property="internacao" operation="equals" type="boolean" value="true" logic-operation="or"/>
+						<session-restriction name="guia" property="consultaUrgencia" operation="equals" type="boolean" value="true" logic-operation="or"/>
+						<session-restriction name="guia" property="atendimentoUrgencia" operation="equals" type="boolean" value="true"/>
+					</access-restriction>
+        	</update-collection>
+        	
+        	<update-collection 
+				    display-name="OPMEs" 
+				    name="opmes"
+				    field-name="opmesAutorizados"
+				    type="br.com.infowaypi.ecarebc.opme.ItemOpme">
+					
+						<update-insert>
+							<update-property name="opme.codigo" display-name="Código" editable="false"/>
+							<update-property name="opme.descricao" display-name="Descrição" editable="false"/>
+							<update-property name="opme.fornecedor.nomeFornecedor" display-name="Fornecedor" editable="false"/>
+							<update-property name="situacao.descricao" display-name="Situação" editable="false" />
+							<update-property name="quantidadeRegulada" display-name="Quantidade Autorizada" editable="false" type="java.lang.Integer" size="10"/>
+							<update-property name="quantidadeAuditada" display-name="Quantidade Utilizada" editable="true" type="java.lang.Integer" size="10"/>
+							<update-property name="glosarOPME" field-name="glosar" display-name="Glosar" input-type="boolean" editable="true" type="java.lang.Boolean"/>
+							<update-property  name="observacaoAuditoria" display-name="Justificativa" input-type="text" editable="true"/>
+						</update-insert> 
+						<access-restriction name="opmesAutorizados" type="edit">
+							<session-restriction name="guia" operation="notempty" property="opmesAutorizados" />
+						</access-restriction>
+				</update-collection>
+        	
+        <!-- ALTERAR HONORARIOS AUXILIARES -->
+<!--         	<update-collection display-name="Alterar Honorários Auxiliares" name="alterarHonorarioAuxiliar" field-name="honorariosInternosNaoGlosado" type="br.com.infowaypi.ecarebc.atendimentos.honorario.Honorario"> -->
+<!--         		<update-insert> -->
+<!-- 	       			<update-property name="procedimento.procedimentoDaTabelaCBHPM.codigo" display-name="Código" input-type="string" editable="false"/> -->
+<!-- 	  			    <update-property name="procedimento.procedimentoDaTabelaCBHPM.descricao" display-name="Descrição" editable="false"/> -->
+<!-- 	  			    <update-property name="profissional.pessoaFisica.nome" display-name="Profissional" editable="false"/> -->
+<!-- 	  			    <update-property name="grauDeParticipacaoFormatado" display-name="Função" input-type="string" editable="false"/> -->
+<!-- 	  			    <update-property name="valorTotal" display-name="Valor Total" input-type="money" editable="false"/> -->
+<!-- 	  			    Porcentagem -->
+<!-- 					<update-select-property name="porcentagem" field-name="porcentagem" display-name="Porcentagem" type="java.math.BigDecimal"> -->
+<!-- 						<constants-group class="br.com.infowaypi.ecarebc.procedimentos.ProcedimentoCirurgico"> -->
+<!-- 							<entry display-name="50%" key-value="PORCENTAGEM_50" /> -->
+<!-- 							<entry display-name="70%" key-value="PORCENTAGEM_70" /> -->
+<!-- 							<entry display-name="100%" key-value="PORCENTAGEM_100" /> -->
+<!-- 						</constants-group> -->
+<!-- 					</update-select-property> -->
+					
+<!-- 					<update-property name="incluiVideo" display-name="Inclui Vídeo" input-type="boolean" type="java.lang.Boolean" next-field-inline="true"/> -->
+<!-- 					<update-property name="horarioEspecial" display-name="Horário Especial" input-type="boolean" type="java.lang.Boolean" next-field-inline="true"/> -->
+					
+<!-- 					Motivo de subistituição/alteração do procedimento -->
+<!-- 					<update-property name="glosado" display-name="Glosar" input-type="boolean" type="java.lang.Boolean" next-field-inline="true"/> -->
+<!-- 					<update-property name="motivoDeGlosa" display-name="Motivo de Glosa" input-type="text" editable="true" width-percentage="13"/> -->
+<!--         		</update-insert> -->
+<!--         	</update-collection> -->
+        	
+        	
+        	<!-- if[INFORMAR_CID_NA_AUDITORIA]
+        	<update-collection name="cids" 
+				field-name="cids" required="true"
+				display-name="Inserir CIDS"
+				include-method="addCid"
+				exclude-method="removeCid"
+				type="br.com.infowaypi.ecarebc.procedimentos.CID" >
+				<autocomplete style-class="autocomplete" minimum-characters="4" force-selection="true">
+					<search-property name="codigoEDescricaoDaDoenca" display-name="CID"/>
+					<name-property name="codigoEDescricaoDaDoenca" display-name="CID"/>	
+				</autocomplete>
+	        </update-collection>
+        	end[INFORMAR_CID_NA_AUDITORIA] -->
+        	
+        	<html>
+				<![CDATA[ </td></tr><tr><td colspan="4"><fieldset><legend id="mechuta_jheat">Alterar Especialidade</legend>]]>        	
+        	</html>
+        	
+        	<update-property display-name="De" name="especialidade.descricao" editable="false" type="br.com.infowaypi.ecarebc.associados.Especialidade" next-field-inline="true"/>
+			
+      		<update-select-property display-name="Para" name="especialidadeTemp" type="br.com.infowaypi.ecarebc.associados.Especialidade" editable="true">
+	        	<autocomplete minimum-characters="3" style-class="autocomplete" size="35">
+					<search-property display-name="Especialidade" name="descricao" search-type="likefull"/>
+					<name-property name="descricao" display-name="Especialidade"/>
+				</autocomplete>
+	      		<restrictions>
+	      			<restriction property-value="true" property-name="ativa" type="equals"/>
+	      		</restrictions>
+			</update-select-property>
+			<html>
+				<![CDATA[ </td></tr><tr><td colspan="4"><fieldset><legend>Alterar Materiais/Medicamentos</legend>]]>        	
+        	</html>
+					
+      		<update-property display-name="Valor Total de Materiais em Enfermaria" name="valoresMatMed.valorTotalMateriaisMedicosApartamento" editable="true"  input-type="money"  next-field-inline="true" type="java.math.BigDecimal" >
+				<access-restriction name="restricaoDeTipo" type="edit">
+					<session-restriction name="guia" operation="equals" type="boolean" property="urgenciaOuAtendimentoSubsequente" value="false" />
+				</access-restriction>
+			</update-property>		
+      		<update-property display-name="Valor Total de Materiais em Enfermaria Auditado" name="valoresMatMed.valorTotalMateriaisMedicosApartamentoAuditado" editable="true" input-type="money" padding-left="90" next-field-inline="true" type="java.math.BigDecimal">
+				<access-restriction name="restricaoDeTipo" type="edit">
+					<session-restriction name="guia" operation="equals" type="boolean" property="urgenciaOuAtendimentoSubsequente" value="false" />
+				</access-restriction>
+			</update-property>
+      		<update-property display-name="Justificativa" name="valoresMatMed.justificativaMateriaisMedicosApartamento" editable="true" input-type="text" type="java.lang.String">
+				<access-restriction name="restricaoDeTipo" type="edit">
+					<session-restriction name="guia" operation="equals" type="boolean" property="urgenciaOuAtendimentoSubsequente" value="false" />
+				</access-restriction>
+			</update-property>
+
+      		<update-property display-name="Valor Total de Materiais em UTI" name="valoresMatMed.valorTotalMateriaisMedicosUTI" editable="true" input-type="money" next-field-inline="true"  type="java.math.BigDecimal">
+				<access-restriction name="restricaoDeTipo" type="edit">
+					<session-restriction name="guia" operation="equals" type="boolean" property="urgenciaOuAtendimentoSubsequente" value="false" />
+				</access-restriction>
+			</update-property>
+      		<update-property display-name="Valor Total de Materiais em UTI Auditado" name="valoresMatMed.valorTotalMateriaisMedicosUTIAuditado" editable="true" input-type="money" next-field-inline="true" padding-left="90"  type="java.math.BigDecimal">
+				<access-restriction name="restricaoDeTipo" type="edit">
+					<session-restriction name="guia" operation="equals" type="boolean" property="urgenciaOuAtendimentoSubsequente" value="false" />
+				</access-restriction>
+			</update-property>
+      		<update-property display-name="Justificativa" name="valoresMatMed.justificativaMateriaisMedicosUTI" editable="true" input-type="text" type="java.lang.String">
+				<access-restriction name="restricaoDeTipo" type="edit">
+					<session-restriction name="guia" operation="equals" type="boolean" property="urgenciaOuAtendimentoSubsequente" value="false" />
+				</access-restriction>
+			</update-property>
+
+      		<update-property display-name="Valor Total de Materiais em Bloco Cirúrgico" name="valoresMatMed.valorTotalMateriaisMedicosBlocoCirurgico" editable="true" input-type="money" next-field-inline="true" type="java.math.BigDecimal">
+				<access-restriction name="restricaoDeTipo" type="edit">
+					<session-restriction name="guia" operation="equals" type="boolean" property="urgenciaOuAtendimentoSubsequente" value="false" />
+				</access-restriction>
+			</update-property>      		
+      		<update-property display-name="Valor Total de Materiais em Bloco Cirúrgico Auditado" name="valoresMatMed.valorTotalMateriaisMedicosBlocoCirurgicoAuditado" editable="true" input-type="money" next-field-inline="true" padding-left="90"  type="java.math.BigDecimal">
+				<access-restriction name="restricaoDeTipo" type="edit">
+					<session-restriction name="guia" operation="equals" type="boolean" property="urgenciaOuAtendimentoSubsequente" value="false" />
+				</access-restriction>
+			</update-property>      		      		
+			<update-property display-name="Justificativa" name="valoresMatMed.justificativaMateriaisMedicosBlocoCirurgico" editable="true" input-type="text" type="java.lang.String">
+				<access-restriction name="restricaoDeTipo" type="edit">
+					<session-restriction name="guia" operation="equals" type="boolean" property="urgenciaOuAtendimentoSubsequente" value="false" />
+				</access-restriction>
+			</update-property>
+
+			<update-property display-name="Valor Total de Materiais em Pronto Socorro" name="valoresMatMed.valorTotalMateriaisProntoSocorro" editable="true" input-type="money" next-field-inline="true" type="java.math.BigDecimal"/>      		
+      		<update-property display-name="Valor Total de Materiais em Pronto Socorro Auditado" name="valoresMatMed.valorTotalMateriaisProntoSocorroAuditado" editable="true" input-type="money" padding-left="90" next-field-inline="true" type="java.math.BigDecimal"/>      		      		
+			<update-property display-name="Justificativa" name="valoresMatMed.justificativaMateriaisProntoSocorro" editable="true" input-type="text" type="java.lang.String" />
+			
+      		<update-property display-name="Valor Total de Medicamentos em Enfermaria" name="valoresMatMed.valorTotalMedicamentosApartamento" editable="true" input-type="money" next-field-inline="true" type="java.math.BigDecimal">
+				<access-restriction name="restricaoDeTipo" type="edit">
+					<session-restriction name="guia" operation="equals" type="boolean" property="urgenciaOuAtendimentoSubsequente" value="false" />
+				</access-restriction>
+			</update-property>      		      		      		
+      		<update-property display-name="Valor Total de Medicamentos em Enfermaria Auditado" name="valoresMatMed.valorTotalMedicamentosApartamentoAuditado" editable="true" input-type="money" next-field-inline="true" padding-left="90"  type="java.math.BigDecimal">
+				<access-restriction name="restricaoDeTipo" type="edit">
+					<session-restriction name="guia" operation="equals" type="boolean" property="urgenciaOuAtendimentoSubsequente" value="false" />
+				</access-restriction>
+			</update-property>      		      		      		      		
+			<update-property display-name="Justificativa" name="valoresMatMed.justificativaMedicamentosApartamento" editable="true" input-type="text" type="java.lang.String">
+				<access-restriction name="restricaoDeTipo" type="edit">
+					<session-restriction name="guia" operation="equals" type="boolean" property="urgenciaOuAtendimentoSubsequente" value="false" />
+				</access-restriction>
+			</update-property>
+
+      		<update-property display-name="Valor Total de Medicamentos em UTI" name="valoresMatMed.valorTotalMedicamentosUTI" editable="true" input-type="money" next-field-inline="true" type="java.math.BigDecimal">
+				<access-restriction name="restricaoDeTipo" type="edit">
+					<session-restriction name="guia" operation="equals" type="boolean" property="urgenciaOuAtendimentoSubsequente" value="false" />
+				</access-restriction>
+			</update-property>   
+    		<update-property display-name="Valor Total de Medicamentos em UTI Auditado" name="valoresMatMed.valorTotalMedicamentosUTIAuditado" editable="true" input-type="money" next-field-inline="true" padding-left="90" type="java.math.BigDecimal">
+				<access-restriction name="restricaoDeTipo" type="edit">
+					<session-restriction name="guia" operation="equals" type="boolean" property="urgenciaOuAtendimentoSubsequente" value="false" />
+				</access-restriction>
+			</update-property>      		      		      		      		   		      		      		      		
+			<update-property display-name="Justificativa" name="valoresMatMed.justificativaMedicamentosUTI" editable="true" input-type="text" type="java.lang.String">
+				<access-restriction name="restricaoDeTipo" type="edit">
+					<session-restriction name="guia" operation="equals" type="boolean" property="urgenciaOuAtendimentoSubsequente" value="false" />
+				</access-restriction>
+			</update-property>
+
+    		<update-property display-name="Valor Total de Medicamentos em Bloco Cirúrgico" name="valoresMatMed.valorTotalMedicamentosBlocoCirurgico" editable="true" input-type="money" next-field-inline="true" type="java.math.BigDecimal">
+				<access-restriction name="restricaoDeTipo" type="edit">
+					<session-restriction name="guia" operation="equals" type="boolean" property="urgenciaOuAtendimentoSubsequente" value="false" />
+				</access-restriction>
+			</update-property>      		      		      		      		   		      		      		      		    		
+    		<update-property display-name="Valor Total de Medicamentos em Bloco Cirúrgico Auditado" name="valoresMatMed.valorTotalMedicamentosBlocoCirurgicoAuditado" editable="true" input-type="money" next-field-inline="true" padding-left="90"  type="java.math.BigDecimal">
+				<access-restriction name="restricaoDeTipo" type="edit">
+					<session-restriction name="guia" operation="equals" type="boolean" property="urgenciaOuAtendimentoSubsequente" value="false" />
+				</access-restriction>
+			</update-property>      		      		      		      		   		      		      		      		    		    		
+			<update-property display-name="Justificativa" name="valoresMatMed.justificativaMedicamentosBlocoCirurgico" editable="true" input-type="text" type="java.lang.String">
+				<access-restriction name="restricaoDeTipo" type="edit">
+					<session-restriction name="guia" operation="equals" type="boolean" property="urgenciaOuAtendimentoSubsequente" value="false" />
+				</access-restriction>
+			</update-property>
+
+			<update-property display-name="Valor Total de Medicamentos em Pronto Socorro" name="valoresMatMed.valorTotalMedicamentosProntoSocorro" editable="true" input-type="money" next-field-inline="true" type="java.math.BigDecimal"/>      		      		      		      		   		      		      		      		    		
+    		<update-property display-name="Valor Total de Medicamentos em Pronto Socorro Auditado" name="valoresMatMed.valorTotalMedicamentosProntoSocorroAuditado" editable="true" input-type="money" padding-left="90" next-field-inline="true" type="java.math.BigDecimal"/>      		      		      		      		   		      		      		      		    		    		
+			<update-property display-name="Justificativa" name="valoresMatMed.justificativaMedicamentosProntoSocorro" editable="true" input-type="text" type="java.lang.String" />
+			
+			<update-property display-name="Materiais Especiais" name="valoresMatMed.valorTotalMateriaisEspeciais" type="java.math.BigDecimal" editable="true" input-type="money" next-field-inline="true">
+				<access-restriction name="restricaoDeTipo" type="edit">
+					<session-restriction name="guia" operation="equals" type="boolean" property="urgenciaOuAtendimentoSubsequente" value="false" />
+				</access-restriction>
+			</update-property>
+			<update-property display-name="Materiais Especiais Auditado" name="valoresMatMed.valorTotalMateriaisEspeciaisAuditado" editable="true" input-type="money" type="java.math.BigDecimal" next-field-inline="true" padding-left="90">
+				<access-restriction name="restricaoDeTipo" type="edit">
+					<session-restriction name="guia" operation="equals" type="boolean" property="urgenciaOuAtendimentoSubsequente" value="false" />
+				</access-restriction>
+			</update-property>
+			<update-property display-name="Justificativa" name="valoresMatMed.justificativaMateriaisEspeciais" editable="true" input-type="text" type="java.lang.String">
+				<access-restriction name="restricaoDeTipo" type="edit">
+					<session-restriction name="guia" operation="equals" type="boolean" property="urgenciaOuAtendimentoSubsequente" value="false" />
+				</access-restriction>
+			</update-property>
+
+			<update-property display-name="Medicamentos Especiais" name="valoresMatMed.valorTotalMedicamentosEspeciais" editable="true" type="java.math.BigDecimal" input-type="money" next-field-inline="true">
+				<access-restriction name="restricaoDeTipo" type="edit">
+					<session-restriction name="guia" operation="equals" type="boolean" property="urgenciaOuAtendimentoSubsequente" value="false" />
+				</access-restriction>
+			</update-property>
+			<update-property display-name="Medicamentos Especiais Auditado" name="valoresMatMed.valorTotalMedicamentosEspeciaisAuditado" editable="true" input-type="money" type="java.math.BigDecimal" next-field-inline="true" padding-left="90">
+				<access-restriction name="restricaoDeTipo" type="edit">
+					<session-restriction name="guia" operation="equals" type="boolean" property="urgenciaOuAtendimentoSubsequente" value="false" />
+				</access-restriction>
+			</update-property>
+			<update-property display-name="Justificativa" name="valoresMatMed.justificativaMedicamentosEspeciais" editable="true" input-type="text" type="java.lang.String" >
+				<access-restriction name="restricaoDeTipo" type="edit">
+					<session-restriction name="guia" operation="equals" type="boolean" property="urgenciaOuAtendimentoSubsequente" value="false" />
+				</access-restriction>
+			</update-property>
+
+			<update-property display-name="Outros Valores" name="valoresMatMed.valorOutros" editable="true" type="java.math.BigDecimal"  input-type="money" next-field-inline="true" >
+				<access-restriction name="restricaoDeTipo" type="edit">
+					<session-restriction name="guia" operation="equals" type="boolean" property="urgenciaOuAtendimentoSubsequente" value="false" />
+				</access-restriction>
+			</update-property>
+			<update-property display-name="Outros Valores Auditado" name="valoresMatMed.valorOutrosAuditado" editable="true" input-type="money" type="java.math.BigDecimal" next-field-inline="true" padding-left="90">
+				<access-restriction name="restricaoDeTipo" type="edit">
+					<session-restriction name="guia" operation="equals" type="boolean" property="urgenciaOuAtendimentoSubsequente" value="false" />
+				</access-restriction>
+			</update-property>
+			<update-property display-name="Justificativa" name="valoresMatMed.justificativaOutros" editable="true" input-type="text" type="java.lang.String">
+				<access-restriction name="restricaoDeTipo" type="edit">
+					<session-restriction name="guia" operation="equals" type="boolean" property="urgenciaOuAtendimentoSubsequente" value="false" />
+				</access-restriction>
+			</update-property>
+			<update-property name="valoresMatMed.descricaoOutros" type="java.lang.String" display-name="Descrição Outros" editable="false" input-type="text" >
+				<access-restriction name="restricaoDeTipo" type="edit">
+					<session-restriction name="guia" operation="equals" type="boolean" property="urgenciaOuAtendimentoSubsequente" value="false" />
+				</access-restriction>
+			</update-property>
+		</update-param>
+		
+		<session-param name="usuario"/>
+		<html>
+			<![CDATA[
+			<infoway:GuiaApresentacao guiaApresentacao="${guia}" isFluxoAuditoria="true"/>
+			]]>
+		</html>
+		
+		<step-return name="guia" type="br.com.infowaypi.ecarebc.atendimentos.GuiaCompleta" 
+	         display-name="GuiaSelecionada" scope="session"/>
+		         
+	</step-method>
+	
+	<step-method name="salvarGuia" display-name="Conferir Dados" title="Conferir Dados" committed="true">
+			<session-param name="guia" operation="none"/>
+			<html>
+				<![CDATA[
+					<infoway:GuiaApresentacao guiaApresentacao="${guia}" isFluxoAuditoria="true"/>
+				]]>
+			</html>
+
+	</step-method>
+		
+	<step-method name="finalizar" display-name="Imprimir Comprovante de Confirmação" title="Imprimir Comprovante">
+			<html>
+				<![CDATA[  <infoway:mensagemSucessoMarcacoes mensagem="Guia auditada com sucesso!" autorizacao="${guia.autorizacao}"/> ]]>
+			</html>
+		
+			<html>
+			<![CDATA[ 
+				<span class="not-for-print">
+					<button type="button" name="imprimir" class="actionButton" onclick="window.print();">Imprimir</button>
+				</span>
+			]]>
+			</html>
+			
+			<session-param name="guia" operation="none"/>
+				<html>
+				<![CDATA[
+					<infoway:GuiaApresentacao guiaApresentacao="${guia}" isFluxoAuditoria="true"/>
+					]]>
+				</html>
+			<html>
+				<![CDATA[ <infoway:imprimirGuia titulo="COMPROVANTE DE AUDITORIA"/> 
+					<span class="not-for-print">
+						<button type="button" name="imprimir" class="actionButton" onclick="window.print();">Imprimir</button>
+					</span>
+				]]>
+			</html>
+			
+	</step-method>
+
+</flow>
+</jheat-mapping>

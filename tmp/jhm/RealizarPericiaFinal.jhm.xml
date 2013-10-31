@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+
+<jheat-mapping>
+<flow 
+	name="periciarTratamentoOdonto" 
+	class="br.com.infowaypi.ecare.services.AuditarTratamentoOdonto"
+	display-name="Realizar Perícia Final" section="auditoriaOdonto">
+		
+	<description>Perícia Final de Tratamentos Odontológicos</description>
+	
+	<step-method name="buscarGuiasTratamento" display-name="Buscar Guias" buttons-position="bottom">
+			<step-param name="autorizacao" type="java.lang.String" display-name="Autorização"/>
+			<step-param name="dataInicial" type="java.lang.String" display-name="Data inicial" input-type="date"/>
+			<step-param name="dataFinal" type="java.lang.String" display-name="Data final" input-type="date"/>
+			
+			<select-param
+				name="prestador"
+				display-name="Escolha o Prestador"
+				type="br.com.infowaypi.ecarebc.associados.Prestador">
+				<autocomplete style-class="autocomplete" minimum-characters="3" force-selection="true">
+					<search-property name="pessoaJuridica.fantasia" display-name="Prestador"/>
+					<name-property name="pessoaJuridica.fantasia" display-name="Prestador"/>
+				</autocomplete>
+				<restrictions>
+					<restriction property-value="Ativo(a)" property-name="situacao.descricao" type="equals" />
+				</restrictions>
+			</select-param>
+			
+			<step-return name="resumo" type="br.com.infowaypi.ecarebc.atendimentos.ResumoGuias" 
+		         display-name="Resumo" scope="session"/>
+	</step-method>
+	
+	
+	<step-method name="selecionarGuia" display-name="Selecionar Guia">
+		
+		<select-param
+			name="guias"
+			type="br.com.infowaypi.ecarebc.atendimentos.GuiaExameOdonto"
+			display-name="Selecione a Guia"
+			session-property-ref="resumo" operation="reload">
+			<radio-group>
+				<display-property name="autorizacao" display-name="Autorização" />
+				<display-property name="segurado.pessoaFisica.nome" display-name="Beneficiário" />
+				<display-property name="tipo" display-name="Tipo" />
+				<display-property name="prestador.pessoaJuridica.fantasia" display-name="Prestador"/>
+				<display-property name="situacao.descricao" display-name="Situação" />
+				<display-property name="situacao.dataSituacao" display-name="Data" type="date" />
+				<display-property name="valorTotal" display-name="Valor total" type="money" />
+			</radio-group>
+		</select-param>	
+		
+		<session-param name="usuario"/>
+		
+		<step-return name="guia" type="br.com.infowaypi.ecarebc.atendimentos.GuiaExameOdonto" display-name="GuiaSelecionada" scope="session"/>
+	</step-method>
+	
+    <step-method name="periciarGuia" display-name="Periciar Guia" title="Periciar Guia">
+       	<update-param name="guia" display-name="" type="br.com.infowaypi.ecarebc.atendimentos.GuiaExameOdonto" operation="none" >
+       		
+       		<update-collection 
+					name="procedimentosRestauracaoAtivosComPericiaFinal" 
+					display-name="Alterar Tratamentos de Restauração"
+					type="br.com.infowaypi.ecarebc.procedimentos.ProcedimentoOdontoRestauracao">
+				    <update-insert>
+				    	<update-property name="codigoRest" field-name="procedimentoDaTabelaCBHPM.codigo" display-name="Código" input-type="string" editable="false" />
+						<update-property name="descricaoRest" field-name="procedimentoDaTabelaCBHPM.descricao" display-name="Descrição" input-type="string" editable="false" />
+						<update-property name="tipoEstruturaRest" field-name="procedimentoDaTabelaCBHPM.tipoEstrutura" display-name="Aplicação" input-type="string" editable="false" />
+						<update-property name="descricaoEstruturasRest" field-name="descricaoEstruturas" display-name="Estrutura(s)" input-type="string" editable="false" />
+						<update-property name="descricaoPericiaRest" field-name="descricaoPericia" display-name="Perícia" input-type="string" editable="false" />
+		  			    <update-property name="descricaoPericiaRest" field-name="valorTotal" display-name="Valor Bruto" editable="false" input-type="bigdecimal" />	
+				    </update-insert>
+				    
+				    <restrictions>
+				    	<restriction property-name="procedimentoDaTabelaCBHPM.ativo" property-value="true"/>
+				    	<restriction property-name="procedimentoDaTabelaCBHPM.nivel" property-value="1" type="notequals"/>
+				    	<restriction property-name="procedimentoDaTabelaCBHPM.elementoAplicado" property-value="5" type="equals"/>
+				    	<restriction property-name="procedimentoDaTabelaCBHPM.visibilidade" type="greaterequals" property-value="1"/>
+			    	</restrictions>
+
+				    <methods-collection>
+				    	<method-collection display-name="Inserir" name="addProcedimento" option-method="insert"/>
+				    	<method-collection display-name="Excluir" name="removeProcedimento" option-method="listing">
+				    		<session-param name="usuario" />
+				    	</method-collection>
+				    </methods-collection>
+        	</update-collection>
+       		
+       		<update-collection 
+					name="procedimentosOutrosAtivosComPericiaFinal" 
+					display-name="Alterar Outros Tratamentos"
+					type="br.com.infowaypi.ecarebc.procedimentos.ProcedimentoOdonto">
+				    <update-insert>
+				    	<update-property name="codigoOutros" field-name="procedimentoDaTabelaCBHPM.codigo" display-name="Código" input-type="string" editable="false" />
+						<update-property name="descricaoOutros" field-name="procedimentoDaTabelaCBHPM.descricao" display-name="Descrição" input-type="string" editable="false" />
+						<update-property name="tipoEstruturaOutros" field-name="procedimentoDaTabelaCBHPM.tipoEstrutura" display-name="Aplicação" input-type="string" editable="false" />
+						<update-property name="descricaoEstruturasOutros" field-name="descricaoEstruturas" display-name="Estrutura(s)" input-type="string" editable="false" />
+						<update-property name="descricaoPericiaOutros" field-name="descricaoPericia" display-name="Perícia" input-type="string" editable="false" />
+		  			    <update-property name="descricaoPericiaOutros" field-name="valorTotal" display-name="Valor Bruto" editable="false" input-type="bigdecimal" />	
+				    </update-insert>
+				    
+				    <restrictions>
+				    	<restriction property-name="procedimentoDaTabelaCBHPM.ativo" property-value="true"/>
+				    	<restriction property-name="procedimentoDaTabelaCBHPM.nivel" property-value="1" type="notequals"/>
+				    	<restriction property-name="procedimentoDaTabelaCBHPM.elementoAplicado" property-value="5" type="notequals"/>
+				    	<restriction property-name="procedimentoDaTabelaCBHPM.visibilidade" type="greaterequals" property-value="1"/>
+			    	</restrictions>
+			    	
+			    	<methods-collection>
+				    	<method-collection display-name="Inserir" name="addProcedimento" option-method="insert"/>
+				    	<method-collection display-name="Excluir" name="removeProcedimento" option-method="listing">
+				    		<session-param name="usuario" />
+				    	</method-collection>
+				    </methods-collection>
+			    	
+        	</update-collection>
+        	
+        </update-param>	
+        
+		<session-param name="usuario"/>
+		
+		<html>
+			<![CDATA[<infoway:GuiaApresentacao guiaApresentacao="${guia}"/>]]>
+		</html>
+			
+		<step-return name="guia" type="br.com.infowaypi.ecarebc.atendimentos.GuiaExameOdonto" 
+	         display-name="GuiaSelecionada" scope="session"/>
+		         
+	</step-method>
+	
+	<step-method name="salvarGuia" display-name="Conferir Dados" title="Conferir Dados" committed="true">
+		<session-param name="guia" operation="none"/>
+		<html>
+			<![CDATA[<infoway:GuiaApresentacao guiaApresentacao="${guia}"/>]]>
+		</html>
+	</step-method>
+		
+	<step-method name="finalizar" display-name="Imprimir Comprovante de Confirmação" title="Imprimir Comprovante">
+		<html>
+			<![CDATA[  <infoway:mensagemSucessoMarcacoes mensagem="Perícia Final realizada com sucesso!" autorizacao="${guia.autorizacao}"/> ]]>
+		</html>
+	
+		<html>
+			<![CDATA[ 
+				<span class="not-for-print">
+					<button type="button" name="imprimir" class="actionButton" onclick="window.print();">Imprimir</button>
+				</span>
+			]]>
+		</html>
+		
+		<session-param name="guia" operation="none"/>
+		
+		<html>
+			<![CDATA[<infoway:GuiaApresentacao guiaApresentacao="${guia}"/>]]>
+		</html>
+		
+		<html>
+			<![CDATA[ <infoway:imprimirGuiaAuditada titulo="COMPROVANTE DE PERÃCIA FINAL"/> 
+				<span class="not-for-print">
+					<button type="button" name="imprimir" class="actionButton" onclick="window.print();">Imprimir</button>
+				</span>
+			]]>
+		</html>
+		
+	</step-method>
+	
+</flow>
+</jheat-mapping>

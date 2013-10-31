@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+	
+	<class-mapping class="br.com.infowaypi.ecare.financeiro.ArquivoDeConsignacao" 
+		name="ArquivoDeConsignacao" display-name="Arquivo De Consignacao" 
+		id-name="idArquivoDeConsignacao" link-for-detail="competencia" 
+		type="simple" section="cadastros">
+		
+		<description>Bancos cadastrados no sistema</description>
+						
+		<property name="conteudo" type="file" not-null="false">
+			<display name="Arquivo" options="listing"/>
+		</property>
+	    	
+	</class-mapping>
+
+</jheat-mapping>

@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+	<report 
+		name="relatorioDeNovasAdesoesDetalhamento" 
+		method-name="gerarRelatorio"  
+		class="br.com.infowaypi.ecare.services.RelatorioAdesoesDetalhadaService"
+		display-name="Adesões"
+		section="consultasCentralDeRelacionamento,relatorioCentral,relatoriosAuditor,relatoriosGerenciaAdesao" response-by-ajax="true">
+			
+		<description>Relatório de Adesões dos Beneficiários (Detalhamento)</description>
+		
+		<html>
+			<![CDATA[ <infoway:mensagemInformacao mensagem="Relatório que lista informações de adesões dos Beneficiários no período informado"/> ]]>
+		</html>
+
+		<report-param name="dataInicial" type="java.lang.String" display-name="Data inicial" input-type="date"/>
+		<report-param name="dataFinal" type="java.lang.String" display-name="Data final" input-type="date"/>
+		<report-param name="detalhar" display-name="Exibir Segurados" input-type="boolean" type="java.lang.Boolean"/>
+		
+<!-- Report do Relatório do Resumo -->
+		<report-return name="resumo" type="br.com.infowaypi.ecare.segurados.ResumoSegurados" 
+		         display-name="Resultado Encontrado">
+		         
+			<html>
+				<![CDATA[ <infoway:tableSeparator titulo="Informações Gerais" colspan="2"/> ]]>
+			</html>	
+			<display-property name="numeroTotalDeAdesoes" align="left" display-name="Quantidade Total de Adesões"/>	
+			<display-property name="numeroTotalDeAdesoesNoPeriodo" align="left" display-name="Quantidade de Adesões no Período Informado"/>
+			<display-property name="porcentagemTotalDeAdesoes" display-name="Porcentagem Adesões no Período Informado" type="percentage"/>	
+			
+			<html>
+				<![CDATA[ <infoway:tableSeparator titulo="Informações sobre Titulares" colspan="2"/> ]]>
+			</html>
+			<display-property name="numeroTotalDeAdesoesDeTitulares" display-name="Quantidade de Adesões de Titulares"/>	
+			<display-property name="numeroTotalDeAdesoesNoPeriodoTitulares" display-name="Quantidade de Adesões de Titulares no Período informado"/>	
+			<display-property name="porcentagemTotalDeAdesoesTitulares" display-name="Porcentagem Adesões de Titulares no Período Informado" type="percentage"/>	
+			
+			<html>
+				<![CDATA[ <infoway:tableSeparator titulo="Informações sobre Pensionistas" colspan="2"/> ]]>
+			</html>
+			<display-property name="numeroTotalDeAdesoesDePensionistas" display-name="Quantidade de Adesões de Pensionistas"/>	
+			<display-property name="numeroTotalDeAdesoesNoPeriodoPensionistas" display-name="Quantidade de Adesões de Pensionistas no Período informado"/>	
+			<display-property name="porcentagemTotalDeAdesoesPensionistas" display-name="Porcentagem Adesões de Pensionistas no Período Informado" type="percentage"/>	
+			
+			<html>
+				<![CDATA[ <infoway:tableSeparator titulo="Informações sobre Dependentes Diretos" colspan="2"/> ]]>
+			</html>
+		    <display-property name="numeroTotalDeAdesoesDeDependentes" display-name="Quantidade de Adesões de Dependentes"/>  
+			<display-property name="numeroTotalDeAdesoesNoPeriodoDependentes" display-name="Quantidade de Adesões de Dependentes no Período informado"/>			    
+			<display-property name="porcentagemTotalDeAdesoesDependentes" display-name="Porcentagem Adesões de Dependentes no Período Informado" type="percentage"/>	
+		    
+		    <html>	
+		    	<![CDATA[ <infoway:tableSeparator titulo="Informações sobre Dependentes Suplementares" colspan="2"/> ]]>
+			</html>
+		    <display-property name="numeroTotalDeAdesoesDeDependentesSuplementares" display-name="Quantidade de Adesões de Dependentes"/>  
+			<display-property name="numeroTotalDeAdesoesNoPeriodoDependentesSuplementares" display-name="Quantidade de Adesões de Dependentes no Período informado"/>			    
+			<display-property name="porcentagemTotalDeAdesoesDependentesSuplementares" display-name="Porcentagem Adesões de Dependentes no Período Informado" type="percentage"/>	
+		    
+<!-- Resumo Detalhado -->
+			<html>	
+		    	<![CDATA[ 
+		    		<c:if test="${resumo.detalharSegurados}">
+		    	]]>
+			</html>
+		    <collection-display display-name="Detalhes dos Segurados" name="segurados">
+				<display-property name="numeroDoCartao" display-name="Número do Cartão" align="left"/>
+				<display-property name="pessoaFisica.nome" display-name="Nome" align="left"/>
+				<display-property name="tipoDeSegurado" display-name="Tipo de Segurado" align="left"/>
+				<display-property name="dataAdesao" display-name="Data de Adesão" type="date" align="left"/>
+				<display-property name="idade" display-name="Idade" align="right"/>
+	        </collection-display>
+
+			<html>
+			<![CDATA[
+ 				<div class="not-for-print">
+ 				<fieldset ><legend>Relação de Adesões no Período gerado com sucesso!</legend></fieldset>
+ 				</div>
+ 				<tr class="not-for-print">
+ 					<td style="color: rgb(153, 51, 0); text-align: right;" width="100">
+ 					<span>Relação de Adesões no Período</span></td>
+ 					<td style="text-align: left;"><span class="valuesColumn"><c:set
+ 						var="resumo" value="${resumo}" scope="session" /> <html:link
+ 						href="JHeatAction.do?action=download&sectionName=${sectionName}&propertyName=arquivoXLS.arquivo&objectSession=resumo&nameFile=arquivoXLS.tituloArquivo&fileType=xls">
+ 						<bean:message key="pageOptions.file.download" />
+ 					</html:link></span></td>
+ 				</tr>
+ 					</c:if>
+ 					]]>
+			</html>
+		       
+		</report-return>
+		
+	</report>
+	
+</jheat-mapping>

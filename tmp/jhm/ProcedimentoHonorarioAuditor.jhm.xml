@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<class-mapping class="br.com.infowaypi.ecarebc.procedimentos.ProcedimentoHonorarioAuditor" name="ProcedimentoHonorarioAuditor" display-name="Procedimento Honorario"
+		id-name="idProcedimento" link-for-detail="procedimentoDaTabelaCBHPM.codigoEDescricao" type="readonly" depends="guia" section="">
+	    
+		<many-to-one options="listing,search"
+			class="br.com.infowaypi.ecarebc.associados.Profissional"
+			name="profissionalResponsavel" display-name="Profissional" 
+			minimum-characters="7" search-type="likerigth" not-null="false"
+			autocomplete="true" mask-detail="As 7 letras iniciais">
+			<display-property name="pessoaFisica.nome" type="string"/>
+		</many-to-one>
+		
+		<many-to-one options="listing,search"
+			class="br.com.infowaypi.ecarebc.procedimentos.TabelaCBHPM"
+  			name="procedimentoDaTabelaCBHPM" display-name="Procedimento" autocomplete="true">
+			<display-property name="codigoEDescricao"/>
+
+		    <restrictions>
+				<restriction property-name="situacao.descricao" property-value="Ativo(a)" />
+		    	<restriction property-name="grupo" type="notequals" property-value="2"/>
+		    	<restriction property-name="grupo" type="notequals" property-value="4"/>
+		    	<restriction property-name="cirurgico" property-value="false" />
+		    	<restriction property-name="visibilidade" type="lowerequals" property-value="1"/>
+				<!-- Procedimentos excluídos a pedido do SR. -->
+		    	<restriction property-name="codigo" type="notequals" property-value="95000003"/>
+		    	<restriction property-name="codigo" type="notequals" property-value="95000004"/>
+		    	<restriction property-name="codigo" type="notequals" property-value="95000001"/>
+		    	<restriction property-name="codigo" type="notequals" property-value="10102019"/>
+		    	<restriction property-name="codigo" type="notequals" property-value="91001021"/>
+		    	<restriction property-name="codigo" type="notequals" property-value="10104020"/>
+		    	<!-- Procedimentos Anestesicos. -->
+		    	<restriction property-name="codigo" type="notequals" property-value="90000001"/>
+		    	<restriction property-name="codigo" type="notequals" property-value="90000002"/>
+		    	<restriction property-name="codigo" type="notequals" property-value="90000003"/>
+		    	<restriction property-name="codigo" type="notequals" property-value="90000004"/>
+		    	
+			</restrictions>
+		</many-to-one>
+		
+		<property name="dataRealizacao" type="date" >
+			<display options="" name="Data de Realização" size="4" maxlength="4"/>
+		</property>
+		
+		<property name="quantidade" type="int" >
+			<display options="" name="Quantidade" mask="9999" size="4" maxlength="4"/>
+			<access-restriction name="quantidadeNormalEdit" type="edit">
+				<request-restriction name="flowName" value="autorizarTratamentoSeriado" operation="notequals"  logic-operation="and"/>
+				<request-restriction name="step" value="autorizarTratamento" operation="notequals" logic-operation="or"/>
+			</access-restriction>
+			
+			<access-restriction name="quantidadeComboInsert" type="insert">
+				<request-restriction name="flowName" value="autorizarTratamentoSeriado" operation="notequals"  logic-operation="and"/>
+				<request-restriction name="step" value="autorizarTratamento" operation="notequals" logic-operation="or"/>
+			</access-restriction>
+			
+			<access-restriction name="quantidadeComboRead" type="read">
+				<request-restriction name="flowName" value="autorizarTratamentoSeriado" operation="notequals"  logic-operation="and"/>
+				<request-restriction name="step" value="autorizarTratamento" operation="notequals" logic-operation="or"/>
+			</access-restriction>
+		</property>
+		
+		<property name="situacao.descricao" type="string">
+			<display name="Situação" options="listing,detail-only"/>
+	    </property>
+		
+		<many-to-one options="detail-only"
+			class="br.com.infowaypi.ecarebc.atendimentos.GuiaSimples" 
+			name="guia" display-name="Guia">
+			<display-property name="segurado.pessoaFisica.nome"/>
+		</many-to-one>
+
+		<many-to-one options="listing,search,detail-only"
+			class="br.com.infowaypi.ecarebc.associados.Profissional"
+			name="profissionalAuxiliar1"
+			display-name="Primeiro profissional auxiliar" minimum-characters="7"
+			search-type="likerigth" not-null="false" autocomplete="true">
+			<display-property name="pessoaFisica.nome" />
+		</many-to-one>
+
+		<many-to-one options="listing,search,detail-only"
+			class="br.com.infowaypi.ecarebc.associados.Profissional"
+			name="profissionalAuxiliar2"
+			display-name="Segundo profissional auxiliar" minimum-characters="7"
+			search-type="likerigth" not-null="false" autocomplete="true">
+			<display-property name="pessoaFisica.nome" />
+		</many-to-one>
+
+		<many-to-one options="listing,search,detail-only"
+			class="br.com.infowaypi.ecarebc.associados.Profissional"
+			name="profissionalAuxiliar3"
+			display-name="Terceiro profissional auxiliar" minimum-characters="7"
+			search-type="likerigth" not-null="false" autocomplete="true">
+			<display-property name="pessoaFisica.nome" />
+		</many-to-one>
+		
+		<validate-method name="validate">
+			<session-param name="usuario"/>
+		</validate-method>
+		
+	</class-mapping>
+
+</jheat-mapping>

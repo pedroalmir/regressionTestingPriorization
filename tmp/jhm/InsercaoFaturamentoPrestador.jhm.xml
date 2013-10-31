@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+	<flow 
+		name="insercaoFaturamentoPrestador" 
+		class="br.com.infowaypi.ecare.financeiro.faturamento.InsercaoFaturamentoPrestador"
+		display-name="Inserir/Alterar Faturamento" section="faturamento">
+		
+		<description>Inserção de Faturamentos no Prestador</description>
+		
+		<step-method name="informarDados" display-name="Informar Dados" buttons-position="bottom">
+			<step-param name="competencia" required="true" type="java.lang.String" display-name="Competência" mask="99/9999" input-type="string"/>
+			<select-param name="prestador" operation="reload" required="true"
+			  	type="br.com.infowaypi.ecarebc.associados.Prestador" display-name="Prestador" display-label-head="false">
+				<autocomplete style-class="autocomplete" minimum-characters="3" force-selection="true">
+					<search-property name="pessoaJuridica.fantasia" display-name="Prestador"/>
+					<name-property name="pessoaJuridica.fantasia"  display-name="Prestador"/>
+				</autocomplete>
+				<restrictions>
+					<restriction property-value="Ativo(a)" property-name="situacao.descricao" type="equals" />
+				</restrictions>
+			</select-param>
+			
+			<select-param name="tipoFaturamento" display-name="Tipo de faturamento" type="java.lang.Integer">
+				<constants-group class="br.com.infowaypi.ecare.financeiro.faturamento.InsercaoFaturamentoPrestador" input-type="combo" name="Tipo">
+					<entry display-name="Faturamento Normal" key-value="FATURAMENTO_NORMAL"/>
+					<entry display-name="Faturamento Passivo" key-value="FATURAMENTO_PASSIVO"/>
+				</constants-group>
+			</select-param>
+			
+			<step-return 
+				display-name="Faturamento" 
+				name="faturamento" 
+				type="br.com.infowaypi.ecarebc.financeiro.faturamento.AbstractFaturamento" 
+				scope="session"/>
+		</step-method>
+		
+		<step-method name="criarFaturamentoComAlteracao" display-name="Criar Faturamento" buttons-position="bottom">
+			<session-param name="faturamento" operation="reload"/>
+			<step-param name="valorFaturamentoAcres" display-name="Valor Faturamento (Acréscimo)" type="java.math.BigDecimal" input-type="money"/>
+			<step-param name="valorFaturamentoDecres" display-name="Valor Faturamento (Decréscimo)" type="java.math.BigDecimal" input-type="money"/>
+			<step-param name="motivo" display-name="Motivo" type="java.lang.String" input-type="text"/>
+			<session-param name="usuario" />
+			<step-return 
+				display-name="Faturamento" 
+				name="faturamento" 
+				type="br.com.infowaypi.ecarebc.financeiro.faturamento.AbstractFaturamento" 
+				scope="session"/>
+		</step-method>
+
+		<step-method name="conferirDados" display-name="Conferir Dados" buttons-position="bottom" committed="true">
+			<session-param 
+				name="faturamento" 
+				type="br.com.infowaypi.ecarebc.financeiro.faturamento.AbstractFaturamento" operation="none">
+				<html>
+					<![CDATA[ <infoway:tableSeparator titulo="Faturamento a ser gerado" colspan="2"/> ]]>
+				</html>
+				<display-property name="nome" display-name="Prestador" />
+				<display-property name="prestador.pessoaJuridica.cnpj" display-name="CPF/CNPJ" />
+				<display-property name="descricaoCategoria" display-name="Categoria"/>
+				<display-property name="competencia" display-name="Competência" type="month-year" />			
+				<display-property name="valorBruto" display-name="Valor Bruto" type="money"/>			
+			</session-param>
+		</step-method>
+		
+		<step-method name="finalizar" display-name="Faturamento Criado">
+			<html>
+				<![CDATA[
+					 <infoway:mensagemSucesso mensagem = "Faturamento criado com sucesso!"/>
+				]]>
+			</html>
+			
+			<session-param name="faturamento" display-name="Faturamento" >
+				<html>
+					<![CDATA[ <infoway:tableSeparator titulo="Faturamento Gerado" colspan="2"/> ]]>
+				</html>
+				<display-property name="nome" display-name="Prestador" />
+				<display-property name="prestador.pessoaJuridica.cnpj" display-name="CPF/CNPJ" />
+				<display-property name="descricaoCategoria" display-name="Categoria"/>
+				<display-property name="competencia" display-name="Competência" type="month-year" />			
+				<display-property name="valorBruto" display-name="Valor Bruto" type="money"/>			
+			</session-param>
+		</step-method>
+
+	</flow>	
+</jheat-mapping>

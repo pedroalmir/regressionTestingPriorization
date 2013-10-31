@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+	
+	<class-mapping class="br.com.infowaypi.ecarebc.opme.FornecedorOpme" name="FornecedorOpme" display-name="Fornecedor OPME" 
+		id-name="idFornecedorOpme" link-for-detail="nomeFornecedor" type="simple" section="cadastros, cadastrosRedeCredenciada, cadastrosAuditor">
+		
+		<description>Cadastro de Fornecedor de Órteses, Próteses ou Materiais Especiais</description>
+		
+		<property name="nomeFornecedor" type="string" not-null="true">
+			<display name="Nome" options="listing,search"/>
+	    </property>
+	    
+	    <many-to-many name="opmes" display-name="OPMEs" class="br.com.infowaypi.ecarebc.opme.Opme">
+	    	<autocomplete minimum-characters="3" style-class="autocomplete">
+	    		<search-property display-name="Descrição" name="descricao"/>
+	    		<name-property display-name="Descricao" name="descricao"/>
+	    	</autocomplete>
+	    </many-to-many>
+	    
+	    <property name="situacao.descricao" type="string" not-null="false" calculated="true" >
+			<display name="Situação" options="listing, detail-only" />
+	    </property>
+	    
+	</class-mapping>
+
+</jheat-mapping>

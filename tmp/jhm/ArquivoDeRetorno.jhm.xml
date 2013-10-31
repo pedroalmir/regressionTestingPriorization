@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<class-mapping class="br.com.infowaypi.ecarebc.financeiro.arquivos.ArquivoDeRetorno" 
+		name="ArquivoDeRetorno" display-name="Arquivos De Retorno de Boletos" id-name="idArquivo" 
+		link-for-detail="idArquivo" section="cadastrosCobranca" global-link="true" type="simple" 
+		roles="cobranca">
+		
+		<description>Arquivos De Retorno de Boletos</description>
+			
+		<property name="idArquivo" type="int" >
+			<display name="Identificador" options="listing,detail-only" />
+		</property>	
+		
+		<property name="sequencial" type="int" >
+			<display name="Sequencial" options="listing,detail-only,search" />
+		</property>	
+		
+		<property name="arquivo" type="file" name-file="nomeArquivoRetorno" not-null="false">
+			<display name="Arquivo de Retorno" options="detail-only"/>
+		</property>				
+						
+		<property name="boletosNaoEncontrados" type="file" name-file="nomeArquivoBoletosNaoEncontrados" not-null="false">
+			<display name="Registros não encontrados" options="detail-only"/>
+		</property>
+		
+		 <role name="cobranca" insert="false" update="false" exec="false" read="true"/>
+		 
+	</class-mapping>
+</jheat-mapping>

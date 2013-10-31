@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+	
+	<class-mapping class="br.com.infowaypi.ecarebc.atendimentos.acordos.itensAcordos.ItemPacote" name="itemPacote" display-name="Itens Pacote" 
+		id-name="idItemGuia" link-for-detail="pacote.descricao" type="readonly" section="">
+
+		<many-to-one name="pacote" class="br.com.infowaypi.ecarebc.procedimentos.Pacote"
+	    		display-name="Pacote" autocomplete="true" options="listing" not-null="true"> 
+	    	<display-property name="codigoDescricao"/>
+	    </many-to-one>
+	    
+	    <property name="porcentagem" type="percentage" not-null="true">
+	     	<display options="listing,detail-only" name="Porcentagem"/>
+	    </property>
+	    
+	    <property name="valorTotal" type="money" not-null="true">
+	     	<display options="listing,detail-only" name="Valor Pago"/>
+	    </property>
+	    
+		<property name="situacao.descricao" type="string" not-null="false">
+	     	<display options="listing,detail-only" name="Situação"/>
+	    </property>
+		
+		<validate-method name="validate"/>
+		
+	</class-mapping>    
+	
+</jheat-mapping>

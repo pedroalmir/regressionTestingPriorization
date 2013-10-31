@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC "-//JHeat/JHeat DTD 1.0//BR" "http://www.infoway-pi.com.br/jheat.dtd">
+
+<jheat-mapping>
+	<flow 
+		name="simulacaoServicoSaude" 
+		class="br.com.infowaypi.ecare.services.relacionamento.SimulacaoServicoSaudeService"
+		display-name="Simulação de Tratamento" section="simulacaoServicoSaude">
+			
+		<description>Simulação de Tratamento</description>
+		
+		<step-method name="buscarSegurado" display-name="Buscar Beneficiário" title="Buscar Beneficiário" buttons-position="bottom">
+			<step-param name="cpfDoTitular" size="24" mask="999.999.999-99" input-type="string" type="java.lang.String" display-name="CPF do Titular"/>
+			<step-param name="numeroDoCartao" size="24" mask="99.9999999999.99.9-9" input-type="string" type="java.lang.String" display-name="Número do cartão do beneficiário"/>
+				
+			<step-return name="seguradosEncontrados" type="br.com.infowaypi.ecare.segurados.ResumoSegurados" 
+		         display-name="" scope="session"/>
+		</step-method>
+		
+		<step-method name="inclusaoProcedimentos" display-name="Inclusão de Procedimentos" title="Informar Dados">
+			<select-param
+					name="segurados"
+					type="br.com.infowaypi.ecare.segurados.Segurado"
+					display-name="Selecione o Segurado"
+					session-property-ref="seguradosEncontrados">
+				<radio-group default-checked="none">
+					<display-property name="numeroDoCartao" display-name="Número do Cartão"/>
+					<display-property name="pessoaFisica.nome" display-name="Nome"/>
+					<display-property name="tipoDeSegurado" display-name="Tipo"/>
+				</radio-group>
+			</select-param>
+			
+			<collection-param  
+				name="procedimentos"
+				display-name="Escolha os exames"
+				type="br.com.infowaypi.ecarebc.procedimentos.Procedimento">	
+			    <insert>
+				    <display-property name="procedimentoDaTabelaCBHPM.codigo" display-name="Código"/>
+  			        <display-property name="procedimentoDaTabelaCBHPM.descricao" display-name="Descrição"/>
+  			        <display-property name="bilateral" display-name="Bilateral" type="boolean"/>
+  			        <display-property name="quantidade" display-name="Quantidade" type="int"/>
+  			        <display-property name="valorAtualDoProcedimento" display-name="Valor Unitário" type="money"/>
+  			        <display-property name="valorTotal" display-name="Valor Total" type="money"/>
+			    </insert>
+				<restrictions>
+					<restriction property-name="procedimentoDaTabelaCBHPM.ativo" property-value="true"/>
+	    		</restrictions>
+			</collection-param>
+			
+			<step-return name="resumo" type="br.com.infowaypi.ecare.resumos.ResumoSimulacaoTratamento" 
+		         display-name="Resumo" scope="session"/>
+		</step-method>		
+		
+	    <step-method name="resultado" display-name="Resultado" title="Resultado">
+				<session-param name="resumo">
+					<html>
+						<![CDATA[ <infoway:tableSeparator titulo="Informações do Beneficiário" colspan="2"/> ]]>
+					</html>		
+					<display-property name="segurado.pessoaFisica.nome" display-name="Nome"/>
+					<display-property name="segurado.tipoDeSegurado" display-name="Tipo"/>
+					<display-property name="segurado.numeroDoCartao" display-name="Número do Cartão"/>
+					<display-property name="segurado.pessoaFisica.cpf" display-name="CPF"/>
+					<html>
+						<![CDATA[ <infoway:tableSeparator titulo="Informações Gerais" colspan="2"/> ]]>
+					</html>					
+					<display-property name="valorTotal" display-name="Valor Total" type="money" align="right" />
+					<display-property name="valorTotalCoParticipacao" display-name="Co-Participação" type="money" align="right" />					
+					<html>
+						<![CDATA[ <infoway:tableSeparator titulo="Procedimentos Liberados" colspan="2"/> ]]>
+					</html>				
+					<collection-display display-name="Procedimentos" name="procedimentosLiberados">
+						<display-property name="procedimento.procedimentoDaTabelaCBHPM.codigo" display-name="Código" type="int" />
+						<display-property name="procedimento.procedimentoDaTabelaCBHPM.descricao" display-name="Nome" type="string" />
+						<display-property name="procedimento.procedimentoDaTabelaCBHPM.valor" display-name="Valor" type="money" align="right" />
+						<display-property name="procedimento.valorCoParticipacao" display-name="Co-Participação" type="money" align="right" />
+						<display-property name="procedimento.procedimentoDaTabelaCBHPM.especial" display-name="Especial" type="boolean" />
+					</collection-display>
+					<display-property name="valorTotalProcedimentosLiberados" display-name="Valor Total" type="money" align="right" />
+					<display-property name="valorCoParticipacaoProcedimentosLiberados" display-name="Co-Participação" type="money" align="right" />
+					<html>
+						<![CDATA[ <infoway:tableSeparator titulo="Procedimentos Não Liberados" colspan="2"/> ]]>
+					</html>				
+					<collection-display display-name="Procedimentos" name="procedimentosNaoLiberados">
+						<display-property name="procedimento.procedimentoDaTabelaCBHPM.codigo" display-name="Código" type="int" />
+						<display-property name="procedimento.procedimentoDaTabelaCBHPM.descricao" display-name="Nome" type="string" />
+						<display-property name="procedimento.procedimentoDaTabelaCBHPM.valor" display-name="Valor" type="money" align="right" />
+						<display-property name="procedimento.valorCoParticipacao" display-name="Co-Participação" type="money" align="right" />
+						<!--display-property name="procedimento.dataParaRealizacao" display-name="Data para realização" type="date" /-->
+						<display-property name="procedimento.procedimentoDaTabelaCBHPM.especial" display-name="Especial" type="boolean" />
+					</collection-display>					
+					<display-property name="valorTotalProcedimentosNaoLiberados" display-name="Valor Total" type="money" align="right" />
+					<display-property name="valorCoParticipacaoProcedimentosNaoLiberados" display-name="Co-Participação" type="money" align="right" />
+					
+					
+					
+				</session-param>
+		</step-method>
+	</flow>
+</jheat-mapping>

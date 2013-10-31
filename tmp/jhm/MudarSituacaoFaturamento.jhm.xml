@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<flow 
+		name="mudarSituacaoFaturamento" 
+		class="br.com.infowaypi.ecare.financeiro.faturamento.MudarSituacaoFaturamentoService"
+		display-name="Mudar Situação do Faturamento" section="flowSuporte">
+		
+		<description>Registro de Pagamento de Faturamento</description>
+		
+		<step-method name="buscarFaturamento" display-name="Buscar Faturamento" buttons-position="bottom" committed="false">
+			<step-param name="competencia" type="java.util.Date" display-name="Competência" input-type="month-year" required="true"/>
+			<select-param name="prestador"
+				display-name="Prestador"
+				type="br.com.infowaypi.ecarebc.associados.Prestador"
+				required="true">
+				<autocomplete mask-detail="As 3 letras iniciais" style-class="autocomplete" minimum-characters="3" force-selection="true">
+					<search-property name="pessoaJuridica.fantasia" display-name="Prestador"/>
+					<name-property name="pessoaJuridica.fantasia" display-name="Prestador"/>
+				</autocomplete>	
+			</select-param>
+			
+			<select-param name="tipoFaturamento" display-name="Tipo de Faturamento" type="java.lang.Integer" required="true" null-option="true">
+				<constants-group class="br.com.infowaypi.ecarebc.constantes.Constantes" name="Tipo Faturamento">
+					<entry display-name="Faturamento Normal" key-value="TIPO_FATURAMENTO_NORMAL"/>
+					<entry display-name="Faturamento Capitação" key-value="TIPO_FATURAMENTO_CAPITACAO"/>
+					<entry display-name="Faturamento Passivo" key-value="TIPO_FATURAMENTO_PASSIVO"/>
+				</constants-group>
+			</select-param>
+			
+			<step-return display-name="Faturamento" name="resumo" type="br.com.infowaypi.ecarebc.financeiro.faturamento.ResumoFaturamentos" scope="session"/>
+		</step-method>
+		
+		<step-method display-name="Mudar Situação Faturamento" name="mudarSituacaoFaturamento" committed="true">
+			<step-param name="motivo" display-name="Motivo" input-type="text" type="java.lang.String" required="true"/>
+			
+			<session-param name="resumo" display-name="Detalhes do Faturamento" operation="none">
+				<display-property name="prestador.pessoaJuridica.fantasia" align="left" display-name="Prestador"/>
+				<display-property name="prestador.pessoaJuridica.cnpj" display-name="CPF/CNPJ"/>
+				<display-property name="descricaoCategoria" display-name="Categoria"/>
+				<display-property name="status" display-name="Situação"/>
+				<display-property name="competencia" display-name="Competência" type="month-year"/>
+				<display-property name="dataGeracao" display-name="Data da geração" type="date"/>
+				<display-property name="dataPagamento" display-name="Data Pagamento" type="date"/>
+				<display-property name="valorConsultas" display-name="Consultas" align="right" type="money" />
+				<display-property name="valorExames" display-name="Exames" align="right" type="money" />
+				<display-property name="valorConsultasOdonto" display-name="Cons. Odonto" align="right" type="money" />
+				<display-property name="valorExamesOdonto" display-name="Ex. Odonto" align="right" type="money" />
+				<display-property name="valorAtendimentosUrgencia" display-name="Atend. Urgências" align="right" type="money" />
+				<display-property name="valorInternacoes" display-name="Internações" align="right" type="money" />
+				<display-property name="valorGuiasHonorario" display-name="Guias de Honorário" align="right" type="money" />
+				<display-property name="valorGuiasAcompanhamentoAnestesico" display-name="Guias de Acompanhamento Anestésico" align="right" type="money" />
+				<display-property name="valorSaldoAlteracoes" display-name="Saldo de Alterações" type="money"/>
+				<display-property name="valorBruto" display-name="Valor Pago" align="right" type="money" />
+			</session-param>
+
+			<session-param name="usuario"/>
+
+			<step-return display-name="resumo" name="Faturamento" type="br.com.infowaypi.ecarebc.financeiro.faturamento.ResumoFaturamentos" scope="session"/>
+		</step-method>
+		
+		<step-method display-name="Finalizar" name="finalizar">
+			<html>
+				<![CDATA[ 
+					<infoway:mensagemSucesso mensagem = "Mudança de situação realizada com sucesso!"/>
+				]]>
+			</html>
+			<session-param name="resumo" operation="none">
+				<display-property name="motivo" align="left" display-name="Motivo"/>
+				<display-property name="prestador.pessoaJuridica.fantasia" align="left" display-name="Prestador"/>
+				<display-property name="prestador.pessoaJuridica.cnpj" display-name="CPF/CNPJ"/>
+				<display-property name="descricaoCategoria" display-name="Categoria"/>
+				<display-property name="status" display-name="Situação"/>
+				<display-property name="competencia" display-name="Competência" type="month-year"/>
+				<display-property name="dataGeracao" display-name="Data da geração" type="date"/>
+				<display-property name="valorConsultas" display-name="Consultas" align="right" type="money" />
+				<display-property name="valorExames" display-name="Exames" align="right" type="money" />
+				<display-property name="valorConsultasOdonto" display-name="Cons. Odonto" align="right" type="money" />
+				<display-property name="valorExamesOdonto" display-name="Ex. Odonto" align="right" type="money" />
+				<display-property name="valorAtendimentosUrgencia" display-name="Atend. Urgências" align="right" type="money" />
+				<display-property name="valorInternacoes" display-name="Internações" align="right" type="money" />
+				<display-property name="valorGuiasHonorario" display-name="Guias de Honorário" align="right" type="money" />
+				<display-property name="valorGuiasAcompanhamentoAnestesico" display-name="Guias de Acompanhamento Anestésico" align="right" type="money" />
+				<display-property name="valorSaldoAlteracoes" display-name="Saldo de Alterações" type="money"/>
+				<display-property name="valorBruto" display-name="Valor Pago" align="right" type="money" />
+			</session-param>
+		</step-method>
+	</flow>	
+</jheat-mapping>

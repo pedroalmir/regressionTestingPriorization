@@ -3,12 +3,10 @@
  */
 package com.pedroalmir.testPriorization.util.svn;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -20,11 +18,13 @@ import org.tmatesoft.svn.core.SVNException;
 import org.tmatesoft.svn.core.SVNNodeKind;
 import org.tmatesoft.svn.core.SVNProperties;
 import org.tmatesoft.svn.core.SVNURL;
+import org.tmatesoft.svn.core.auth.ISVNAuthenticationManager;
 import org.tmatesoft.svn.core.internal.io.dav.DAVRepositoryFactory;
 import org.tmatesoft.svn.core.internal.io.fs.FSRepositoryFactory;
 import org.tmatesoft.svn.core.internal.io.svn.SVNRepositoryFactoryImpl;
 import org.tmatesoft.svn.core.io.SVNRepository;
 import org.tmatesoft.svn.core.io.SVNRepositoryFactory;
+import org.tmatesoft.svn.core.wc.SVNWCUtil;
 
 /**
  * This example shows how to fetch a file and its properties from the repository
@@ -44,7 +44,8 @@ public class SVNService {
 	private static final String TEMP_FOLDER_JHM = "C:\\Users\\Pedro Almir\\Desktop\\MeusProjetos\\IC_TCC\\Athena\\workspaceKepler\\RegressionTestingPriorization\\tmp\\jhm\\";
 	
 	public static void main(String[] args) {
-		SVNService.listAllFiles("http://symja.googlecode.com/svn/trunk", "anonymous", "anonymous");
+		//SVNService.listAllFiles("svn://10.0.0.209:3692/MAA/", "trunk", "pedroalmir", "pedroalmir", true);
+		SVNService.listAllFiles("http://symja.googlecode.com/svn/trunk/", "matheclipse-core/src/main/java/org/matheclipse/core/stat/descriptive", "pedroalmir", "pedroalmir", false);
 	}
 	
 	/**
@@ -53,8 +54,7 @@ public class SVNService {
 	 * in the repository (the file path should be relative to the the
 	 * path/to/repository part of the repository location URL).
 	 */
-	public static void listAllFiles(String urlBase, String username, String password) {
-		String path = "matheclipse-core/src/main/java/org/matheclipse/core/basic/";
+	public static List<File> listAllFiles(String urlBase, String path, String username, String password, boolean needLogin) {
 		/* Initializes the library (it must be done before ever using the library itself) */
 		setupLibrary();
 
@@ -69,8 +69,7 @@ public class SVNService {
 			repository = SVNRepositoryFactory.create(SVNURL.parseURIEncoded(urlBase));
 		} catch (SVNException svne) {
 			/* Perhaps a malformed URL is the cause of this exception */
-			System.err.println("error while creating an SVNRepository for the location '" + urlBase + "': " + svne.getMessage());
-			System.exit(1);
+			System.err.println("Error while creating an SVNRepository for the location '" + urlBase + "': " + svne.getMessage());
 		}
 
 		/*
@@ -87,8 +86,18 @@ public class SVNService {
 		 * ISVNAuthenticationManager authManager = SVNWCUtil.createDefaultAuthenticationManager(name, password);
 		 * repository.setAuthenticationManager(authManager);
 		 */
+		if(needLogin){
+			ISVNAuthenticationManager authManager = SVNWCUtil.createDefaultAuthenticationManager(username, password);
+			repository.setAuthenticationManager(authManager);
+		}
+		
 		List<File> extractedFiles = listEntries(repository, path);
-		System.exit(0);
+		/*
+		for (File file : extractedFiles) {
+			System.out.println("[File Name: " + file.getName() + "]");
+		}
+		*/
+		return extractedFiles;
 	}
 	
 	/**
@@ -103,6 +112,7 @@ public class SVNService {
 		 * property name and the value associated with the key is the property
 		 * value.
 		 */
+		List<File> result = new LinkedList<File>();
 		
 		try {
 			/*
@@ -112,58 +122,44 @@ public class SVNService {
 			 * 
 			 * SVNNodeKind nodeKind = repository.checkPath(path, -1);
 			 */
-			Collection entries = repository.getDir(path, -1, null, (Collection) null);
-			Iterator iterator = entries.iterator();
-			
-			List<File> listOfJava = new LinkedList<File>();
-			List<File> listOfJhm = new LinkedList<File>();
+			SVNNodeKind nodeKind = repository.checkPath(path, -1);
 			SVNProperties fileProperties = new SVNProperties();
 			
-			File file = null;
-			ByteArrayOutputStream baos = null;
-			OutputStream outputSream = null;
-			
-			while (iterator.hasNext()) {
-				SVNDirEntry entry = (SVNDirEntry) iterator.next();
-				System.out.println("[Entry Name: " + entry.getName() + ", Author: " + entry.getAuthor() + "]");
-				if (entry.getKind() == SVNNodeKind.DIR) {
-					listEntries(repository, (path.equals("")) ? entry.getName() : path + "/" + entry.getName());
-				} else if(entry.getKind() == SVNNodeKind.FILE){
-					 /*
-		             * Gets the contents and properties of the file located at filePath
-		             * in the repository at the latest revision (which is meant by a negative revision number).
-		             */
-					if(FilenameUtils.getExtension(entry.getName()).equalsIgnoreCase("java")){
-						
-						file = new File(TEMP_FOLDER_JAVA + entry.getName());
-						baos = new ByteArrayOutputStream();
-						//String content = URLDecoder.decode("", "UTF-8");
-						
-						outputSream = new FileOutputStream(file);
-						
-						 
-						/* if file doesn't exists, then create it */
-						if (!file.exists()) {
-							file.createNewFile();
+			if (nodeKind == SVNNodeKind.FILE) {
+				/*
+				 * Gets the contents and properties of the file located at filePath
+				 * in the repository at the latest revision (which is meant by a negative revision number).
+				 */
+				if (FilenameUtils.getExtension(path).equalsIgnoreCase("java") && !path.contains("package-info.java")) {
+					result.add(extractFile(path, TEMP_FOLDER_JAVA, repository, fileProperties));
+				}else if(FilenameUtils.getExtension(path).equalsIgnoreCase("xml") && path.contains(".jhm.xml")){
+					result.add(extractFile(path, TEMP_FOLDER_JHM, repository, fileProperties));
+				}
+			} else if (nodeKind == SVNNodeKind.DIR) {
+				
+				Collection entries = repository.getDir(path, -1, null, (Collection) null);
+				Iterator iterator = entries.iterator();
+				
+				while (iterator.hasNext()) {
+					SVNDirEntry entry = (SVNDirEntry) iterator.next();
+					
+					if (entry.getKind() == SVNNodeKind.DIR) {
+						result.addAll(listEntries(repository, (path.equals("")) ? entry.getName() : path + "/" + entry.getName()));
+					} else if (entry.getKind() == SVNNodeKind.FILE) {
+						/*
+						 * Gets the contents and properties of the file located at filePath
+						 * in the repository at the latest revision (which is meant by a negative revision number).
+						 */
+						if (FilenameUtils.getExtension(entry.getName()).equalsIgnoreCase("java") && !entry.getName().equals("package-info.java")) {
+							result.add(extractFile(path + "/" + entry.getName(), TEMP_FOLDER_JAVA, repository, fileProperties));
+						}else if(FilenameUtils.getExtension(entry.getName()).equalsIgnoreCase("xml") && entry.getName().contains(".jhm.xml")){
+							result.add(extractFile(path + "/" + entry.getName(), TEMP_FOLDER_JHM, repository, fileProperties));
 						}
-			 
-						repository.getFile(entry.getName(), -1, fileProperties, baos);
-						
-						try {
-			                baos.writeTo(outputSream);
-			                outputSream.flush();
-			                outputSream.close();
-			            } catch (IOException ioE) {
-			            	ioE.printStackTrace();
-			            }
-						
-						listOfJava.add(file);
 					}
 				}
 			}
-
 		} catch (SVNException svne) {
-			System.err.println("error while fetching the file contents and properties: " + svne.getMessage());
+			System.err.println("Error while fetching the file contents and properties: " + svne.getMessage());
 			System.exit(1);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -171,7 +167,35 @@ public class SVNService {
 			e.printStackTrace();
 		}
 
-		return null;
+		return result;
+	}
+
+	/**
+	 * @param path
+	 * @return
+	 * @throws SVNException 
+	 * @throws IOException 
+	 */
+	private static File extractFile(String path, String folder, SVNRepository repository, SVNProperties fileProperties) throws SVNException, IOException {
+		String fileName = path.substring(path.lastIndexOf('/')+1, path.length());
+		/* Just for debug */
+		//System.out.println("[Entry Name: " + fileName + "]");
+		
+		File file = new File(folder + fileName);
+		FileOutputStream outputSream = new FileOutputStream(file);
+		
+		/* if file doesn't exists, then create it */
+		if (!file.exists()) {
+			file.createNewFile();
+		}
+		repository.getFile(path, -1, fileProperties, outputSream);
+		try {
+			outputSream.flush();
+			outputSream.close();
+		} catch (IOException ioE) {
+			ioE.printStackTrace();
+		}
+		return file;
 	}
 
 	/**

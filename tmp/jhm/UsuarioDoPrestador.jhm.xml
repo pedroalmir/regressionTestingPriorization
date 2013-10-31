@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+	
+	<class-mapping class="br.com.infowaypi.ecare.associados.UsuarioDoPrestador" name="UsuariosDoPrestador" display-name="Usuários / Prestador" 
+		id-name="idUsuario" link-for-detail="nome" type="dependent" section="cadastros">
+		
+		<description>Usuários cadastrados no sistema</description>
+		
+		<many-to-one options=""
+			class="br.com.infowaypi.ecarebc.associados.Prestador" 
+			name="prestador" display-name="Prestador" autocomplete="true">
+			<display-property name="pessoaJuridica.fantasia"/>
+		</many-to-one>
+		
+		<property name="nome" type="string" not-null="true">
+			<display name="Nome" options="listing,search"/>
+	    </property>
+	    
+		<property name="email" type="string" not-null="false">
+			<display name="Email" options=""/>
+	    </property>
+
+		<property name="login" type="string" not-null="true">
+			<display name="Login" options="listing,search" size="20"/>
+	    </property>
+	    
+		<property name="novaSenhaDigitada" type="password" not-null="false">
+			<display name="Nova Senha" options="" size="20"/>
+	    </property>
+
+		<property name="novaSenhaConfirmacao" type="password" not-null="false">
+			<display name="Confirme a senha" options="" size="20"/>
+	    </property>
+
+		<select-property name="role" display-name="role" options="listing">
+			<entry display-name="Operador" key-value="ROLE_PRESTADOR_OPERADOR"/>
+			<entry display-name="Financeiro" key-value="ROLE_PRESTADOR_FINANCEIRO"/>
+		</select-property>
+	    
+	    <select-property name="status" display-name="Status" options="listing">
+			<entry display-name="Ativo" key-value="ATIVO"/>
+			<entry display-name="Cancelado" key-value="CANCELADO"/>
+		</select-property>
+
+		<validate-method name="validate"/>
+	    	
+	</class-mapping>
+
+</jheat-mapping>

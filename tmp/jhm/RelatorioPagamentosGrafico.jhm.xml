@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<report
+		name="relatorioPagamentos"
+		method-name="buscarPagamentos"
+		class="br.com.infowaypi.ecare.flows.RelatorioPagamentos"
+		display-name="Pagamentos" section="relatorios" response-by-ajax="true">
+		
+		<description>Relatório de contas a pagar e a receber</description>
+
+		<report-param name="dataInicial" type="java.lang.String" display-name="Data inicial" input-type="date"/>
+		<report-param name="dataFinal" type="java.lang.String" display-name="Data final" input-type="date"/>
+		
+		<category-graphic
+			name="resumo"			
+			type="horizontalbar"
+			display-name="Contas a pagar e a receber"
+			width="480"
+			height="200"
+			xaxislabel="Pagamentos"
+			yaxislabel="Valor das Guias"/>
+	
+	</report>
+</jheat-mapping>

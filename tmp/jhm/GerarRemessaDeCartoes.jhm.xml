@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+<flow
+	name="gerarRemessaDeCartoes" 
+	class="br.com.infowaypi.ecare.services.GerarRemessaDeCartoes"
+	display-name="Gerar Remessa de Cartões" section="cadastros">
+		
+	<description>Visualização/Impressão da 2Âª Via de Guias</description>
+
+	<step-method name="gerar" display-name="Gerar Remessa" title="Gerar Remessa" buttons-position="bottom" >
+		<step-return name="remessa" type="br.com.infowaypi.ecare.arquivos.RemessaDeCartao" 
+			display-name="Remessa de Cartões" scope="session"/>
+	</step-method>
+	
+	<step-method name="salvar" display-name="Conferir Dados" committed="true">
+		<session-param name="remessa"/>
+		
+		<html>
+			<![CDATA[
+				<%@ include file="/view/jsp/includes/RemessaDeCartaoDetails.jsp" %>
+				]]>
+		</html>		
+		
+		<step-return name="remessa" type="br.com.infowaypi.ecare.arquivos.RemessaDeCartao" 
+			 display-name="" scope="session"/>
+	</step-method>
+	
+	<step-method name="finalizar" display-name="Finalizar" title="Finalizar">
+			
+		<session-param name="remessa" operation="none"/>
+		<html>
+			<![CDATA[
+				<%@ include file="/view/jsp/includes/RemessaDeCartaoDetails.jsp" %>
+				]]>
+		</html>	
+
+	</step-method>
+</flow>	
+</jheat-mapping>	
+	

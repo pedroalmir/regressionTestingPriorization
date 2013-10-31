@@ -1,107 +1,127 @@
+/**
+ * 
+ */
 package com.pedroalmir.testPriorization.flow.antSystem.model.graph;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
-
-import com.pedroalmir.testPriorization.flow.antSystem.core.AntColonySystem;
 
 /**
  * @author Pedro Almir
- *
+ * 
  */
 public class Graph {
 	/**
-	 * Número de formigas
+	 * @param id
+	 * @param information
+	 * @param nodes
+	 * @param edges
 	 */
-	private int numberAnt;
+	public Graph(Long id, String information, List<Node> nodes, List<Edge> edges) {
+		super();
+		this.id = id;
+		this.information = information;
+		this.nodes = nodes;
+		this.edges = edges;
+	}
+
 	/**
-	 * Número de vertices
+	 * id
 	 */
-	private int numberVertex;
+	private Long id;
+	/**
+	 * information
+	 */
+	private String information;
+	/**
+	 * nodes
+	 */
+	private List<Node> nodes;
+	/**
+	 * edges
+	 */
+	private List<Edge> edges;
 	/**
 	 * Matriz da heuristiva (i, j)
 	 */
 	private double heuristic[][];
+	
 	/**
-	 * Lista de arestas
+	 * @param id
+	 * @param information
 	 */
-	List<Edge> edges = new ArrayList<Edge>();
-
+	public Graph(String information) {
+		this.information = information;
+		this.nodes = new LinkedList<Node>();
+		this.edges = new LinkedList<Edge>();
+	}
+	
 	/**
-	 * @param ants
-	 * @param vertex
+	 * @param node
+	 * @return true is all is correct
 	 */
-	public void positionAntsSamePlace(List<AntColonySystem> ants, Vertex vertex) {
-		for (AntColonySystem ant : ants) {
-			vertex.addAntVertex(ant);
+	public boolean addNode(Node node){
+		try{
+			this.nodes.add(node);
+			return true;
+		}catch(Exception ex){
+			return false;
+		}
+	}
+	
+	/**
+	 * @param edge
+	 * @return true is all is correct
+	 */
+	public boolean addEdge(Edge edge){
+		try{
+			this.edges.add(edge);
+			return true;
+		}catch(Exception ex){
+			return false;
 		}
 	}
 
-	// Vai ter um metodo que vai percorrer todos os vertives procurando as formigas
-	// e contruindo seus caminho isso por que tem problemas que as formigas sao distribuadas
-	// pelo grafo
-	public void positionAntsDiferentPlaces(List<AntColonySystem> ants) {
-
+	/**
+	 * @return the id
+	 */
+	public Long getId() {
+		return id;
 	}
 
 	/**
-	 * Distribui o feromanio nas Arestas
-	 * O parametro indica se a distribuição vai ser igual [T0] a todos ou aleatória [0, T0]
-	 * 
-	 * @param edges
-	 * @param param
-	 * @param t0
+	 * @param id the id to set
 	 */
-	public void distribuitionPheromone(List<Edge> edges, int param, int t0) {
-		if (param == 0) { // Distribuição uniforme
-			for (Edge edge : edges) {
-				edge.setPheromone(t0);
-			}
-		} else {
-
-		}
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	/**
-	 * @return the numberAnt
+	 * @return the information
 	 */
-	public int getNumberAnt() {
-		return numberAnt;
+	public String getInformation() {
+		return information;
 	}
 
 	/**
-	 * @param numberAnt the numberAnt to set
+	 * @param information the information to set
 	 */
-	public void setNumberAnt(int numberAnt) {
-		this.numberAnt = numberAnt;
+	public void setInformation(String information) {
+		this.information = information;
 	}
 
 	/**
-	 * @return the numberVertex
+	 * @return the nodes
 	 */
-	public int getNumberVertex() {
-		return numberVertex;
+	public List<Node> getNodes() {
+		return nodes;
 	}
 
 	/**
-	 * @param numberVertex the numberVertex to set
+	 * @param nodes the nodes to set
 	 */
-	public void setNumberVertex(int numberVertex) {
-		this.numberVertex = numberVertex;
-	}
-
-	/**
-	 * @return the heuristic
-	 */
-	public double[][] getHeuristic() {
-		return heuristic;
-	}
-
-	/**
-	 * @param heuristic the heuristic to set
-	 */
-	public void setHeuristic(double[][] heuristic) {
-		this.heuristic = heuristic;
+	public void setNodes(List<Node> nodes) {
+		this.nodes = nodes;
 	}
 
 	/**
@@ -118,4 +138,19 @@ public class Graph {
 		this.edges = edges;
 	}
 
+	/**
+	 * @return the heuristic
+	 */
+	public double[][] getHeuristic() {
+		return heuristic;
+	}
+
+	/**
+	 * @param heuristic the heuristic to set
+	 */
+	public void setHeuristic(double[][] heuristic) {
+		this.heuristic = heuristic;
+	}
+	
+	
 }

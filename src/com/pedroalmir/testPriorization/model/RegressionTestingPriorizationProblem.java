@@ -3,8 +3,8 @@
  */
 package com.pedroalmir.testPriorization.model;
 
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -21,9 +21,11 @@ public class RegressionTestingPriorizationProblem {
 	private String sqfdFilePath;
 	private String testCaseFilePath;
 	
-	private List<Klass> klasses;
-	private List<Requirement> requirements;
-	private List<TestCase> testCases;
+	private LinkedList<Klass> klasses;
+	private LinkedList<Requirement> requirements;
+	private LinkedList<TestCase> testCases;
+	
+	private double capacidade;
 	
 	/**
 	 * Base Constructor
@@ -35,10 +37,27 @@ public class RegressionTestingPriorizationProblem {
 	public RegressionTestingPriorizationProblem(Long id, int classNumber, int requirementNumber) {
 		this.id = id;
 		this.creationDate = new Date();
-		this.klasses = new ArrayList<Klass>(classNumber);
-		this.requirements = new ArrayList<Requirement>(requirementNumber);
+		this.klasses = new LinkedList<Klass>();
+		this.requirements = new LinkedList<Requirement>();
 		/* Same number of requirements */
-		this.testCases = new ArrayList<TestCase>(requirementNumber);
+		this.testCases = new LinkedList<TestCase>();
+		
+		this.testCaseFilePath = "Not used yet!";
+		this.sqfdFilePath = "Not used yet!";
+		this.codePath = "Not used yet!";
+	}
+	
+	
+	/**
+	 * @param id
+	 */
+	public RegressionTestingPriorizationProblem(Long id) {
+		this.id = id;
+		this.creationDate = new Date();
+		this.klasses = new LinkedList<Klass>();
+		this.requirements = new LinkedList<Requirement>();
+		/* Same number of requirements */
+		this.testCases = new LinkedList<TestCase>();
 		
 		this.testCaseFilePath = "Not used yet!";
 		this.sqfdFilePath = "Not used yet!";
@@ -108,13 +127,13 @@ public class RegressionTestingPriorizationProblem {
 	/**
 	 * @return the klasses
 	 */
-	public List<Klass> getKlasses() {
+	public LinkedList<Klass> getKlasses() {
 		return klasses;
 	}
 	/**
 	 * @param klasses the klasses to set
 	 */
-	public void setKlasses(List<Klass> klasses) {
+	public void setKlasses(LinkedList<Klass> klasses) {
 		this.klasses = klasses;
 	}
 	/**
@@ -126,7 +145,7 @@ public class RegressionTestingPriorizationProblem {
 	/**
 	 * @param requirements the requirements to set
 	 */
-	public void setRequirements(List<Requirement> requirements) {
+	public void setRequirements(LinkedList<Requirement> requirements) {
 		this.requirements = requirements;
 	}
 	/**
@@ -138,7 +157,7 @@ public class RegressionTestingPriorizationProblem {
 	/**
 	 * @param testCases the testCases to set
 	 */
-	public void setTestCases(List<TestCase> testCases) {
+	public void setTestCases(LinkedList<TestCase> testCases) {
 		this.testCases = testCases;
 	}
 
@@ -154,5 +173,21 @@ public class RegressionTestingPriorizationProblem {
 	 */
 	public void setCreationDate(Date creationDate) {
 		this.creationDate = creationDate;
+	}
+
+
+	/**
+	 * @return the capacidade
+	 */
+	public double getCapacidade() {
+		return capacidade;
+	}
+
+
+	/**
+	 * @param capacidade the capacidade to set
+	 */
+	public void setCapacidade(double capacidade) {
+		this.capacidade = capacidade;
 	}
 }

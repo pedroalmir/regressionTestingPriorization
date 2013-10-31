@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+	
+	<class-mapping class="br.com.infowaypi.ecare.scheduller.sms.IntervaloDeTempo" name="IntervaloDeTempo" display-name="Intervalo de tempo" 
+		id-name="idIntervaloDeTempo" type="readonly" section="">
+
+	    <property name="inicioDoIntervalo" not-null="true" type="string">
+	    	<display name="Início do intervalo" mask-detail="99:99" size="5" mask="99:99"/>
+	    </property>
+	    
+	    <property name="finalDoIntervalo" not-null="true" type="string">
+	    	<display name="Final do intervalo" mask-detail="99:99" size="5" mask="99:99"/>
+	    </property>
+	    
+	    <enum-property name="tipoDeMensagem" display-name="Tipo de mensagem"
+			null-option="false" class="br.com.infowaypi.ecare.scheduller.sms.TipoDeMensagem"
+			display="getDescricao" options="" />
+			
+		<validate-method name="validate"/>
+		
+	</class-mapping>    
+	
+</jheat-mapping>

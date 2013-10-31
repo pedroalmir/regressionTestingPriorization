@@ -1,0 +1,40 @@
+package br.com.infowaypi.ecarebc.portalTiss;
+
+/**
+ * 
+ * @author Emanuel
+ *
+ */
+public enum ArquivoTissEnum {
+
+    ENVIO_LOTE_GUIAS,
+    SOLIC_DEMONSTRATIVO_RETORNO,
+    SOLIC_STATUS_PROTOCOLO,
+    SOLICITACAO_PROCEDIMENTOS,
+    PROTOCOLO_RECEBIMENTO,
+    SITUACAO_PROTOCOLO,
+    RESPOSTA_SOLICITACAO,
+    DEMONSTRATIVO_PAGAMENTO,
+    DEMONSTRATIVO_ANALISE_CONTA,
+    DEMONSTRATIVO_ODONTOLOGIA,
+    CANCELAMENTO_GUIA_RECIBO,
+    RE_APRESENTACAO_GUIA,
+    CANCELA_GUIA,
+    VERIFICA_ELEGIBILIDADE,
+    SITUACAO_ELEGIBILIDADE,
+    AUTORIZACAO_ODONTOLOGIA,
+    SOLICITA_STATUS_AUTORIZACAO,
+    STATUS_AUTORIZACAO,
+    ENVIO_ANEXO,
+    PROTOCOLO_RECEBIMENTO_ANEXO,
+    COMUNICACAO_BENEFICIARIO,
+    RECIBO_COMUNICACAO;
+
+    public String value() {
+        return name();
+    }
+
+    public static ArquivoTissEnum fromValue(String v) {
+        return valueOf(v);
+    }
+}

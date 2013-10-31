@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+	
+	<class-mapping class="br.com.infowaypi.ecarebc.financeiro.conta.BoletoConfigurator" name="BoletoConfigurator" 
+		display-name="Configuração de Boletos" id-name="idBoletoConfigurator" link-for-detail="idBoletoConfigurator" 
+        type="simple" section="cadastrosCobranca" roles="root,cobranca">
+
+		<description>Configuração de Boletos</description>
+			
+		
+		<property name="dataDoCadastro" type="date" not-null="true">
+			<display name="Data do Cadastro" options="listing,search,detail-only" />
+	    </property>
+			
+		<property name="multa" not-null="true" type="percentage">
+			<display name="Multa" options="listing" size="6" maxlength="6" mask-detail="%"/>
+	    </property> 
+		
+		<property name="juros"  not-null="true" type="percentage" >
+			<display name="Juros" options="listing" size="6" maxlength="6" mask-detail="% ao mês"/>
+	    </property>
+	    
+	    <property name="validade" type="int" not-null="true">
+			<display name="Validade (Dias)" options="listing" />
+	    </property>
+	    
+	    <property name="ativo" type="boolean" not-null="true">
+			<display name="Ativo" options="detail-only,listing" />
+	    </property>
+	    
+	    <property name="periodoParaSuspenderTitular" type="int" not-null="true">
+			<display name="Periodo Para Suspender Titular" options="listing" />
+	    </property>
+	    
+	    
+	    <many-to-one options="listing,detail-only"
+			class="br.com.infowaypi.msr.user.Usuario" 
+			name="usuario" display-name="Usuário">
+			<display-property name="nome"/>
+		</many-to-one>
+		
+		
+		<html>
+			<![CDATA[
+				<fieldset>
+					<legend>Mensagem no Recibdo do Sacado</legend>
+				</fieldset>
+				<br/>
+			]]>
+		</html>
+		
+		<property name="mensagemReciboDoSacado1" type="string" not-null="true">
+			<display name="1ª Linha" options="" size="40" maxlength="40"/>
+	    </property>
+	    
+	    <property name="mensagemReciboDoSacado2" type="string" not-null="false">
+			<display name="2ª Linha" options="" size="40" maxlength="40"/>
+	    </property>
+	    
+	    <property name="mensagemReciboDoSacado3" type="string" not-null="false">
+			<display name="3ª Linha" options="" size="40" maxlength="40"/>
+	    </property>
+	    
+	    <property name="mensagemReciboDoSacado4" type="string" not-null="false">
+			<display name="4ª Linha" options="" size="40" maxlength="40"/>
+	    </property>
+	    
+	    <html>
+			<![CDATA[
+				<fieldset>
+					<legend>Mensagem na Ficha de Compensação</legend>
+				</fieldset>
+				<br/>
+			]]>
+		</html>
+	    
+	    <property name="mensagemFichaDeCompensacao1" type="string" not-null="true">
+			<display name="1ª Linha" options="" size="40" maxlength="40"/>
+	    </property>
+	    
+	     <property name="mensagemFichaDeCompensacao2" type="string" not-null="false">
+			<display name="2ª Linha" options="" size="40" maxlength="40"/>
+	    </property>
+	    
+	    
+	     <html>
+			<![CDATA[
+				<fieldset>
+					<legend>Imagens do Boleto</legend>
+				</fieldset>
+				<br/>
+			]]>
+		</html>
+	    
+	    <property name="imagemEnvelope" type="file" type-file="gif" not-null="true">
+			<display name="Imagem do Envelope" options="listing" size="40" mask-detail="Arquivos .jpg ou .gif" maxlength="40"/>
+	    </property>
+
+		<properties-order>
+			<property-order name="dataDoCadastro" mode="desc"/>
+			<property-order name="ativo" mode="desc"/>
+		</properties-order>
+
+		<validate-method name="validate">
+			<session-param name="usuario"/>
+		</validate-method>
+	    		
+	</class-mapping>
+	
+		
+</jheat-mapping>

@@ -4,11 +4,14 @@
 package com.pedroalmir.testPriorization.flow.antSystem.factory;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import com.pedroalmir.testPriorization.flow.antSystem.model.Problem;
 import com.pedroalmir.testPriorization.flow.antSystem.model.graph.Edge;
-import com.pedroalmir.testPriorization.flow.antSystem.model.graph.Vertex;
+import com.pedroalmir.testPriorization.flow.antSystem.model.graph.Graph;
+import com.pedroalmir.testPriorization.flow.antSystem.model.graph.Node;
+import com.pedroalmir.testPriorization.flow.antSystem.model.problem.Problem;
 import com.pedroalmir.testPriorization.model.TestCase;
 
 /**
@@ -16,34 +19,52 @@ import com.pedroalmir.testPriorization.model.TestCase;
  * 
  */
 public class ProblemFactory {
+	/**
+	 * @param numberAnt
+	 * @param t0 Valor máximo de feromônio
+	 * @param alfa Constante que amplifica a influência da concentração de feromonio
+	 * @param beta Constante que amplifica a influência da heurística
+	 * @param q Não sei definir, mas esse valor é utilizado 
+	 * @param maxIterations Número máximo de iterações
+	 * @param maxExecution Número máximo de execuções
+	 * @param p1 Não sei ainda!!!
+	 * @param p2 Não sei ainda!!!
+	 * @param q0 Não sei ainda!!!
+	 * @param constantQ Não sei ainda!!!
+	 * @param k Não sei ainda!!!
+	 * @param bound Limite máximo da mochila
+	 * @param testCases Lista de casos de teste
+	 * @return problem
+	 */
 	public static Problem createProblem(int numberAnt, double t0, double alfa, double beta, double q, int maxIterations,
-			int maxExecution, double p1, double p2, double q0, double constantQ, int k, double cargaMaxima,
-			List<TestCase> testCases) {
-		Problem problem = new Problem(numberAnt, t0, alfa, beta, q, maxIterations, maxExecution, p1, p2, q0, constantQ, k,
-				cargaMaxima);
+			int maxExecution, double p1, double p2, double q0, double constantQ, int k, double bound, List<TestCase> testCases) {
+		/* */
+		Problem problem = new Problem(numberAnt, t0, alfa, beta, q, maxIterations, maxExecution, p1, p2, q0, constantQ, k, bound);
 
-		List<Vertex> vertexs = new ArrayList<Vertex>();
+		List<Node> vertexs = new ArrayList<Node>();
 		List<Edge> edges = new ArrayList<Edge>();
 		
-		/* Vertex com id, criticidade, tempo e feromonio inicial */
+		/* Node com id, criticidade, tempo */
 		for (int i = 0; i < testCases.size(); i++) {
-			vertexs.add(new Vertex(i+1, testCases.get(i).getCriticality(), testCases.get(i).getTime(), 0.01));
+			Map<String, Object> informations = new HashMap<String, Object>();
+			informations.put("criticidade", new Double(testCases.get(i).getCriticality()));
+			informations.put("tempo", testCases.get(i).getTime());
+			
+			vertexs.add(new Node(new Long(i+1), informations));
 		}
 		/* */
 		int indexEdge = 1;
 		for (int i = 0; i < testCases.size(); i++) {
 			for (int j = 0; j < testCases.size(); j++) {
 				if (i != j) {
-					edges.add(new Edge(vertexs.get(i), vertexs.get(j), indexEdge, -1, -1));
-					indexEdge++;
+					edges.add(new Edge(new Long(indexEdge++), vertexs.get(i), vertexs.get(j), -1, -1));
 				}
 			}
 		}
-		/* */
-		problem.setVertexs(vertexs);
-		problem.setEdges(edges);
+		/* Create Graph */
+		problem.setGraph(new Graph(1L, "", vertexs, edges));
 		problem.setTestCases(testCases);
-		/* */
+		/* Return problem */
 		return problem;
 	}
 }

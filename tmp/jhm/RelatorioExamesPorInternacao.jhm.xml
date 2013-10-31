@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+
+<jheat-mapping>
+	<report
+		name="relatorioExamesPorInternacao"
+		display-name="Exames por Internação"
+		class="br.com.infowaypi.ecare.services.RelatorioExamesPorInternacao"
+		method-name="gerarRelatorio"
+		section="relatoriosAuditor"
+		response-by-ajax="true">
+		
+		<description>Relatório de exmes por internação em um determinado mês.</description>
+		
+		<report-param name="mes" display-name="Mês" type="java.util.Date" mask="99/9999" input-type="month-year" required="true"></report-param>
+
+		<select-param name="tipoInternacao" display-name="Selecione o Tipo de Internação" type="java.lang.String">
+			<constants-group class="br.com.infowaypi.ecare.services.RelatorioExamesPorInternacao" name="Tipo de Internação">
+				<entry display-name="Internação Eletiva" key-value="TIPO_INTERNACAO_ELETIVA"/>
+				<entry display-name="Internação de Urgência" key-value="TIPO_INTERNACAO_URGENCIA"/>
+			</constants-group>
+		</select-param>
+				
+		<report-return name="relatorio" type="br.com.infowaypi.ecare.services.RelatorioExamesPorInternacao" display-name="Resultado Encontrado">
+			<html>
+				<![CDATA[ <infoway:tableSeparator titulo="Resumo" colspan="2"/> ]]>
+			</html>
+			<display-property name="mes" display-name="Mês" align="left" type="month-year"/>
+			<display-property name="tipoInternacao" display-name="Tipo de Internação" align="left"/>
+			<display-property name="qtdeInternacoesRealizadas" display-name="Qtde. Total Internações" align="left"/>
+			<display-property name="qtdeInternacoesComProcedimentos" display-name="Qtde. Internações c/ Exames" align="left"/>
+			<display-property name="qtdeProcedimentos" display-name="Qtde. Exames" align="left"/>
+			<display-property name="mediaExamesPorInternacao" display-name="Exames por Internação" align="left"/>
+		</report-return>
+	</report>
+</jheat-mapping>

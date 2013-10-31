@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<class-mapping class="br.com.infowaypi.ecarebc.procedimentos.SubgrupoCBHPM" name="SubgrupoCBHPM" display-name="Subgrupo" 
+		id-name="idClassificacaoCBHPM" link-for-detail="descricao" type="simple" section="cadastros, cadastrosAuditor, cadastrosRedeCredenciada">
+		
+		<description>Subgrupos referentes ao cadastro do Tabela Saúde Recife</description>
+		
+		<property name="codigo" type="string" >
+			<display name="Código" options="listing,search" maxlength="5" 
+				mask-detail="Código do subgrupo, apenas 5(cinco) caracteres" size="7"/>
+		</property>
+		
+		<property name="descricao" type="string">
+			<display name="Descricao" options="listing,search"/>
+		</property>
+		
+		<many-to-one name="grupoCBHPM" display-name="Grupo" options="listing,search" 
+				class="br.com.infowaypi.ecarebc.procedimentos.GrupoCBHPM" autocomplete="true"
+				minimum-characters="3" mask-detail="Digite o nome do grupo">
+			<display-property name="codigoDescricao" display-name="Grupo"/>
+		</many-to-one>
+
+		<properties-order>
+			<property-order name="codigo"/>
+		</properties-order>
+		
+		<validate-method name="validate"/>
+		
+	</class-mapping>
+	
+</jheat-mapping>

@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+
+<jheat-mapping>
+<flow 
+	name="solicitarExclusaoDeProcedimentosPrestador" 
+	class="br.com.infowaypi.ecare.services.ExclusaoProcedimentos"
+	display-name="Excluir Exames Simples" section="urgenciaInternacao">
+		
+	<description>Exclusão de exames da guia</description>	
+	
+	<step-method name="buscarGuia" display-name="Informar Número de Autorização" title="Informar Número de Autorização" buttons-position="bottom">
+
+		<step-param name="autorizacao" required="true" size="12" type="java.lang.String" display-name="Autorização"/>
+		<session-param name="prestador" operation="none"/>		
+		<step-return name="guia" type="br.com.infowaypi.ecarebc.atendimentos.GuiaCompleta" 
+	         display-name="Guia Encontrada" scope="session"/>
+	</step-method>
+	
+	<step-method name="removerProcedimentos" display-name="Exames Clínicos" title="Exames">
+			
+			<collection-param  
+				name="procedimentosNaoCanceladosENegados"
+				display-name="Remover Exames/Procedimentos"
+				type="br.com.infowaypi.ecarebc.procedimentos.Procedimento">
+				
+				<checklist session-property-ref="guia" operation="reload">
+				    <display-property name="procedimentoDaTabelaCBHPM.codigo" display-name="Código"/>
+  			        <display-property name="procedimentoDaTabelaCBHPM.descricao" display-name="Descrição"/>
+  			        <display-property name="bilateral" display-name="Bilateral" type="boolean"/>
+  			        <display-property name="quantidade" display-name="Quantidade" type="int"/>
+  			        <display-property name="valorAtualDoProcedimento" display-name="Valor Unitário" type="money"/>
+  			        <display-property name="valorTotal" display-name="Valor Total" type="money"/>
+			    </checklist>
+
+			</collection-param>
+					
+			<session-param name="guia" display-name="Informações da Guia" operation="reload">
+				<display-property name="tipo" display-name="Tipo"/>
+				<display-property name="prazoProrrogado" display-name="Prazo"/>
+				<display-property name="dataMarcacao" display-name="Dt. de Criação" type="date"/>
+				<display-property name="situacao.descricao" display-name="Situação Atual"/>
+				<display-property name="situacao.dataSituacao" display-name="Data da Situação" type="date"/>
+				<display-property name="solicitante.pessoaFisica.nome" display-name="Solicitante"/>
+				<display-property name="especialidade.descricao" display-name="Especialidade"/>
+
+				<html>
+					<![CDATA[ <infoway:tableSeparator titulo="Informações do Beneficiário" colspan="2"/> ]]>
+				</html>		
+				
+				<display-property name="segurado.numeroDoCartao" display-name="Número do Cartão"/>
+				<display-property name="segurado.pessoaFisica.nome" display-name="Nome"/>				
+				<display-property name="segurado.pessoaFisica.descricaoDoSexo" display-name="Sexo"/>																							
+				<display-property name="segurado.pessoaFisica.dataNascimento" display-name="Nascimento" type="date"/>
+				<display-property name="segurado.pessoaFisica.telefoneResidencial" display-name="Telefone"/>
+				<display-property name="segurado.pessoaFisica.endereco" display-name="Endereço"/>
+				<display-property name="segurado.pessoaFisica.endereco.municipio.descricao" display-name="Município"/>
+				<display-property name="segurado.tipoDeSegurado" display-name="Tipo"/>				
+				
+				<html>
+					<![CDATA[ <infoway:tableSeparator titulo="Informações do Prestador" colspan="2"/> ]]>
+				</html>	
+				
+				<display-property name="prestador.pessoaJuridica.fantasia" display-name="Prestador"/>	
+				<display-property name="prestador.pessoaJuridica.telefone" display-name="Telefone"/>
+				<display-property name="prestador.pessoaJuridica.endereco" display-name="Endereço"/>
+				<display-property name="prestador.pessoaJuridica.endereco.municipio" display-name="Município"/>
+
+				<html>
+					<![CDATA[ <infoway:tableSeparator titulo="Hipóteses Diagnósticas" colspan="2"/> ]]>
+				</html>
+
+				<collection-display name="cids" display-name="CID (Hipóteses Diagnósticas)">
+					<display-property name="codigo" display-name="Código"/>
+					<display-property name="descricaoDaDoenca" display-name="Descrição"/>
+				</collection-display>
+				
+				<html>
+					<![CDATA[ <infoway:tableSeparator titulo="Quadro Clinico" colspan="2"/> ]]>
+				</html>
+				
+				<collection-display name="quadrosClinicos" display-name="Quadro Clínico">
+					<display-property name="justificativa" display-name="Justificativa" type="string"/>
+					<display-property name="dataJustificativa" display-name="Data" type="date"/>		
+				</collection-display>
+
+				<html>
+					<![CDATA[ <infoway:tableSeparator titulo="Exames" colspan="2"/> ]]>
+				</html>
+	
+				<collection-display name="procedimentosSimples" display-name="Exames Solicitados">
+					<display-property name="procedimentoDaTabelaCBHPM.codigo" display-name="Código"/>
+					<display-property name="procedimentoDaTabelaCBHPM.descricao" display-name="Descrição"/>		
+					<display-property name="bilateral" display-name="Bilateral" type="boolean"/>
+					<display-property name="valorTotal" display-name="Valor Bruto" type="money"/>
+				</collection-display>
+				
+				<html>
+					<![CDATA[ <infoway:tableSeparator titulo="Exames Cirúrgicos Solicitados" colspan="2"/> ]]>
+				</html>
+				
+				<collection-display name="procedimentosCirurgicos" display-name="Exames Cirúrgicos Solicitados">
+					<display-property name="procedimentoDaTabelaCBHPM.codigo" display-name="Código"/>
+					<display-property name="procedimentoDaTabelaCBHPM.descricao" display-name="Descrição"/>		
+					<display-property name="bilateral" display-name="Bilateral" type="boolean"/>
+					<display-property name="valorTotal" display-name="Valor Bruto" type="money"/>
+					<display-property name="profissionalResponsavel.pessoaFisica.nome" display-name="Profissional"/>
+				</collection-display>
+				
+
+			</session-param>
+
+			<session-param name="usuario" operation="reload"/>
+		
+			<step-return name="guia" type="br.com.infowaypi.ecarebc.atendimentos.GuiaCompleta" 
+		         display-name="Conferir Dados" scope="session"/>
+			
+		</step-method>
+	
+	
+		
+	<step-method name="salvarGuia" display-name="Conferir Dados" title="Conferir Dados" committed="true">
+			<session-param name="guia" display-name="Informações da Guia" operation="none">
+				<display-property name="tipo" display-name="Tipo"/>
+				<display-property name="prazoProrrogado" display-name="Prazo"/>
+				<display-property name="dataMarcacao" display-name="Dt. de Criação" type="date"/>
+				<display-property name="situacao.descricao" display-name="Situação Atual"/>
+				<display-property name="situacao.dataSituacao" display-name="Data da Situação" type="date"/>
+				<display-property name="valorTotal" display-name="Valor Total" type="money"/>
+				<display-property name="solicitante.pessoaFisica.nome" display-name="Solicitante"/>
+				<display-property name="especialidade.descricao" display-name="Especialidade"/>
+
+				<html>
+					<![CDATA[ <infoway:tableSeparator titulo="Informações do Beneficiário" colspan="2"/> ]]>
+				</html>		
+				
+				<display-property name="segurado.numeroDoCartao" display-name="Número do Cartão"/>
+				<display-property name="segurado.pessoaFisica.nome" display-name="Nome"/>				
+				<display-property name="segurado.pessoaFisica.descricaoDoSexo" display-name="Sexo"/>																							
+				<display-property name="segurado.pessoaFisica.dataNascimento" display-name="Nascimento" type="date"/>
+				<display-property name="segurado.pessoaFisica.telefoneResidencial" display-name="Telefone"/>
+				<display-property name="segurado.pessoaFisica.endereco" display-name="Endereço"/>
+				<display-property name="segurado.pessoaFisica.endereco.municipio.descricao" display-name="Município"/>
+				<display-property name="segurado.tipoDeSegurado" display-name="Tipo"/>				
+				
+				<html>
+					<![CDATA[ <infoway:tableSeparator titulo="Informações do Prestador" colspan="2"/> ]]>
+				</html>	
+				
+				<display-property name="prestador.pessoaJuridica.fantasia" display-name="Prestador"/>	
+				<display-property name="prestador.pessoaJuridica.telefone" display-name="Telefone"/>
+				<display-property name="prestador.pessoaJuridica.endereco" display-name="Endereço"/>
+				<display-property name="prestador.pessoaJuridica.endereco.municipio" display-name="Município"/>
+
+				<html>
+					<![CDATA[ <infoway:tableSeparator titulo="CID (Hipóteses Diagnósticas)" colspan="2"/> ]]>
+				</html>
+
+				<collection-display name="cids" display-name="CID (Hipóteses Diagnósticas)">
+					<display-property name="codigo" display-name="Código"/>
+					<display-property name="descricaoDaDoenca" display-name="Descrição"/>
+				</collection-display>
+				<html>
+					<![CDATA[ <infoway:tableSeparator titulo="Quadro Clinico" colspan="2"/> ]]>
+				</html>
+				
+				<collection-display name="quadrosClinicos" display-name="Quadro Clínico">
+					<display-property name="justificativa" display-name="Justificativa" type="string"/>
+					<display-property name="dataJustificativa" display-name="Data" type="date"/>		
+				</collection-display>
+
+				<html>
+					<![CDATA[ <infoway:tableSeparator titulo="Exames" colspan="2"/> ]]>
+				</html>
+	
+				<collection-display name="procedimentosSimples" display-name="Exames Solicitados">
+					<display-property name="procedimentoDaTabelaCBHPM.codigo" display-name="Código"/>
+					<display-property name="procedimentoDaTabelaCBHPM.descricao" display-name="Descrição"/>		
+					<display-property name="bilateral" display-name="Bilateral" type="boolean"/>
+					<display-property name="valorTotal" display-name="Valor Bruto" type="money"/>
+				</collection-display>
+				
+				<html>
+					<![CDATA[ <infoway:tableSeparator titulo="Exames Cirúrgicos Solicitados" colspan="2"/> ]]>
+				</html>
+				
+				<collection-display name="procedimentosCirurgicos" display-name="Exames Cirúrgicos Solicitados">
+					<display-property name="procedimentoDaTabelaCBHPM.codigo" display-name="Código"/>
+					<display-property name="procedimentoDaTabelaCBHPM.descricao" display-name="Descrição"/>		
+					<display-property name="bilateral" display-name="Bilateral" type="boolean"/>
+					<display-property name="valorTotal" display-name="Valor Bruto" type="money"/>
+					<display-property name="profissionalResponsavel.pessoaFisica.nome" display-name="Profissional"/>
+				</collection-display>
+			</session-param>
+					
+		</step-method>
+		
+		<step-method name="finalizar" display-name="Imprimir Comprovante" title="Imprimir Comprovante">
+			
+			<html>
+				<![CDATA[ <infoway:mensagemSucessoMarcacoes mensagem="Exames/Procedimentos excluídos com sucesso!" autorizacao="${guia.autorizacao}"/> ]]>
+			</html>
+			
+			<html>
+			<![CDATA[ 
+				<span class="not-for-print">
+					<button type="button" name="imprimir" class="actionButton" onclick="window.print();">Imprimir</button>
+				</span>
+			]]>
+			</html>
+			
+			<session-param name="guia" display-name="Informações da Guia" style-class="not-for-print">
+				<display-property name="autorizacao" display-name="Autorização"/>
+				<display-property name="tipo" display-name="Tipo"/>
+				<display-property name="prazoProrrogado" display-name="Prazo"/>				
+				<display-property name="dataMarcacao" display-name="Dt. de Criação" type="date"/>
+				<display-property name="situacao.descricao" display-name="Situação Atual"/>
+				<display-property name="situacao.dataSituacao" display-name="Data da Situação" type="date"/>
+				<display-property name="valorTotal" display-name="Valor Total" type="money"/>
+				<display-property name="solicitante.pessoaFisica.nome" display-name="Solicitante"/>
+				<display-property name="especialidade.descricao" display-name="Especialidade"/>
+
+				<html>
+					<![CDATA[ <infoway:tableSeparator titulo="Informações do Beneficiário" colspan="2"/> ]]>
+				</html>		
+				
+				<display-property name="segurado.numeroDoCartao" display-name="Número do Cartão"/>
+				<display-property name="segurado.pessoaFisica.nome" display-name="Nome"/>				
+				<display-property name="segurado.pessoaFisica.descricaoDoSexo" display-name="Sexo"/>																							
+				<display-property name="segurado.pessoaFisica.dataNascimento" display-name="Nascimento" type="date"/>
+				<display-property name="segurado.pessoaFisica.telefoneResidencial" display-name="Telefone"/>
+				<display-property name="segurado.pessoaFisica.endereco" display-name="Endereço"/>
+				<display-property name="segurado.pessoaFisica.endereco.municipio.descricao" display-name="Município"/>
+				<display-property name="segurado.tipoDeSegurado" display-name="Tipo"/>				
+				
+				<html>
+					<![CDATA[ <infoway:tableSeparator titulo="Informações do Prestador" colspan="2"/> ]]>
+				</html>	
+				
+				<display-property name="prestador.pessoaJuridica.fantasia" display-name="Prestador"/>	
+				<display-property name="prestador.pessoaJuridica.telefone" display-name="Telefone"/>
+				<display-property name="prestador.pessoaJuridica.endereco" display-name="Endereço"/>
+				<display-property name="prestador.pessoaJuridica.endereco.municipio" display-name="Município"/>
+
+				<html>
+					<![CDATA[ <infoway:tableSeparator titulo="CID (Hipóteses Diagnósticas" colspan="2"/> ]]>
+				</html>
+
+				<collection-display name="cids" display-name="CID (Hipóteses Diagnósticas)">
+					<display-property name="codigo" display-name="Código"/>
+					<display-property name="descricaoDaDoenca" display-name="Descrição"/>
+				</collection-display>
+				
+				<html>
+					<![CDATA[ <infoway:tableSeparator titulo="Quadro Clinico" colspan="2"/> ]]>
+				</html>
+				
+				<collection-display name="quadrosClinicos" display-name="Quadro Clínico">
+					<display-property name="justificativa" display-name="Justificativa" type="string"/>
+					<display-property name="dataJustificativa" display-name="Data" type="date"/>		
+				</collection-display>
+
+				<html>
+					<![CDATA[ <infoway:tableSeparator titulo="Exames" colspan="2"/> ]]>
+				</html>
+	
+				<collection-display name="procedimentosSimples" display-name="Exames Solicitados">
+					<display-property name="procedimentoDaTabelaCBHPM.codigo" display-name="Código"/>
+					<display-property name="procedimentoDaTabelaCBHPM.descricao" display-name="Descrição"/>		
+					<display-property name="bilateral" display-name="Bilateral" type="boolean"/>
+					<display-property name="valorTotal" display-name="Valor Bruto" type="money"/>
+				</collection-display>
+				
+				<html>
+					<![CDATA[ <infoway:tableSeparator titulo="Exames Cirúrgicos Solicitados" colspan="2"/> ]]>
+				</html>
+				
+				<collection-display name="procedimentosCirurgicos" display-name="Exames Cirúrgicos Solicitados">
+					<display-property name="procedimentoDaTabelaCBHPM.codigo" display-name="Código"/>
+					<display-property name="procedimentoDaTabelaCBHPM.descricao" display-name="Descrição"/>		
+					<display-property name="bilateral" display-name="Bilateral" type="boolean"/>
+					<display-property name="valorTotal" display-name="Valor Bruto" type="money"/>
+					<display-property name="profissionalResponsavel.pessoaFisica.nome" display-name="Profissional"/>
+				</collection-display>
+			</session-param>
+			
+			<html>
+				<![CDATA[ <infoway:imprimirGuia titulo="&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GUIA DE INTERNAÃ‡ÃƒO"/> 
+					<span class="not-for-print">
+						<button type="button" name="imprimir" class="actionButton" onclick="window.print();">Imprimir</button>
+					</span>
+				]]>
+			</html>
+					
+		</step-method>
+</flow>
+</jheat-mapping>

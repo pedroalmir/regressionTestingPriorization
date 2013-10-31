@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<flow 
+		name="baixaManualDeBoletos" 
+		class="br.com.infowaypi.ecare.financeiro.boletos.BaixaManualDeBoletosService"
+		display-name="Baixa Manual" 
+		section="boletos">
+
+		<step-method name="buscarBoleto" display-name="Buscar Boleto" title="Buscar Boleto" buttons-position="both">
+			<step-param name="cpf" size="24" mask="999.999.999-99" input-type="string" type="java.lang.String" display-name="CPF do Beneficiário" required="false"/>
+			<step-param name="numeroDoCartao" size="24" mask="99.9999999999.99.9-9" input-type="string" type="java.lang.String" display-name="Número do cartão" required="false"/>			
+			<step-param name="competencia" display-name="Competência" input-type="month-year" required="true" />
+			<step-return 
+				name="resumo" 
+				type="br.com.infowaypi.ecare.financeiro.boletos.ResumoBaixaManual" 
+		        display-name="Cobranca Encontrada" 
+		        scope="session"/>
+		</step-method>
+		
+		<step-method name="informarValores" display-name="Informar Valores" buttons-position="both" >
+		
+			<html>
+				<![CDATA[
+					<c:if test="${resumo.cobranca == null}">
+						<infoway:mensagemAlerta
+							mensagem="Não há cobranças em Aberto deste Beneficiário para a competência informada. Se desejar gerar uma cobrança e automaticamente dar baixa, preencha os campos abaixo e clique em Avançar." />
+							
+				]]>
+			</html>
+			<step-param name="valorCobrado" display-name="Valor Cobrado" type="java.math.BigDecimal" input-type="money" />
+			<step-param name="dataVencimento" display-name="Data Vencimento" input-type="date" />					
+			<html>
+				<![CDATA[				
+					</c:if>
+					
+					<c:if test="${resumo.cobranca != null}">
+						<div class="alert information not-for-print"
+							style="margin-left:0;margin-right:0;">
+							Se o Valor a ser pago for o mesmo Valor do Boleto,
+							não é obrigatório o preenchimento do campo abaixo.
+						</div>
+					</c:if>							
+					]]>
+			</html>		
+			
+			<step-param name="valorPago" display-name="Valor Pago" type="java.math.BigDecimal" input-type="money" />
+			<step-param name="dataPagamento" display-name="Data Pagamento" input-type="date" required="true" />			
+			<session-param name="resumo" display-name="Boleto a ser Pago">
+				<display-property name="titular.pessoaFisica.nome" display-name="Beneficiário"/>
+				<display-property name="titular.tipoDeSegurado" display-name="Tipo"/>
+				<display-property name="titular.pessoaFisica.cpf" display-name="CPF"/>
+				<display-property name="cobranca.competenciaFormatada" display-name="Competência"/>
+				<display-property name="cobranca.dataVencimento" display-name="Vencimento" type="date"/>
+				<display-property name="cobranca.dataPagamento" display-name="Pagamento" type="date"/>
+				<display-property name="cobranca.valorCobrado" display-name="Valor Cobrado" type="money" align="right" />
+				<display-property name="cobranca.situacao.descricao" display-name="Situação" />			
+			</session-param>
+			<session-param name="usuario" />
+			<step-return 
+				name="cobranca" 
+				type="br.com.infowaypi.ecare.financeiro.Cobranca" 
+		        display-name="Cobranca Encontrada" 
+		        scope="session"/>
+		</step-method>
+
+		<step-method name="efetuarBaixaEmBoleto" display-name="Conferir os Dados" buttons-position="both" committed="true" >
+			<session-param name="cobranca" display-name="Boleto a ser Pago" operation="none">
+				<display-property name="titular.pessoaFisica.nome" display-name="Beneficiário"/>
+				<display-property name="titular.tipoDeSegurado" display-name="Tipo"/>
+				<display-property name="titular.pessoaFisica.cpf" display-name="CPF"/>
+				<display-property name="competenciaFormatada" display-name="Competência"/>
+				<display-property name="dataVencimento" display-name="Vencimento" type="date"/>
+				<display-property name="dataPagamento" display-name="Pagamento" type="date"/>
+				<display-property name="valorCobrado" display-name="Valor Cobrado" type="money" align="right" />
+				<display-property name="valorPago" display-name="Valor Pago" type="money" align="right" />
+				<display-property name="situacao.descricao" display-name="Situação" />			
+			</session-param>
+		</step-method>
+		
+		<step-method name="finalizar" display-name="Pagamento Efetuado" buttons-position="both" >
+			<html>
+				<![CDATA[
+					 <infoway:mensagemSucesso mensagem = "Boleto pago com sucesso!"/>
+				]]>
+			</html>
+			<session-param name="cobranca" display-name="Boleto Pago" operation="none">
+				<display-property name="titular.pessoaFisica.nome" display-name="Beneficiário"/>
+				<display-property name="titular.tipoDeSegurado" display-name="Tipo"/>
+				<display-property name="titular.pessoaFisica.cpf" display-name="CPF"/>
+				<display-property name="competenciaFormatada" display-name="Competência"/>
+				<display-property name="dataVencimento" display-name="Vencimento" type="date"/>
+				<display-property name="dataPagamento" display-name="Pagamento" type="date"/>
+				<display-property name="valorCobrado" display-name="Valor Cobrado" type="money" align="right" />
+				<display-property name="valorPago" display-name="Valor Pago" type="money" align="right" />
+				<display-property name="situacao.descricao" display-name="Situação" />			
+			</session-param>			
+		</step-method>
+				
+	</flow>	
+</jheat-mapping>

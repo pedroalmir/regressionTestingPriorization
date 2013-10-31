@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<report
+		name="monitorAtendimentos"
+		method-name="processarInformacoes"
+		class="br.com.infowaypi.ecare.businessinteligence.MonitorAtendimentos"
+		display-name="Monitor de Atendimentos" section="relatoriosAuditor" response-by-ajax="true">
+		
+		<description>Relatório de informações financeiras de atendimentos</description>
+		
+		<report-param name="competencia" type="java.lang.String" display-name="Competência" mask="99/9999" input-type="month-year"/>
+		
+		<select-param name="prestador" display-name="Prestador" type="br.com.infowaypi.ecarebc.associados.Prestador" display-label-head="false">
+			<autocomplete minimum-characters="3" style-class="autocomplete" >
+				<search-property display-name="Prestador" name="pessoaJuridica.fantasia"/>
+				<name-property display-name="Prestador" name="pessoaJuridica.fantasia"/>
+			</autocomplete>
+		</select-param>
+
+		<report-return name="resumo" type="br.com.infowaypi.ecare.businessinteligence.ResumoContainers" display-name="Resultado Encontrado">
+			
+		<html>
+			<![CDATA[<%@ include file="/view/jsp/includes/MonitorAtendimentos.jsp" %>]]>
+		</html>	
+			
+		</report-return>	
+	</report>
+	
+</jheat-mapping>

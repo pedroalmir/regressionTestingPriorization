@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<flow 
+		name="faleConoscoPrestador" 
+		class="br.com.infowaypi.ecare.flows.FaleConoscoService"
+		display-name="Fale Conosco" section="prestador">
+		
+		<description>Fale Conosco</description>
+		
+		<step-method name="criarContato" display-name="Informar Dados" title="Informar Dados" committed="true" buttons-position="bottom">
+			<step-param name="mensagem" size="80" type="java.lang.String" display-name="Mensagem"/>
+			<step-param name="contato" size="20" type="java.lang.String" display-name="Seu Nome"/>
+			<step-param name="telefone" size="20" type="java.lang.String" display-name="Telefone"/>
+			<step-param name="email" size="60" type="java.lang.String" display-name="E-mail"/>
+			<session-param name="prestador" operation="none"/>
+			
+			<step-return name="contatoGerado" type="br.com.infowaypi.msr.faleconosco.FaleConosco" 
+		         display-name="Contato" scope="session"/>
+		</step-method>
+		
+		<step-method name="finalizar" display-name="Mensagem Enviada" title="Mensagem Enviada">
+
+			<html>
+				<![CDATA[
+					<div class="alert confirmation not-for-print" style="margin-left:0;margin-right:0;">
+						Sua mensagem foi enviada com sucesso!
+					</div>					
+				]]>
+			</html>
+
+			<session-param name="contatoGerado" display-name="Mensagem Enviada">
+				<display-property name="data" display-name="Data" type="date"/>				
+				<display-property name="mensagem" display-name="Mensagem"/>
+				<display-property name="contato" display-name="Contato"/>								
+				<display-property name="telefone" display-name="Telefone"/>
+				<display-property name="email" display-name="E-mail"/>
+			</session-param>			
+		</step-method>
+		
+	</flow>	
+	
+</jheat-mapping>

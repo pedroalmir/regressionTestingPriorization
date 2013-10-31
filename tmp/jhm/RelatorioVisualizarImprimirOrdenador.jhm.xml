@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+	<flow name="VisualizarImprimirOrdenador" class="br.com.infowaypi.ecare.services.financeiro.faturamento.ordenador.RelatorioVisualizarImprimirOrdenadorService"
+		display-name="Visualizar/Imprimir Ordenador" section="faturamento">
+			
+		<description>Visualizar/Imprimir Ordenador</description>
+	
+		<step-method name="buscarOrdenadores" display-name="Escolher Ordenador" title="Escolher Ordenador" buttons-position="bottom">
+			<step-param display-name="Identificador" name="identificador" type="java.lang.Integer" mask="99999999"/>
+			<step-param display-name="Competência" name="competencia" input-type="month-year" type="java.util.Date"/>
+			<step-return name="resumoOrdenadores" type="br.com.infowaypi.ecare.services.financeiro.faturamento.ordenador.ResumoOrdenadores" 
+				display-name="Resumo de Ordenadores" scope="session"/>
+		</step-method>
+		
+		<step-method name="selecionarOrdenador" display-name="Escolher Ordenador">
+			<select-param name="ordenadores" type="br.com.infowaypi.ecarebc.financeiro.faturamento.ordenador.Ordenador"
+				display-name="Selecione o Ordenador" session-property-ref="resumoOrdenadores" operation="none">
+				<radio-group default-checked="none" default-sort="1">
+					<display-property name="identificador" display-name="Identificador"/>
+					<display-property name="competencia" display-name="Competência" type="month-year" align="center"/>
+					<display-property name="dataRecebimento" display-name="Data de Recebimento das Contas" align="center" type="date"/>
+					<display-property name="total" display-name="Valor Bruto" type="money"/>
+					<display-property name="limiteAFaturarNormal" display-name="Limite a Faturar Normal" type="money"/>
+					<display-property name="limiteAFaturarPassivo" display-name="Limite a Faturar Passivo" type="money"/>
+				</radio-group>
+			</select-param>
+			<step-return name="ordenador" type="br.com.infowaypi.ecarebc.financeiro.faturamento.ordenador.Ordenador" display-name="" scope="session"/>
+		</step-method>
+		
+		<step-method name="finalizar" display-name="Imprimir Ordenador" title="Imprimir Ordenador">
+			<html>
+				<![CDATA[ 
+				<span class="not-for-print">
+					<button type="button" name="imprimir" class="actionButton" onclick="window.print();">Imprimir</button>
+				</span>
+				<infoway:OrdenadorApresentacao ordenador="${ordenador}"/>
+				<infoway:OrdenadorImpressao ordenador="${ordenador}"/>
+				<c:remove var="ordenador"/>
+				]]>
+			</html>
+		</step-method>
+	</flow>	
+</jheat-mapping>	
+	

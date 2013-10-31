@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+<jheat-mapping>
+	<flow 
+		name="auditarAcompanhamentoAnestesico" 
+		class="br.com.infowaypi.ecare.services.AuditarAcompanhamentoAnestesico"
+		display-name="Auditar Acompanhamento Anestésico" section="auditor">
+	
+		<step-method name="buscarGuias" display-name="Buscar Guias" buttons-position="both">
+				<step-param name="autorizacao" type="java.lang.String" display-name="Autorização"/>
+				<step-param name="dataInicial" type="java.lang.String" display-name="Data inicial" input-type="date"/>
+				<step-param name="dataFinal" type="java.lang.String" display-name="Data final" input-type="date"/>
+				
+				<select-param
+					name="prestador"
+					display-name="Escolha o Prestador"
+					type="br.com.infowaypi.ecarebc.associados.Prestador">
+					<autocomplete style-class="autocomplete" minimum-characters="3" force-selection="true">
+						<search-property name="pessoaJuridica.fantasia" display-name="Prestador"/>
+						<name-property name="pessoaJuridica.fantasia" display-name="Prestador"/>
+					</autocomplete>	
+				</select-param>
+				
+				<step-return name="resumo" type="br.com.infowaypi.ecarebc.atendimentos.ResumoGuias" 
+			         display-name="" scope="session"/>
+		</step-method>
+		
+		<step-method name="selecionarGuia" display-name="Selecionar Guia">
+			<select-param
+				name="guias"
+				type="br.com.infowaypi.ecarebc.atendimentos.GuiaAcompanhamentoAnestesico"
+				display-name="Selecione a Guia"
+				session-property-ref="resumo" operation="reload">
+				<radio-group>
+					<display-property name="autorizacao" display-name="Autorização"/>				
+					<display-property name="segurado.pessoaFisica.nome" display-name="Beneficiário"/>
+					<display-property name="situacao.descricao" display-name="Situação"/>
+					<display-property name="situacao.dataSituacao" display-name="Data" type="date"/>				
+					<display-property name="valorTotal" display-name="Valor total" type="money"/>								
+				</radio-group>
+			</select-param>
+			<session-param name="usuario" />
+			
+			<step-return name="guia" type="br.com.infowaypi.ecarebc.atendimentos.GuiaAcompanhamentoAnestesico" 
+			         display-name="" scope="session"/>
+		</step-method>
+		<step-method display-name="Auditar Guia" name="auditarGuia"
+			buttons-position="both">
+			
+	    	<step-param display-name="Glosar guia" type="java.lang.Boolean" name="glosarTotalmente" input-type="boolean"/>
+	    	<select-param name="motivoGlosa" display-name="" type="br.com.infowaypi.ecare.cadastros.MotivoGlosa" null-option="true">
+				<autocomplete mask-detail="As 3 letras iniciais" minimum-characters="3" style-class="autocomplete" size="40">
+					<search-property display-name="Motivo de Glosa" name="codigoDescricao" search-type="likefull"/>
+					<name-property name="codigoDescricao" display-name="Motivo de Glosa"/>
+				</autocomplete>
+				<restrictions>
+					<restriction property-name="ativo" type="equals" property-value="true"/>
+					<restriction property-name="aplicavelGuiaCompleta" type="equals" property-value="true"/>
+				</restrictions>
+			</select-param>
+	    	
+			<update-param display-name="" name="guia" type="br.com.infowaypi.ecarebc.atendimentos.GuiaAcompanhamentoAnestesico">
+	        	<update-collection name="procedimentosUpdate" 
+						field-name="procedimentosNaoGlosadosNemCanceladosNemNegados"
+						display-name="Glosar Procedimentos"
+						type="br.com.infowaypi.ecarebc.procedimentos.Procedimento">
+				    <update-insert>
+				    	<update-property name="procedimentoDaTabelaCBHPM.codigo" display-name="Código" input-type="string" editable="false"/>
+	  			        <update-property name="procedimentoDaTabelaCBHPM.descricao" display-name="Descrição" editable="false"/>
+	  			        <update-property name="valorTotal" display-name="Valor Total" input-type="money" editable="false" type="java.math.BigDecimal"/>
+	  			        <update-select-property name="motivoGlosaProcedimento" display-name="Motivo de Glosa" type="br.com.infowaypi.ecare.cadastros.MotivoGlosa" null-option="true">
+							<autocomplete mask-detail="As 3 letras iniciais" minimum-characters="3" style-class="autocomplete" size="40">
+								<search-property display-name="Motivo de Glosa" name="codigoDescricao" search-type="likefull"/>
+								<name-property name="codigoDescricao" display-name="Motivo de Glosa"/>
+		 					</autocomplete>
+							<restrictions>
+								<restriction property-name="ativo" type="equals" property-value="true"/>
+								<restriction property-name="aplicavelProcedimentos" type="equals" property-value="true"/>
+							</restrictions>
+						</update-select-property>
+	  			        <update-property name="glosar" display-name="Glosar" input-type="boolean" editable="true" type="java.lang.Boolean"/>
+	  			        <update-property name="incluiVideo" display-name="Inclui Vídeo" input-type="boolean" editable="true" type="java.lang.Boolean"/>
+						<update-property name="horarioEspecial" display-name="Horário Especial" input-type="boolean" editable="true" type="java.lang.Boolean"/>
+				    </update-insert>
+				    <restrictions>
+				    	<restriction property-value="9000000%" property-name="procedimentoDaTabelaCBHPM.codigo" type="like" />
+				    </restrictions>
+	        	</update-collection>
+			</update-param>
+			
+			
+			<collection-param  
+				name="procedimentosInsert"
+				display-name="Inserir Procedimentos"
+				type="br.com.infowaypi.ecarebc.procedimentos.ProcedimentoAnestesico">
+				<insert>
+					<display-property name="procedimentoDaTabelaCBHPM.codigo" display-name="Código"/>
+					<display-property name="procedimentoDaTabelaCBHPM.descricao" display-name="Descrição"/>
+					<display-property name="procedimentoDaTabelaCBHPM.valorModerado" display-name="Valor Total" type="money"/>
+					<display-property name="incluiVideo" display-name="Inclui Vídeo" type="boolean" />
+					<display-property name="horarioEspecial" display-name="Horário Especial" type="boolean" />
+				</insert>
+			</collection-param>
+			
+			<session-param name="usuario" />
+			<html>
+			
+				<![CDATA[
+					<infoway:GuiaApresentacao guiaApresentacao="${guia}" isFluxoAuditoria="true"/>
+				]]>
+			</html>
+			
+			<step-return name="guia" type="br.com.infowaypi.ecarebc.atendimentos.GuiaAcompanhamentoAnestesico" 
+			         display-name="" />
+			         
+		</step-method>
+	
+	<step-method name="salvarGuia" display-name="Conferir Dados" title="Conferir Dados" committed="true">
+			<session-param name="guia" operation="none"/>
+			<html>
+				<![CDATA[
+					<infoway:GuiaApresentacao guiaApresentacao="${guia}" isFluxoAuditoria="true"/>
+				]]>
+			</html>
+	</step-method>
+	
+	<step-method name="finalizar" display-name="Imprimir Comprovante de Confirmação" title="Imprimir Comprovante">
+		<html>
+			<![CDATA[ 
+				<infoway:mensagemSucessoMarcacoes mensagem="Guia auditada com sucesso!" autorizacao="${guia.autorizacao}"/> 
+				<span class="not-for-print">
+					<button type="button" name="imprimir" class="actionButton" onclick="window.print();">Imprimir</button>
+				</span>
+				<infoway:GuiaApresentacao guiaApresentacao="${guia}" isFluxoAuditoria="true"/>
+				<infoway:imprimirGuia titulo="COMPROVANTE DE AUDITORIA"/> 
+				<span class="not-for-print">
+					<button type="button" name="imprimir" class="actionButton" onclick="window.print();">Imprimir</button>
+				</span>
+			]]>
+		</html>
+		
+	</step-method>
+
+
+	</flow>
+</jheat-mapping>

@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+
+<jheat-mapping>
+<flow 
+	name="auditarGuiasExamesEspeciais" 
+	class="br.com.infowaypi.ecare.services.AuditarGuiasExamesEspeciais"
+	display-name="Auditar Guia Exames Especiais" section="auditor">
+		
+	<description>Auditar Guias Exames Especiais</description>
+	
+	<step-method name="buscarGuias" display-name="Buscar Guias" buttons-position="bottom">
+			<step-param name="autorizacao" type="java.lang.String" display-name="Autorização"/>
+			<step-param name="dataInicial" type="java.lang.String" display-name="Data inicial" input-type="date"/>
+			<step-param name="dataFinal" type="java.lang.String" display-name="Data final" input-type="date"/>
+			
+			<select-param
+				name="prestador"
+				display-name="Escolha o Prestador"
+				type="br.com.infowaypi.ecarebc.associados.Prestador">
+				<autocomplete style-class="autocomplete" minimum-characters="3" force-selection="true">
+					<search-property name="pessoaJuridica.fantasia" display-name="Prestador"/>
+					<name-property name="pessoaJuridica.fantasia" display-name="Prestador"/>
+				</autocomplete>
+				<restrictions>
+					<restriction property-value="Ativo(a)" property-name="situacao.descricao" type="equals" />
+				</restrictions>
+			</select-param>
+			
+			<step-return name="resumo" type="br.com.infowaypi.ecarebc.atendimentos.ResumoGuias" 
+		         display-name="Resumo" scope="session"/>
+	</step-method>
+	
+	<step-method name="selecionarGuia" display-name="Selecionar Guia">
+		<select-param
+			name="guiasExamesEspeciaisParaAuditoria"
+			type="br.com.infowaypi.ecarebc.atendimentos.GuiaSimples"
+			display-name="Selecione a Guia"
+			session-property-ref="resumo" operation="reload">
+			<radio-group>
+				<display-property name="idGuia" display-name="Autorização"/>				
+				<display-property name="segurado.pessoaFisica.nome" display-name="Beneficiário"/>
+				<display-property name="situacao.descricao" display-name="Situação"/>
+				<display-property name="tipo" display-name="Tipo"/>
+				<display-property name="situacao.dataSituacao" display-name="Data" type="date"/>				
+				<display-property name="valorTotal" display-name="Valor total" type="money"/>								
+			</radio-group>
+		</select-param>	
+		
+		<session-param name="usuario"/>
+		<step-return name="guia" type="br.com.infowaypi.ecarebc.atendimentos.GuiaExame" 
+		         display-name="GuiaSelecionada" scope="session"/>
+		</step-method>
+	
+    <step-method name="auditarGuia" display-name="Auditar Guia" title="Auditar Guia">
+    
+    	<step-param display-name="Glosar guia" type="java.lang.Boolean" name="glosarTotalmente" input-type="boolean"/>
+    	 
+    	<select-param name="motivoGlosa" display-name="" type="br.com.infowaypi.ecare.cadastros.MotivoGlosa" null-option="true">
+			<autocomplete mask-detail="As 3 letras iniciais" minimum-characters="3" style-class="autocomplete" size="40">
+				<search-property display-name="Motivo de Glosa" name="codigoDescricao" search-type="likefull"/>
+				<name-property name="codigoDescricao" display-name="Motivo de Glosa"/>
+			</autocomplete>
+			<restrictions>
+				<restriction property-name="ativo" type="equals" property-value="true"/>
+				<restriction property-name="aplicavelGuiaCompleta" type="equals" property-value="true"/>
+			</restrictions>
+		</select-param>
+    
+    	
+    	<collection-param display-name="Inserir Novos Procedimentos" name="procedimentosExamesInsert" 
+    						type="br.com.infowaypi.ecarebc.procedimentos.ProcedimentoAuditoriaExames">
+			<insert>
+	  			<display-property name="procedimentoDaTabelaCBHPM.codigo" display-name="Código"/>
+				<display-property name="procedimentoDaTabelaCBHPM.descricao" display-name="Descrição"/>
+				<display-property name="bilateral" display-name="Bilateral" type="boolean"/>
+				<display-property name="quantidade" display-name="Quantidade"/>
+				<display-property name="valorTotal" display-name="Valor Bruto" />
+			</insert>
+    	</collection-param>
+    	
+       	<update-param name="guia" display-name="" type="br.com.infowaypi.ecarebc.atendimentos.GuiaExame" operation="none" >
+      	
+			<update-collection display-name="Procedimentos da guia" name="procedimentosExameUpdate"
+        			field-name="procedimentosNaoRealizadosNaoNaoAutorizadosENaoSolicitadosOrdenado" 
+        			type="br.com.infowaypi.ecarebc.procedimentos.Procedimento">
+        		<update-insert>
+				    <update-property name="procedimentoDaTabelaCBHPM.codigo" display-name="Código" editable="false"/>
+  			        <update-property name="procedimentoDaTabelaCBHPM.descricao" display-name="Descrição" editable="false"/>
+  			        <update-property name="quantidade" display-name="Quantidade" input-type="int" editable="false" type="java.lang.Integer"/>
+  			        <update-property name="glosa" field-name="glosar" display-name="Glosar" input-type="boolean" editable="true" type="java.lang.Boolean" />
+  			        <update-select-property name="motivoGlosaProcedimento" display-name="Motivo de Glosa" type="br.com.infowaypi.ecare.cadastros.MotivoGlosa" null-option="true">
+					<autocomplete mask-detail="As 3 letras iniciais" minimum-characters="3" style-class="autocomplete" size="40">
+						<search-property display-name="Motivo de Glosa" name="codigoDescricao" search-type="likefull"/>
+						<name-property name="codigoDescricao" display-name="Motivo de Glosa"/>
+ 					</autocomplete>
+					<restrictions>
+						<restriction property-name="ativo" type="equals" property-value="true"/>
+						<restriction property-name="aplicavelProcedimentosExames" type="equals" property-value="true"/>
+					</restrictions>
+				</update-select-property>
+        		</update-insert>
+       		</update-collection>
+      		
+   			<update-property display-name="Valor Total de Materiais Complementares Solicitado" name="valorMaterialComplementarSolicitado" editable="false" input-type="money" type="java.math.BigDecimal"/>
+      		<update-property display-name="Valor Total de Materiais Complementares Auditado" name="valorMaterialComplementarAuditado" editable="true" input-type="money" type="java.math.BigDecimal"/>
+      		<update-property display-name="Valor Total de Medicamentos Complementares Solicitado" name="valorMedicamentoComplementarSolicitado" editable="false" input-type="money" type="java.math.BigDecimal"/>
+      		<update-property display-name="Valor Total de Medicamentos Complementares Auditado" name="valorMedicamentoComplementarAuditado" editable="true" input-type="money" type="java.math.BigDecimal"/>      		
+		</update-param>
+		
+		<step-param name="observacoes" type="" display-name="Observação" input-type="text"/>
+			
+		<session-param name="usuario"/>
+		<html>
+			<![CDATA[
+				<infoway:GuiaApresentacao guiaApresentacao="${guia}" isFluxoAuditoria="true"/>
+			]]>
+		</html>
+		
+		<step-return name="guia" type="br.com.infowaypi.ecarebc.atendimentos.GuiaExame" display-name="GuiaSelecionada" scope="session"/>
+	</step-method>
+	
+	<step-method name="salvarGuia" display-name="Conferir Dados" title="Conferir Dados" committed="true">
+		<session-param name="guia" operation="none"/>
+		<html>
+			<![CDATA[
+				<infoway:GuiaApresentacao guiaApresentacao="${guia}" isFluxoAuditoria="true"/>
+			]]>
+		</html>
+	</step-method>
+		
+	<step-method name="finalizar" display-name="Imprimir Comprovante de Confirmação" title="Imprimir Comprovante">
+		<html>
+			<![CDATA[  <infoway:mensagemSucessoMarcacoes mensagem="Guia auditada com sucesso!" autorizacao="${guia.autorizacao}"/> ]]>
+		</html>
+	
+		<html>
+		<![CDATA[ 
+			<span class="not-for-print">
+				<button type="button" name="imprimir" class="actionButton" onclick="window.print();">Imprimir</button>
+			</span>
+		]]>
+		</html>
+		
+		<session-param name="guia" operation="none"/>
+			<html>
+			<![CDATA[
+			
+				<infoway:GuiaApresentacao guiaApresentacao="${guia}" isFluxoAuditoria="true"/> 
+				<infoway:imprimirGuiaExame titulo="COMPROVANTE DE AUDITORIA"/>
+				
+				<span class="not-for-print">
+					<button type="button" name="imprimir" class="actionButton" onclick="window.print();">Imprimir</button>
+				</span>
+			]]>
+		</html>
+	</step-method>
+
+</flow>
+</jheat-mapping>

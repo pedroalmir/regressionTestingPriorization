@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+<report
+		name="relatorioUtilizacoesUrgencia"
+		method-name="gerarRelatorio"
+		class="br.com.infowaypi.ecare.relatorio.UtilizacaoUrgenciaService"
+		display-name="Utilizaçao de Urgência" section="relatoriosAuditor" response-by-ajax="false">
+
+		<description>Relatório de Utilizacao de Urgencia</description>
+			<html>
+				<![CDATA[
+					<infoway:mensagemInformacao mensagem="Serão contabilizadas Guias do tipo Internaçao de Urgência, Consulta de Urgencia e Atendimento Subsequente que estejam em uma das seguintes situações: Pago(a), Faturado(a), Auditado(a), Recebido(a) ou Fechado(a)."/> 
+				]]>
+			</html>
+
+			<report-param name="dataInicial" required="true" scope="user" type="java.util.Date" display-name="Data inicial" input-type="date"/>
+			<report-param name="dataFinal" required="true" type="java.util.Date" display-name="Data final" input-type="date"/>
+			<report-param name="quantidadeGuias" required="false" type="java.lang.String" display-name="Quantidade Mínima de Utilizações" input-type="int" maxlength="5"/>
+			
+			<select-param
+			name="prestadores"
+			display-name="Escolha o Prestador"
+			type="br.com.infowaypi.ecarebc.associados.Prestador">
+				<autocomplete style-class="autocomplete" minimum-characters="3" force-selection="true">
+					<search-property name="pessoaJuridica.fantasia" display-name="Prestador"/>
+					<name-property name="pessoaJuridica.fantasia" display-name="Prestador"/>
+				</autocomplete>	
+			</select-param>	
+			
+						
+		<report-return name="resumo" type="br.com.infowaypi.ecare.resumos.ResumoUtilizacaoUrgencia" 
+			 display-name="Resultado Encontrado">
+			 
+			 <collection-display display-name="Urgencias por Segurado" name="resultados" default-sort="6" order="desc">
+			 	<display-property name="numeroCartao" display-name="Número do Cartão"/>
+			 	<display-property name="nome" display-name="Nome"/>
+			 	<display-property name="quantCUR" display-name="Consultas de Urgência"/>
+			 	<display-property name="quantIUR" display-name="Internações de Urgência"/>
+			 	<display-property name="quantAUR" display-name="Atendimento Subsequente"/>
+			 	<display-property name="quantidadeTotalGuias" display-name="Quantidade Total de Utilizações" type="int"/>
+			 </collection-display>	
+
+		</report-return>
+		
+	</report>	
+</jheat-mapping>

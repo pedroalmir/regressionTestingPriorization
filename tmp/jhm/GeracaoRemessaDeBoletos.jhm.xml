@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+	<flow 
+		name="geracaoRemassaDeBoletos" 
+		class="br.com.infowaypi.ecare.financeiro.boletos.GeracaoBoletosService"
+		display-name="Geracão de Remessa" 
+		section="boletos">
+		
+		<step-method name="gerarBoletos" display-name="Gerar Boletos" buttons-position="bottom">
+		
+			<step-param name="competencia" required="true" type="java.util.Date" display-name="Competência" input-type="month-year"  />
+			<step-param name="dataVencimento" required="true" type="java.util.Date" display-name="Data Vencimento" input-type="date"/>
+			<session-param name="usuario"/>
+			
+			<step-return name="remessa" type="br.com.infowaypi.ecare.financeiro.boletos.RemessaDeBoletos" 
+				 display-name="Boletos" scope="session"/>
+		</step-method>
+		
+		<step-method display-name="Conferir Dados" name="salvarRemessa" committed="true">
+			<session-param name="remessa" display-name="Conferir Dados" style-class="not-for-print">
+				<display-property name="competencia" display-name="Competência" type="month-year" />
+				<display-property name="dataGeracao" display-name="Data Geração" type="date" />
+				<display-property name="quantidadeDeBoletos" display-name="Quantidade de Boletos" type="int" />
+			</session-param>
+		</step-method>
+
+		<step-method name="baixarRemessa" display-name="Finalizar" >
+			<html>
+				<![CDATA[
+					<infoway:mensagemSucesso mensagem="Remessa de boletos gerada com sucesso!"/>
+				]]>
+			</html>
+			<session-param name="remessa" display-name="Remessa de Boletos" style-class="not-for-print">
+				<display-property name="competencia" display-name="Competência" type="month-year" />
+				<display-property name="dataGeracao" display-name="Data Geração" type="date" />
+				<display-property name="quantidadeDeBoletos" display-name="Quantidade de Boletos" type="int" />
+			</session-param>
+			<html>
+				<![CDATA[  
+					<%@ include file="/view/jsp/includes/DownloadRemessaBoleto.jsp" %>				
+				]]>
+			</html>
+		</step-method>
+		
+	</flow>	
+</jheat-mapping>

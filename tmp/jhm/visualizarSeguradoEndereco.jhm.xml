@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+<jheat-mapping>
+	<jheat-tag name="visualizarSeguradoEndereco">
+
+		<description>Visualização do Endereço do Segurado</description>
+
+		<attribute name="segurado" type="br.com.infowaypi.ecare.segurados.Segurado"
+			display-name="">
+
+			<html>
+			<![CDATA[
+				<fieldset>
+					<legend>Endere&ccedil;o</legend>
+				</fieldset>
+			]]>
+			</html>
+
+			<display-property name="pessoaFisica.endereco.logradouro"
+				align="left" display-name="Endereço" />
+			<display-property name="pessoaFisica.endereco.numero"
+				align="left" display-name="Número" />
+			<display-property name="pessoaFisica.endereco.bairro"
+				align="left" display-name="Bairro" />
+			<display-property name="pessoaFisica.endereco.complemento"
+				align="left" display-name="Complemento" />
+			<display-property name="pessoaFisica.endereco.cep"
+				align="left" display-name="CEP" />
+			<display-property name="pessoaFisica.endereco.pontoDeReferencia"
+				align="left" display-name="Pt. de Referência" />
+			<display-property name="pessoaFisica.endereco.municipio.descricao"
+				align="left" display-name="Município" />
+
+		</attribute>
+
+	</jheat-tag>
+</jheat-mapping>

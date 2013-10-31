@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<class-mapping class="br.com.infowaypi.ecarebc.segurados.AbstractSegurado" name="AbstractSegurado" display-name="Beneficiários" 
+		id-name="idSegurado" type="readonly" link-for-detail="pessoaFisica.nome" section="" roles="auditor,root,auditorOdonto,diretoriaMedica,centralDeServico">
+
+		<html>
+			<![CDATA[
+				<fieldset>
+					<legend>Dados Pessoais</legend>
+				</fieldset>
+				<br/>
+			]]>
+		</html>
+
+		<property name="numeroDoCartao" type="string" not-null="true">
+			<display name="Número do Cartão" options="listing,detail-only" mask="99.9999999999.99.9-9" maxlength="6" align="center" size="24"/>
+		</property>
+		
+		<property name="pessoaFisica.nome" type="string" not-null="true">
+			<display name="Nome" options="listing,search"/>
+		</property> 
+
+		<property name="pessoaFisica.cpf" type="string" not-null="true">
+			<display name="CPF" options="listing,search" mask="999.999.999-99" maxlength="14" size="24"/>
+		</property>
+
+		<property name="pessoaFisica.dataNascimento" type="date" not-null="true">
+			<display name="Nascimento" options="listing" mask="99/99/9999" maxlength="10" size="10"/>
+		</property>
+
+		<property name="pessoaFisica.idade" type="int" not-null="true">
+			<display name="Idade" options="listing" maxlength="10" size="10"/>
+		</property>
+
+		<html>
+			<![CDATA[
+				<fieldset>
+					<legend>Contato</legend>
+				</fieldset>
+				<br/>
+			]]>
+		</html>
+
+		<property name="pessoaFisica.telefoneResidencial" type="string" not-null="false">
+			<display name="Telefone Residencial" options="listing" size="20" mask="9999-9999"/>
+		</property>
+
+		<property name="pessoaFisica.telefoneDoTrabalho" type="string" not-null="false">
+			<display name="Telefone do Trabalho" options="listing" size="20" mask="9999-9999"/>
+		</property>
+
+		<property name="pessoaFisica.celular" type="string" not-null="false">
+			<display name="Celular" options="listing" size="20" mask="9999-9999"/>
+		</property>
+
+		<property name="pessoaFisica.email" type="string" not-null="false">
+			<display name="Email" options="listing"/>
+		</property>
+
+		<html>
+			<![CDATA[
+				<fieldset>
+					<legend>Dados do Contrato</legend>
+				</fieldset>
+				<br/>
+			]]>
+		</html>
+		
+		<property name="tipoDeSegurado" type="string" not-null="false">
+			<display name="Tipo" options="detail-only"/>
+		</property>
+
+		<property name="dataAdesao" type="date" not-null="true">
+			<display name="Data de Adesão" options="" mask="99/99/9999" maxlength="10" size="10"/>
+		</property>
+		
+		<html><![CDATA[
+			<fieldset>
+				<legend>Car&ecirc;ncias</legend>
+			</fieldset>
+			<br/>
+		]]></html>
+
+		<property name="carenciaRestanteUrgencias" type="int" calculated="true">
+			<display name="Carência restante para urgências (horas)" options="detail-only"/>
+		</property>
+
+		<property name="carenciaRestanteConsultasExamesDeBaixaComplexidade" type="int" calculated="true">
+			<display name="Carência restante para consultas e Exames de baixa complexidade (dias)" options="detail-only"/>
+		</property>
+
+		<property name="carenciaRestanteExamesEspeciaisDeAltaComplexidadeCirurgiasEInternamento" type="int" calculated="true">
+			<display name="Carência restante para exames de alta complexidade (dias)" options="detail-only"/>
+		</property>
+
+		<property name="carenciaRestanteExamesEspeciaisDeAltaComplexidadeCirurgiasEInternamento" type="int" calculated="true">
+			<display name="Carência restante para cirurgias e internação (dias)" options="detail-only"/>
+		</property>
+
+		<property name="carenciaRestanteParaPartos" type="int" calculated="true">
+			<display name="Carência restante para partos (dias)" options="detail-only"/>
+		</property>
+
+		<property name="carenciaRestanteParaDoencasPreExistentes" type="int" calculated="true">
+			<display name="Carência restante para doenças pré-existentes (dias)" options="detail-only"/>
+		</property>
+		
+
+		<property name="situacao.descricao" type="string" not-null="false">
+			<display name="Situação (Sistema)" options="listing,detail-only"/>
+		</property>
+
+		<collection 
+			class="br.com.infowaypi.msr.situations.Situacao" 
+			name="situacoes" display-name="Histórico de Situações" 
+			options="listing" master-detail="false"/>
+
+		<collection 
+			class="br.com.infowaypi.ecarebc.atendimentos.GuiaSimples" 
+			name="guias" display-name="Guias" options="listing"
+			master-detail="false"/>
+
+		<collection 
+			class="br.com.infowaypi.ecarebc.promocao.PromocaoConsulta" 
+			name="consultasPromocionais" display-name="Consultas Promocionais" 
+			master-detail="false" options="listing"/>	
+			
+	</class-mapping>
+
+</jheat-mapping>

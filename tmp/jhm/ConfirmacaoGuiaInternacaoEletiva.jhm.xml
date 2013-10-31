@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+<flow 
+	name="confirmarGuiasInternacaoEletiva" 
+	class="br.com.infowaypi.ecare.services.internacao.ConfirmarGuiaInternacao"
+	display-name="Confirmar Internação Eletiva" section="urgenciaInternacao">
+		
+	<description>Admissão de Internação Eletiva</description>
+		
+		<!-- STEP 1 -->
+		<step-method name="buscarGuiasConfirmacao" display-name="Informar Número de Autorização" title="Informar Número de Autorização" buttons-position="bottom">
+			<step-param name="autorizacao" input-type="string" size="12" type="java.lang.String" display-name="Autorização" />
+			<session-param name="prestador" operation="none"/>
+			<session-param name="usuario" operation="none"/>
+			<step-return name="guia" type="br.com.infowaypi.ecarebc.atendimentos.GuiaInternacaoEletiva" display-name="Guia de Internacao Eletiva" scope="session" />		
+		</step-method>
+		
+		<!-- STEP 2 -->
+		<step-method name="setarData" display-name="Informar Data da Internação" title="Informar Data da Internação" buttons-position="both">
+			
+			<step-param name="dataDeAtendimento" display-name="Data de Atendimento"	required="false" type="java.util.Date" input-type="date"/>
+			
+			<session-param name="guia" operation="none"/>
+			
+			<!-- if[REMOVE_OBRIGATORIEDADE_DE_INFORMAR_PRESTADOR_PARA_INTERNACAO] -->
+			<session-param name="prestador" operation="none"/>
+			<!--end[REMOVE_OBRIGATORIEDADE_DE_INFORMAR_PRESTADOR_PARA_INTERNACAO] -->
+			
+			<html>
+				<![CDATA[
+					<infoway:GuiaApresentacao guiaApresentacao="${guia}"/>
+				]]>
+			</html>		
+			
+			<step-return name="guia" type="br.com.infowaypi.ecarebc.atendimentos.GuiaInternacaoEletiva" 
+						display-name="Guia de Internacao Eletiva" scope="session" />
+		</step-method>
+		
+		<!-- STEP 3 -->
+		<step-method name="salvarGuia" display-name="Conferir Dados" title="Conferir Dados" committed="true">
+			<session-param name="guia" operation="none"/>
+			<html>
+				<![CDATA[
+					<infoway:GuiaApresentacao guiaApresentacao="${guia}"/>
+				]]>
+			</html>
+			<session-param name="usuario"/>
+			
+			<step-return name="guia" type="br.com.infowaypi.ecarebc.atendimentos.GuiaInternacaoEletiva" display-name="" scope="session"/>
+		</step-method>
+		
+		<!-- STEP 4 -->
+		<step-method name="finalizar" display-name="Imprimir Comprovante" title="Imprimir Comprovante">
+			
+			<html>
+				<![CDATA[ <infoway:mensagemSucessoMarcacoes mensagem="Internação confirmada com sucesso!" autorizacao="${guia.autorizacao}"/> ]]>
+			</html>
+			
+			<html>
+			<![CDATA[ 
+				<span class="not-for-print">
+					<button type="button" name="imprimir" class="actionButton" onclick="window.print();">Imprimir</button>
+				</span>
+			]]>
+			</html>
+			
+			<session-param name="guia"/>
+			<html>
+				<![CDATA[
+					<infoway:GuiaApresentacao guiaApresentacao="${guia}"/>
+				]]>
+			</html>
+			
+			<html>
+				<![CDATA[ <infoway:imprimirGuia titulo="GUIA DE CONFIRMACAO DE INTERNAÃ‡ÃƒO"/> 
+					<span class="not-for-print">
+						<button type="button" name="imprimir" class="actionButton" onclick="window.print();">Imprimir</button>
+					</span>
+					]]>
+			</html>
+					
+		</step-method>
+
+	</flow>	
+</jheat-mapping>

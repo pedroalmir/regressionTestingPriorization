@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<class-mapping class="br.com.infowaypi.ecarebc.procedimentos.ProcedimentoOdontoRestauracao" name="ProcedimentoOdontoRest" display-name="Procedimento Odontológico"
+		id-name="idProcedimento" link-for-detail="" type="readonly" depends="guia" section="cadastros" global-link="true" roles="auditor, prestadorOdonto, centralDeServico, prestadorCompleto, auditorOdonto">
+
+		<many-to-one options="listing,search"
+			class="br.com.infowaypi.ecarebc.procedimentos.TabelaCBHPM"
+			name="procedimentoDaTabelaCBHPM" display-name="Tratamento" autocomplete="true">
+			<display-property name="codigoEDescricao"/>
+			
+			<restrictions>
+		    	<restriction property-name="codigo" type="notequals" property-value="90000001"/>
+		    	<restriction property-name="codigo" type="notequals" property-value="90000002"/>
+		    	<restriction property-name="codigo" type="notequals" property-value="90000003"/>
+		    	<restriction property-name="codigo" type="notequals" property-value="90000004"/>
+			</restrictions>
+			
+		</many-to-one>
+		
+		<property name="guia.solicitante.crmNome" >
+			<display options="listing,detail-only" name="Solicitante"/>
+		</property>
+		
+		<property name="valorTotal" type="bigdecimal">
+			<display name="Valor Total" options="listing,detail-only"/>
+	    </property>
+		
+		<property name="situacao.dataSituacao" type="date">
+			<display name="Data Realização" options="listing, detail-only" mask="99/99/9999" maxlength="10" size="20"/>
+	    </property>
+		
+		<many-to-one options="detail-only"
+			class="br.com.infowaypi.ecarebc.atendimentos.GuiaExameOdonto" 
+			name="guia" display-name="Guia">
+			<display-property name="segurado.pessoaFisica.nome"/>
+		</many-to-one> 
+		
+		<collection 
+			class="br.com.infowaypi.ecarebc.odonto.EstruturaOdontoEF" 
+			name="estruturas" display-name="Estruturas Odontológicas" 
+	    	master-detail="true"/>
+
+		<validate-method name="validate">
+			<session-param name="usuario"/>
+		</validate-method>
+
+	</class-mapping>
+
+</jheat-mapping>

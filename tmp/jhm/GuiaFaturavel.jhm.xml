@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<class-mapping class="br.com.infowaypi.ecarebc.financeiro.faturamento.GuiaFaturavel" name="GuiaFaturavel" display-name="Guias" 
+		id-name="idGuia" link-for-detail="" type="readonly" section="" roles="root,auditor,atendente,prestador,prestadorCompleto,
+			prestadorConsulta,prestadorExame,prestadorConsultaExame,prestadorInternacaoUrgencia,
+			prestadorOdonto,centralDeServico,prestadorInternacaoExameUrgencia,gestor">
+		
+		<property name="dataAtendimento" type="date" not-null="true">
+			<display name="Dta. Atendimento" options="" mask="99/99/9999" maxlength="10" size="20"/>
+	    </property>
+	
+		<property name="tipo" type="string" not-null="true">
+			<display name="Tipo de Guia" options="listing,detail-only" maxlength="6" align="center" size="20"/>
+	    </property>  
+	    
+	    <many-to-one options="listing,search"
+			class="br.com.infowaypi.ecarebc.associados.Prestador" 
+			name="prestador" display-name="Prestador" autocomplete="true">
+			<display-property name="pessoaJuridica.fantasia"/>
+		</many-to-one>
+	
+		<property name="valorPagoPrestador" not-null="true" type="money">
+			<display name="Valor Pago ao Prestador" options="detail-only"/>
+	    </property>
+	    
+	    <collection 
+			class="br.com.infowaypi.msr.situations.Situacao" 
+			name="situacoes" display-name="Histórico de Operações" 
+	    	master-detail="false"/>
+
+	</class-mapping>    
+	
+</jheat-mapping>

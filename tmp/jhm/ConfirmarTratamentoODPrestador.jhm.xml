@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+<flow 
+	name="confirmarTratamentoODPrestador" 
+	class="br.com.infowaypi.ecare.services.odonto.ConfirmacaoTratamentoOdonto"
+	display-name="Confirmar Tratamento" section="odontoPrestador">
+			
+	<description>Confirmação de tratamentos odontológicos</description>		
+	 
+	<step-method name="buscarSegurados" display-name="Buscar Beneficiário" title="Buscar Beneficiário" buttons-position="bottom">
+		<step-param name="cpfTitular" size="24" mask="999.999.999-99" input-type="string" type="java.lang.String" display-name="CPF do Titular"/>
+		<step-param name="numeroDoCartao" size="24" mask="99.9999999999.99.9-9" input-type="string" type="java.lang.String" display-name="Número do cartão do Beneficiário"/>
+		<step-return name="resumoSegurados" type="br.com.infowaypi.ecare.segurados.ResumoSegurados" display-name="Segurados" scope="session" />
+	</step-method>
+	
+	<step-method display-name="Selecionar Beneficiário" name="selecionarSeguradoConfirmacao">
+		<session-param name="prestador" operation="none"/>
+		<select-param display-name="Beneficiário" name="segurados" type="br.com.infowaypi.ecare.segurados.Segurado" session-property-ref="resumoSegurados">
+			<radio-group>
+				<display-property name="pessoaFisica.cpf" display-name="CPF"/>
+				<display-property name="numeroDoCartao" display-name="Número do Cartão"/>
+				<display-property name="pessoaFisica.nome" display-name="Nome"/>
+			</radio-group>
+		</select-param>
+		
+		<step-return display-name="" name="resumoGuias" type="br.com.infowaypi.ecarebc.atendimentos.ResumoGuias" scope="session"/>
+	</step-method>
+	
+	<step-method name="selecionarGuia" display-name="Selecionar Guia" title="Selecionar Guia">
+		<select-param
+			name="guiasTratamentoOdontoPeloPrestador"
+			type="br.com.infowaypi.ecarebc.atendimentos.GuiaExameOdonto"
+			display-name="Selecione a Guia"
+			session-property-ref="resumoGuias">
+			<radio-group>
+				<display-property name="autorizacao" display-name="Autorização" />
+				<display-property name="segurado.pessoaFisica.nome" display-name="Beneficiário" />
+				<display-property name="tipo" display-name="Tipo" />
+				<display-property name="prestador.pessoaJuridica.fantasia" display-name="Prestador"/>
+				<display-property name="situacao.descricao" display-name="Situação" />
+				<display-property name="situacao.dataSituacao" display-name="Data" type="date" />
+				<display-property name="dataAtendimento" display-name="Dt. de Atendimento" type="date" />
+				<display-property name="valorTotal" display-name="Valor total" type="money" />
+			</radio-group>
+		</select-param>
+		<step-return name="guiaAntiga" type="br.com.infowaypi.ecarebc.atendimentos.GuiaExameOdonto" 
+			display-name="" scope="session"/>
+	</step-method>
+	
+	<step-method name="selecionarProcedimentos" display-name="Escolher Tratamentos" title="Escolher Tratamentos">
+		<collection-param
+			name="procedimentosAutorizados"
+			type="br.com.infowaypi.ecarebc.procedimentos.ProcedimentoOdonto"
+			display-name="Selecione os Tratamentos a confirmar">
+			<checklist session-property-ref="guiaAntiga" operation="reload">
+				<display-property name="procedimentoDaTabelaCBHPM.codigo" display-name="Código"/>
+				<display-property name="procedimentoDaTabelaCBHPM.descricao" display-name="Descrição"/>
+				<display-property name="procedimentoDaTabelaCBHPM.tipoEstrutura" display-name="Aplicação"/>
+				<display-property name="descricaoEstruturas" display-name="Estrutura(s)"/>
+				<display-property name="descricaoPericia" display-name="Perícia"/>
+  			    <display-property name="valorTotal" display-name="Valor Bruto" type="money"/>			
+			</checklist>
+		</collection-param> 
+		
+		<session-param name="prestador" operation="reload">
+			<html>
+				<![CDATA[ <infoway:tableSeparator titulo="Informações do Prestador" colspan="2"/> ]]>
+			</html>
+			
+			<display-property name="pessoaJuridica.fantasia" display-name="Prestador"/>
+			<display-property name="pessoaJuridica.telefone" display-name="Telefone"/>
+			<display-property name="pessoaJuridica.endereco" display-name="Endereço"/>
+			<display-property name="pessoaJuridica.endereco.municipio" display-name="Município"/>
+		</session-param>
+		
+		<session-param name="guiaAntiga">		
+			<html>
+				<![CDATA[ <infoway:tableSeparator titulo="Informações do Segurado" colspan="2"/> ]]>
+			</html>
+			
+			<display-property name="segurado.pessoaFisica.nome" display-name="Segurado"/>
+			<display-property name="segurado.pessoaFisica.idade" display-name="Idade"/>
+			<display-property name="segurado.pessoaFisica.descricaoDoSexo" display-name="Sexo"/>
+			
+			<collection-display name="procedimentosNaoAutorizados" display-name="Tratamentos Não-Autorizados">
+				<display-property name="procedimentoDaTabelaCBHPM.codigo" display-name="Código"/>
+				<display-property name="procedimentoDaTabelaCBHPM.descricao" display-name="Descrição"/>
+				<display-property name="procedimentoDaTabelaCBHPM.tipoEstrutura" display-name="Aplicação"/>
+				<display-property name="descricaoEstruturas" display-name="Estrutura(s)"/>
+				<display-property name="descricaoPericia" display-name="Perícia"/>
+  			    <display-property name="valorTotal" display-name="Valor Bruto" type="money"/>		
+			</collection-display>
+			
+			<collection-display name="procedimentosRealizados" display-name="Tratamentos Realizados">
+				<display-property name="procedimentoDaTabelaCBHPM.codigo" display-name="Código"/>
+				<display-property name="procedimentoDaTabelaCBHPM.descricao" display-name="Descrição"/>
+				<display-property name="procedimentoDaTabelaCBHPM.tipoEstrutura" display-name="Aplicação"/>
+				<display-property name="descricaoEstruturas" display-name="Estrutura(s)"/>
+				<display-property name="descricaoPericia" display-name="Perícia"/>
+  			    <display-property name="valorTotal" display-name="Valor Bruto" type="money"/>		
+			</collection-display>
+			
+			<html>
+				<![CDATA[ <infoway:tableSeparator titulo="Considerações de Auditoria" colspan="2"/> ]]>
+			</html>
+			
+			<collection-display name="observacoes" display-name="">
+				<display-property name="texto" display-name="Observações" align="center"/>
+			</collection-display>
+		</session-param>
+		
+		<session-param name="usuario"/>
+		
+		<step-return name="guia" type="br.com.infowaypi.ecarebc.atendimentos.GuiaExameOdonto" display-name="" scope="session"/>
+	</step-method>
+
+	<step-method name="confirmarTratamentoOdonto" display-name="Conferir Dados" title="Conferir Dados" committed="true">
+		<session-param name="guiaAntiga"/>
+		
+		<session-param name="guia" operation="none"/>
+		
+		<html> <![CDATA[ <infoway:GuiaApresentacao guiaApresentacao="${guia}"/> ]]> </html>
+		
+		<session-param name="usuario" operation="none"/>
+		
+		<step-return name="guia" type="br.com.infowaypi.ecarebc.atendimentos.GuiaExameOdonto" display-name="" scope="session"/>
+	</step-method>
+	
+	<step-method name="finalizar" display-name="Finalizar" title="Finalizar">
+			
+		<html>
+			<![CDATA[ <infoway:mensagemSucessoMarcacoes mensagem="Procedimento(s) confirmado(s) com sucesso!" autorizacao="${guia.autorizacao}"/> ]]>
+		</html>
+		
+		<session-param name="guia" operation="none"/>
+		
+		<html>
+			<![CDATA[ <infoway:GuiaApresentacao guiaApresentacao="${guia}"/>]]>
+		</html>
+		
+	</step-method>
+	
+	</flow>	
+</jheat-mapping>

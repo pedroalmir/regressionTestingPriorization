@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<report 
+		name="relatorioPrestadoresCoParticipacaoLiberada" 
+		method-name="getProcedimento"  
+		class="br.com.infowaypi.ecare.relatorio.RelatorioPrestadoresCoParticipacaoLiberada"
+		display-name="Prestadores com co-participacao liberada" section="" global-link="true" response-by-ajax="true">
+
+		<select-param name="procedimento" display-name="Procedimento" type="br.com.infowaypi.ecarebc.procedimentos.TabelaCBHPM">
+			<autocomplete minimum-characters="3" style-class="autocomplete">
+				<search-property display-name="codigo" name="Codigo"/>
+				<name-property display-name="Procedimento" name="codigoEDescricao"/>
+			</autocomplete>
+		</select-param>
+		
+		<report-return name="tabela" type="br.com.infowaypi.ecarebc.procedimentos.TabelaCBHPM" 
+		         display-name="">	
+			<collection-display display-name="Prestadores com co-participação liberada" name="prestadoresCoParticipacaoLiberada">
+				<display-property name="nome" display-name="Prestador"/>
+				<display-property name="pessoaJuridica.endereco.logradouro" display-name="Logradouro"/>
+				<display-property name="pessoaJuridica.endereco.numero" display-name="Número"/>
+				<display-property name="pessoaJuridica.endereco.bairro" display-name="Bairro"/>
+				<display-property name="pessoaJuridica.endereco.complemento" display-name="Complemento"/>
+				<display-property name="pessoaJuridica.endereco.municipio.descricao" display-name="Município"/>
+			</collection-display>
+		</report-return>
+	</report>
+</jheat-mapping>

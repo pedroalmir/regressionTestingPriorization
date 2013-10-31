@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+	<flow 
+		name="processaRetornoBoletos" 
+		class="br.com.infowaypi.ecare.financeiro.boletos.ProcessaRetornoBoletosService"
+		display-name="Processamento de Retorno" 
+		section="boletos">
+				
+		<step-method name="processarRetorno" display-name="Informe o arquivo" buttons-position="bottom">
+			<step-param name="arquivo" type="[B" display-name="Arquivo da Caixa" input-type="file" required="true" />
+			<step-return name="arquivo" type="br.com.infowaypi.ecarebc.financeiro.arquivos.ArquivoDeRetorno" 
+				 display-name="Boletos" scope="session"/>
+		</step-method>
+
+		<step-method name="salvar" display-name="Visualizar Dados" buttons-position="bottom" committed="true">
+			<html>
+				<![CDATA[
+					<c:if test="${arquivo.vazio}">
+						<infoway:mensagemInformacao mensagem="Esse arquivo nao possui nenhum boleto a ser cobrado." />
+					</c:if>
+				]]>
+			</html>
+			
+			<session-param name="arquivo" display-name="Informacoes do Arquivo" operation="none" style-class="not-for-print">
+				<display-property name="sequencial" display-name="Numero Sequencial"/>
+				<display-property name="dataProcessamento" display-name="Data de processamento" type="date"/>
+				<display-property name="quantidadeContas" display-name="Quantidade de Contas"/>
+				<display-property name="valorContas" display-name="Valor Total" type="money"/>
+				<collection-display name="contas" display-name="Boletos">
+					<display-property name="nossoNumero" display-name="Nosso Numero" type="long"/>
+					<display-property name="dataVencimento" display-name="Vencimento" type="date"/>		
+					<display-property name="dataPagamento" display-name="Data de Pagamento" type="date"/>
+					<display-property name="valorCobradoComMultasEJuros" display-name="Valor Cobrado" type="money"/>
+					<display-property name="valorJurosMultaEncargosPago" display-name="Valor Juros/Multas pago" type="money"/>
+					<display-property name="valorPago" display-name="Valor Pago" type="money"/>		
+				</collection-display>
+			</session-param>
+		</step-method>
+
+		<step-method name="finalizar" display-name="Arquivo Processado" buttons-position="bottom">
+			
+			<html>
+				<![CDATA[
+				
+			 		<infoway:mensagemSucesso mensagem="Arquivo processado com sucesso."/> 
+				 	<%@ include file="/view/jsp/includes/RegistrosNaoProcessadosRetornoBoletos.jsp" %>
+
+				 ]]>
+			</html>
+			<session-param name="arquivo" display-name="Informações do Arquivo" operation="none" style-class="not-for-print">
+				<display-property name="sequencial" display-name="Numero Sequencial"/>
+				<display-property name="dataProcessamento" display-name="Data de processamento" type="date"/>
+				<display-property name="quantidadeContas" display-name="Quantidade de Contas"/>
+				<display-property name="valorContas" display-name="Valor Total" type="money"/>
+				<collection-display name="contas" display-name="Boletos">
+					<display-property name="nossoNumero" display-name="Nosso Numero" type="long"/>
+					<display-property name="dataVencimento" display-name="Vencimento" type="date"/>		
+					<display-property name="dataPagamento" display-name="Data de Pagamento" type="date"/>
+					<display-property name="valorCobradoComMultasEJuros" display-name="Valor Cobrado" type="money"/>
+					<display-property name="valorPago" display-name="Valor Pago" type="money"/>		
+				</collection-display>
+			</session-param>
+			
+			
+			
+			
+		</step-method>
+
+	</flow>	
+</jheat-mapping>

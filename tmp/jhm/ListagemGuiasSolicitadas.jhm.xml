@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+
+<jheat-mapping>
+	<flow name="listarGuiasSolicitadas" 
+		class="br.com.infowaypi.ecarebc.atendimentos.ListagemGuiasSolicitadas"
+		display-name="Guias Aptas a Regulação" section="relatoriosAuditor">
+	
+		<description>Guias aptas a Confirmação</description>
+		
+		<step-method display-name="Buscar Guias" name="buscarGuias">
+			<html>
+				<![CDATA[
+					<infoway:mensagemInformacao mensagem="Caso não seja informado um intervalo de datas, serão exibidas guias solicitadas há até 3 dias."/>
+				]]>
+			</html>	
+			<step-param name="dataInicial" type="java.lang.String"  display-name="Data inicial" input-type="date" required="false"/>
+			<step-param name="dataFinal" type="java.lang.String" display-name="Data final" input-type="date" required="false"/>	
+			<session-param name="usuario" />
+			<step-return display-name="resumo" name="resumoGuiasSolicitadas" type="br.com.infowaypi.ecarebc.atendimentos.ResumoGuiasSolicitadas" scope="session"/>
+		</step-method>
+	
+		<step-method display-name="Selecionar Guias" name="selecionarGuias">
+	       	 <html>
+				<![CDATA[
+					<infoway:guiasSolicitadas resumoGuias="${resumoGuiasSolicitadas}"/>
+				]]>
+			</html>	
+		</step-method>
+	</flow>
+</jheat-mapping>

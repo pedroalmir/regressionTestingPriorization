@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+
+<jheat-mapping>
+	<flow 
+		name="solicitarInclusaoDeProcedimentos" 
+		class="br.com.infowaypi.ecare.services.urgencias.SolicitarInclusaoProcedimentosService"
+		display-name="Incluir Exames Complementares " section="relatoriosPrestador">
+			
+		<description>Inclusão de novos exames</description>	
+		<step-method name="buscarGuiasRealimentacao" display-name="Informar Número de Autorização" title="Informar Número de Autorização" buttons-position="bottom">
+			<step-param name="autorizacao" input-type="string" size="12" type="java.lang.String" display-name="Autorizacao" mask="000000000000"/>
+			<step-return name="guia" type="br.com.infowaypi.ecarebc.atendimentos.GuiaSimples" display-name="Guia de Internacao Eletiva" scope="session" />		
+		</step-method>
+		
+		
+		<!--step-method name="selecionarGuia" display-name="Escolher Guia">
+			<select-param
+				name="guias"
+				type="br.com.infowaypi.ecarebc.atendimentos.GuiaCompleta"
+				display-name="Selecione a Guia"
+				session-property-ref="resumoGuias">
+				<radio-group>
+					<display-property name="idGuia" display-name="Autorização"/>
+					<display-property name="segurado.contrato" display-name="Matrícula"/>					
+					<display-property name="segurado.pessoaFisica.nome" display-name="Segurado"/>
+					<display-property name="prestador.pessoaJuridica.fantasia" display-name="Prestador"/>
+					<display-property name="profissional.pessoaFisica.nome" display-name="Profissional"/>
+				</radio-group>
+			</select-param>
+			<step-return name="guia" type="br.com.infowaypi.ecarebc.atendimentos.GuiaCompleta" 
+				display-name="" scope="session"/>
+		</step-method-->
+		
+		<step-method name="adicionarProcedimentos" display-name="Exames Clínicos" title="Exames">
+				<collection-param  
+					name="procedimentosProcs"
+					display-name="Adicionar os Exames"
+					type="br.com.infowaypi.ecarebc.procedimentos.Procedimento">
+				    <insert>
+						<display-property name="procedimentoDaTabelaCBHPM.codigo" display-name="Código"/>
+	  			        <display-property name="procedimentoDaTabelaCBHPM.descricao" display-name="Descrição"/>
+	  			        <display-property name="bilateral" display-name="Bilateral" type="boolean"/>
+	  			        <display-property name="quantidade" display-name="Quantidade" type="int"/>
+	  			        <display-property name="valorAtualDoProcedimento" display-name="Valor Unitário" type="money"/>
+	  			        <display-property name="valorTotal" display-name="Valor Total" type="money"/>
+				    </insert>
+				</collection-param>
+	
+				<collection-param name="cids" type="br.com.infowaypi.ecarebc.procedimentos.CID" display-name="Adicionar CID (Hipóteses Diagnósticas)">
+						<autocomplete style-class="autocomplete" minimum-characters="4" force-selection="true">
+						<search-property name="descricaoDaDoenca" display-name="Descrição"/>
+						<name-property name="descricaoDaDoenca" display-name="Descrição"/>
+					</autocomplete>
+				</collection-param>
+						
+				<session-param name="guia" />
+			
+			
+			<html>
+				<![CDATA[
+					<infoway:GuiaApresentacao guiaApresentacao="${guia}"/>
+				]]>
+			</html>
+	
+				<step-return name="guia" type="br.com.infowaypi.ecarebc.atendimentos.GuiaSimples" 
+			         display-name="Conferir Dados" scope="session"/>
+				
+			</step-method>
+		
+		
+			
+		<step-method name="salvarGuia" display-name="Conferir Dados" title="Conferir Dados" committed="true">
+				<session-param name="guia" />
+			
+			<html>
+				<![CDATA[
+					<infoway:GuiaApresentacao guiaApresentacao="${guia}"/>
+				]]>
+			</html>
+						
+			</step-method>
+			
+			<step-method name="finalizar" display-name="Imprimir Comprovante" title="Imprimir Comprovante">
+				
+				<html>
+					<![CDATA[ <infoway:mensagemSucessoMarcacoes mensagem="Procedimentos incluídos com sucesso!"/> ]]>
+				</html>
+				
+				<html>
+			<![CDATA[ 
+				<span class="not-for-print">
+					<button type="button" name="imprimir" class="actionButton" onclick="window.print();">Imprimir</button>
+				</span>
+			]]>
+				</html>
+				
+				<session-param name="guia" />
+			
+				<html>
+					<![CDATA[
+						<infoway:GuiaApresentacao guiaApresentacao="${guia}"/>
+					]]>
+				</html>
+				<html>
+					<![CDATA[ <infoway:imprimirGuia titulo="&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GUIA DE INTERNAÃ‡ÃƒO"/> 
+						<span class="not-for-print">
+						<button type="button" name="imprimir" class="actionButton" onclick="window.print();">Imprimir</button>
+					</span>
+					]]>
+				</html>
+						
+			</step-method>
+	</flow>
+</jheat-mapping>

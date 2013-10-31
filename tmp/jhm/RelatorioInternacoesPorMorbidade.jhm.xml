@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<report 
+		name="relatorioInternacoesPorMorbidade" 
+		display-name="Internações por Morbidade" 
+		class="br.com.infowaypi.ecare.services.RelatorioInternacoesPorMorbidade" 
+		method-name="gerarRelatorio" 
+		section="relatoriosAuditor"
+		response-by-ajax="true">
+
+		<description>Total de internações (clínicas e cirúrgicas) realizadas por morbidade.</description>
+
+		<report-param name="competencia" required="true" type="java.util.Date" display-name="Mês" mask="99/9999" input-type="month-year"/>
+		
+		<select-param name="tipoInternacao" display-name="Selecione o Tipo de Internação" type="java.lang.String" required="true">
+			<constants-group class="br.com.infowaypi.ecare.services.RelatorioInternacoesPorMorbidade" name="Tipo de Internação">
+				<entry display-name="Internação Eletiva" key-value="TIPO_INTERNACAO_ELETIVA"/>
+				<entry display-name="Internação de Urgência" key-value="TIPO_INTERNACAO_URGENCIA"/>
+			</constants-group>
+		</select-param>
+
+		<select-param name="tipoTratamento" display-name="Selecione o Tipo de Tratamento" type="java.lang.Integer" required="true">
+			<constants-group class="br.com.infowaypi.ecarebc.atendimentos.GuiaCompleta" name="Tipo de Tratamento">
+				<entry display-name="Tratamento Clínico" key-value="TRATAMENTO_CLINICO"/>
+				<entry display-name="Tratamento Cirúrgico" key-value="TRATAMENTO_CIRURGICO"/>
+			</constants-group>
+		</select-param>
+
+		<select-param name="tipoMorbidade" display-name="Selecione o Tipo de Morbidade" type="java.lang.String" required="true">
+			<constants-group class="br.com.infowaypi.ecare.services.RelatorioInternacoesPorMorbidade" name="Tipo de Morbidade">
+				<entry display-name="CID 10" key-value="TIPO_CID"/>
+				<entry display-name="Procedimento CBHPM" key-value="TIPO_PROCEDIMENTO"/>
+			</constants-group>
+		</select-param>
+
+		<report-return name="resultado" type="br.com.infowaypi.ecare.services.RelatorioInternacoesPorMorbidade" display-name="Resultado Encontrado">
+			<html>
+				<![CDATA[
+					<%@ include file="/view/jsp/includes/RelatorioInternacoesPorMorbidade.jsp" %>
+				]]>
+			</html>	
+		</report-return>		
+	</report>
+</jheat-mapping>

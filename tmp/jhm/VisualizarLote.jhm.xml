@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+<flow
+	name="ReimprimirLotes" 
+	class="br.com.infowaypi.ecare.services.ReimpressaoDeLotesService"
+	display-name="Visualizar/Imprimir Lote" section="marcacao,auditor,urgenciaInternacao,consultasPrestador,examesPrestador,relatoriosPrestador, relatorioAnestesista,
+		autorizacoesCentral, relatoriosAuditor, relatorioFaturista, autorizacoesCentralOdonto, autorizacoesCentralDeRelacionamento, odontoPrestador, odontoUrgenciaPrestador, marcacaoOdonto, auditoriaOdonto, abaOperador">
+		
+	<description>Visualização/Impressão de Lotes</description>
+
+	<step-method name="buscarLote" display-name="Escolher Lote" title="Escolher Lote" buttons-position="bottom" >
+		<html>
+			<![CDATA[
+				<infoway:mensagemAlerta mensagem="Caro usuário, ao informar o Identificador do Lote, o campo Autorização da Guia será ignorado pela busca.
+				<br /> Se uma Autorização da Guia for informada, serão mostrados os dados do último lote ao qual ela pertenceu. "/> 
+			]]>
+		</html>
+		<step-param name="identificador" input-type="long" size="12" type="java.lang.Long" display-name="Identificador do Lote" />
+		<step-param name="autorizacao" input-type="string" size="12" type="java.lang.String" display-name="Autorização da Guia" />
+		
+		<step-return name="lote" type="br.com.infowaypi.ecarebc.atendimentos.LoteDeGuias" 
+			display-name="Lote de Guias" scope="session"/>
+	</step-method>
+	
+	
+	<step-method name="finalizar" display-name="Imprimir Comprovante de Confirmação" title="Imprimir Comprovante">
+			
+		<session-param name="lote" operation="none"/>
+		
+		<html>
+			<![CDATA[ 
+				<span class="not-for-print">
+					<button type="button" name="imprimir" class="actionButton" onclick="window.print();">Imprimir</button>
+				</span>
+				
+				<c:choose> 
+					<c:when test="${lote.loteGRG}"> 
+				  		<infoway:loteApresentacaoGRG loteAtual="${lote}"/>
+				    </c:when> 
+				  	<c:otherwise> 
+					    <infoway:loteApresentacao loteAtual="${lote}"/>
+					</c:otherwise> 
+				</c:choose> 
+
+				<c:choose> 
+					<c:when test="${lote.enviado}"> 
+						<infoway:capaDeLoteDeEnvio lote="${lote}"/>
+					</c:when>
+					<c:when test="${lote.recebido}"> 
+							<infoway:capaDeLoteDeRecebimento lote="${lote}"/>
+					  </c:when>
+	            </c:choose>
+				<span class="not-for-print">
+					<button type="button" name="imprimir" class="actionButton" onclick="window.print();">Imprimir</button>
+				</span>
+			]]>
+			</html>
+	</step-method>
+</flow>	
+</jheat-mapping>	
+	

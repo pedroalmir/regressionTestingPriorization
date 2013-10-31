@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+	
+	<class-mapping class="br.com.infowaypi.ecare.programaPrevencao.AssociacaoSeguradoPrograma" name="associacaoSeguradoPrograma" display-name="Associação do Beneficiário" 
+		id-name="idAssociacaoSeguradoPrograma" link-for-detail="idAssociacaoSeguradoPrograma" section="pps" type="readonly">
+		
+		<property name="idAssociacaoSeguradoPrograma" type="long" not-null="false">
+			<display name="ID" size="10" options="listing,detail-only" />
+		</property>
+		
+		<property name="dataInsercao" type="date" not-null="false">
+			<display name="Data de inserção" size="10" options="listing,detail-only" />
+		</property>
+		
+		<property name="situacao.descricao" type="string" not-null="false">
+			<display name="Situação (Sistema)" options="listing,detail-only"/>
+		</property>
+		
+		<many-to-one
+			class="br.com.infowaypi.ecare.programaPrevencao.ProgramaDePrevencao"
+			name="programa"
+			display-name="Programa de prevenção" autocomplete="true" options="listing,detail-only">
+			<display-property name="nome"/>
+		</many-to-one>
+		
+		<many-to-one
+			class="br.com.infowaypi.ecarebc.segurados.AbstractSegurado"
+			name="segurado"
+			display-name="Segurado" autocomplete="true" options="detail-only">
+			<display-property name="pessoaFisica.nome"/>
+		</many-to-one>	
+			
+		<collection 
+			class="br.com.infowaypi.msr.situations.Situacao" 
+			name="situacoes" display-name="Histórico de Situações" 
+	    	options="listing,detail-only" master-detail="true"/>
+	    	
+	</class-mapping>
+
+</jheat-mapping>

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+
+<jheat-mapping>
+
+	<report name="relatorioMpps" method-name="executarRelatorio"
+
+		class="br.com.infowaypi.ecare.programaPrevencao.report.RelatorioMpps"
+
+		display-name="Relatório MPPS" section="pps" response-by-ajax="true">
+
+		<select-param name="programa" display-name="Escolha o Programa"
+			type="br.com.infowaypi.ecare.programaPrevencao.ProgramaDePrevencao"
+			display-label-head="false" required="true" >
+
+			<autocomplete style-class="autocomplete"
+				minimum-characters="3" force-selection="true" mask-detail="As 3 letras iniciais">
+				<search-property name="codigoENome" display-name="Programa de prevenção" />
+				<name-property name="codigoENome" display-name="Programa de prevenção" />
+			</autocomplete>
+		</select-param>
+
+		<report-param name="dataInicial" type="java.lang.String" required="true"
+			display-name="Data de atendimento incial" mask="99/99/9999" input-type="date" />
+
+		<report-param name="dataFinal" type="java.lang.String"
+			display-name="Data  de atendimento final" mask="99/99/9999" input-type="date" />
+
+		<report-return name="resumo"
+			type="br.com.infowaypi.ecare.programaPrevencao.fluxos.ResumoGeralMpps"
+			display-name="Resultado relatório">
+
+			<html>
+				<![CDATA[ <infoway:tableSeparator titulo="Resultado Geral" colspan="2"/> ]]>
+			</html>
+
+			<display-property name="nConsultasRealizadasPeloPrograma"
+				type="bigdecimal" display-name="Consultas eletivas  realizadas" />
+
+			<display-property name="nConsultasDeUrgencia" type="bigdecimal"
+				display-name="Consultas de urgência" />
+
+			<display-property name="nInteracoes" type="bigdecimal"
+				display-name="Internações" />
+
+			<display-property name="nCoparticipacoesLiberadas"
+				type="bigdecimal" display-name="Co-participações liberadas" />
+				
+		    <display-property name="nLimitesUltrapassadosDePacientesInscritosEmProgramas"
+				type="bigdecimal" display-name="Limites ultrapassados" />
+
+			<html>
+			
+			<![CDATA[
+					<%@ include file="/view/jsp/includes/RelatorioBeneficiariosMpps.jsp" %>
+		    ]]>
+
+			</html>
+
+
+
+
+		</report-return>
+
+	</report>
+
+</jheat-mapping>

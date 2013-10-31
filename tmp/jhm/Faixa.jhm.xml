@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+<jheat-mapping>
+	<class-mapping 
+		class="br.com.infowaypi.ecarebc.produto.Faixa" 
+		name="Faixa" 
+		display-name="Faixas" 
+		id-name="idFaixa" 
+		link-for-detail="descricao" 
+		type="dependent"
+		depends="tabela"
+		global-link="true"
+		section="">
+		<property name="idadeInicial" type="int" not-null="true">
+			<display name="Idade Inicial" options="listing" maxlength="3" size="5"/>
+		</property>
+
+		<property name="idadeFinal" type="int" not-null="true">
+			<display name="Idade Final" options="listing" maxlength="3" size="5"/>
+		</property>
+		
+		<property name="valor" type="money" not-null="true" real-class="java.math.BigDecimal">
+			<display name="Valor" options="listing" />
+		</property>
+		
+		<many-to-one display-name="Tabela" options="detail-only" class="br.com.infowaypi.ecarebc.produto.Tabela" name="tabela" 
+			autocomplete="true" >
+			<display-property name="competencia" display-name="Competência" type="date" align="center" />
+		</many-to-one>
+
+	</class-mapping>
+</jheat-mapping>

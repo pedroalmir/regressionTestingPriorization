@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+<flow 
+	name="loginPortalBeneficiarioFlow" 
+	class="br.com.infowaypi.ecare.services.LoginPortalBeneficiarioFlow"
+	display-name="Portal do Beneficiario" section="portalBeneficiarioLogin">
+		
+		<step-method name="logar" display-name="" title="" buttons-position="bottom">
+			<step-param name="login" display-name=""/>
+		</step-method>
+		
+	</flow>
+</jheat-mapping>		

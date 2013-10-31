@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+	
+	<class-mapping class="br.com.infowaypi.ecarebc.planos.Plano" name="Plano" 
+		display-name="Planos" id-name="idPlano" 
+		link-for-detail="descricao" type="simple" section="">
+
+		<description>Planos cadastrados no sistema</description>
+		
+		<property name="descricao" not-null="true">
+			<display name="Descrição" options="search,listing"/>
+		</property>
+				
+		<!--property name="codigoLegado" type="int">
+			<display name="Código Legado" options="listing" size="10"/>
+		</property-->
+
+
+		<collection name="tabelas" class="br.com.infowaypi.ecare.planos.Tabela" 
+			display-name="Tabelas" options="insert" master-detail="false"/>
+
+		<!--collection name="segurados" class="br.com.infowaypi.ecare.segurados.Segurado"
+			display-name="Beneficiário" options="" master-detail="false"/-->
+	    
+	</class-mapping>
+
+</jheat-mapping>

@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+	
+	<class-mapping class="br.com.infowaypi.ecare.procedimentos.TabelaCBHPMRelacionamento" name="TabelaCBHPMRelacionamento" display-name="Tabela Saúde Recife" 
+		id-name="idTabelaCBHPM" link-for-detail="descricao" type="simple" section="cadastrosCentralDeRelacionamento,cadastrosCentral" roles="centralDeServico,relacionamento,aloSaude,auditor,auditorOdonto">
+		
+		<description>Procedimentos disponíveis para a marcação de exames</description>
+		
+		<property name="codigo" type="string" not-null="true">
+			<display name="Código" size="20" maxlength="8" mask="99999999" options="listing,search"/>
+	    </property>
+
+		<property name="descricao" type="string" not-null="true" search-type="likefull">
+			<display name="Descrição" options="listing,search" maxlength="255"/>
+	    </property>
+	
+		<property name="valorModerado" type="money" not-null="true">
+			<display name="Valor pago" options="listing"/>
+	    </property>
+
+		<property name="situacao.descricao" type="string" not-null="false" calculated="true" >
+			<display name="Situação" options="read-only,listing" />
+	    </property>
+	    
+		<property name="moderacao" type="percentage" not-null="true">
+			<display name="Moderação" options=""/>
+	    </property>
+	
+		<property name="periodicidade" type="int" not-null="true">
+			<display name="Periodicidade" size="4" options="listing" mask="999" maxlength="3"/>
+	    </property>
+	
+		<property name="idadeMinima" type="int" not-null="true">
+			<display name="Idade Mínima" size="4" options="" mask="99" maxlength="2"/>
+	    </property>
+	
+		<property name="idadeMaxima" type="int" not-null="true">
+			<display name="Idade Máxima" size="4" options="" mask="999" maxlength="3"/>
+	    </property>
+		
+		<property name="carencia" type="int" not-null="true">
+			<display name="Carência" options="listing"/>
+	    </property>
+	    
+		<property name="unicidade" type="boolean" not-null="false">
+			<display name="Unicidade" options="listing"/>
+	    </property>
+	    
+	    <property name="checarEspecialidade" type="boolean" not-null="false">
+			<display name="Checar especialidade" options=""/>
+	    </property>
+	
+		<property name="especial" type="boolean" not-null="false">
+			<display name="Especial" options="listing"/>
+	    </property>
+	    
+		<property name="bilateral" type="boolean" not-null="false">
+			<display name="Bilateral" options="listing"/>
+	    </property>
+
+		<property name="liberadoParaUrgencia" type="boolean" not-null="false">
+			<display name="Liberado para urgência" options=""/>
+	    </property>
+	    
+		<!-- property name="verificaEspecialidade" type="boolean" not-null="true">
+			<display name="Verifica Especialidade" options="listing"/>
+	    </property-->
+		
+		<many-to-one options="listing,search"
+			class="br.com.infowaypi.ecarebc.procedimentos.Porte"
+			name="porte" display-name="Porte" autocomplete="true">
+			<display-property name="descricao"/>
+		</many-to-one>
+	    
+		<select-property name="sexo" display-name="Sexo" options="listing">
+			<entry display-name="Masculino" key-value="SEXO_MASCULINO"/>
+			<entry display-name="Feminino" key-value="SEXO_FEMININO"/>
+			<entry display-name="Ambos" key-value="SEXO_AMBOS"/>				
+		</select-property>
+		
+		<select-property name="visibilidade" display-name="Visibilidade" options="listing">
+			<entry display-name="Médico" key-value="VISIBILIDADE_MEDICO"/>
+			<entry display-name="Odontológico" key-value="VISIBILIDADE_ODONTOLOGICA"/>
+			<entry display-name="Ambos" key-value="VISIBILIDADE_AMBOS"/>				
+		</select-property>
+		
+		<property name="permiteMaterialComplementar" type="boolean" not-null="false">
+			<display name="Permite Material Complementar" options=""/>
+	    </property>
+
+		<property name="permiteMedicamentoComplementar" type="boolean" not-null="false">
+			<display name="Permite Medicamento Complementar" options=""/>
+	    </property>
+	    
+		<many-to-many 
+	    	name="especialidades" 
+	    	display-name="Especialidades Associadas" 
+	    	class="br.com.infowaypi.ecarebc.associados.Especialidade">
+    		<autocomplete style-class="autocomplete" minimum-characters="3" force-selection="true">
+				<search-property name="descricao" display-name="Descrição"/>
+				<name-property name="descricao" display-name="Descrição"/>
+			</autocomplete>	
+		</many-to-many>
+		
+		<collection class="br.com.infowaypi.ecarebc.procedimentos.CID"
+			name="cids" display-name="CIDs Associados"
+			master-detail="false"/>
+		
+		<restrictions>
+			<restriction property-value="Ativo(a)" property-name="situacao.descricao" type="equals" />
+		</restrictions>
+		
+		<role name="relacionamento" insert="false" exec="false" update="false" read="true" />
+		<role name="centralDeServico" insert="false" exec="false" update="false" read="true"/>
+		<role name="prestador" insert="false" exec="false" update="false" read="true"/>
+		<role name="prestadorCompleto" insert="false" exec="false" update="false" read="true"/>
+		<role name="prestadorExame" insert="false" exec="false" update="false" read="true"/>
+		<role name="prestadorConsultaExame" insert="false" exec="false" update="false" read="true"/>
+		
+		<validate-method name="validate"/>
+
+	</class-mapping>
+
+</jheat-mapping>

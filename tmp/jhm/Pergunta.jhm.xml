@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+<jheat-mapping>
+	<class-mapping class="br.com.infowaypi.ecarebc.produto.Pergunta"
+		name="pergunta" display-name="Pergunta" id-name="idPergunta"
+		link-for-detail="" type="readonly" depends="questionario" section="produto">
+
+		<property name="ordem" type="int">
+			<display options="listing" name="ITEM" />
+		</property>
+
+		<property name="descricao" not-null="true">
+			<display options="listing" name="Pergunta" align="left"/>
+		</property>
+		<many-to-one display-name="Questionário" options="" class="br.com.infowaypi.ecarebc.produto.Questionario" name="questionario">
+			<display-property name="descricao" display-name="Questionário" />
+		</many-to-one>
+	</class-mapping>
+</jheat-mapping>

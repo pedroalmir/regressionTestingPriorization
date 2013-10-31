@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+<flow
+	name="mudarSituacaoGuiaSuporte" 
+	class="br.com.infowaypi.ecare.services.suporte.MudarSituacaoGuiaService"
+	display-name="Mudar Situação" section="flowSuporte">
+		
+	<description>Mudar Situação</description>
+		
+	<step-method name="buscarGuias" display-name="Informar Autorização" title="Informar Número de Autorização" buttons-position="bottom">
+		<step-param name="autorizacao" input-type="string" size="12" type="java.lang.String" display-name="Autorização" />
+		<step-param name="arquivo" type="[B" display-name="Arquivo de autorizações" input-type="file" />
+		<step-return name="resumo" type="br.com.infowaypi.ecarebc.atendimentos.ResumoGuias" display-name="Resultado Encontrado" scope="session" />		
+	</step-method>
+
+	<step-method name="selecionarGuias" display-name="Escolher Guias" >
+		<select-param name="situacao"
+			display-name="Escolha a situação" type="java.lang.String">
+			<enum-combo class="br.com.infowaypi.ecarebc.enums.SituacaoEnum" display="descricao" value="descricao">
+				<remove-entry key-value="PROBLEMAS_NO_CADASTRO"/>
+				<remove-entry key-value="CADASTRADO"/>
+				<remove-entry key-value="RECADASTRADO"/>
+				<remove-entry key-value="ATIVO"/>
+				<remove-entry key-value="INATIVO"/>
+				<remove-entry key-value="INICIADO"/>
+				<remove-entry key-value="SUSPENSO"/>
+				<remove-entry key-value="INTERNADO"/>
+				<remove-entry key-value="GERADO"/>
+				<remove-entry key-value="FATURADA_PASSIVO_HONORARIO"/>
+				<remove-entry key-value="PRE_AUTORIZADO"/>
+				<remove-entry key-value="FECHADO_ESPECIAL"/>
+				<remove-entry key-value="BLOQUEADO"/>
+				<remove-entry key-value="ORDENADO"/>
+				<remove-entry key-value="NEGADO"/>
+				<remove-entry key-value="CREDENCIADO"/>
+				<remove-entry key-value="DESCREDENCIADO"/>
+				<remove-entry key-value="PROCEDIMENTO_COM_HONORARIO_GERADO"/>
+			</enum-combo>
+		</select-param>
+		<step-param name="motivo" input-type="text" type="java.lang.String" display-name="Motivo da mudança de situação*"/>
+		<step-param name="dataAtendimento" input-type="date" type="java.util.Date"  display-name="Data de Atendimento" />
+		<step-param name="dataTerminoAtendimento" input-type="date" type="java.util.Date"  display-name="Data de Término de Atendimento" />
+		<step-param name="dataRecebimento" input-type="date" type="java.util.Date"  display-name="Data de Recebimento"  />
+		<collection-param
+			name="guias"
+			type="br.com.infowaypi.ecarebc.atendimentos.GuiaSimples"
+			display-name="Selecione as guias para mudar a situação">
+			<checklist session-property-ref="resumo" operation="none">
+				<display-property name="autorizacao" display-name="Autorização"/>
+				<display-property name="tipo" display-name="Tipo da Guia"/>
+				<display-property name="dataAtendimento" display-name="Atendimento" type="date"/>				
+				<display-property name="segurado.pessoaFisica.nome" display-name="Beneficiário"/>
+				<display-property name="situacao.descricao" display-name="Situação"/>
+				<display-property name="situacao.dataSituacao" display-name="Data" type="date"/>				
+				<display-property name="valorTotal" display-name="Valor Total" type="money"/>
+				<display-property name="valorPagoPrestador" display-name="Valor Pago" type="money"/>		
+			</checklist>
+		</collection-param>
+		<session-param name="usuario"/>
+		<step-return  name="resumo" type="br.com.infowaypi.ecarebc.atendimentos.ResumoGuias"
+			display-name="" scope="session"/>
+	</step-method>	
+
+	<step-method name="conferirDados" display-name="Conferir dados" committed="true">
+		<session-param name="resumo" operation="none">
+			<collection-display display-name="Guias com nova situação" name="guiasFiltradas">
+				<display-property name="autorizacao" display-name="Autorização"/>
+				<display-property name="tipo" display-name="Tipo da Guia"/>
+				<display-property name="dataAtendimento" display-name="Atendimento" type="date"/>				
+				<display-property name="segurado.pessoaFisica.nome" display-name="Beneficiário"/>
+				<display-property name="situacao.descricao" display-name="Situação"/>
+				<display-property name="situacao.dataSituacao" display-name="Data" type="date"/>				
+				<display-property name="valorTotal" display-name="Valor Total" type="money"/>
+				<display-property name="valorPagoPrestador" display-name="Valor Pago" type="money"/>		
+			</collection-display>
+			
+			<collection-display display-name="Guias não alteradas" name="guias">
+				<display-property name="autorizacao" display-name="Autorização"/>
+				<display-property name="tipo" display-name="Tipo da Guia"/>
+				<display-property name="dataAtendimento" display-name="Atendimento" type="date"/>				
+				<display-property name="segurado.pessoaFisica.nome" display-name="Beneficiário"/>
+				<display-property name="situacao.descricao" display-name="Situação"/>
+				<display-property name="situacao.dataSituacao" display-name="Data" type="date"/>				
+				<display-property name="valorTotal" display-name="Valor Total" type="money"/>
+				<display-property name="valorPagoPrestador" display-name="Valor Pago" type="money"/>
+				<display-property name="motivoParaGlosaTotal" display-name="Motivo da não alteração"/>		
+			</collection-display>
+		</session-param>
+		
+	</step-method>
+	
+	<step-method name="finalizar" display-name="Finalizar">			
+		<html>
+			<![CDATA[
+				<infoway:mensagemSucesso mensagem="Situação mudada com sucesso!" />
+			]]>
+		</html>
+		<session-param name="resumo" operation="none">
+			<collection-display display-name="Guias" name="guiasFiltradas">
+				<display-property name="autorizacao" display-name="Autorização"/>
+				<display-property name="tipo" display-name="Tipo da Guia"/>
+				<display-property name="dataAtendimento" display-name="Atendimento" type="date"/>				
+				<display-property name="segurado.pessoaFisica.nome" display-name="Beneficiário"/>
+				<display-property name="situacao.descricao" display-name="Situação"/>
+				<display-property name="situacao.dataSituacao" display-name="Data" type="date"/>				
+				<display-property name="valorTotal" display-name="Valor Total" type="money"/>
+				<display-property name="valorPagoPrestador" display-name="Valor Pago" type="money"/>
+			</collection-display>
+			<collection-display display-name="Guias não alteradas" name="guias">
+				<display-property name="autorizacao" display-name="Autorização"/>
+				<display-property name="tipo" display-name="Tipo da Guia"/>
+				<display-property name="dataAtendimento" display-name="Atendimento" type="date"/>				
+				<display-property name="segurado.pessoaFisica.nome" display-name="Beneficiário"/>
+				<display-property name="situacao.descricao" display-name="Situação"/>
+				<display-property name="situacao.dataSituacao" display-name="Data" type="date"/>				
+				<display-property name="valorTotal" display-name="Valor Total" type="money"/>
+				<display-property name="valorPagoPrestador" display-name="Valor Pago" type="money"/>		
+				<display-property name="motivoParaGlosaTotal" display-name="Motivo da não alteração"/>		
+			</collection-display>
+		</session-param>
+	</step-method>
+</flow>	
+</jheat-mapping>

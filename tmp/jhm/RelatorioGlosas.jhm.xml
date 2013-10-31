@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<report
+		name="relatorioGlosas"
+		method-name="gerarRelatorio"
+		class="br.com.infowaypi.ecarebc.financeiro.faturamento.RevisaoGlosas"
+		display-name="Glosas" section="relatorioFinanceiro" response-by-ajax="true">
+		
+		<description>Relatório de Glosas por competência</description>
+		
+		<report-param name="competencia" required="true" type="java.lang.String" display-name="Competência" mask="99/9999" input-type="string"/>
+
+		<select-param
+				name="prestadoresGlosas"
+				display-name="Escolha o Prestador"
+				type="br.com.infowaypi.ecarebc.associados.Prestador">
+				<autocomplete style-class="autocomplete" minimum-characters="3" force-selection="true">
+					<search-property name="pessoaJuridica.fantasia" display-name="Prestador"/>
+					<name-property name="pessoaJuridica.fantasia" display-name="Prestador"/>
+				</autocomplete>	
+		</select-param>	
+
+		<report-return name="resumo" type="br.com.infowaypi.ecarebc.financeiro.faturamento.ResumoGlosas" 
+			 display-name="Resultado Encontrado">
+			 
+			<html>
+				<![CDATA[ <infoway:tableSeparator titulo="Informações Gerais" colspan="2"/> ]]>
+			</html>
+			<display-property name="valorOutros" display-name="Valor Outros" type="money"/>
+			<display-property name="motivoValorOutros" display-name="Motivo Valor Outros"/>
+			<display-property name="somatorioGlosas" display-name="Total Glosas" type="money"/>
+
+			
+			<collection-display name="procedimentos" display-name="Listagem dos Procedimentos">
+				<display-property name="guia.idGuia" display-name="Autorização" />	
+				<display-property name="guia.segurado.pessoaFisica.nome" display-name="Beneficiário"/>	
+				<display-property name="procedimentoDaTabelaCBHPM.descricao" display-name="Descrição"/>	
+				<display-property name="situacao.motivo" display-name="Motivo de Glosa"/>	
+				<display-property name="bilateral" display-name="Bilateral" type="boolean"/>	
+				<display-property name="guia.valorProcedimentosGlosados" display-name="Valor da Glosa" type="money"/>
+				<display-property name="guia.valorTotal" display-name="Valor da Guia" type="money"/>
+			</collection-display>	
+	
+		</report-return>
+		
+	</report>
+	
+</jheat-mapping>

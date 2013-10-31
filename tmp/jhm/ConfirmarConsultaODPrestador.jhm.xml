@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<flow 
+		name="confirmarConsultaOdontoPrestador" 
+		class="br.com.infowaypi.ecare.services.consultas.ConfirmacaoConsulta"
+		display-name="Confirmar Consulta" section="odontoPrestador">
+		 
+		<description>Confirmação de consultas odontológicas</description>
+		
+		<step-method name="buscarSegurados" display-name="Buscar Beneficiário" title="Buscar Beneficiário" buttons-position="bottom">
+			
+			<step-param name="cpfDoTitular" size="24" mask="999.999.999-99" input-type="string" type="java.lang.String" display-name="CPF do Titular"/>
+			<step-param name="numeroDoCartao" size="24" mask="99.9999999999.99.9-9" input-type="string" type="java.lang.String" display-name="Número do cartão do beneficiário"/>
+				
+			<step-return name="seguradosEncontrados" type="br.com.infowaypi.ecare.segurados.ResumoSegurados" 
+		         display-name="" scope="session"/>
+		</step-method>
+		
+		<step-method display-name="Selecionar Beneficiário" name="selecionarSegurado">
+			<session-param name="prestador" operation="reload"/>
+			<select-param display-name="Beneficiários" name="segurados" type="br.com.infowaypi.ecare.segurados.Segurado" session-property-ref="seguradosEncontrados">
+				<radio-group>
+					<display-property name="pessoaFisica.cpf" display-name="CPF"/>
+					<display-property name="numeroDoCartao" display-name="Número do Cartão"/>
+					<display-property name="pessoaFisica.nome" display-name="Nome"/>
+				</radio-group>
+			</select-param>
+			
+			<step-return display-name="" name="resumo" type="br.com.infowaypi.ecarebc.atendimentos.ResumoGuias" scope="session"/>
+		</step-method>
+		
+		<step-method name="selecionarGuia" display-name="Escolher Guia" title="Escolher Guia">
+			<select-param name="guias" display-name="Informações da Guia" type="br.com.infowaypi.ecarebc.atendimentos.GuiaConsultaOdonto" 
+				session-property-ref="resumo">
+				<radio-group>
+					<display-property name="autorizacao" display-name="Autorização" />
+					<display-property name="segurado.pessoaFisica.nome" display-name="Beneficiário" />
+					<display-property name="situacao.descricao" display-name="Situação" />
+					<display-property name="situacao.dataSituacao" display-name="Data" type="date" />
+					<display-property name="dataAtendimento" display-name="Dt. de Atendimento" type="date" />
+					<display-property name="tipo" display-name="Tipo" />
+					<display-property name="especialidade.descricao" display-name="Especialidade" />
+					<display-property name="valorTotal" display-name="Valor total" type="money" />
+				</radio-group>
+			</select-param>
+			
+			<step-return name="guia" type="br.com.infowaypi.ecarebc.atendimentos.GuiaConsultaOdonto" display-name="" scope="session" />
+		</step-method>
+		
+<!--	if[ATUALIZAR_ODONTOGRAMA_NA_CONFIRMACAO_DE_CONSULTA]	
+		<step-method display-name="Atualizar Odontograma" name="atualizarOdontograma" committed="true">
+			
+			<session-param name="guia"/>
+			
+			<update-param display-name="Odontograma"
+				name="guia" property="segurado.odontogramaCompleto"
+				type="br.com.infowaypi.ecarebc.segurados.AbstractSegurado"
+				operation="none" property-type="br.com.infowaypi.ecarebc.odonto.Odontograma">
+
+				<update-collection display-name="Estruturas Odontológica" name="estruturas"
+					type="br.com.infowaypi.ecarebc.odonto.EstruturaOdonto">
+
+					<update-insert>
+						<update-property name="dente.numero" display-name="Dente" editable="false" />
+						<update-select-property name="indiceCPODEnum" display-name="Indice" 
+							type="br.com.infowaypi.ecarebc.odonto.enums.IndiceCPODEnum">
+							<enum-combo class="br.com.infowaypi.ecarebc.odonto.enums.IndiceCPODEnum" display="getDescricao">
+								<remove-entry key-value="DEFAULT" />
+							</enum-combo>
+						</update-select-property>
+					</update-insert>
+
+				</update-collection>
+
+			</update-param>
+
+			<html><![CDATA[
+					<%@ include file="/view/jsp/includes/OdontogramaLegal.jsp" %>
+			]]></html>
+			
+			<step-return name="guia" type="br.com.infowaypi.ecarebc.atendimentos.GuiaConsultaOdonto" display-name="" scope="session" />
+		</step-method>
+		
+		end[ATUALIZAR_ODONTOGRAMA_NA_CONFIRMACAO_DE_CONSULTA] -->
+		
+		<step-method name="confirmarGuiaDeConsulta" display-name="Conferir Dados" title="Conferir Dados" committed="true">
+			<session-param name="guia" display-name="Informações da Guia" operation="none"/>
+			<html>
+				<![CDATA[
+					<infoway:GuiaApresentacao guiaApresentacao="${guia}"/>
+				]]>
+			</html>
+			<session-param name="usuario" />
+		</step-method>
+		
+		<step-method name="finalizar" display-name="Imprimir Comprovante de Confirmação" title="Imprimir Comprovante">
+			<html>
+				<![CDATA[ <infoway:mensagemSucessoMarcacoes mensagem="Consulta odontológica confirmada com sucesso!" autorizacao="${guia.autorizacao}"/> ]]>
+			</html>
+		
+			<html>
+			<![CDATA[ 
+				<span class="not-for-print">
+					<button type="button" name="imprimir" class="actionButton" onclick="window.print();">Imprimir</button>
+				</span>
+			]]>
+			</html>
+			
+			<session-param name="guia"/>
+			<html>
+				<![CDATA[
+					<infoway:GuiaApresentacao guiaApresentacao="${guia}"/>
+				]]>
+			</html>
+			
+			<html>
+				<![CDATA[ <infoway:imprimirGuia titulo="COMPROVANTE DE CONFIRMAÃ‡ÃƒO DE CONSULTA ODONTOLÓGICA"/> 
+					<span class="not-for-print">
+						<button type="button" name="imprimir" class="actionButton" onclick="window.print();">Imprimir</button>
+					</span>
+					]]>
+			</html>
+		</step-method>
+	</flow>	
+</jheat-mapping>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+		<class-mapping class="br.com.infowaypi.ecarebc.atendimentos.QuadroClinico" name="QuadroClinico" display-name="Quadros Clínicos" 
+		id-name="idQuadroClinico" link-for-detail="" type="readonly" section="" >
+
+			<property name="idQuadroClinico" type="long" not-null="true">
+				<display options="" name=""/>
+			</property>
+			<property name="dataJustificativa" type="date">
+				<display options="listing,detail-only" name="Data da Justificativa"/>
+			</property>
+			<property name="justificativa" type="string">
+				<display options="listing,detail-only" name="Justificativa"/>
+			</property>
+		</class-mapping>
+	
+</jheat-mapping>

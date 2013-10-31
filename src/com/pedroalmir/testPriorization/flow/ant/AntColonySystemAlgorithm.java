@@ -1,20 +1,28 @@
 package com.pedroalmir.testPriorization.flow.ant;
 
+import java.io.FileWriter;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
-import com.pedroalmir.testPriorization.flow.antSystem.model.Problem;
+import au.com.bytecode.opencsv.CSVWriter;
+
+import com.pedroalmir.testPriorization.flow.antSystem.model.problem.Problem;
+import com.pedroalmir.testPriorization.model.RegressionTestingPriorizationProblem;
+import com.pedroalmir.testPriorization.model.Solution;
 import com.pedroalmir.testPriorization.model.TestCase;
+import com.pedroalmir.testPriorization.model.solution.IterationSolution;
 
 public class AntColonySystemAlgorithm {
-
+	
 	/**
+	 * @param problem 
 	 * @param args
 	 * @throws Exception
 	 */
 	@SuppressWarnings("unused")
-	public static void executeAntSystem(Problem antProblem) throws Exception {
+	public static Solution executeAntSystem(Problem antProblem, RegressionTestingPriorizationProblem problem) throws Exception {
 		int numberAnt = antProblem.getNumberAnt();
 
 		double t0 = antProblem.getT0();
@@ -27,7 +35,7 @@ public class AntColonySystemAlgorithm {
 		int maxIterarions = antProblem.getMaxIterations();
 		int maxExecucao = antProblem.getMaxExecution();
 
-		double p1 = antProblem.getP1(), p2 =antProblem.getP2(), q0 = antProblem.getQ0(), constantQ = antProblem.getConstantQ();
+		double p1 = antProblem.getP1(), p2 = antProblem.getP2(), q0 = antProblem.getQ0(), constantQ = antProblem.getConstantQ();
 		int k = antProblem.getK();
 
 		Random rand = new Random();
@@ -37,9 +45,32 @@ public class AntColonySystemAlgorithm {
 		double vMedia[] = new double[maxExecucao];
 		
 		String prints[] = new String[maxExecucao];
+		List<Solution> solutions = new LinkedList<Solution>();
 		
 		double vetorSolucoes[];
 		int execucao = 0;
+		
+		/* ###################################################################### */
+		List<String[]> data = new ArrayList<String[]>();
+        CSVWriter writer = new CSVWriter(new FileWriter("results/AntColony.csv"), ';');
+        String[] firstLine = new String[maxExecucao+1];
+        firstLine[0] = "";
+        String[] secondLine = new String[maxExecucao+1];
+        secondLine[0] = "BetterSolution";
+        String[] thirdLine = new String[maxExecucao+1];
+        thirdLine[0] = "WorstSolution";
+        String[] fourthLine = new String[maxExecucao+1];
+        fourthLine[0] = "Average";
+        String[] fifthLine = new String[maxExecucao+1];
+        fifthLine[0] = "StandardDeviation";
+        
+        int myCount = 0;
+        String[] lineMaster = new String[maxIterarions*maxExecucao];
+        lineMaster[0] = "";
+        String[] lineMasterII = new String[maxIterarions*maxExecucao];
+        lineMasterII[0] = "Melhor Solução até o momento: ";
+        double melhor = Double.MIN_VALUE;
+		/* ###################################################################### */
 
 		do {
 			List<Vertex> vertexs = new ArrayList<Vertex>();
@@ -63,7 +94,23 @@ public class AntColonySystemAlgorithm {
 
 			// Para cada execucao o vetorSolucoes vai deve ser reiniciado
 			vetorSolucoes = new double[numberAnt * maxIterarions];
-
+			
+			/* Lista de soluções das iterações */
+			List<IterationSolution> solutionsOfIterations = new LinkedList<IterationSolution>();
+			
+			/* ###################################################################### */
+	        String[] lineA = new String[maxIterarions+1];
+	        lineA[0] = "";
+	        String[] lineB = new String[maxIterarions+1];
+	        lineB[0] = "BetterSolution";
+	        String[] lineC = new String[maxIterarions+1];
+	        lineC[0] = "WorstSolution";
+	        String[] lineD = new String[maxIterarions+1];
+	        lineD[0] = "Average";
+	        String[] lineF = new String[maxIterarions+1];
+	        lineF[0] = "StandardDeviation";
+			/* ###################################################################### */
+			
 			do {
 				// Posicionando as nf formigas no vertice 2 e limpando a lista tabu e a de vertices
 				for (int i = 0; i < ants.size(); i += 1) {
@@ -128,9 +175,37 @@ public class AntColonySystemAlgorithm {
 					vetorSolucoes[k] = ant.custo();
 					k++;
 				}
-
+				
+				solutionsOfIterations.add(new IterationSolution(iteration+1, melhorSolucaoIteracao, piorSolucaoIteracao, somaSolucoesIteracao/numberAnt, desvioPadraoIteracao));
+				
+				/* ###################################################################### */
+				lineA[iteration+1] = "Iteration" + (iteration+1);
+		        lineB[iteration+1] = (melhorSolucaoIteracao + "").replaceAll("\\.", ",");
+		        lineC[iteration+1] = (piorSolucaoIteracao + "").replaceAll("\\.", ",");
+		        lineD[iteration+1] = ((somaSolucoesIteracao/numberAnt) + "").replaceAll("\\.", ",");
+		        lineF[iteration+1] = (desvioPadraoIteracao + "").replaceAll("\\.", ",");
+		        /* ###################################################################### */
+		        
 				iteration += 1;
+				
+				for (int j = 0; j < numberAnt * maxIterarions; j++) {
+					if (melhor < vetorSolucoes[j]) {
+						melhor = vetorSolucoes[j];
+					}
+				}
+		        lineMaster[myCount] = "Iteration " + (myCount+1);
+		        lineMasterII[myCount++] = (melhor + "").replaceAll("\\.", ",");
 			} while (iteration < maxIterarions);
+			
+			/* ###################################################################### */
+			data.add(new String[31]);
+			data.add(lineA);
+			data.add(lineB);
+			data.add(lineC);
+			data.add(lineD);
+			data.add(lineF);
+			data.add(new String[31]);
+			/* ###################################################################### */
 
 			double melhorSolucao = Double.MIN_VALUE;
 			double piorSolucao = Double.MAX_VALUE;
@@ -153,6 +228,30 @@ public class AntColonySystemAlgorithm {
 			vMelhor[execucao] = melhorSolucao;
 			vMedia[execucao] = somaSolucoes / (numberAnt * maxIterarions);
 			
+			StringBuffer bufferII = new StringBuffer();
+			bufferII.append("Execution " + execucao + "\n");
+			bufferII.append("BetterSolution:    " + melhorSolucao + "\n");
+			bufferII.append("WorstSolution:     " + piorSolucao + "\n");
+			bufferII.append("Average:           " + somaSolucoes / (numberAnt * maxIterarions) + "\n");
+			bufferII.append("StandardDeviation: " + desvioPadrao + "\n");
+			//System.out.println(bufferII.toString().replaceAll("\\.", ","));
+			
+			/* ###################################################################### */
+			firstLine[execucao+1] = "Execution " + (execucao+1);
+			secondLine[execucao+1] = (melhorSolucao + "").replaceAll("\\.", ",");
+			thirdLine[execucao+1] = (piorSolucao + "").replaceAll("\\.", ",");
+			fourthLine[execucao+1] = ((somaSolucoes/(numberAnt * maxIterarions)) + "").replaceAll("\\.", ",");
+			fifthLine[execucao+1] = (desvioPadrao + "").replaceAll("\\.", ",");
+			/* ###################################################################### */
+			
+			Solution solution = new Solution();
+			solution.setAlgorithm("AntColonySystem");
+			solution.setCapacidade(problem.getCapacidade());
+			solution.setNumberOfClasses(problem.getKlasses().size());
+			solution.setNumberOfRequirements(problem.getRequirements().size());
+			solution.setNumberOfTests(problem.getTestCases().size());
+			solution.setIterationSolutions(solutionsOfIterations);
+			
 			StringBuffer buffer = new StringBuffer();
 			buffer.append("Execução " + execucao + ", Melhor: " + melhorSolucao + ", Pior: " + piorSolucao + ", Media: " + (somaSolucoes / numberAnt * maxIterarions));
 			buffer.append("\n# ");
@@ -160,14 +259,19 @@ public class AntColonySystemAlgorithm {
 			double custo = 0.0;
 			double tempo = 0.0;
 			// Caminho das soluções
+			List<TestCase> selected = new LinkedList<TestCase>();
 			for (int i = 0; i < vertexsPiorSolucao.size(); i++) {
 				custo += vertexsPiorSolucao.get(i).criticidade;
 				tempo += vertexsPiorSolucao.get(i).tempo;
+				selected.add(vertexsPiorSolucao.get(i).getTestCase());
 				
 				buffer.append(String.format("%02d", vertexsPiorSolucao.get(i).getVertexId()));
 				if (i != vertexsPiorSolucao.size() - 1)
 					buffer.append("-");
 			}
+			
+			solution.setCriticality(custo);
+			solution.setTimeOfTests(tempo);
 			
 			buffer.append(" # Custo: " + custo + ", Tempo: " + tempo);
 			buffer.append(" # ");
@@ -186,6 +290,8 @@ public class AntColonySystemAlgorithm {
 			buffer.append(" # Custo: " + custo + ", Tempo: " + tempo);
 			buffer.append("\n");
 			
+			solution.setBetterTestCases(selected);
+			solutions.add(solution);
 			prints[execucao] = buffer.toString();
 
 			k = 0;
@@ -202,9 +308,29 @@ public class AntColonySystemAlgorithm {
 			}
 		}
 		
-		System.out.println(prints[index]);
+		//System.out.println(prints[index]);
+		
+		/* ###################################################################### */
+		data.add(new String[maxExecucao+1]);
+		data.add(firstLine);
+		data.add(secondLine);
+		data.add(thirdLine);
+		data.add(fourthLine);
+		data.add(fifthLine);
+		/* ###################################################################### */
+		
+		/* ###################################################################### */
+		data.add(new String[maxExecucao+1]);
+		data.add(lineMaster);
+		data.add(lineMasterII);
+		data.add(new String[maxExecucao+1]);
+		/* ###################################################################### */
+		
+        writer.writeAll(data);
+        writer.close();
 		
 		calculaDesvios(vPior, vMelhor, vMedia, maxExecucao);
+		return solutions.get(index);
 	}
 
 	/**
@@ -215,7 +341,7 @@ public class AntColonySystemAlgorithm {
 	private static void createGraph(List<TestCase> testCases, List<Vertex> vertexs, List<Edge> edges) {
 		/* Vertex com id, criticidade, tempo e feromonio inicial */
 		for (int i = 0; i < testCases.size(); i++) {
-			vertexs.add(new Vertex(i+1, testCases.get(i).getCriticality(), testCases.get(i).getTime(), 0.01));
+			vertexs.add(new Vertex(i+1, testCases.get(i).getCriticality(), testCases.get(i).getTime(), 0.01, testCases.get(i)));
 		}
 		/* */
 		int indexEdge = 1;
@@ -229,6 +355,7 @@ public class AntColonySystemAlgorithm {
 		}
 	}
 
+	@SuppressWarnings("unused")
 	public static void calculaDesvios(double[] vPior, double[] vMelhor, double[] vMedia, int tam) {
 		double[] vPiorAoQuadrado = new double[tam];
 		double somaPior = 0;
@@ -239,7 +366,7 @@ public class AntColonySystemAlgorithm {
 		double somaPiorAoQuadrado = 0;
 		double somaMelhorAoQuadrado = 0;
 		double somaMediaAoQuadrado = 0;
-		// Desvios padr�es
+		// Desvios padrões
 		double desvioPadraoPior = 0;
 		double desvioPadraoMelhor = 0;
 		double desvioPadraoMedia = 0;
@@ -272,12 +399,12 @@ public class AntColonySystemAlgorithm {
 		if (varianciaMedia >= 0)
 			desvioPadraoMedia = Math.sqrt(somaMediaAoQuadrado / ((double) tam) - Math.pow(somaMedia / ((double) tam), 2));
 
-		System.out.println("Media Pior: " + somaPior / tam);
-		System.out.println("Media Melhor: " + somaMelhor / tam);
-		System.out.println("Media da Media: " + somaMedia / tam);
-		System.out.println("Desvio pior Global: " + desvioPadraoPior);
-		System.out.println("Desvio melhor Global: " + desvioPadraoMelhor);
-		System.out.println("Desvio media Global: " + desvioPadraoMedia);
+		//System.out.println("Media Pior: " + somaPior / tam);
+		//System.out.println("Media Melhor: " + somaMelhor / tam);
+		//System.out.println("Media da Media: " + somaMedia / tam);
+		//System.out.println("Desvio pior Global: " + desvioPadraoPior);
+		//System.out.println("Desvio melhor Global: " + desvioPadraoMelhor);
+		//System.out.println("Desvio media Global: " + desvioPadraoMedia);
 
 	}
 }

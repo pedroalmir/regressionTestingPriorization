@@ -1,0 +1,449 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+
+	<class-mapping class="br.com.infowaypi.ecare.segurados.TitularFinanceiroSR" name="TitularFinaceiroSR" display-name="Titulares" 
+		id-name="idSegurado" link-for-detail="pessoaFisica.nome" type="simple" section="cadastros, cadastrosCentral" roles="root,relacionamento,centralDeServico">
+		
+		<description>Titulares cadastrados no sistema</description>
+	
+		<!-- property name="identificador" type="string" not-null="false">
+			<display name="Id" options="detail-only" align="center" size="20"/>
+	    </property-->
+		
+		<html>
+			<![CDATA[
+				<fieldset>
+					<legend>Dados Pessoais</legend>
+				</fieldset>
+				<br/>
+			]]>
+		</html>
+		
+		<property name="numeroDoCartao" type="string" not-null="true">
+			<display name="Número do Cartão" options="listing,search,detail-only" mask="99.9999999999.99.9-9" align="center" size="24"/>
+	    </property>
+	    
+	    <property name="viaDoCartao" type="int" not-null="false">
+			<display name="Via do cartão" options="detail-only" mask="99" align="center" size="3"/>
+	    </property>
+	    
+	    
+
+	    <!--many-to-one class="br.com.infowaypi.ecare.associados.Vendedor" name="vendedor" not-null="false"
+	    	display-name="Consultor" options="listing">
+			<display-property name="pessoaFisica.nome"/>
+		</many-to-one-->	    
+	
+		<property name="pessoaFisica.nome" type="string" not-null="true">
+			<display name="Nome" options="listing,search"/>
+	    </property>  
+	    
+		<property name="pessoaFisica.dataNascimento" type="date" not-null="true">
+			<display name="Nascimento" options="" mask="99/99/9999" maxlength="10" size="10"/>
+	    </property> 
+		
+		<property name="pessoaFisica.identidade" type="string" not-null="true">
+			<display name="Identidade" options="" size="20"/>
+	    </property>  
+	    
+		<!-- property name="pessoaFisica.tituloEleitoral" type="string" not-null="false">
+			<display name="Título Eleitoral" options="" size="20"/>
+	    </property-->  
+
+		<property name="pessoaFisica.cpf" type="string" not-null="true">
+			<display name="CPF" options="search" mask="999.999.999-99" maxlength="14" size="24"/>
+	    </property> 
+
+	    <select-property name="pessoaFisica.sexo" display-name="Sexo" options="listing" null-option="false">
+			<entry display-name="Masculino" key-value="SEXO_MASCULINO"/>
+			<entry display-name="Feminino" key-value="SEXO_FEMININO"/>
+		</select-property>
+		
+		<!-- property name="diaBase" type="int">
+			<display name="Dia Base" options="" mask="99" maxlength="2" size="5"/>		
+		</property-->
+		
+		<!-- property name="desconto" type="int" not-null="false">
+			<display name="Desconto Adicional (%)" options="" mask="999" maxlength="3" size="5"/>		
+		</property-->		
+
+	    <!-- select-property name="motivoDesconto" display-name="Motivo do desconto" options="">
+			<entry display-name="(Sem Desconto)" key-value="SEM_DESCONTO"/>	    
+			<entry display-name="Funcionário(a)" key-value="FUNCIONARIO"/>
+			<entry display-name="Promoção" key-value="PROMOCAO"/>
+		</select-property-->
+		
+		<!-- property name="justificativaMotivo" type="string" not-null="false">
+			<display name="Justificativa do desconto" options=""/>
+	    </property-->  	    	
+	    
+		<!-- property name="carenciaCumpridaAdicional" type="int" not-null="false">
+			<display name="Carência (Dias)" options="" mask="9999" maxlength="4" size="5"/>		
+		</property-->	    	    	
+		
+		<!-- many-to-one class="br.com.infowaypi.ecare.planos.Plano" name="plano" not-null="true"
+	    	display-name="Plano" options="">
+			<display-property name="descricao"/>
+		</many-to-one-->		
+		
+		<!-- property name="beneficiario" type="boolean">
+			<display name="Beneficiário" options=""/>		
+		</property-->		
+		
+		<!--property name="apartamentoIndividual" type="boolean">
+			<display name="Apartamento Individual" options=""/>		
+		</property>
+
+		<property name="comParto" type="boolean">
+			<display name="Com Obstetrícia" options=""/>		
+		</property>		
+		
+		<property name="temLesao" type="boolean" not-null="false">
+			<display name="Tem Lesão" options=""/>		
+		</property>	
+
+		<property name="descricaoLesao" type="string" not-null="false">
+			<display name="Descrição da Lesão" options="" size="100" maxlength="255"/>
+		</property-->
+		
+		<select-property name="pessoaFisica.estadoCivil" display-name="Estado Civil" options="" null-option="true">
+			<entry display-name="Casado(a)" key-value="ESTADO_CIVIL_CASADO"/>	
+			<entry display-name="Solteiro(a)" key-value="ESTADO_CIVIL_SOLTEIRO"/>				
+			<entry display-name="Viúvo(a)" key-value="ESTADO_CIVIL_VIUVO"/>			
+			<entry display-name="Separado(a) Judicialmente" key-value="ESTADO_CIVIL_SEPARADO_JUDICIALMENTE"/>			
+			<entry display-name="Divorciado(a)" key-value="ESTADO_CIVIL_DIVORCIADO"/>			
+			<entry display-name="Estado Marital" key-value="ESTADO_CIVIL_ESTADO_MARITAL"/>
+			<entry display-name="Outros" key-value="ESTADO_CIVIL_OUTROS"/>				
+		</select-property>
+		
+		<property name="pessoaFisica.nomeConjuge" type="string" not-null="false">
+			<display name="Nome do Cônjuge" options=""/>
+	    </property>
+	    
+	    <property name="pessoaFisica.cpfDoConjugue" type="string" not-null="false">
+			<display name="CPF do Cônjuge" options="" mask="999.999.999-99" maxlength="14" size="24"/>
+	    </property>
+		
+		<property name="pessoaFisica.nomeDaMae" type="string" not-null="true">
+			<display name="Nome da Mãe" options=""/>
+	    </property> 
+		
+		<html>
+			<![CDATA[
+				<br/>
+				<fieldset>
+					<legend>Endere&ccedil;o</legend>
+				</fieldset>
+				<br/>
+			]]>
+		</html>
+		
+		<property name="pessoaFisica.endereco.logradouro" type="string" not-null="true">
+			<display name="Endereço" options=""/>
+	    </property>
+		
+		<property name="pessoaFisica.endereco.numero" type="string" not-null="false">
+			<display name="Número" options="" size="8" mask="999999"/>
+	    </property>
+
+		<property name="pessoaFisica.endereco.bairro" type="string" not-null="true">
+			<display name="Bairro" options="" size="30"/>
+	    </property>
+		
+		<property name="pessoaFisica.endereco.complemento" type="string" not-null="false">
+			<display name="Complemento" options="" size="30"/>
+	    </property>
+	    
+		<property name="pessoaFisica.endereco.cep" type="string" not-null="false">
+			<display name="CEP" options="" mask="99.999-999" maxlength="10" size="10"/>
+	    </property>  
+
+		<property name="pessoaFisica.endereco.pontoDeReferencia" type="string" not-null="false">
+			<display name="Pt. de Referência" options="" size="30"/>
+	    </property>  
+
+	    <many-to-one class="br.com.infowaypi.msr.address.Municipio" 
+	    	name="pessoaFisica.endereco.municipio" 
+	    	not-null="true"
+	    	autocomplete="true"
+	    	display-name="Município" options="listing" mask-detail="Informe o nome do município">
+			<display-property name="descricao"/>
+		</many-to-one>		
+		
+	    
+		<html>
+			<![CDATA[
+				<fieldset>
+					<legend>Contato</legend>
+				</fieldset>
+				<br/>
+			]]>
+		</html>
+		
+		<property name="pessoaFisica.telefoneResidencial" type="string" not-null="false">
+			<display name="Telefone Residencial" options="" size="20" mask="9999-9999"/>
+	    </property>  
+
+		<property name="pessoaFisica.telefoneDoTrabalho" type="string" not-null="false">
+			<display name="Telefone do Trabalho" options="" size="20" mask="9999-9999"/>
+	    </property>	    
+	    
+		<property name="pessoaFisica.celular" type="string" not-null="false">
+			<display name="Celular" options="" size="20" mask="9999-9999"/>
+	    </property>	    
+
+		<property name="pessoaFisica.email" type="string" not-null="false">
+			<display name="Email" options=""/>
+	    </property> 
+		
+  
+	    
+		<!-- html>
+			<![CDATA[
+				<c:if test="${actionForm != 'updateObject'}">
+			]]>
+		</html-->
+		<html>
+			<![CDATA[
+				<fieldset>
+					<legend>Dados do Contrato</legend>
+				</fieldset>
+				<br/>
+			]]>
+		</html>
+		<property name="tipoDeSegurado" type="string" not-null="false">
+			<display name="Tipo" options="detail-only"/>
+	    </property>
+	    		
+		<property name="dataAdesao" type="date" not-null="false">
+			<display name="Data de Adesão" options="" mask="99/99/9999" maxlength="10" size="10"/>
+	    </property>
+	    <!--html>
+			<![CDATA[
+				</c:if>
+			]]>
+		</html-->
+		
+	    <property name="situacaoCadastral.descricao" type="string" not-null="true">
+			<display name="Situação Cadastral" options="detail-only"/>
+	    </property> 
+	    
+	    <property name="situacaoCadastral.data" type="date" not-null="true">
+			<display name="Data da Situação Cadastral" options="detail-only"/>
+	    </property> 
+	    
+	    
+	    <property name="situacao.descricao" type="string" not-null="false">
+			<display name="Situação (Sistema)" options="listing,detail-only"/>
+	    </property>
+	    
+		<html>
+			<![CDATA[
+				<c:if test="${actionForm == 'list'}">
+			]]>
+		</html>	   	    
+	    <html>
+			<![CDATA[
+				<fieldset>
+					<legend>Car&ecirc;ncias</legend>
+				</fieldset>
+				<br/>
+			]]>
+		</html>
+	    <html>
+			<![CDATA[
+				</c:if>
+			]]>
+		</html>				
+		
+	    <property name="carenciaRestanteUrgencias" type="int" calculated="true">
+			<display name="Carência restante para urgências (horas)" options="detail-only"/>
+	    </property>
+		
+		<property name="carenciaRestanteConsultasExamesDeBaixaComplexidade" type="int" calculated="true">
+			<display name="Carência restante para consultas e Exames de baixa complexidade (dias)" options="detail-only"/>
+	    </property>
+		
+		<property name="carenciaRestanteExamesEspeciaisDeAltaComplexidadeCirurgiasEInternamento" type="int" calculated="true">
+			<display name="Carência restante para exames de alta complexidade (dias)" options="detail-only"/>
+	    </property>
+	    
+	    <property name="carenciaRestanteExamesEspeciaisDeAltaComplexidadeCirurgiasEInternamento" type="int" calculated="true">
+			<display name="Carência restante para cirurgias e internação (dias)" options="detail-only"/>
+	    </property>
+	     
+	    <property name="carenciaRestanteParaPartos" type="int" calculated="true">
+			<display name="Carência restante para partos (dias)" options="detail-only"/>
+	    </property>
+	    
+	    <property name="carenciaRestanteParaDoencasPreExistentes" type="int" calculated="true">
+			<display name="Carência restante para doenças pré-existentes (dias)" options="detail-only"/>
+	    </property>    
+	    
+		<!-- DADOS REFERENTES A FORMA DE PAGAMENTO (DETALHE PAGAMENTO) -->
+		
+		<!-- select-property name="detalhePagamento.tipoPagamento" display-name="Forma de Pagamento" options="">
+			<entry display-name="Conta Corrente" key-value="CONTA_CORRENTE"/>	
+			<entry display-name="Boleto Bancario" key-value="BOLETO"/>			
+		</select-property-->
+		
+		<!-- property name="detalhePagamento.contaCorrente" not-null="false">
+			<display name="Conta corrente" options="" mask="999999" />
+		</property-->
+		
+		<!--property name="detalhePagamento.agencia" type="string" not-null="false">
+			<display name="Agência" options="" />
+		</property-->
+		
+		<!--property name="detalhePagamento.operacao" type="int" not-null="false">
+			<display name="Operação" options="" mask="999999" maxlength="5" size="5"/>
+		</property-->
+				
+		<!--many-to-one class="br.com.infowaypi.msr.financeiro.Banco" name="detalhePagamento.banco" not-null="false"
+	    	display-name="Banco" options="">
+			<display-property name="descricao"/>
+		</many-to-one-->
+		
+		<!--property name="detalhePagamento.checado" type="boolean" not-null="false">
+			<display name="Checado" options=""/>
+		</property-->
+				
+		<!--property name="detalhePagamento.matricula" type="string" not-null="false">
+			<display name="Matricula" options=""/>
+		</property-->
+	
+		<!--collection 
+			class="br.com.infowaypi.ecare.financeiro.Cobranca" 
+			name="cobrancas" display-name="Cobranças" 
+	    	master-detail="false"/-->
+
+	    <!--many-to-many 
+	    	name="lesoes" 
+	    	display-name="Lesões Associadas" 
+	    	class="br.com.infowaypi.ecare.atendimento.Lesao">
+    		<autocomplete style-class="autocomplete" minimum-characters="3" force-selection="true">
+				<search-property name="descricao" display-name="Descrição"/>
+				<name-property name="descricao" display-name="Descrição"/>
+			</autocomplete>	
+		</many-to-many-->
+
+		<!--property name="observacao" type="string" not-null="false">
+			<display name="Observação sobre lesões" options="" size="100" maxlength="255"/>
+		</property-->
+
+	    <collection 
+			class="br.com.infowaypi.ecare.segurados.Matricula" 
+			name="matriculas" display-name="Matrículas" 
+	    	options="insert" master-detail="false"/>
+							
+		<!-- collection 
+			class="br.com.infowaypi.ecare.financeiro.Cobranca" 
+			name="cobrancas" display-name="Cobranças" 
+	    	options="" master-detail="false"/-->
+	    	
+	    <collection 
+			class="br.com.infowaypi.msr.situations.Situacao" 
+			name="situacoes" display-name="Histórico de Situações" 
+	    	master-detail="false" default-sort="2" indexed="true"/>
+
+	    <collection 
+			class="br.com.infowaypi.ecare.financeiro.consignacao.ConsignacaoSegurado" 
+			name="consignacoes" display-name="Consignações" 
+	    	master-detail="false" default-sort="2" indexed="true"/>
+	    	
+	    <collection 
+			class="br.com.infowaypi.ecarebc.atendimentos.GuiaSimples" 
+			name="guias" display-name="Guias" 
+	    	master-detail="false" default-sort="2" indexed="true"/>
+	    	
+	    <collection 
+			class="br.com.infowaypi.ecarebc.promocao.PromocaoConsulta" 
+			name="consultasPromocionais" display-name="Consultas Promocionais" 
+	    	master-detail="false" default-sort="2" indexed="true"/>		
+	    
+	    <!-- html>
+			<![CDATA[
+				<fieldset>
+					<legend>Odontograma</legend>
+				</fieldset>
+				<br/>
+			]]>
+		</html>
+		
+		<select-property name="odontograma.denticaoAtual" display-name="Dentição Atual" options="">
+			<entry display-name="Permanente" key-value="DENTICAO_PERMANENTE"/>	    
+			<entry display-name="Decíduo" key-value="DENTICAO_DECIDUO"/>
+		</select-property-->
+	    
+	    <!--property name="odontograma.denticaoPermanente" type="string" not-null="false">
+			<display name="Dentição Permanente" options="detail-only"/>
+	    </property>
+	    
+	    <property name="odontograma.denticaoDeciduo" type="string" not-null="false">
+			<display name="Dentição Decíduo" options="detail-only"/>
+	    </property>
+	    
+	    <many-to-one options="detail-only"
+			class="br.com.infowaypi.ecarebc.odonto.Odontograma" 
+			name="denticaoPermanente" display-name="Dentição Permanente" autocomplete="false">
+			<display-property name="denticaoPermanente.descricao"/>
+		</many-to-one>
+		
+		<many-to-one options="detail-only"
+			class="br.com.infowaypi.ecarebc.odonto.Odontograma" 
+			name="denticaoDeciduo" display-name="Dentição Decíduo" autocomplete="false">
+			<display-property name="denticaoDeciduo.descricao"/>
+		</many-to-one-->	
+	    
+	    <!-- role name="relacionamento" insert="false" exec="false" update="true" read="true" /-->
+		<validate-method name="validate">
+			<session-param name="usuario"/>
+		</validate-method>
+	    	
+		<methods>
+			<method name="reativar" display-name="Reativar">
+				<step-param name="motivo" type="java.lang.String" display-name="Motivo"/>
+				<session-param name="usuario"/>
+				<messages>
+                    <question>Deseja reativar este segurado?</question>
+                    <success>Situação alterada com sucesso. Segurado Reativado.</success>
+                    <error>Ocorreu um erro ao alterar a situação do Segurado. Tente novamente.</error>
+				</messages>				
+			</method>
+			<method name="suspender" display-name="Suspender">
+				<step-param name="motivo" type="java.lang.String" display-name="Motivo"/>
+				<session-param name="usuario"/>
+				<messages>
+                    <question>Deseja suspender este segurado?</question>
+                    <success>Situação alterada com sucesso. Segurado Suspenso.</success>
+                    <error>Ocorreu um erro ao alterar a situação do Segurado. Tente novamente.</error>
+				</messages>				
+			</method>
+			<method name="cancelar" display-name="Cancelar">
+				<step-param name="motivo" type="java.lang.String" display-name="Motivo"/>
+				<session-param name="usuario"/>
+				<messages>
+                    <question>Deseja realmante cancelar este segurado?</question>
+                    <success>Situação alterada com sucesso. Segurado Cancelado.</success>
+                    <error>Ocorreu um erro ao alterar a situação do Segurado. Tente novamente.</error>
+				</messages>				
+			</method>
+			
+			<!--method name="vincularBoleto" display-name="Vincular Boleto">
+				<step-param name="nossoNumero" type="java.lang.String" display-name="Nosso Numero"/>
+				<messages>
+                    <question>Digite o campo Nosso Número existente no boleto.</question>
+                    <success>Boleto Vinculado com sucesso.</success>
+                    <error>Ocorreu um erro ao vincular o boleto ao Segurado. Tente novamente.</error>
+				</messages>				
+			</method-->
+		</methods>
+		
+	</class-mapping>
+
+</jheat-mapping>

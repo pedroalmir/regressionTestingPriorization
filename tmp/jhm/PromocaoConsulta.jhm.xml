@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE jheat-mapping PUBLIC 
+	"-//JHeat/JHeat DTD 1.0//BR" 
+	"http://www.infoway-pi.com.br/jheat.dtd">
+	
+<jheat-mapping>
+	
+	<class-mapping class="br.com.infowaypi.ecarebc.promocao.PromocaoConsulta" name="ConsultaPromocional" display-name="Consulta Promocional" 
+		id-name="idConsultaPromocional" link-for-detail="segurado.pessoaFisca.nome" type="simple" section="cadastros,aloSaudeSection,cadastrosRedeCredenciada" roles="root,auditor,aloSaude">
+	
+		<description>Consultas Promocionais</description>
+		
+		<many-to-one options="listing,detail-only,search"
+			class="br.com.infowaypi.ecare.segurados.Segurado" name="segurado"
+			display-name="Nome" autocomplete="true" minimum-characters="7">
+			<display-property  name="pessoaFisica.nome"/>
+		</many-to-one>
+		
+		<property name="dataCriacao" type="date" not-null="false">
+			<display options="listing,detail-only" name="Data de Criação"/>
+		</property>
+		
+		<property name="dataDeVencimento" type="date" not-null="false">
+			<display options="listing,detail-only" name="Data de Vencimento"/>
+		</property>
+		
+		<property name="situacao.descricao" not-null="false">
+			<display options="listing,detail-only" name="Situação"/>
+		</property>
+		
+		<property name="situacao.dataSituacao" type="date" not-null="false">
+			<display options="listing,detail-only" name="Data da Situação"/>
+		</property>
+		
+		<select-property display-name="Tipo da Consulta Promocional" name="tipo" options="listing" >
+			<entry display-name="ELETIVA" key-value="TIPO_ELETIVA"/>
+			<entry display-name="URGÊNCIA" key-value="TIPO_URGENCIA"/>
+		</select-property>
+		
+		<!-- property name="guia.autorização" not-null="false">
+			<display options="listing,detail-only" name="Autorização"/>
+		</property-->
+				
+		<many-to-one options="listing,search"
+			class="br.com.infowaypi.ecarebc.associados.Especialidade"
+			name="especialidade" display-name="Especialidade" autocomplete="true">
+			<display-property name="descricao" />
+			
+			<restrictions>
+					<restriction property-value="true" property-name="ativa"/>
+			</restrictions>
+		</many-to-one>
+		
+		<!-- cadastros -->
+		<role name="root" exec="true" insert="true" read="true" update="true" write="true"/>
+		<role name="atendente" exec="false" insert="false" read="true" update="false" write="false"/>
+		
+		<!-- cadastrosRedeCredenciada -->
+		<role name="gerenciaRedeCredenciada" insert="false" exec="false" read="true" update="false" />
+		
+		
+		<!-- aloSaudeSection -->
+		<role name="aloSaude" exec="false" insert="false" read="true" update="false" write="false"/>
+		
+		<validate-method name="validate">
+			<session-param name="usuario"/>
+		</validate-method>
+		
+	</class-mapping>
+
+</jheat-mapping>
