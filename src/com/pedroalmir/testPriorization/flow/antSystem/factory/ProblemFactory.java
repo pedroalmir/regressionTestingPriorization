@@ -27,19 +27,18 @@ public class ProblemFactory {
 	 * @param q Não sei definir, mas esse valor é utilizado 
 	 * @param maxIterations Número máximo de iterações
 	 * @param maxExecution Número máximo de execuções
-	 * @param p1 Não sei ainda!!!
-	 * @param p2 Não sei ainda!!!
-	 * @param q0 Não sei ainda!!!
-	 * @param constantQ Não sei ainda!!!
-	 * @param k Não sei ainda!!!
+	 * @param p Taxa de Evaporação
+	 * @param q0 Usa-se um q0 para fazer a escolha do proximo vertice (na construção do caminho) 
+	 * de forma pseudo aleatória quando se usa Ant Colony System, no caso esta modelado 
+	 * como um Ant System (AS).
 	 * @param bound Limite máximo da mochila
 	 * @param testCases Lista de casos de teste
 	 * @return problem
 	 */
 	public static Problem createProblem(int numberAnt, double t0, double alfa, double beta, double q, int maxIterations,
-			int maxExecution, double p1, double p2, double q0, double constantQ, int k, double bound, List<TestCase> testCases) {
+			int maxExecution, double p, double q0, double bound, List<TestCase> testCases) {
 		/* */
-		Problem problem = new Problem(numberAnt, t0, alfa, beta, q, maxIterations, maxExecution, p1, p2, q0, constantQ, k, bound);
+		Problem problem = new Problem(numberAnt, t0, alfa, beta, q, maxIterations, maxExecution, p, q0, bound);
 
 		List<Node> vertexs = new ArrayList<Node>();
 		List<Edge> edges = new ArrayList<Edge>();

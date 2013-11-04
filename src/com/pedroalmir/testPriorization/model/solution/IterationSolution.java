@@ -3,6 +3,11 @@
  */
 package com.pedroalmir.testPriorization.model.solution;
 
+import java.util.LinkedList;
+import java.util.List;
+
+import com.pedroalmir.testPriorization.model.TestCase;
+
 /**
  * @author Pedro Almir
  *
@@ -15,6 +20,11 @@ public class IterationSolution {
 	private double average;
 	private double standardDeviation;
 	
+	private List<TestCase> testCases;
+	private double criticidadeTotal;
+	private double tempoTotal;
+	/* Elitismo */
+	private double theBest;
 	/**
 	 * @param iteration
 	 * @param betterSolution
@@ -29,6 +39,7 @@ public class IterationSolution {
 		this.worstSolution = worstSolution;
 		this.average = average;
 		this.standardDeviation = standardDeviation;
+		this.testCases = new LinkedList<TestCase>();
 	}
 	/**
 	 * @return the iteration
@@ -103,5 +114,53 @@ public class IterationSolution {
 		buffer.append("StandardDeviation: " + standardDeviation + "\n");
 		
 		return buffer.toString().replaceAll("\\.", ",");
+	}
+	/**
+	 * @return the testCases
+	 */
+	public List<TestCase> getTestCases() {
+		return testCases;
+	}
+	/**
+	 * @param testCases the testCases to set
+	 */
+	public void setTestCases(List<TestCase> testCases) {
+		this.testCases = testCases;
+	}
+	/**
+	 * @return the criticidadeTotal
+	 */
+	public double getCriticidadeTotal() {
+		return criticidadeTotal;
+	}
+	/**
+	 * @param criticidadeTotal the criticidadeTotal to set
+	 */
+	public void setCriticidadeTotal(double criticidadeTotal) {
+		this.criticidadeTotal = criticidadeTotal;
+	}
+	/**
+	 * @return the tempoTotal
+	 */
+	public double getTempoTotal() {
+		return tempoTotal;
+	}
+	/**
+	 * @param tempoTotal the tempoTotal to set
+	 */
+	public void setTempoTotal(double tempoTotal) {
+		this.tempoTotal = tempoTotal;
+	}
+	/**
+	 * @return the theBest
+	 */
+	public double getTheBest() {
+		return theBest;
+	}
+	/**
+	 * @param theBest the theBest to set
+	 */
+	public void setTheBest(double theBest) {
+		this.theBest = theBest;
 	}
 }

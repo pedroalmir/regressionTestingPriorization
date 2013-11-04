@@ -6,9 +6,13 @@ package com.pedroalmir.testPriorization.flow.antSystem.model.problem;
 import java.util.List;
 
 import com.pedroalmir.testPriorization.flow.antSystem.model.graph.Graph;
+import com.pedroalmir.testPriorization.flow.antSystem.model.graph.Node;
 import com.pedroalmir.testPriorization.model.TestCase;
 
 /**
+ * Essa classe representa um problema de priorização de casos de teste,
+ * mas pode ser reutilizada para outros problemas.
+ * 
  * @author Pedro Almir
  *
  */
@@ -22,22 +26,35 @@ public class Problem {
 	private double alfa;
 	/** Constante que amplifica a influência da heurística */
 	private double beta;
-	/** */
+	/** Valor utilizado no calculo da probabilidade de escolha para o próximo vertice.
+	 * No trabalho do Jonathas foi utilizado vários valores para essa constante afim de comparação quanto aos resultados obtidos.
+	 * O professor Ricardo Lira sugeriu utilizar o maior valor da heuristica, dessa forma a probabilidade ficaria normalizada. */
 	private double q;
-	/** */
+	/** Número máximo de iterações */
 	private int maxIterations;
-	/** */
+	/** Número máximo de execuções */
 	private int maxExecution;
-	/** */
-	private double p1, p2, q0, constantQ;
-	/** */
+	/** Taxa de Evaporação */
+	private double p;
+	/** Usa-se um q0 para fazer a escolha do proximo vertice (na construção do caminho) 
+	 * de forma pseudo aleatória quando se usa Ant Colony System, no caso esta modelado 
+	 * como um Ant System (AS). */
+	private double q0;
+	/** Indice utilizado para armazenar as soluções em um vetor, isso para cada execução. 
+	 * TODO: Remover isso!! */
 	private int k;
-	/** */
+	/** Para problemas da mochila, esse valor guarda a capacidade máxima da mochila. */
 	private double bound;
-	/** */
+	/** Define se é um problema da mochila. Isso implica na escolha do possíveis nós. */
+	private boolean knapsackProblem;
+	/** Gráfico que representa o problema */
 	private Graph graph;
-	/** */
+	/** Lista de testes */
 	private List<TestCase> testCases;
+	/** Begin nodes */
+	private List<Node> beginNodes;
+	/** Final nodes */
+	private List<Node> finalNodes;
 	
 	/**
 	 * 
@@ -55,14 +72,11 @@ public class Problem {
 	 * @param maxIterations
 	 * @param maxExecution
 	 * @param p1
-	 * @param p2
 	 * @param q0
-	 * @param constantQ
-	 * @param k
 	 * @param cargaMaxima
 	 */
-	public Problem(int numberAnt, double t0, double alfa, double beta, double q, int maxIterations, int maxExecution, double p1,
-			double p2, double q0, double constantQ, int k, double cargaMaxima) {
+	public Problem(int numberAnt, double t0, double alfa, double beta, double q, int maxIterations, int maxExecution, double p,
+			double q0, double cargaMaxima) {
 		super();
 		this.numberAnt = numberAnt;
 		this.t0 = t0;
@@ -71,11 +85,9 @@ public class Problem {
 		this.q = q;
 		this.maxIterations = maxIterations;
 		this.maxExecution = maxExecution;
-		this.p1 = p1;
-		this.p2 = p2;
+		this.p = p;
 		this.q0 = q0;
-		this.constantQ = constantQ;
-		this.k = k;
+		this.k = 0;
 		this.bound = cargaMaxima;
 	}
 
@@ -166,30 +178,6 @@ public class Problem {
 		this.maxExecution = maxExecution;
 	}
 	/**
-	 * @return the p1
-	 */
-	public double getP1() {
-		return p1;
-	}
-	/**
-	 * @param p1 the p1 to set
-	 */
-	public void setP1(double p1) {
-		this.p1 = p1;
-	}
-	/**
-	 * @return the p2
-	 */
-	public double getP2() {
-		return p2;
-	}
-	/**
-	 * @param p2 the p2 to set
-	 */
-	public void setP2(double p2) {
-		this.p2 = p2;
-	}
-	/**
 	 * @return the q0
 	 */
 	public double getQ0() {
@@ -200,18 +188,6 @@ public class Problem {
 	 */
 	public void setQ0(double q0) {
 		this.q0 = q0;
-	}
-	/**
-	 * @return the constantQ
-	 */
-	public double getConstantQ() {
-		return constantQ;
-	}
-	/**
-	 * @param constantQ the constantQ to set
-	 */
-	public void setConstantQ(double constantQ) {
-		this.constantQ = constantQ;
 	}
 	/**
 	 * @return the k
@@ -266,5 +242,61 @@ public class Problem {
 	 */
 	public void setTestCases(List<TestCase> testCases) {
 		this.testCases = testCases;
+	}
+
+	/**
+	 * @return the p
+	 */
+	public double getP() {
+		return p;
+	}
+
+	/**
+	 * @param p the p to set
+	 */
+	public void setP(double p) {
+		this.p = p;
+	}
+
+	/**
+	 * @return the knapsackProblem
+	 */
+	public boolean isKnapsackProblem() {
+		return knapsackProblem;
+	}
+
+	/**
+	 * @param knapsackProblem the knapsackProblem to set
+	 */
+	public void setKnapsackProblem(boolean knapsackProblem) {
+		this.knapsackProblem = knapsackProblem;
+	}
+
+	/**
+	 * @return the finalNodes
+	 */
+	public List<Node> getFinalNodes() {
+		return finalNodes;
+	}
+
+	/**
+	 * @param finalNodes the finalNodes to set
+	 */
+	public void setFinalNodes(List<Node> finalNodes) {
+		this.finalNodes = finalNodes;
+	}
+
+	/**
+	 * @return the beginNodes
+	 */
+	public List<Node> getBeginNodes() {
+		return beginNodes;
+	}
+
+	/**
+	 * @param beginNodes the beginNodes to set
+	 */
+	public void setBeginNodes(List<Node> beginNodes) {
+		this.beginNodes = beginNodes;
 	}
 }

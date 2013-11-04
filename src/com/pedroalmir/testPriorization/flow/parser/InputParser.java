@@ -17,6 +17,7 @@ import au.com.bytecode.opencsv.CSVReader;
 import com.pedroalmir.testPriorization.flow.complexity.CyclomaticComplexityService;
 import com.pedroalmir.testPriorization.flow.correlation.CorrelationFeaturesAndAssetsThreeLevelXML;
 import com.pedroalmir.testPriorization.flow.requirement.RequirementExtractor;
+import com.pedroalmir.testPriorization.model.Context;
 import com.pedroalmir.testPriorization.model.Klass;
 import com.pedroalmir.testPriorization.model.RegressionTestingPriorizationProblem;
 import com.pedroalmir.testPriorization.model.Requirement;
@@ -30,6 +31,23 @@ import com.pedroalmir.testPriorization.util.svn.SVNService;
  *
  */
 public class InputParser {
+	
+	/**
+	 * @param context
+	 * @param capacidade
+	 * @return
+	 */
+	public static RegressionTestingPriorizationProblem createProblem(Context context, Integer capacidade) {
+		try {
+			RegressionTestingPriorizationProblem problem = createProblem(context.getBaseFolder(), context.getCouplingFile(), context.getSqfdFile(),
+					context.getTestCoverageFile(), context.getCyclomaticFile());
+			problem.setCapacidade(capacidade);
+			return problem;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 
 	/**
 	 * @param baseFolder
@@ -342,4 +360,5 @@ public class InputParser {
 		}
 		return result;
 	}
+	
 }

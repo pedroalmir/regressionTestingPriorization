@@ -10,7 +10,7 @@ public class AntColonySystem implements Anthill {
 	Vertex position; // Posi��o atual da formiga no grafo, ou seja o vertice que ela est�
 	List<Vertex> vertexs = new ArrayList<Vertex>(); // Lista de vertices visitados.
 
-	static double cargaMaxima = 800;//12.6828;// 12.0753333;//13.98066667; //4.558666667;//.9492;//= 14.237333333333333333333;
+	static double cargaMaxima = 500000;//12.6828;// 12.0753333;//13.98066667; //4.558666667;//.9492;//= 14.237333333333333333333;
 
 	double pheromoneDeposit; // Quantidade de ferom�nio a ser depositado
 
@@ -169,6 +169,14 @@ public class AntColonySystem implements Anthill {
 			custo += vertex.criticidade;
 		}
 		return custo;
+	}
+	
+	public double tempoTotal() {
+		double tempoTotal = 0;
+		for (Vertex vertex : vertexs) {
+			tempoTotal += vertex.tempo;
+		}
+		return tempoTotal;
 	}
 
 	// Metodo que reduz a concentra��o de ferom�nio em todas as arestas do grafo.

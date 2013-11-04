@@ -3,6 +3,7 @@
  */
 package com.pedroalmir.testPriorization.flow.antSystem.model;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import com.pedroalmir.testPriorization.flow.antSystem.model.graph.Node;
@@ -29,6 +30,8 @@ public class Ant {
 	public Ant(String information, Node actualNode) {
 		this.information = information;
 		this.actualNode = actualNode;
+		this.tabuList = new LinkedList<Node>();
+		this.tabuList.add(actualNode);
 	}
 	/**
 	 * @return the id

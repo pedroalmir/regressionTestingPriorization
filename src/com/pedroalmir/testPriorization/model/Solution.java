@@ -3,11 +3,18 @@
  */
 package com.pedroalmir.testPriorization.model;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
+
+import au.com.bytecode.opencsv.CSVWriter;
 
 import com.pedroalmir.testPriorization.model.solution.IterationSolution;
 
@@ -28,6 +35,8 @@ public class Solution {
 	private long executionTime;
 	
 	private List<IterationSolution> iterationSolutions;
+	private List<double[]> bruteForceValues;
+	private AntConfiguration antConfiguration;
 	
 	/**
 	 * @param betterTestCases
@@ -183,9 +192,13 @@ public class Solution {
 		buffer.append("[");
 		for(int i = 0; i < betterTestCases.size(); i++){
 			if(i < betterTestCases.size()-1){
-				buffer.append(String.format("%02d", betterTestCases.get(i).getId()) + "-");
+				//buffer.append(String.format(Locale.US, "%02d(%.2f,%.2f)", betterTestCases.get(i).getId(), 
+						//betterTestCases.get(i).getCriticality(), betterTestCases.get(i).getTime()) + "-");
+				buffer.append(String.format(Locale.US, "%02d", betterTestCases.get(i).getId()) + "-");
 			}else{
-				buffer.append(String.format("%02d", betterTestCases.get(i).getId()) + "]");
+				//buffer.append(String.format(Locale.US, "%02d(%.2f,%.2f)", betterTestCases.get(i).getId(),
+						//betterTestCases.get(i).getCriticality(), betterTestCases.get(i).getTime()) + "]");
+				buffer.append(String.format(Locale.US, "%02d", betterTestCases.get(i).getId()) + "]");
 			}
 		}
 		
@@ -200,6 +213,133 @@ public class Solution {
 				+ ", criticality=" + criticidade + ", timeOfTests=" + time + ", executionTime=" + new SimpleDateFormat("ss:SSS").format(executionTime) + "]";*/
 		return "Solution [algorithm=" + algorithm + ", betterTestCases=" + buffer.toString() + 
 				", criticality=" + criticidade + ", timeOfTests=" + time + ", executionTime=" + new SimpleDateFormat("mm:ss:SSS").format(executionTime) + "]";		
+	}
+	
+	/**
+	 * Print this in CSV File
+	 * @param csvFile
+	 */
+	public void printThis(File csvFile){
+        try {
+        	List<String[]> data = new ArrayList<String[]>();
+			CSVWriter writer = new CSVWriter(new FileWriter(csvFile), ';');
+			
+			String[] emptyLine = new String[]{""};
+			/* Default */
+			data.add(new String[]{"Analise do Comportamento do Algoritmo: " + this.algorithm});
+			data.add(emptyLine);
+			data.add(new String[]{"Quantidade de Classes", this.numberOfClasses + "", "Quantidade de Testes", this.numberOfTests + ""});
+			data.add(new String[]{"Quantidade de Requisitos", this.numberOfRequirements + "", "Espaco de Busca", String.format("%.2f", Math.pow(2, this.numberOfTests)) + ""});
+			data.add(new String[]{"Capacidade da Mochila", String.format("%.2f", this.capacidade) + ""});
+			
+			if(this.antConfiguration != null){
+				data.add(emptyLine);
+				data.add(new String[]{"Numero de Formigas", this.antConfiguration.getNumAgents() + "", "Q", String.format("%.4f", this.antConfiguration.getQ()) + ""});
+				data.add(new String[]{"Alfa", String.format("%.2f", this.antConfiguration.getAlpha()) + "", "Beta", String.format("%.2f", this.antConfiguration.getBeta()) + ""});
+				data.add(new String[]{"Quantidade Inicial de Feromonio", String.format("%.2f", this.antConfiguration.getInitialPheromone()) + "", "Taxa de Evaporacao", String.format("%.2f", this.antConfiguration.getPheromonePersistence()) + ""});
+				data.add(new String[]{"Maximo de Iteracoes", this.antConfiguration.getMaxIterations() + "", "Maximo de Execucoes", this.antConfiguration.getMaxExecutions() + ""});
+				data.add(emptyLine);
+				data.add(new String[]{"Testes Selecionados", this.printTest(this.betterTestCases) + "", "Tempo de Execucao", new SimpleDateFormat("mm:ss:SSS").format(this.executionTime) + ""});
+				data.add(new String[]{"Criticidade Total", String.format("%.4f", this.criticality) + ""});
+				data.add(new String[]{"Tempo Total dos Testes", String.format("%.4f", this.timeOfTests) + ""});
+				
+				data.add(emptyLine);
+				data.add(emptyLine);
+				
+				int count = 1;
+				String[] header = new String[this.iterationSolutions.size()+1];
+				String[] betterSolution = new String[this.iterationSolutions.size()+1];
+				String[] worstSolution = new String[this.iterationSolutions.size()+1];
+				String[] average = new String[this.iterationSolutions.size()+1];
+				String[] standardDeviation = new String[this.iterationSolutions.size()+1];
+				String[] elitism = new String[this.iterationSolutions.size()+1];
+				String[] test = new String[this.iterationSolutions.size()+1];
+				String[] criticality = new String[this.iterationSolutions.size()+1];
+				String[] time = new String[this.iterationSolutions.size()+1];
+				
+				header[0] 			 = "";
+				betterSolution[0] 	 = "BetterSolution";
+				worstSolution[0] 	 = "WorstSolution";
+				average[0] 			 = "Average";
+				standardDeviation[0] = "StandardDeviation";
+				elitism[0] 			 = "Elitism";
+				test[0] 			 = "Tests";
+				criticality[0] 		 = "Criticality";
+				time[0] 			 = "Time";
+				
+
+				for(IterationSolution it : this.iterationSolutions){
+					header[count] 			 = "Iteracao " + count;
+					betterSolution[count] 	 = "" + String.format("%.4f", it.getBetterSolution());
+					worstSolution[count] 	 = "" + String.format("%.4f", it.getWorstSolution());
+					average[count] 			 = "" + String.format("%.4f", it.getAverage());
+					standardDeviation[count] = "" + String.format("%.4f", it.getStandardDeviation());
+					elitism[count] 			 = "" + String.format("%.4f", it.getTheBest());
+					
+					test[count] 			 = "" + this.printTest(it.getTestCases());
+					criticality[count] 		 = "" + String.format("%.4f", it.getCriticidadeTotal());
+					time[count] 			 = "" + String.format("%.4f", it.getTempoTotal());
+					count++;
+				}
+				
+				data.add(header);
+				data.add(betterSolution);
+				data.add(worstSolution);
+				data.add(average);
+				data.add(standardDeviation);
+				data.add(elitism);
+				
+				data.add(emptyLine);
+				
+				data.add(test);
+				data.add(criticality);
+				data.add(time);
+				
+			}else if(this.bruteForceValues != null){
+				data.add(emptyLine);
+				data.add(new String[]{"Dispersao do espaco de Busca"});
+				data.add(emptyLine);
+				data.add(new String[]{"Criticality", "Time"});
+				for(double[] d : this.bruteForceValues){
+					data.add(new String[]{String.format("%.2f", d[1]) + "", String.format("%.2f", d[0]) + ""});
+				}
+			}
+			
+			writer.writeAll(data);
+	        writer.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * @return
+	 */
+	private String printTest(List<TestCase> testCases){
+		String format = "%02d";
+		if(this.numberOfTests >= 100){
+			format = "%03d";
+		}else if(this.numberOfTests >= 1000){
+			format = "%04d";
+		}
+		
+		Collections.sort(testCases, new Comparator<TestCase>() {
+			@Override
+			public int compare(TestCase t1, TestCase t2) {
+				return t1.getId().compareTo(t2.getId());
+			}
+		});
+		
+		StringBuffer buffer = new StringBuffer();
+		buffer.append("[");
+		for(int i = 0; i < testCases.size(); i++){
+			if(i < testCases.size()-1){
+				buffer.append(String.format(format, testCases.get(i).getId()) + "-");
+			}else{
+				buffer.append(String.format(format, testCases.get(i).getId()) + "]");
+			}
+		}
+		return buffer.toString();
 	}
 
 	/**
@@ -229,4 +369,33 @@ public class Solution {
 	public void setIterationSolutions(List<IterationSolution> iterationSolutions) {
 		this.iterationSolutions = iterationSolutions;
 	}
+
+	/**
+	 * @return the bruteForceValues
+	 */
+	public List<double[]> getBruteForceValues() {
+		return bruteForceValues;
+	}
+
+	/**
+	 * @param bruteForceValues the bruteForceValues to set
+	 */
+	public void setBruteForceValues(List<double[]> bruteForceValues) {
+		this.bruteForceValues = bruteForceValues;
+	}
+
+	/**
+	 * @return the antConfiguration
+	 */
+	public AntConfiguration getAntConfiguration() {
+		return antConfiguration;
+	}
+
+	/**
+	 * @param antConfiguration the antConfiguration to set
+	 */
+	public void setAntConfiguration(AntConfiguration antConfiguration) {
+		this.antConfiguration = antConfiguration;
+	}
 }
+

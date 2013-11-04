@@ -173,4 +173,40 @@ public class Edge {
 	public void setPheromoneInitial(double pheromoneInitial) {
 		this.pheromoneInitial = pheromoneInitial;
 	}
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((information == null) ? 0 : information.hashCode());
+		return result;
+	}
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Edge other = (Edge) obj;
+		if (information == null) {
+			if (other.information != null)
+				return false;
+		} else if (!information.equals(other.information))
+			return false;
+		return true;
+	}
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "Edge [information=" + information + ", pheromone=" + pheromone + "]";
+	}
 }

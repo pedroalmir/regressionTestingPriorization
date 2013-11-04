@@ -26,6 +26,7 @@ public class RegressionTestingPriorizationProblem {
 	private LinkedList<TestCase> testCases;
 	
 	private double capacidade;
+	private long partial;
 	
 	/**
 	 * Base Constructor
@@ -189,5 +190,21 @@ public class RegressionTestingPriorizationProblem {
 	 */
 	public void setCapacidade(double capacidade) {
 		this.capacidade = capacidade;
+	}
+
+
+	/**
+	 * @return the partial
+	 */
+	public long getPartial() {
+		return partial;
+	}
+
+
+	/**
+	 * @param partial the partial to set
+	 */
+	public void setPartial(long partial) {
+		this.partial = partial;
 	}
 }

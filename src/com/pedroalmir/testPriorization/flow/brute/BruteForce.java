@@ -26,11 +26,13 @@ public class BruteForce {
 	public static Solution execute(RegressionTestingPriorizationProblem problem) {
 		//System.out.println("Executando Força Bruta...");
 		/* Variables */
-		double maiorCriticidade = Double.MIN_VALUE;
-		double melhorTempo = Double.MIN_VALUE;
+		double maiorCriticidade = 0.0;
+		double melhorTempo = 0.0;
 		List<TestCase> betterTestCases = new LinkedList<TestCase>();
 		List<TestCase> testCases = problem.getTestCases();
 		double capacidade = problem.getCapacidade();
+		
+		List<double[]> bruteForceValues = new LinkedList<double[]>();
 		
 		/* Creating all the possibilities */
 		BigDecimal total = calculeAllPossibilitiesValue(testCases.size());
@@ -44,16 +46,29 @@ public class BruteForce {
 			boolean excedeuCapacidade = false;
 			List<TestCase> probableSolutionTestCases = new LinkedList<TestCase>();
 			
+			/* Just for debug
+			if(probableSolution.equals("101010100000010100")){}
+			*/
+			int testCaseIndex = testCases.size()-1;
+			
 			for(int i = probableSolution.length()-1; i >= 0; i--){
-				if(tempoAcumulado > capacidade || tempoAcumulado + testCases.get(i).getTime() > capacidade){
+				if(tempoAcumulado > capacidade){
 					excedeuCapacidade = true;
 					break;
 				}else if(probableSolution.charAt(i) == '1'){
-					criticidadeAcumulada += testCases.get(i).getCriticality();
-					tempoAcumulado += testCases.get(i).getTime();
-					probableSolutionTestCases.add(testCases.get(i));
+					if(tempoAcumulado + testCases.get(testCaseIndex).getTime() > capacidade){
+						excedeuCapacidade = true;
+						break;
+					}else{
+						criticidadeAcumulada += testCases.get(testCaseIndex).getCriticality();
+						tempoAcumulado += testCases.get(testCaseIndex).getTime();
+						probableSolutionTestCases.add(testCases.get(testCaseIndex));
+					}
 				}
+				testCaseIndex--;
 			}
+			
+			bruteForceValues.add(new double[]{tempoAcumulado, criticidadeAcumulada});
 			
 			if(!excedeuCapacidade){
 				if(criticidadeAcumulada > maiorCriticidade){
@@ -70,8 +85,10 @@ public class BruteForce {
 		//	for(int i = betterTestCases.size()-1; i >= 0; i--){
 		//     System.out.print(String.format("%02d", betterTestCases.get(i).getId()) + "-");
 		//}
-		return new Solution("Força Bruta", betterTestCases, capacidade, problem.getKlasses().size(), problem.getRequirements().size(), 
+		Solution solution = new Solution("Forca Bruta", betterTestCases, capacidade, problem.getKlasses().size(), problem.getRequirements().size(), 
 				testCases.size(), melhorTempo, maiorCriticidade, 0l);
+		solution.setBruteForceValues(bruteForceValues);
+		return solution;
 	}
 	
 	@SuppressWarnings("unused")
